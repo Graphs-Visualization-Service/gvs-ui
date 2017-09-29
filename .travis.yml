@@ -1,17 +1,16 @@
 language: java
-
 before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
 deploy:
   provider: releases
-  api_key: "8d8af38d8ace2c3600b749e3b1cf11eda1ae329f"
-  file: "build/libs/gvs-ui.jar"
+  api_key:
+    secure: I0F1EgmUP1tQglmw8/x9kfV/dyabZQhBkSfArb9fIWmwbPfYrd7uR1EkyuwuoD5BTNTFZQMHetsJ3J50YeNzLQBwDH3fR5wQEyUm8ESc/9qiRtVKHka8rbkflsXOaPR3eBnbG4v6xLOk5jLx8jtQJSgAtZiLIr/pg1YIAYh+5Ti9KUedyhaegGzyBpCD3F6oHYGDD2Ll4WqOfKQkCOYixAev7Z2LP5r386q13/9oV4ocbjQOunFN8r682xtxcSqjVzliLyoHc0vWWUGJlq2z7W8g6OYv4Irr3MQFIqXJNaF94osbIvkmM+nPO5HzhCw11faoBrcBaPLmRBWzZ/WURCyXhEo2yBHxuV/FbFQoRaqxxIp0Xa3TBm62ThSDtSKKaTnegnLR6Osp3sbd5M0pOpHpC5GCb1JBSAcYGYYcT3uMInDEHYdxYj1W52sZ3lB7InRNCY9zA1UegkMUkniukIMxVtRknbuI5OdNRNVl7IAymVNKUOqkT3nbArKhEE373nh00YUHiu63RnTxvjIZouepjc5fjpV+O2bfSJ99S7PQsWSNeoeDvido5HfVMCqWAAJsr+F5pCK/ke2yCDhoanTiwGTRNdRUgVLc6iUDFgNSfxAE2k6guKadZ+q/FpvX5hXbQx7WbUaoAebZlGIxct7JMG26h2h52OWy0U7eUN8=
+  file: "/build/libs/gvs-ui.jar"
   skip_cleanup: true
   on:
     tags: true

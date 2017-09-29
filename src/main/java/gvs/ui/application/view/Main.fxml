@@ -12,38 +12,38 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gvs.ui.application.view.MainController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+          <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
             <items>
-              <MenuItem text="_Save" />
-                  <MenuItem text="_Load" />
-                  <MenuItem mnemonicParsing="false" text="Exit" />
+              <MenuItem fx:id="saveMenuItem" text="_Save" />
+                  <MenuItem fx:id="loadMenuItem" text="_Load" />
+                  <MenuItem fx:id="exitMenuItem" mnemonicParsing="false" text="Exit" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Options">
+          <Menu fx:id="optionsMenu" mnemonicParsing="false" text="Options">
             <items>
-                  <Menu mnemonicParsing="false" text="Layout">
+                  <Menu fx:id="layoutMenu" mnemonicParsing="false" text="Layout">
                     <items>
-                        <Menu mnemonicParsing="false" text="Graph">
+                        <Menu fx:id="graphMenu" mnemonicParsing="false" text="Graph">
                           <items>
-                              <CheckMenuItem mnemonicParsing="false" text="Random Layout" />
-                              <CheckMenuItem mnemonicParsing="false" text="Stable Layout" />
+                              <CheckMenuItem fx:id="randomLayoutMenuItem" mnemonicParsing="false" text="Random Layout" />
+                              <CheckMenuItem fx:id="stableLayoutMenuItem" mnemonicParsing="false" text="Stable Layout" />
                           </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Tree">
+                        <Menu fx:id="treeMenu" mnemonicParsing="false" text="Tree">
                           <items>
-                              <CheckMenuItem mnemonicParsing="false" text="Cluster-Splitting" />
+                              <CheckMenuItem fx:id="clusterSplittingMenuItem" mnemonicParsing="false" text="Cluster-Splitting" />
                           </items>
                         </Menu>
                     </items>
                   </Menu>
-                  <MenuItem mnemonicParsing="false" text="Tracer" />
+                  <MenuItem fx:id="tracerMenuItem" mnemonicParsing="false" text="Tracer" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="?">
+          <Menu fx:id="helpMenu" mnemonicParsing="false" text="?">
             <items>
               <MenuItem mnemonicParsing="false" text="About" />
             </items>
@@ -69,12 +69,12 @@
                      <children>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                            <children>
-                              <ComboBox prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                              <ComboBox fx:id="chooseModelDropDown" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
                            </children>
                         </AnchorPane>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                            <children>
-                              <Button mnemonicParsing="false" text="Remove" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                              <Button fx:id="removeModelBtn" mnemonicParsing="false" text="Remove" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
                            </children>
                         </AnchorPane>
                      </children>
@@ -83,7 +83,7 @@
             </AnchorPane>
          </top>
          <center>
-            <AnchorPane prefWidth="600.0" BorderPane.alignment="CENTER" />
+            <AnchorPane fx:id="displayModelPane" prefWidth="600.0" BorderPane.alignment="CENTER" />
          </center>
       </BorderPane>
    </center>

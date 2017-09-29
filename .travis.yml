@@ -2,10 +2,16 @@ language: java
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
 cache:
   directories:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
+
+env:
+  CODECLIMATE_REPO_TOKEN: c208c2dcb4c1daaa1dff97abcdc4f21c12e5842c64c7039629dc62a636ba3676
+
+
 deploy:
   provider: releases
   api_key:

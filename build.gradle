@@ -20,8 +20,8 @@ dependencies {
 }
 
 jar {
+   	from {configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }  
     manifest {
-        attributes 'Main-Class': 'package gvs.ui.application.controller.Main'
+        attributes 'Main-Class': 'gvs.ui.application.controller.Main'        
     }
 }
-

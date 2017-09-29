@@ -10,7 +10,7 @@ cache:
 
 deploy:
   provider: releases
-  api_key: "69baf849f50e100e0e5d05cd641fee447d3de610"
+  api_key: "8d8af38d8ace2c3600b749e3b1cf11eda1ae329f"
   file: "build/libs/gvs-ui.jar"
   skip_cleanup: true
   on:

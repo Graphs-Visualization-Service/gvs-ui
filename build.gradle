@@ -1,4 +1,7 @@
 apply plugin: 'java'
+apply plugin: 'checkstyle'
+
+sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
@@ -25,3 +28,10 @@ jar {
         attributes 'Main-Class': 'gvs.ui.application.controller.Main'        
     }
 }
+
+checkstyle {
+  ignoreFailures = true
+  configFile = file("${project.rootDir}/checkstyle.xml")
+}
+
+

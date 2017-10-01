@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -177,10 +178,6 @@ public class Configuration {
 			loadFileOutput(eLogging);
 			loadLoggers(eLogging);
 
-			//
-			if (this.serverTyp.equals(CORBA)) {
-				loadCorbaTimeout(eServer);
-			}
 		} catch (DocumentException e) {
 			// TODO: check alternativ for 'fatal' level ->
 			// https://www.slf4j.org/faq.html#fatal
@@ -611,19 +608,6 @@ public class Configuration {
 			}
 		} else {
 			commonLogger.warn("No MaxlabelLength. Set default: 8");
-		}
-	}
-
-	private void loadCorbaTimeout(Element pServer) {
-		Element eCorbaTimeout = pServer.element(CORBATIMEOUT);
-		if (eCorbaTimeout != null) {
-			try {
-				corbaTimeout = Integer.parseInt(eCorbaTimeout.getText());
-			} catch (Exception ex) {
-				commonLogger.warn("Load Corbatimeout failed. Set default: 30s");
-			}
-		} else {
-			commonLogger.warn("No Corbatimeout. Set default: 30s");
 		}
 	}
 

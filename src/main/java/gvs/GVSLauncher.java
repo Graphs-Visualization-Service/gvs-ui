@@ -1,6 +1,5 @@
 package gvs;
 
-import gvs.common.Configuration;
 import gvs.server.socket.SocketServer;
 import gvs.ui.application.view.ApplicationView;
 
@@ -13,7 +12,7 @@ import gvs.ui.application.view.ApplicationView;
 public class GVSLauncher {
 
 	public static void main(String[] args) {
-
+		
 		ApplicationView av = new ApplicationView();
 
 		av.setVisible(true);
@@ -23,6 +22,6 @@ public class GVSLauncher {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		 
 	}
 }

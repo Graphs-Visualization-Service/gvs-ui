@@ -5,10 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Everyone who wants to send data, must reserve this
- * service. This class is the central entrypoint for every
- * data transfer.
- * @author mkoller 
+ * Everyone who wants to send data, must reserve this service. This class is the
+ * central entrypoint for every data transfer.
+ * 
+ * @author mkoller
  */
 public class ConnectionMonitor {
 
@@ -16,7 +16,7 @@ public class ConnectionMonitor {
 	private String owner = "";
 	private long lastUse;
 	private static final Logger serverLogger = LoggerFactory.getLogger(Main.class);
-	//private Logger serverLogger = null;
+	// private Logger serverLogger = null;
 
 	private ConnectionMonitor() {
 		lastUse = System.currentTimeMillis();

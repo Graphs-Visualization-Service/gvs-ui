@@ -122,8 +122,8 @@ public class Area extends Observable {
 	}
 
 	/**
-	 * Sets area as stable, if all particle positions are fixed. Layout Controller
-	 * will then return postions to Session controller for drawing
+	 * Sets area as stable, if all particle positions are fixed. Layout
+	 * Controller will then return postions to Session controller for drawing
 	 * 
 	 * @param pState
 	 */

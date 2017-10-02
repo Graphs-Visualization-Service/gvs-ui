@@ -297,7 +297,7 @@ public class TreeSessionController implements ITreeSessionController {
   private void setButtonState(long pRequestedModelId) {
     cp.setLayoutState(false);
     cp.setLayout(false);
-    if (replayMode == false) {
+    if (!replayMode) {
       if (pRequestedModelId == treeModels.size()) {
         cp.setNext(false);
         cp.setLast(false);

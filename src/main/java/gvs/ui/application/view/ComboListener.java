@@ -34,7 +34,7 @@ class ComboListener implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     currentItem = (ComboItem) combo.getSelectedItem();
 
-    if (init == false) {
+    if (!init) {
       init = true;
     } else {
       if ((currentItem != null)) {

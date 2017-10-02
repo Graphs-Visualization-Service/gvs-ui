@@ -154,8 +154,8 @@ public class EdgeComponent extends JComponent {
       labelYPos = (endVertexYPos - ELLIPSEHEIGHT) - (labelHeight / 2);
     }
 
-    if ((wasDragged == true) || (isRelative == true)) {
-      if (isAdded == false) {
+    if (wasDragged || isRelative) {
+      if (!isAdded) {
         check.addLabelPos(this);
         isAdded = true;
       } else {

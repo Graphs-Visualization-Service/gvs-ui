@@ -13,8 +13,8 @@ public class Traction {
 
   private double impact;
   private double distance;
-  Particle from;
-  Particle to;
+  private Particle from;
+  private Particle to;
 
   /**
    * Creates traction instance. Representing edges

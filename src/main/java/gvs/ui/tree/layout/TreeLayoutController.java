@@ -176,7 +176,7 @@ public class TreeLayoutController {
             isFound = false;
           }
         }
-      } while (isFound == false);
+      } while (!isFound);
     }
   }
 

@@ -327,7 +327,7 @@ public class ControlPanel extends JPanel implements ImageObserver {
    */
   // TODO Refactor -> bad naming
   public void setLayoutState(boolean isLayouting) {
-    if (isLayouting == true) {
+    if (isLayouting) {
       layout.setBackground(Color.RED);
       layout.setText("   Active  ");
       treeLabel.setText("Active");

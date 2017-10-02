@@ -54,7 +54,7 @@ public class Particle {
    * @param vec
    */
   public void accelerate(AreaVector vec) {
-    if (positionFixed == false) {
+    if (!positionFixed) {
       double scale = 1;
       if (weight >= 0) {
         scale = 1.0 / weight;
@@ -70,7 +70,7 @@ public class Particle {
    * position as fixed
    */
   public void update() {
-    if (positionFixed == false) {
+    if (!positionFixed) {
       speed.add(acceleration);
       particlePosition.addVector(speed);
       if (Math.abs(speed.getSpeedSummary()) < 0.2) {

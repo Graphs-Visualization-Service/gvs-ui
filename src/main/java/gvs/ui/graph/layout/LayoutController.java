@@ -119,8 +119,8 @@ public class LayoutController extends Observable implements Observer, Tickable {
     while (it.hasNext()) {
       IVertex myVertex = (IVertex) it.next();
 
-      if (myVertex.isFixedPosition() == false) {
-        if (doSoftLayout == true) {
+      if (!myVertex.isFixedPosition()) {
+        if (doSoftLayout) {
           p = generateSoftPoints(myVertex);
         } else {
           p = generateRandomPoints(myVertex);

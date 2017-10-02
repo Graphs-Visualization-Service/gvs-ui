@@ -69,7 +69,7 @@ interface Cluster {
 
 class CharArrayLineImpl implements Line {
 
-  final int DISTANCE;
+  private final int DISTANCE;
   char[] mArr;
 
   CharArrayLineImpl(char[] pArr) {

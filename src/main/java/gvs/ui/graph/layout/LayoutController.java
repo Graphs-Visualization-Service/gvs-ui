@@ -46,7 +46,8 @@ public class LayoutController extends Observable implements Observer, Tickable {
    */
   public LayoutController() {
     // TODO check replacement of Logger Instance
-    // this.graphContLogger=gvs.common.Logger.getInstance().getGraphControllerLogger();
+    // this.graphContLogger =
+    // gvs.common.Logger.getInstance().getGraphControllerLogger();
     this.graphContLogger = LoggerFactory.getLogger(LayoutController.class);
     vertizes = new Vector();
     edges = new Vector();
@@ -97,8 +98,8 @@ public class LayoutController extends Observable implements Observer, Tickable {
    */
   public void setElements(Vector vertices, Vector edges, boolean doSoftLayout) {
 
-    graphContLogger.info(
-        "LayoutController has new elements detected, start layouting procedure");
+    graphContLogger.info("LayoutController has new elements detected, "
+        + "start layouting procedure");
     this.doSoftLayout = doSoftLayout;
     this.vertizes = vertices;
     this.edges = edges;

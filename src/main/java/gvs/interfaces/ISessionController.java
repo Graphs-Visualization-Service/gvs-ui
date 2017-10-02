@@ -4,28 +4,28 @@ import gvs.ui.application.view.ControlPanel;
 
 public interface ISessionController {
 
-  public abstract ControlPanel getControlPanel();
+  ControlPanel getControlPanel();
 
-  public abstract String getSessionName();
+  String getSessionName();
 
-  public abstract long getSessionId();
+  long getSessionId();
 
-  public abstract void setVisualModel();
+  void setVisualModel();
 
-  public abstract void getFirstModel();
+  void getFirstModel();
 
-  public abstract void getPreviousModel();
+  void getPreviousModel();
 
-  public abstract void getNextModel();
+  void getNextModel();
 
-  public abstract void getLastModel();
+  void getLastModel();
 
-  public abstract void replay();
+  void replay();
 
-  public abstract void speed(int picsPerSecond);
+  void speed(int picsPerSecond);
 
-  public abstract void autoLayout();
+  void autoLayout();
 
-  public abstract boolean validateNavigation(long requestedModelId);
+  boolean validateNavigation(long requestedModelId);
 
 }

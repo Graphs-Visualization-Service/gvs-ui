@@ -61,8 +61,8 @@ public class TreeLayoutController {
    */
   @SuppressWarnings("unchecked")
   public void setElements(TreeModel pModel) {
-    treeContLogger.info(
-        "Tree LayoutController has new elements detected, start layouting procedure");
+    treeContLogger.info("Tree LayoutController has new elements detected, "
+        + "start layouting procedure");
     myModel = pModel;
     rootNodes = new Vector<IBinaryNode>();
 

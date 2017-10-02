@@ -36,6 +36,7 @@ public class GraphSessionController
   private LayoutController layoutController = null;
   private GraphModel actualGraphModel = null;
   private ControlPanel controlPanel = null;
+  @SuppressWarnings("rawtypes")
   private Vector graphModels = null;
   private Timer replayTimer = null;
   private GraphSessionReplay sessionReplay = null;
@@ -72,6 +73,7 @@ public class GraphSessionController
    * @param pGraphModels
    *          graphModel
    */
+  @SuppressWarnings("rawtypes")
   public GraphSessionController(long pSessionId, String pSessionName,
       Vector pGraphModels) {
     this.clientSessionId = pSessionId;
@@ -97,7 +99,7 @@ public class GraphSessionController
    * @param pGraphModel
    *          graphModel
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public GraphSessionController(long pSessionId, String pSessionName,
       GraphModel pGraphModel) {
     try {
@@ -110,7 +112,7 @@ public class GraphSessionController
     this.sessionName = pSessionName;
 
     initializeGraphSessionController();
-
+    
     graphModels = new Vector();
     graphContLogger.info("Build new graph session controller");
     actualGraphModel = pGraphModel;
@@ -458,6 +460,7 @@ public class GraphSessionController
   /**
    * Copy positions of former vertizes to actual model in order of no changes.
    */
+  @SuppressWarnings("rawtypes")
   private void setFormerVertexCoordinate() {
     GraphModel formerModel = (GraphModel) graphModels
         .elementAt(actualGraphModel.getModelId() - 2);

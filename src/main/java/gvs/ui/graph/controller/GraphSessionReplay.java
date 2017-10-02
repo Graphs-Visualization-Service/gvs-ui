@@ -13,10 +13,18 @@ import java.util.Vector;
  */
 public class GraphSessionReplay extends TimerTask {
   private int sessionCounter = 0;
+  
+  @SuppressWarnings("rawtypes")
   private Vector sessionControllers = null;
   private GraphSessionController sessionController = null;
   private GraphModel graphModel = null;
 
+  /**
+   * GraphSessionReplay.
+   * @param pSessionControllers sessionController
+   * @param pSessionController sessionControlelr
+   */
+  @SuppressWarnings("rawtypes")
   public GraphSessionReplay(Vector pSessionControllers,
       GraphSessionController pSessionController) {
     this.sessionControllers = pSessionControllers;

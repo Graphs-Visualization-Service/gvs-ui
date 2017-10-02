@@ -12,7 +12,7 @@ import javax.swing.KeyStroke;
  * @author aegli
  *
  */
-class ApplicationAction extends AbstractAction {
+public class ApplicationAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
   private ApplicationView applicationView;
 

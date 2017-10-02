@@ -4,6 +4,6 @@ import java.awt.Color;
 
 public interface IDefaultVertex extends IVertex {
 
-  public abstract Color getFillColor();
+  Color getFillColor();
 
 }

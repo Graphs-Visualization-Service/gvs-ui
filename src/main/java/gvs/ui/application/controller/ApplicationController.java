@@ -106,6 +106,7 @@ public class ApplicationController {
    * 
    * @return sessionController
    */
+  @SuppressWarnings("rawtypes")
   public Vector getSessionContoller() {
     return sessionControllers;
   }

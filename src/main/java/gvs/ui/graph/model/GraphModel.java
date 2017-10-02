@@ -11,7 +11,9 @@ import java.util.Vector;
  *
  */
 public class GraphModel {
+  @SuppressWarnings("rawtypes")
   private Vector vertizes = null;
+  @SuppressWarnings("rawtypes")
   private Vector edges = null;
   private Image backgroundImage = null;
   private Color backgroundColor = null;
@@ -29,6 +31,7 @@ public class GraphModel {
    * @param pEdges
    * @param pMaxLabelLength
    */
+  @SuppressWarnings("rawtypes")
   public GraphModel(String pGraphLabel, Image pBackgroundImage,
       Vector pVertizes, Vector pEdges, int pMaxLabelLength) {
     this.graphLabel = pGraphLabel;
@@ -48,6 +51,7 @@ public class GraphModel {
    * @param pEdges
    * @param pMaxLabelLength
    */
+  @SuppressWarnings("rawtypes")
   public GraphModel(String pGraphLabel, Color pBackgroundColor,
       Vector pVertizes, Vector pEdges, int pMaxLabelLength) {
     this.graphLabel = pGraphLabel;
@@ -81,6 +85,7 @@ public class GraphModel {
    * 
    * @return
    */
+  @SuppressWarnings("rawtypes")
   public Vector getEdges() {
     return edges;
   }
@@ -118,6 +123,7 @@ public class GraphModel {
    * @return
    */
   // TODO refactor name: getVertices()
+  @SuppressWarnings("rawtypes")
   public Vector getVertizes() {
     return vertizes;
   }

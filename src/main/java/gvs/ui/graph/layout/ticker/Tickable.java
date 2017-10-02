@@ -8,7 +8,6 @@ package gvs.ui.graph.layout.ticker;
  */
 public interface Tickable {
 
-  public void tick(double rate, double rateRatio, boolean drop, long iteration,
+  void tick(double rate, double rateRatio, boolean drop, long iteration,
       long time);
-
 }

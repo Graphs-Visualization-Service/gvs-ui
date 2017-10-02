@@ -10,7 +10,7 @@ import gvs.interfaces.ISessionController;
  * @author aegli
  *
  */
-class CheckableItem {
+public class CheckableItem {
   private ISessionController sessionController = null;
   private String sessionName = null;
   private String sessionTypeName = null;

@@ -37,7 +37,8 @@ class NodeLineImpl implements Line {
     // mTreeContLogger =
     // gvs.common.Logger.getInstance().getTreeControllerLogger();
     setmTreeContLogger(LoggerFactory.getLogger(NodeLineImpl.class));
-    getmTreeContLogger().debug("NodeLineImpl::NodeLineImpl():  DISTANCE=" + DISTANCE
+    getmTreeContLogger().debug("NodeLineImpl::NodeLineImpl():"
+        + "  DISTANCE=" + DISTANCE
         + "  DEPTH=" + DEPTH);
   }
 

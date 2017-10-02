@@ -4,16 +4,45 @@ import java.awt.Color;
 import java.awt.Stroke;
 import java.util.Vector;
 
+/**
+ * Default Node Interface.
+ */
 public interface IDefaultNode extends INode {
 
-  public abstract Vector getChilds();
+  /**
+   * getChilds.
+   * 
+   * @return vector of childs
+   */
+  @SuppressWarnings("rawtypes")
+  Vector getChilds();
 
-  public abstract Color getFillColor();
+  /**
+   * getFillColor.
+   * 
+   * @return color
+   */
+  Color getFillColor();
 
-  public abstract Color getLineColor();
+  /**
+   * getLineColor.
+   * 
+   * @return color
+   */
+  Color getLineColor();
 
-  public abstract Stroke getLineStroke();
+  /**
+   * getLineStroke.
+   * 
+   * @return stroke
+   */
+  Stroke getLineStroke();
 
-  public abstract String getNodeLabel();
+  /**
+   * getNodeLabel.
+   * 
+   * @return label
+   */
+  String getNodeLabel();
 
 }

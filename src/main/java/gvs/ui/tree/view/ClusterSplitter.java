@@ -14,7 +14,7 @@ import gvs.interfaces.IBinaryNode;
 
 /**
  * A Line with nodes which might be clustered. An abstract example of a line
- * with a cluster: > OOOOO< should finally become: >O O O O O<
+ * with a cluster: ">OOOOO<" should finally become: ">O O O O O<"
  */
 interface Line {
   /**
@@ -38,7 +38,7 @@ interface Line {
   /**
    * @return A bigInteger representing the line as bit-pattern.
    */
-  public BigInteger getBigIntegerInterpretation();
+  BigInteger getBigIntegerInterpretation();
 
 }
 
@@ -67,7 +67,7 @@ interface Cluster {
   int length();
 }
 
-class CharArrayLineImpl implements Line {
+public class CharArrayLineImpl implements Line {
 
   private final int DISTANCE;
   private char[] mArr;
@@ -219,7 +219,7 @@ class CharArrayLineImpl implements Line {
 
 } // End of class CharArrayClusterImpl
 
-class CharArrayClusterImpl implements Cluster {
+public class CharArrayClusterImpl implements Cluster {
 
   private CharArrayLineImpl mLine;
   /**

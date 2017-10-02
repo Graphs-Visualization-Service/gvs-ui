@@ -10,7 +10,7 @@ import javax.swing.JComboBox;
  * @author aegli
  *
  */
-class ComboListener implements ActionListener {
+public class ComboListener implements ActionListener {
   private JComboBox combo;
 
   private ComboItem currentItem;

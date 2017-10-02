@@ -5,25 +5,25 @@ import java.awt.Stroke;
 
 public interface IVertex {
 
-  public abstract boolean isRelative();
+  boolean isRelative();
 
-  public abstract String getLabel();
+  String getLabel();
 
-  public abstract Color getLineColor();
+  Color getLineColor();
 
-  public abstract Stroke getLineStroke();
+  Stroke getLineStroke();
 
-  public abstract double getXPosition();
+  double getXPosition();
 
-  public abstract double getYPosition();
+  double getYPosition();
 
-  public abstract boolean isFixedPosition();
+  boolean isFixedPosition();
 
-  public abstract void setXPosition(double position);
+  void setXPosition(double position);
 
-  public abstract void setYPosition(double position);
+  void setYPosition(double position);
 
-  public abstract void setFixedPosition(boolean isFixed);
+  void setFixedPosition(boolean isFixed);
 
-  public abstract long getId();
+  long getId();
 }

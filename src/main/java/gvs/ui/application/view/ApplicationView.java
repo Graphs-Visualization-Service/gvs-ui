@@ -77,7 +77,8 @@ public class ApplicationView extends JFrame implements Observer {
     super("Graphs-Visualization-Service GVS");
     this.setSize(1200, 800);
     // TODO check logger replacement
-    // this.appViewLogger=gvs.common.Logger.getInstance().getApplicationViewLogger();
+    // this.appViewLogger =
+    // gvs.common.Logger.getInstance().getApplicationViewLogger();
     this.appViewLogger = LoggerFactory.getLogger(ApplicationView.class);
     appViewLogger.info("Build User-Interface, set default view");
 
@@ -325,6 +326,7 @@ public class ApplicationView extends JFrame implements Observer {
    */
   public ISessionController[] getSessiontoSave() {
     int counter = 0;
+    @SuppressWarnings("rawtypes")
     Vector v = ac.getSessionContoller();
 
     ISessionController[] sessionNames = new ISessionController[v.size()];
@@ -392,7 +394,8 @@ public class ApplicationView extends JFrame implements Observer {
   public void loadAboutMenu() {
     JOptionPane.showMessageDialog(this,
         "<html>Graphs-Visualization-Service<p>Version 1.5 <p>"
-            + "Produced by Andreas Egli and Michael Koller <p>January 2006</html>",
+            + "Produced by Andreas Egli and Michael Koller <p>"
+            + "January 2006</html>",
         "About GVS", JOptionPane.INFORMATION_MESSAGE);
   }
 

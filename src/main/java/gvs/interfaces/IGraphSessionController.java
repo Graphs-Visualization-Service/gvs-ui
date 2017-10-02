@@ -7,15 +7,15 @@ import java.util.Observable;
 
 public interface IGraphSessionController extends ISessionController {
 
-  public abstract void addGraphModel(GraphModel pGraphModel);
+  void addGraphModel(GraphModel pGraphModel);
 
-  public abstract void update(Observable o, Object arg);
+  void update(Observable o, Object arg);
 
-  public abstract GraphModel getActualGraphModel();
+  GraphModel getActualGraphModel();
 
-  public abstract void setActualGraphModel(GraphModel actualGraphModel);
+  void setActualGraphModel(GraphModel actualGraphModel);
 
   @SuppressWarnings("rawtypes")
-  public abstract AbstractList getMyGraphModels();
+  AbstractList getMyGraphModels();
 
 }

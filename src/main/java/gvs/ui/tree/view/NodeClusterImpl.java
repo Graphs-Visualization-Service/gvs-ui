@@ -1,6 +1,6 @@
 package gvs.ui.tree.view;
 
-class NodeClusterImpl implements Cluster {
+public class NodeClusterImpl implements Cluster {
 
   private NodeLineImpl mLine;
   private int mStartPos;

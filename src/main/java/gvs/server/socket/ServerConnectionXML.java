@@ -30,6 +30,10 @@ import org.dom4j.io.SAXReader;
  */
 public class ServerConnectionXML extends Thread {
 
+  private static final String VALIDATION_SCHEMA = "http://apache.org/"
+      + "xml/features/validation/schema";
+  private static final String NO_NAMESPACE_SCHEMA_LOCATION = "http://apache.org"
+      + "/xml/properties/schema/external-noNamespaceSchemaLocation";
   private ModelBuilder mb = null;
   private Socket client = null;
   private BufferedReader in = null;
@@ -150,11 +154,8 @@ public class ServerConnectionXML extends Thread {
     try {
       reader.setValidation(true);
       // TODO store urls separately?
-      reader.setFeature("http://apache.org/xml/features/validation/schema",
-          true);
-      reader.setProperty(
-          "http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation",
-          SCHEMA);
+      reader.setFeature(VALIDATION_SCHEMA, true);
+      reader.setProperty(NO_NAMESPACE_SCHEMA_LOCATION, SCHEMA);
       Document document = reader.read(pFile);
 
       mb.buildModelFromXML(document);

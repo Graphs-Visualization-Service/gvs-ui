@@ -50,6 +50,7 @@ public class DefaultNode implements IDefaultNode {
    * Returns children
    */
   // TODO refactor name -> getChildren
+  @SuppressWarnings("rawtypes")
   public Vector getChilds() {
     return childs;
   }

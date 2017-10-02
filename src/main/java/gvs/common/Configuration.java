@@ -445,6 +445,7 @@ public class Configuration {
    * @param pLoggers
    *          loggers
    */
+  @SuppressWarnings("rawtypes")
   public synchronized void saveLoggerConfiguration(Vector pLoggers) {
     // TODO check if remove of this method is permitted. slf4j does not
     // support changing log level at runtime

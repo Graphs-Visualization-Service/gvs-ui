@@ -12,7 +12,7 @@ import javax.swing.UIManager;
  * @author aegli
  *
  */
-class CheckListRenderer extends JCheckBox implements ListCellRenderer {
+public class CheckListRenderer extends JCheckBox implements ListCellRenderer {
   private static final long serialVersionUID = 1L;
 
   /**

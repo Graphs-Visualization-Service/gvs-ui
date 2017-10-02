@@ -13,7 +13,7 @@ import javax.swing.border.EmptyBorder;
  * @author aegli
  *
  */
-class ComboRenderer extends JLabel implements ListCellRenderer {
+public class ComboRenderer extends JLabel implements ListCellRenderer {
   private static final long serialVersionUID = 1L;
 
   public ComboRenderer() {

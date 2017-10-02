@@ -4,6 +4,6 @@ import java.awt.Graphics;
 
 public interface IVisualizationPanel {
 
-  public abstract void paint(Graphics g);
+  void paint(Graphics g);
 
 }

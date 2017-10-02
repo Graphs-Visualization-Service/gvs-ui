@@ -117,6 +117,8 @@ public class Persistor {
     Iterator sessionIt = pSessions.iterator();
     while (sessionIt.hasNext()) {
       Object tmp = sessionIt.next();
+      
+      @SuppressWarnings("rawtypes")
       Class[] interfaces = tmp.getClass().getInterfaces();
       for (int count = 0; count < interfaces.length; count++) {
         Document document = DocumentHelper.createDocument();

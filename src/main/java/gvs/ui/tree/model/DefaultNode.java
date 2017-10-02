@@ -23,7 +23,7 @@ public class DefaultNode implements IDefaultNode {
   private long nodeId = 0;
   private double xPosition = 0;
   private double yPosition = 0;
-  private long childIds[] = null;
+  private long[] childIds = null;
 
   /**
    * Builds an instance of a DefaultNode
@@ -36,7 +36,7 @@ public class DefaultNode implements IDefaultNode {
    * @param pChildIds
    */
   public DefaultNode(long pNodeId, String pNodeLabel, Color pLineColor,
-      Stroke pLineStroke, Color pFillColor, long pChildIds[]) {
+      Stroke pLineStroke, Color pFillColor, long[] pChildIds) {
     this.nodeId = pNodeId;
     this.nodeLabel = pNodeLabel;
     this.lineColor = pLineColor;

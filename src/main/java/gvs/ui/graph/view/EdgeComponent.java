@@ -186,6 +186,7 @@ public class EdgeComponent extends JComponent {
     double x = Math.tan(alpha) * y;
 
     Object vertex = startVertex;
+    @SuppressWarnings("rawtypes")
     Class[] interfaces = vertex.getClass().getInterfaces();
     for (int i = 0; i < interfaces.length; i++) {
       if (interfaces[i] == IDefaultVertex.class) {

@@ -31,7 +31,7 @@ class RadioButtonUtils {
    * @param selectedRadio
    * @return
    */
-  public static Container createRadioButtonGrouping(String elements[],
+  public static Container createRadioButtonGrouping(String[] elements,
       String title, ActionListener actionListener, int selectedRadio) {
     JPanel panel = new JPanel(new GridLayout(0, 5));
     panel.setBackground(Color.WHITE);

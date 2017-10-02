@@ -98,6 +98,8 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
     Iterator verIt = pVertizes.iterator();
     while (verIt.hasNext()) {
       Object vertex = verIt.next();
+      
+      @SuppressWarnings("rawtypes")
       Class[] interfaces = vertex.getClass().getInterfaces();
       for (int i = 0; i < interfaces.length; i++) {
         if (interfaces[i] == IDefaultVertex.class) {

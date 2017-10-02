@@ -28,6 +28,7 @@ class CheckableItem {
     this.sessionId = sessionController.getSessionId();
     this.sessionName = sessionController.getSessionName();
 
+    @SuppressWarnings("rawtypes")
     Class[] interfaces = sessionController.getClass().getInterfaces();
     for (int i = 0; i < interfaces.length; i++) {
       if (interfaces[i] == IGraphSessionController.class) {

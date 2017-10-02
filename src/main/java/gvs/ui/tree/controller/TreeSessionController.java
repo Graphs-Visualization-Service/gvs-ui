@@ -275,10 +275,11 @@ public class TreeSessionController implements ITreeSessionController {
   }
 
   /**
-   * Returns a list of available models
+   * Returns a list of available models.
    * 
-   * @return
+   * @return treeModels
    */
+  @SuppressWarnings("rawtypes")
   public AbstractList getMyGraphModels() {
     return treeModels;
   }

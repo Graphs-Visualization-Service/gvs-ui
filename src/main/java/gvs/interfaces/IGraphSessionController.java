@@ -15,6 +15,7 @@ public interface IGraphSessionController extends ISessionController {
 
   public abstract void setActualGraphModel(GraphModel actualGraphModel);
 
+  @SuppressWarnings("rawtypes")
   public abstract AbstractList getMyGraphModels();
 
 }

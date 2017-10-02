@@ -95,9 +95,7 @@ public class VisualizationTreePanel extends JPanel
         if (effectiveLabelLength < labelLength) {
           effectiveLabelLength = labelLength;
         }
-      }
-
-      else {
+      } else {
         if (maxClientLabelLength == 0) {
           if ((labelLength <= maxLabelLength)) {
             if (labelLength > effectiveLabelLength) {

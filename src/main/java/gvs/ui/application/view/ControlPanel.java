@@ -334,6 +334,7 @@ public class ControlPanel extends JPanel implements ImageObserver {
       treeLabel.setBackground(Color.RED);
       treeState.setBackground(Color.RED);
     } else {
+      @SuppressWarnings("rawtypes")
       Class[] interfaces = session.getClass().getInterfaces();
       for (int i = 0; i < interfaces.length; i++) {
         if (interfaces[i] == ITreeSessionController.class) {

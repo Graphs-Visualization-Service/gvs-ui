@@ -435,6 +435,7 @@ public class GraphSessionController
    * 
    * @return graphModels
    */
+  @SuppressWarnings("rawtypes")
   public AbstractList getMyGraphModels() {
     return graphModels;
   }

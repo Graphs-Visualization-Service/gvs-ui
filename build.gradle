@@ -1,4 +1,8 @@
 apply plugin: 'java'
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
+
+sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
@@ -20,8 +24,22 @@ dependencies {
 }
 
 jar {
+   	from {configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }  
     manifest {
-        attributes 'Main-Class': 'package gvs.ui.application.controller.Main'
+        attributes 'Main-Class': 'gvs.ui.application.controller.Main'        
     }
 }
+
+checkstyle {
+  ignoreFailures = true
+  showViolations = true
+  configFile = file("${project.rootDir}/checkstyle.xml")
+}
+
+findbugs {
+  ignoreFailures = true
+  reportsDir = file("$project.buildDir/reports/findbugs")
+  effort = "max" 
+}
+
 

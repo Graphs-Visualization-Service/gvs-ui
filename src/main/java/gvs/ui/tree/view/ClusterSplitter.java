@@ -67,7 +67,7 @@ interface Cluster {
   int length();
 }
 
-public class CharArrayLineImpl implements Line {
+class CharArrayLineImpl implements Line {
 
   private final int DISTANCE;
   private char[] mArr;
@@ -219,7 +219,8 @@ public class CharArrayLineImpl implements Line {
 
 } // End of class CharArrayClusterImpl
 
-public class CharArrayClusterImpl implements Cluster {
+//TODO create own file and add public modifier
+class CharArrayClusterImpl implements Cluster {
 
   private CharArrayLineImpl mLine;
   /**

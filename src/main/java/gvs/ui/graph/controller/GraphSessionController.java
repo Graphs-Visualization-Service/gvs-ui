@@ -1,5 +1,15 @@
 package gvs.ui.graph.controller;
 
+import java.util.AbstractList;
+import java.util.Iterator;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Timer;
+import java.util.Vector;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gvs.interfaces.IGraphSessionController;
 import gvs.interfaces.IVertex;
 import gvs.ui.application.controller.ApplicationController;
@@ -10,16 +20,6 @@ import gvs.ui.graph.layout.LayoutController;
 import gvs.ui.graph.model.GraphModel;
 import gvs.ui.graph.model.VisualizationGraphModel;
 import gvs.ui.graph.view.VisualizationGraphPanel;
-
-import java.util.AbstractList;
-import java.util.Iterator;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Timer;
-import java.util.Vector;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The session contoller reacts on user input events and implements most of the

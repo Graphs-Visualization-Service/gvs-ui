@@ -1,8 +1,9 @@
 package gvs.server;
 
-import gvs.ui.application.controller.Main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import gvs.ui.application.controller.Main;
 
 /**
  * Everyone who wants to send data, must reserve this service. This class is the

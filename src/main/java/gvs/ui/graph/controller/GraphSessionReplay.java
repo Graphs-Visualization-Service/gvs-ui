@@ -1,9 +1,9 @@
 package gvs.ui.graph.controller;
 
-import gvs.ui.graph.model.GraphModel;
-
 import java.util.TimerTask;
 import java.util.Vector;
+
+import gvs.ui.graph.model.GraphModel;
 
 /**
  * TimerTask, responsible for showing replays with a defined timeout

@@ -6,6 +6,18 @@
  */
 package gvs.server;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Image;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gvs.common.Configuration;
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
@@ -19,18 +31,6 @@ import gvs.ui.graph.model.IconVertex;
 import gvs.ui.tree.model.BinaryNode;
 import gvs.ui.tree.model.DefaultNode;
 import gvs.ui.tree.model.TreeModel;
-
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Image;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.dom4j.Document;
-import org.dom4j.Element;
 
 /**
  * This class builds the model which is required for the visualization. The

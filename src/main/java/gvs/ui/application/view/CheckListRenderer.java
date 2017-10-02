@@ -1,6 +1,7 @@
 package gvs.ui.application.view;
 
 import java.awt.Component;
+
 import javax.swing.JCheckBox;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;

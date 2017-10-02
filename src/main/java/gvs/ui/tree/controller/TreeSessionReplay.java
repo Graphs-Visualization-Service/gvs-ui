@@ -1,9 +1,9 @@
 package gvs.ui.tree.controller;
 
-import gvs.ui.tree.model.TreeModel;
-
 import java.util.TimerTask;
 import java.util.Vector;
+
+import gvs.ui.tree.model.TreeModel;
 
 /**
  * TimerTask, responsible for showing replays with a defined timeout

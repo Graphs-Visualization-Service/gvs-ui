@@ -1,9 +1,5 @@
 package gvs.ui.graph.view;
 
-import gvs.interfaces.IDefaultVertex;
-import gvs.interfaces.IEdge;
-import gvs.interfaces.IVertex;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -13,8 +9,14 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.geom.Line2D;
+import java.awt.geom.RoundRectangle2D;
+
 import javax.swing.JComponent;
-import java.awt.geom.*;
+
+import gvs.interfaces.IDefaultVertex;
+import gvs.interfaces.IEdge;
+import gvs.interfaces.IVertex;
 
 /**
  * Default component for an edge

@@ -1,15 +1,5 @@
 package gvs.ui.graph.view;
 
-import gvs.common.Configuration;
-import gvs.interfaces.IDefaultVertex;
-import gvs.interfaces.IEdge;
-import gvs.interfaces.IIconVertex;
-import gvs.interfaces.IVertex;
-import gvs.interfaces.IVertexComponent;
-import gvs.interfaces.IVisualizationGraphPanel;
-import gvs.ui.graph.model.GraphModel;
-import gvs.ui.graph.model.VisualizationGraphModel;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -22,9 +12,21 @@ import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
+
 import javax.swing.JPanel;
-import org.slf4j.LoggerFactory;
+
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import gvs.common.Configuration;
+import gvs.interfaces.IDefaultVertex;
+import gvs.interfaces.IEdge;
+import gvs.interfaces.IIconVertex;
+import gvs.interfaces.IVertex;
+import gvs.interfaces.IVertexComponent;
+import gvs.interfaces.IVisualizationGraphPanel;
+import gvs.ui.graph.model.GraphModel;
+import gvs.ui.graph.model.VisualizationGraphModel;
 
 /**
  * Is responsible for the visualization of a model and its components.

@@ -1,18 +1,18 @@
 package gvs.ui.tree.controller;
 
-import gvs.interfaces.ITreeSessionController;
-import gvs.ui.application.view.ControlPanel;
-import gvs.ui.tree.layout.TreeLayoutController;
-import gvs.ui.tree.model.TreeModel;
-import gvs.ui.tree.model.VisualizationTreeModel;
-import gvs.ui.tree.view.VisualizationTreePanel;
-
 import java.util.AbstractList;
 import java.util.Timer;
 import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import gvs.interfaces.ITreeSessionController;
+import gvs.ui.application.view.ControlPanel;
+import gvs.ui.tree.layout.TreeLayoutController;
+import gvs.ui.tree.model.TreeModel;
+import gvs.ui.tree.model.VisualizationTreeModel;
+import gvs.ui.tree.view.VisualizationTreePanel;
 
 /**
  * The session contoller reacts on user input events and implements most of the

@@ -1,8 +1,8 @@
 package gvs.ui.application.model;
 
-import gvs.interfaces.ISessionController;
-
 import java.util.Observable;
+
+import gvs.interfaces.ISessionController;
 
 /**
  * Holds the model of the current session

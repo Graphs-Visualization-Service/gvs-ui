@@ -1,10 +1,10 @@
 package gvs.ui.graph.model;
 
-import gvs.interfaces.IEdge;
-import gvs.interfaces.IVertex;
-
 import java.awt.Color;
 import java.awt.Stroke;
+
+import gvs.interfaces.IEdge;
+import gvs.interfaces.IVertex;
 
 /**
  * Model of an edge

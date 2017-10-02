@@ -1,16 +1,5 @@
 package gvs.ui.graph.layout;
 
-import gvs.common.Configuration;
-import gvs.interfaces.IEdge;
-import gvs.interfaces.IVertex;
-import gvs.ui.graph.layout.helpers.Area;
-import gvs.ui.graph.layout.helpers.AreaDimension;
-import gvs.ui.graph.layout.helpers.AreaPoint;
-import gvs.ui.graph.layout.helpers.Particle;
-import gvs.ui.graph.layout.rules.Traction;
-import gvs.ui.graph.layout.ticker.AreaTicker;
-import gvs.ui.graph.layout.ticker.Tickable;
-
 import java.awt.Point;
 import java.util.Iterator;
 import java.util.Observable;
@@ -21,6 +10,17 @@ import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import gvs.common.Configuration;
+import gvs.interfaces.IEdge;
+import gvs.interfaces.IVertex;
+import gvs.ui.graph.layout.helpers.Area;
+import gvs.ui.graph.layout.helpers.AreaDimension;
+import gvs.ui.graph.layout.helpers.AreaPoint;
+import gvs.ui.graph.layout.helpers.Particle;
+import gvs.ui.graph.layout.rules.Traction;
+import gvs.ui.graph.layout.ticker.AreaTicker;
+import gvs.ui.graph.layout.ticker.Tickable;
 
 /**
  * Creates and prepares the elements which have to be layouted

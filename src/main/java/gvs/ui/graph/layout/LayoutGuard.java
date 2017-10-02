@@ -1,8 +1,8 @@
 package gvs.ui.graph.layout;
 
-import gvs.ui.graph.layout.helpers.Area;
+import java.util.TimerTask;
 
-import java.util.*;
+import gvs.ui.graph.layout.helpers.Area;
 
 /**
  * After a defined timeout, the layout process will be stopped

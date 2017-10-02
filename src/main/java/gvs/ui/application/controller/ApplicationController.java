@@ -1,5 +1,11 @@
 package gvs.ui.application.controller;
 
+import java.util.Iterator;
+import java.util.Vector;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gvs.common.Persistor;
 import gvs.interfaces.ISessionController;
 import gvs.interfaces.ITreeSessionController;
@@ -8,12 +14,6 @@ import gvs.ui.graph.controller.GraphSessionController;
 import gvs.ui.graph.model.GraphModel;
 import gvs.ui.tree.controller.TreeSessionController;
 import gvs.ui.tree.model.TreeModel;
-
-import java.util.Iterator;
-import java.util.Vector;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Application Controller reacts to events from the user or newly reveived

@@ -1,9 +1,9 @@
 package gvs.ui.application.view;
 
-import gvs.interfaces.ISessionController;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import gvs.interfaces.ISessionController;
 
 /**
  * Represents all available sessions, which can be choosed by the user

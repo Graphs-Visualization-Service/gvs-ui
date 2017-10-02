@@ -1,11 +1,5 @@
 package gvs.ui.application.view;
 
-import gvs.common.Persistor;
-import gvs.interfaces.ISessionController;
-import gvs.ui.application.controller.ApplicationController;
-import gvs.ui.application.model.ApplicationModel;
-import gvs.ui.tree.view.ClusterSplitterGVS;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -21,6 +15,7 @@ import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
+
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -40,6 +35,12 @@ import javax.swing.filechooser.FileFilter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import gvs.common.Persistor;
+import gvs.interfaces.ISessionController;
+import gvs.ui.application.controller.ApplicationController;
+import gvs.ui.application.model.ApplicationModel;
+import gvs.ui.tree.view.ClusterSplitterGVS;
 
 /**
  * The application view builds the application frame and most of its components.

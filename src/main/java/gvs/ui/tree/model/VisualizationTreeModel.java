@@ -1,8 +1,8 @@
 package gvs.ui.tree.model;
 
-import gvs.ui.tree.layout.TreeLayoutController;
-
 import java.util.Observable;
+
+import gvs.ui.tree.layout.TreeLayoutController;
 
 /**
  * Model which gives updates to the visualization panel

@@ -1,10 +1,10 @@
 package gvs.ui.tree.model;
 
-import gvs.interfaces.IBinaryNode;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Stroke;
+
+import gvs.interfaces.IBinaryNode;
 
 /**
  * Model of a binary node

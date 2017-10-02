@@ -1,9 +1,9 @@
 package gvs.interfaces;
 
-import gvs.ui.graph.model.GraphModel;
-
 import java.util.AbstractList;
 import java.util.Observable;
+
+import gvs.ui.graph.model.GraphModel;
 
 public interface IGraphSessionController extends ISessionController {
 

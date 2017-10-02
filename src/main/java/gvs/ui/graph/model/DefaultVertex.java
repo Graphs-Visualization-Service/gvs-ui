@@ -1,9 +1,9 @@
 package gvs.ui.graph.model;
 
-import gvs.interfaces.IDefaultVertex;
-
 import java.awt.Color;
 import java.awt.Stroke;
+
+import gvs.interfaces.IDefaultVertex;
 
 /**
  * Model of a default vertex

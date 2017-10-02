@@ -6,6 +6,28 @@
  */
 package gvs.common;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Image;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Vector;
+
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IGraphSessionController;
@@ -22,28 +44,6 @@ import gvs.ui.tree.controller.TreeSessionController;
 import gvs.ui.tree.model.BinaryNode;
 import gvs.ui.tree.model.DefaultNode;
 import gvs.ui.tree.model.TreeModel;
-
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Image;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Vector;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
 
 /**
  * This class loads and saves data. The color, line ... objects will be

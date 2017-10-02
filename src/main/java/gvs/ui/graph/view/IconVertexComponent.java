@@ -1,8 +1,5 @@
 package gvs.ui.graph.view;
 
-import gvs.interfaces.IIconVertex;
-import gvs.interfaces.IIconVertexComponent;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,6 +12,9 @@ import java.awt.Stroke;
 import java.awt.image.ImageObserver;
 
 import javax.swing.JComponent;
+
+import gvs.interfaces.IIconVertex;
+import gvs.interfaces.IIconVertexComponent;
 
 /**
  * Component for displaying vertices with an icon as foreground

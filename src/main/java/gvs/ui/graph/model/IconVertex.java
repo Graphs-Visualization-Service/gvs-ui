@@ -1,10 +1,10 @@
 package gvs.ui.graph.model;
 
-import gvs.interfaces.IIconVertex;
-
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Stroke;
+
+import gvs.interfaces.IIconVertex;
 
 /**
  * Represents a vertex with an icon as foreground

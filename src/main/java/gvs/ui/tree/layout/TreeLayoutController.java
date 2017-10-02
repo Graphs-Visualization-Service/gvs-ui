@@ -1,14 +1,14 @@
 package gvs.ui.tree.layout;
 
-import gvs.interfaces.IBinaryNode;
-import gvs.ui.tree.model.BinaryNode;
-import gvs.ui.tree.model.TreeModel;
-
 import java.util.Iterator;
 import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import gvs.interfaces.IBinaryNode;
+import gvs.ui.tree.model.BinaryNode;
+import gvs.ui.tree.model.TreeModel;
 
 /**
  * Sets positions of a received tree construct

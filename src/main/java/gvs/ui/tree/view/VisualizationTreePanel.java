@@ -1,5 +1,18 @@
 package gvs.ui.tree.view;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.util.Iterator;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Vector;
+
+import javax.swing.JPanel;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gvs.common.Configuration;
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.INode;
@@ -7,20 +20,6 @@ import gvs.interfaces.IVisualizationTreePanel;
 import gvs.ui.tree.layout.TreeLayoutController;
 import gvs.ui.tree.model.TreeModel;
 import gvs.ui.tree.model.VisualizationTreeModel;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.util.Iterator;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Scanner;
-import java.util.Vector;
-import javax.swing.JPanel;
-import javax.swing.RepaintManager;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Is responsible for the visualization of a model and its components

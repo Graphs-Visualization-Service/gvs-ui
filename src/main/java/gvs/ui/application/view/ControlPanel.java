@@ -1,9 +1,5 @@
 package gvs.ui.application.view;
 
-import gvs.interfaces.ISessionController;
-import gvs.interfaces.ITreeSessionController;
-import gvs.interfaces.IVisualizationPanel;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -17,6 +13,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.ImageObserver;
+
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,6 +26,10 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import gvs.interfaces.ISessionController;
+import gvs.interfaces.ITreeSessionController;
+import gvs.interfaces.IVisualizationPanel;
 
 /**
  * Gives a user several interaction possibilities with current session

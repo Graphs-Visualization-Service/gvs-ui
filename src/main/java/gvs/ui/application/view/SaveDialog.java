@@ -1,8 +1,5 @@
 package gvs.ui.application.view;
 
-import gvs.common.Persistor;
-import gvs.interfaces.ISessionController;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -18,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Vector;
+
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -34,6 +32,9 @@ import javax.swing.border.TitledBorder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import gvs.common.Persistor;
+import gvs.interfaces.ISessionController;
 
 /**
  * Shows save dialog with the available options

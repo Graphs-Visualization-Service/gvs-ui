@@ -1,11 +1,11 @@
 package gvs.ui.graph.layout.helpers;
 
-import gvs.ui.graph.layout.rules.RepulsiveForce;
-import gvs.ui.graph.layout.rules.Traction;
-
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Vector;
+
+import gvs.ui.graph.layout.rules.RepulsiveForce;
+import gvs.ui.graph.layout.rules.Traction;
 
 /**
  * Layout area where the elements are set to their positions

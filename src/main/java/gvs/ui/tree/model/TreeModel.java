@@ -1,9 +1,9 @@
 package gvs.ui.tree.model;
 
-import gvs.interfaces.INode;
-
 import java.awt.Color;
 import java.util.Vector;
+
+import gvs.interfaces.INode;
 
 /**
  * Model of a tree which holds its nodes and other parameters

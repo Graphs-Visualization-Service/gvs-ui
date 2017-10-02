@@ -1,12 +1,12 @@
 package gvs.ui.tree.view;
 
-import gvs.interfaces.IBinaryNode;
-import gvs.ui.tree.model.BinaryNode;
-
 import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import gvs.interfaces.IBinaryNode;
+import gvs.ui.tree.model.BinaryNode;
 
 public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
 

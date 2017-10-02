@@ -1,11 +1,11 @@
 package gvs.ui.tree.model;
 
-import gvs.interfaces.IDefaultNode;
-import gvs.interfaces.INode;
-
 import java.awt.Color;
 import java.awt.Stroke;
 import java.util.Vector;
+
+import gvs.interfaces.IDefaultNode;
+import gvs.interfaces.INode;
 
 /**
  * Model of a default node

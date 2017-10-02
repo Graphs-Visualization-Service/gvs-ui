@@ -1,8 +1,5 @@
 package gvs.ui.graph.view;
 
-import gvs.interfaces.IDefaultVertex;
-import gvs.interfaces.IDefaultVertexComponent;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,8 +9,12 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.geom.*;
+import java.awt.geom.Ellipse2D;
+
 import javax.swing.JComponent;
+
+import gvs.interfaces.IDefaultVertex;
+import gvs.interfaces.IDefaultVertexComponent;
 
 /**
  * Default component for a vertex

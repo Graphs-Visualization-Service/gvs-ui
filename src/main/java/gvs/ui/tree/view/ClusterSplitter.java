@@ -1,16 +1,7 @@
 package gvs.ui.tree.view;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-
-import javax.swing.JPanel;
-
-import gvs.interfaces.IBinaryNode;
 
 /**
  * A Line with nodes which might be clustered. An abstract example of a line

@@ -14,33 +14,33 @@ import javax.swing.border.EmptyBorder;
  *
  */
 class ComboRenderer extends JLabel implements ListCellRenderer {
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public ComboRenderer() {
-		setOpaque(true);
-		setBorder(new EmptyBorder(1, 1, 1, 1));
-	}
+  public ComboRenderer() {
+    setOpaque(true);
+    setBorder(new EmptyBorder(1, 1, 1, 1));
+  }
 
-	/**
-	 * Returns behaviour of selected combo items
-	 */
-	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
-			boolean cellHasFocus) {
+  /**
+   * Returns behaviour of selected combo items
+   */
+  public Component getListCellRendererComponent(JList list, Object value,
+      int index, boolean isSelected, boolean cellHasFocus) {
 
-		if (isSelected) {
-			setForeground(Color.BLUE);
-		} else {
+    if (isSelected) {
+      setForeground(Color.BLUE);
+    } else {
 
-			setBackground(list.getBackground());
-			setForeground(list.getForeground());
-		}
+      setBackground(list.getBackground());
+      setForeground(list.getForeground());
+    }
 
-		if (value != null) {
-			if (!((ComboItem) value).isShown) {
-				setBackground(list.getBackground());
-			}
-			setText(((ComboItem) value).getSessionName());
-		}
-		return this;
-	}
+    if (value != null) {
+      if (!((ComboItem) value).isShown) {
+        setBackground(list.getBackground());
+      }
+      setText(((ComboItem) value).getSessionName());
+    }
+    return this;
+  }
 }

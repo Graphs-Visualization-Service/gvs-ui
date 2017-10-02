@@ -12,33 +12,33 @@ import java.util.Observable;
  */
 public class ApplicationModel extends Observable {
 
-	private ISessionController sessionController = null;
+  private ISessionController sessionController = null;
 
-	/**
-	 * Builds an instance of the application model
-	 *
-	 */
-	public ApplicationModel() {
+  /**
+   * Builds an instance of the application model
+   *
+   */
+  public ApplicationModel() {
 
-	}
+  }
 
-	/**
-	 * Sets currently requested session
-	 * 
-	 * @param sc
-	 */
-	public void setSession(ISessionController sc) {
-		this.sessionController = sc;
-		setChanged();
-		notifyObservers();
-	}
+  /**
+   * Sets currently requested session
+   * 
+   * @param sc
+   */
+  public void setSession(ISessionController sc) {
+    this.sessionController = sc;
+    setChanged();
+    notifyObservers();
+  }
 
-	/**
-	 * Returns current session, which is held by the model
-	 * 
-	 * @return
-	 */
-	public ISessionController getSession() {
-		return sessionController;
-	}
+  /**
+   * Returns current session, which is held by the model
+   * 
+   * @return
+   */
+  public ISessionController getSession() {
+    return sessionController;
+  }
 }

@@ -10,38 +10,38 @@ package gvs.ui.application.controller;
  */
 public class Monitor {
 
-	private boolean locked = false;
-	public static Monitor myMonitor = null;
+  private boolean locked = false;
+  public static Monitor myMonitor = null;
 
-	private Monitor() {
-	}
+  private Monitor() {
+  }
 
-	/**
-	 * Returns an instance of the looking monitor
-	 */
-	public synchronized static Monitor getInstance() {
-		if (myMonitor == null) {
-			myMonitor = new Monitor();
-		}
-		return myMonitor;
-	}
+  /**
+   * Returns an instance of the looking monitor
+   */
+  public synchronized static Monitor getInstance() {
+    if (myMonitor == null) {
+      myMonitor = new Monitor();
+    }
+    return myMonitor;
+  }
 
-	/**
-	 * Locks monitor, so other threads have to wait until former thread releases
-	 * lock
-	 */
-	public synchronized void lock() throws InterruptedException {
-		while (locked)
-			wait();
-		locked = true;
-	}
+  /**
+   * Locks monitor, so other threads have to wait until former thread releases
+   * lock
+   */
+  public synchronized void lock() throws InterruptedException {
+    while (locked)
+      wait();
+    locked = true;
+  }
 
-	/**
-	 * Releases lock, so other threads can request lock
-	 *
-	 */
-	public synchronized void unlock() {
-		locked = false;
-		notifyAll();
-	}
+  /**
+   * Releases lock, so other threads can request lock
+   *
+   */
+  public synchronized void unlock() {
+    locked = false;
+    notifyAll();
+  }
 }

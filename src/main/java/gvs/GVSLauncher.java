@@ -11,17 +11,17 @@ import gvs.ui.application.view.ApplicationView;
  */
 public class GVSLauncher {
 
-	public static void main(String[] args) {
-		
-		ApplicationView av = new ApplicationView();
+  public static void main(String[] args) {
 
-		av.setVisible(true);
-		try {
-			SocketServer server = new SocketServer();
-			server.start();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		 
-	}
+    ApplicationView av = new ApplicationView();
+
+    av.setVisible(true);
+    try {
+      SocketServer server = new SocketServer();
+      server.start();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+  }
 }

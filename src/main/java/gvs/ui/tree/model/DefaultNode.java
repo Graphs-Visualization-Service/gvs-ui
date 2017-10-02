@@ -9,139 +9,143 @@ import java.util.Vector;
 
 /**
  * Model of a default node
+ * 
  * @author aegli
  *
  */
 public class DefaultNode implements IDefaultNode {
 
-	private String nodeLabel=null;
-	private Color lineColor=null;
-	private Stroke lineStroke=null;
-	private Color fillColor=null;
-	private Vector<INode> childs=null;
-	private long nodeId=0;
-	private double xPosition=0;
-	private double yPosition=0;
-	private long childIds[]=null;
-	
-	/**
-	 * Builds an instance of a DefaultNode
-	 * @param pNodeId
-	 * @param pNodeLabel
-	 * @param pLineColor
-	 * @param pLineStroke
-	 * @param pFillColor
-	 * @param pChildIds
-	 */
-	public DefaultNode(long pNodeId,String pNodeLabel, Color pLineColor,Stroke pLineStroke, Color pFillColor, 
-	  long pChildIds[]) {
-		this.nodeId=pNodeId;
-		this.nodeLabel=pNodeLabel;
-		this.lineColor=pLineColor;
-		this.lineStroke=pLineStroke;
-		this.fillColor=pFillColor;
-		this.childIds=pChildIds;
-		this.childs=new Vector<INode>();
-	}
+  private String nodeLabel = null;
+  private Color lineColor = null;
+  private Stroke lineStroke = null;
+  private Color fillColor = null;
+  private Vector<INode> childs = null;
+  private long nodeId = 0;
+  private double xPosition = 0;
+  private double yPosition = 0;
+  private long childIds[] = null;
 
-	/**
-	 * Returns children
-	 */
-	//TODO: refactor name -> getChildren
-	public Vector getChilds() {
-		return childs;
-	}
+  /**
+   * Builds an instance of a DefaultNode
+   * 
+   * @param pNodeId
+   * @param pNodeLabel
+   * @param pLineColor
+   * @param pLineStroke
+   * @param pFillColor
+   * @param pChildIds
+   */
+  public DefaultNode(long pNodeId, String pNodeLabel, Color pLineColor,
+      Stroke pLineStroke, Color pFillColor, long pChildIds[]) {
+    this.nodeId = pNodeId;
+    this.nodeLabel = pNodeLabel;
+    this.lineColor = pLineColor;
+    this.lineStroke = pLineStroke;
+    this.fillColor = pFillColor;
+    this.childIds = pChildIds;
+    this.childs = new Vector<INode>();
+  }
 
-	/**
-	 * Returns fillColor
-	 */
-	public Color getFillColor() {
-		return fillColor;
-	}
+  /**
+   * Returns children
+   */
+  // TODO: refactor name -> getChildren
+  public Vector getChilds() {
+    return childs;
+  }
 
-	/**
-	 * Returns lineColor
-	 */
-	public Color getLineColor() {
-		return lineColor;
-	}
+  /**
+   * Returns fillColor
+   */
+  public Color getFillColor() {
+    return fillColor;
+  }
 
-	/**
-	 * Returns lineStroke
-	 */
-	public Stroke getLineStroke() {
-		return lineStroke;
-	}
+  /**
+   * Returns lineColor
+   */
+  public Color getLineColor() {
+    return lineColor;
+  }
 
-	/**
-	 * Returns nodeLabel
-	 */
-	public String getNodeLabel() {
-		return nodeLabel;
-	}
+  /**
+   * Returns lineStroke
+   */
+  public Stroke getLineStroke() {
+    return lineStroke;
+  }
 
-	/**
-	 * Sets x position of node
-	 */
-	public void setXPosition(double position) {
-		xPosition = position;
-	}
-	
-	/**
-	 * Returns x position of node
-	 */
-	public double getXPosition() {
-		return xPosition;
-	}
+  /**
+   * Returns nodeLabel
+   */
+  public String getNodeLabel() {
+    return nodeLabel;
+  }
 
-	/**
-	 * Returns y position of node
-	 */
-	public double getYPosition() {
-		return yPosition;
-	}
+  /**
+   * Sets x position of node
+   */
+  public void setXPosition(double position) {
+    xPosition = position;
+  }
 
-	/**
-	 * Sets y position of node
-	 */
-	public void setYPosition(double position) {
-		yPosition = position;
-	}
-	
-	/**
-	 * Adds new child to node
-	 * @param pChild
-	 */
-	public void addChild(INode pChild){
-		this.childs.add(pChild);
-	}
+  /**
+   * Returns x position of node
+   */
+  public double getXPosition() {
+    return xPosition;
+  }
 
-	/**
-	 * Returns all childId's
-	 * @return
-	 */
-	public long[] getChildIds() {
-		return childIds;
-	}
+  /**
+   * Returns y position of node
+   */
+  public double getYPosition() {
+    return yPosition;
+  }
 
-	/**
-	 * Returns node id
-	 */
-	public long getNodeId() {
-		return nodeId;
-	}
+  /**
+   * Sets y position of node
+   */
+  public void setYPosition(double position) {
+    yPosition = position;
+  }
 
-	/**
-	 * Sets if node has parent
-	 */
-	public void hasParent(boolean hasParent) {
-		//TODO: check: why is this empty?
-	}
+  /**
+   * Adds new child to node
+   * 
+   * @param pChild
+   */
+  public void addChild(INode pChild) {
+    this.childs.add(pChild);
+  }
 
-	/**
-	 * Returns whether node has parent
-	 */
-	public boolean hasParent() {
-		return false;
-	}
+  /**
+   * Returns all childId's
+   * 
+   * @return
+   */
+  public long[] getChildIds() {
+    return childIds;
+  }
+
+  /**
+   * Returns node id
+   */
+  public long getNodeId() {
+    return nodeId;
+  }
+
+  /**
+   * Sets if node has parent
+   */
+  public void hasParent(boolean hasParent) {
+    // TODO: check: why is this empty?
+  }
+
+  /**
+   * Returns whether node has parent
+   */
+  public boolean hasParent() {
+    return false;
+  }
 }

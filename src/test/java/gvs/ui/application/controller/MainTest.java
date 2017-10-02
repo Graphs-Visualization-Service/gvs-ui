@@ -4,8 +4,8 @@ import org.junit.Test;
 
 public class MainTest {
 
-	@Test
-	public void test() {
-	}
+  @Test
+  public void test() {
+  }
 
 }

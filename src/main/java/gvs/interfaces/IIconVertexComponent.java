@@ -1,6 +1,4 @@
 package gvs.interfaces;
 
-
-
-public interface IIconVertexComponent extends IVertexComponent{
+public interface IIconVertexComponent extends IVertexComponent {
 }

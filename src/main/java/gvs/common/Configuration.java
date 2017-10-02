@@ -35,50 +35,50 @@ public class Configuration {
 
   // Config file
   private File config = null;
-  private String CONFIGFILEPROPERTIE = "GVSConfig";
+  private static final String CONFIGFILEPROPERTIE = "GVSConfig";
 
   // Document
-  private final String TYP = "Typ";
-  private final String SERVER = "Server";
-  private final String MAXLABELLENGTH = "MaxLabelLength";
-  private final String LOGGING = "Logging";
-  private final String LAYOUTDELAY = "LayoutDelay";
+  private static final String TYP = "Typ";
+  private static final String SERVER = "Server";
+  private static final String MAXLABELLENGTH = "MaxLabelLength";
+  private static final String LOGGING = "Logging";
+  private static final String LAYOUTDELAY = "LayoutDelay";
 
   // Logging
-  private final String WRITECONSOLE = "WriteConsole";
-  private final String WRITEFILE = "WriteFile";
-  private final String REPLACEFILE = "replaceFile";
-  private final String LOGGERS = "Loggers";
+  private static final String WRITECONSOLE = "WriteConsole";
+  private static final String WRITEFILE = "WriteFile";
+  private static final String REPLACEFILE = "replaceFile";
+  private static final String LOGGERS = "Loggers";
 
   // Server
-  private final String STARTPORT = "StartPort";
-  private final String COMMUFILE = "CommunicationFile";
-  private final String SERVERTYP = "ServerTyp";
-  private final String CORBATIMEOUT = "CorbaTimeout";
+  private static final String STARTPORT = "StartPort";
+  private static final String COMMUFILE = "CommunicationFile";
+  private static final String SERVERTYP = "ServerTyp";
+  private static final String CORBATIMEOUT = "CorbaTimeout";
   public static final String SOCKET = "Socket";
   public static final String CORBA = "Corba";
 
   // Colors
-  private final String COLORS = "Colors";
-  private final String R = "r";
-  private final String G = "g";
-  private final String B = "b";
+  private static final String COLORS = "Colors";
+  private static final String R = "r";
+  private static final String G = "g";
+  private static final String B = "b";
 
   // Linestyle
-  private final String LINESTYLE = "Linestyle";
-  private final String DRAW = "draw";
-  private final String SPACE = "space";
+  private static final String LINESTYLE = "Linestyle";
+  private static final String DRAW = "draw";
+  private static final String SPACE = "space";
 
   // Linewidth
-  private final String LINETHICKNESS = "Linethickness";
-  private final String WIDTH = "width";
+  private static final String LINETHICKNESS = "Linethickness";
+  private static final String WIDTH = "width";
 
   // Icons
-  private final String ICONS = "Icons";
-  private final String PATH = "path";
+  private static final String ICONS = "Icons";
+  private static final String PATH = "path";
 
   // Backgrounds
-  private final String BACKGROUND = "Backgroundimages";
+  private static final String BACKGROUND = "Backgroundimages";
 
   // Datas for mapping enumnames to objects
   private HashMap<String, Color> colors = null;
@@ -98,7 +98,8 @@ public class Configuration {
   private String commFilePath = "";
   private String startPort = "";
   private String serverTyp = "";
-  private int corbaTimeout = 9000;
+  private static final int DEFAULT_CORBA_TIMEOUT = 9000;
+  private int corbaTimeout = DEFAULT_CORBA_TIMEOUT;
 
   // Loggers
   private boolean writeToConsole = false;
@@ -107,8 +108,11 @@ public class Configuration {
   private HashMap<String, String> loggers = null;
 
   // The absolut maxlabellength
-  private int maxLabelLength = 8;
-  private int layoutDelay = 1500;
+  private static final int DEFAULT_MAX_LABEL_LENGTH = 8;
+  private static final int DEFAULT_LAYOUT_DELAY = 1500;
+
+  private int maxLabelLength = DEFAULT_MAX_LABEL_LENGTH;
+  private int layoutDelay = DEFAULT_LAYOUT_DELAY;
 
   // Defautlvalues
   private Color defaultColor = Color.ORANGE;
@@ -124,7 +128,7 @@ public class Configuration {
    *
    */
   private Configuration() {
-    // TODO: check usage of gvs.common.logger
+    // TODO check usage of gvs.common.logger
     // commonLogger=gvs.common.Logger.getInstance().getCommenLogger();
     commonLogger = LoggerFactory.getLogger(Configuration.class);
     colors = new HashMap<String, Color>();
@@ -178,7 +182,7 @@ public class Configuration {
       loadLoggers(eLogging);
 
     } catch (DocumentException e) {
-      // TODO: check alternativ for 'fatal' level ->
+      // TODO check alternativ for 'fatal' level ->
       // https://www.slf4j.org/faq.html#fatal
       // commonLogger.fatal("No configuration found. System exit");
       Marker fatal = MarkerFactory.getMarker("FATAL");
@@ -187,7 +191,12 @@ public class Configuration {
     }
   }
 
-  public synchronized static Configuration getInstance() {
+  /**
+   * Get Configuration singleton.
+   * 
+   * @return singleton
+   */
+  public static synchronized Configuration getInstance() {
     if (typs == null) {
       typs = new Configuration();
     }
@@ -195,7 +204,7 @@ public class Configuration {
   }
 
   /**
-   * Returns the colorobject
+   * Returns the colorobject.
    * 
    * @param pName
    *          colorname
@@ -218,11 +227,13 @@ public class Configuration {
   }
 
   /**
-   * Returns the Strokeobject
+   * Returns the Strokeobject.
    * 
    * @param pLinestyle
+   *          lineStyle
    * @param pLineThickness
-   * @return the strokeobject
+   *          line thickness
+   * @return the strokeobject stoke object
    */
   public synchronized BasicStroke getLineObject(String pLinestyle,
       String pLineThickness) {
@@ -238,7 +249,7 @@ public class Configuration {
   }
 
   /**
-   * Returns the backgorund
+   * Returns the backgorund.
    * 
    * @param pBackground
    *          name of the background
@@ -254,9 +265,10 @@ public class Configuration {
   }
 
   /**
-   * Returns the name of the icon
+   * Returns the name of the icon.
    * 
    * @param pIcon
+   *          icon
    * @return name
    */
   public synchronized Image getIcon(String pIcon) {
@@ -269,9 +281,10 @@ public class Configuration {
   }
 
   /**
-   * Returns the name of the icon
+   * Returns the name of the icon.
    * 
    * @param pIcon
+   *          icon
    * @return name
    */
   public synchronized String getIconName(Image pIcon) {
@@ -280,9 +293,10 @@ public class Configuration {
   }
 
   /**
-   * Returns teh name of the background
+   * Returns teh name of the background.
    * 
    * @param pBackground
+   *          background
    * @return name
    */
   public synchronized String getBackgroundName(Image pBackground) {
@@ -291,9 +305,10 @@ public class Configuration {
   }
 
   /**
-   * Returns the name of the Color
+   * Returns the name of the Color.
    * 
    * @param pColor
+   *          color
    * @return name
    */
   public synchronized String getColorName(Color pColor) {
@@ -302,9 +317,10 @@ public class Configuration {
   }
 
   /**
-   * Returns the name of the linestyle where dash==pDash
+   * Returns the name of the linestyle where dash==pDash.
    * 
    * @param pDash
+   *          dash
    * @return name
    */
   public synchronized String getLineStyleName(float[] pDash) {
@@ -313,7 +329,7 @@ public class Configuration {
     Iterator todo = tmp.iterator();
     while (todo.hasNext()) {
       String key = (String) todo.next();
-      float tempfloat[] = linestyle.get(key);
+      float[] tempfloat = linestyle.get(key);
       if (tempfloat[0] == pDash[0] || tempfloat[1] == pDash[1]) {
         name = key;
         break;
@@ -323,9 +339,10 @@ public class Configuration {
   }
 
   /**
-   * Returns the name of the Linethickness with thickness==width
+   * Returns the name of the Linethickness with thickness==width.
    * 
    * @param pWidth
+   *          width
    * @return name
    */
   public synchronized String getLineThicknessName(int pWidth) {
@@ -352,7 +369,7 @@ public class Configuration {
   }
 
   /**
-   * Returns the servertyp
+   * Returns the servertyp.
    * 
    * @return Corba/Socket
    */
@@ -361,7 +378,7 @@ public class Configuration {
   }
 
   /**
-   * Returns the absolut max label length of vertex and node
+   * Returns the absolut max label length of vertex and node.
    * 
    * @return maylabellength
    */
@@ -370,7 +387,7 @@ public class Configuration {
   }
 
   /**
-   * Returns how long a registerd client could be inactiv
+   * Returns how long a registerd client could be inactiv.
    * 
    * @return timeout
    */
@@ -388,7 +405,7 @@ public class Configuration {
   }
 
   /**
-   * Returns the path of the tracefile
+   * Returns the path of the tracefile.
    * 
    * @return traceFilePath
    */
@@ -397,7 +414,7 @@ public class Configuration {
   }
 
   /**
-   * Return if the trace have been written to the console
+   * Return if the trace have been written to the console.
    * 
    * @return writeToconsole
    */
@@ -406,9 +423,10 @@ public class Configuration {
   }
 
   /**
-   * Returns the Logglevel
+   * Returns the Logglevel.
    * 
    * @param pLoggername
+   *          loggerName
    * @return loglevel
    */
   public synchronized String getLogLevel(String pLoggername) {
@@ -422,12 +440,13 @@ public class Configuration {
   }
 
   /**
-   * Save the new loggerconfiguration to the configfile
+   * Save the new loggerconfiguration to the configfile.
    * 
    * @param pLoggers
+   *          loggers
    */
   public synchronized void saveLoggerConfiguration(Vector pLoggers) {
-    // TODO: check if remove of this method is permitted. slf4j does not
+    // TODO check if remove of this method is permitted. slf4j does not
     // support changing log level at runtime
     // https://stackoverflow.com/questions/13442967/how-to-dynamically-change-log-level-in-slf4j-or-log4j
   }
@@ -441,6 +460,12 @@ public class Configuration {
   }
 
   // ****************************LOADERS**********************************
+  /**
+   * Load Colors.
+   * 
+   * @param pTyp
+   *          typ
+   */
   private void loadColors(Element pTyp) {
     Element eColors = pTyp.element(COLORS);
     Iterator colorIt = eColors.elementIterator();
@@ -469,6 +494,12 @@ public class Configuration {
     }
   }
 
+  /**
+   * Load line styles.
+   * 
+   * @param pTyp
+   *          type
+   */
   private void loadLineStyles(Element pTyp) {
     Element eLineStyles = pTyp.element(LINESTYLE);
     Iterator styleIt = eLineStyles.elementIterator();
@@ -492,6 +523,12 @@ public class Configuration {
     }
   }
 
+  /**
+   * Load line thickness.
+   * 
+   * @param pTyp
+   *          type
+   */
   private void loadLineThickness(Element pTyp) {
     Element eLineThickness = pTyp.element(LINETHICKNESS);
     Iterator thickIt = eLineThickness.elementIterator();
@@ -512,6 +549,12 @@ public class Configuration {
     }
   }
 
+  /**
+   * Load Icons.
+   * 
+   * @param pTyp
+   *          type
+   */
   private void loadIcons(Element pTyp) {
     Element eIcons = pTyp.element(ICONS);
     Iterator iconIt = eIcons.elementIterator();
@@ -535,6 +578,12 @@ public class Configuration {
     }
   }
 
+  /**
+   * Load Backgrounds.
+   * 
+   * @param pTyp
+   *          type
+   */
   private void loadBackgrounds(Element pTyp) {
     Element eBackground = pTyp.element(BACKGROUND);
     Iterator backgroundIt = eBackground.elementIterator();
@@ -570,6 +619,12 @@ public class Configuration {
     }
   }
 
+  /**
+   * Load Start Port.
+   * 
+   * @param pServer
+   *          server
+   */
   private void loadStartPort(Element pServer) {
     Element eStartPort = pServer.element(STARTPORT);
     if (eStartPort != null) {
@@ -585,6 +640,12 @@ public class Configuration {
     }
   }
 
+  /**
+   * Load Server Type.
+   * 
+   * @param pServer
+   *          server
+   */
   private void loadServerTyp(Element pServer) {
     Element eServerTyp = pServer.element(SERVERTYP);
     if (eServerTyp != null) {
@@ -600,6 +661,12 @@ public class Configuration {
     }
   }
 
+  /**
+   * Load Max Label Length.
+   * 
+   * @param pRoot
+   *          root
+   */
   private void loadMaxLabelLength(Element pRoot) {
     Element eMaxLabelLength = pRoot.element(MAXLABELLENGTH);
     if (eMaxLabelLength != null) {
@@ -613,6 +680,12 @@ public class Configuration {
     }
   }
 
+  /**
+   * Load Console Output.
+   * 
+   * @param pLogging
+   *          logging
+   */
   private void loadConsoleOutput(Element pLogging) {
     Element eWriteConsole = pLogging.element(WRITECONSOLE);
     if (eWriteConsole != null) {
@@ -629,6 +702,12 @@ public class Configuration {
     }
   }
 
+  /**
+   * Load File Output.
+   * 
+   * @param pLogging
+   *          logging
+   */
   private void loadFileOutput(Element pLogging) {
     Element eWriteFile = pLogging.element(WRITEFILE);
     Element ePath = eWriteFile.element(PATH);
@@ -648,6 +727,12 @@ public class Configuration {
     }
   }
 
+  /**
+   * Load loggers.
+   * 
+   * @param pLogging
+   *          logging element
+   */
   private void loadLoggers(Element pLogging) {
     Element eLoggers = pLogging.element(LOGGERS);
     Iterator loggerIt = eLoggers.elementIterator();
@@ -667,6 +752,12 @@ public class Configuration {
     }
   }
 
+  /**
+   * Load Layout Delay.
+   * 
+   * @param pRoot
+   *          root element
+   */
   private void loadLayoutDelay(Element pRoot) {
     Element eLayoutDelay = pRoot.element(LAYOUTDELAY);
     if (eLayoutDelay != null) {

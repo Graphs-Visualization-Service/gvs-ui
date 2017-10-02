@@ -48,51 +48,59 @@ public class ModelBuilder {
   private static ModelBuilder modelBuilder = null;
 
   // Generaly
-  private final String ATTRIBUTEID = "Id";
-  private final String LABEL = "Label";
-  private final String FILLCOLOR = "Fillcolor";
-  private final String ICON = "Icon";
-  private final String LINECOLOR = "Linecolor";
-  private final String LINESTYLE = "Linestyle";
-  private final String LINETHICKNESS = "Linethickness";
+  private static final String ATTRIBUTEID = "Id";
+  private static final String LABEL = "Label";
+  private static final String FILLCOLOR = "Fillcolor";
+  private static final String ICON = "Icon";
+  private static final String LINECOLOR = "Linecolor";
+  private static final String LINESTYLE = "Linestyle";
+  private static final String LINETHICKNESS = "Linethickness";
 
   // Graph
-  private final String GRAPH = "Graph";
-  private final String BACKGROUND = "Background";
-  private final String MAXLABELLENGTH = "MaxLabelLength";
-  private final String VERTIZES = "Vertizes";
-  private final String RELATIVVERTEX = "RelativVertex";
-  private final String DEFAULTVERTEX = "DefaultVertex";
-  private final String XPOS = "XPos";
-  private final String YPOS = "YPos";
-  private final String EDGES = "Edges";
-  private final String ISDIRECTED = "IsDirected";
-  private final String FROMVERTEX = "FromVertex";
-  private final String TOVERTEX = "ToVertex";
-  private final String ARROWPOS = "DrawArrowOnPosition";
+  private static final String GRAPH = "Graph";
+  private static final String BACKGROUND = "Background";
+  private static final String MAXLABELLENGTH = "MaxLabelLength";
+  private static final String VERTIZES = "Vertizes";
+  private static final String RELATIVVERTEX = "RelativVertex";
+  private static final String DEFAULTVERTEX = "DefaultVertex";
+  private static final String XPOS = "XPos";
+  private static final String YPOS = "YPos";
+  private static final String EDGES = "Edges";
+  private static final String ISDIRECTED = "IsDirected";
+  private static final String FROMVERTEX = "FromVertex";
+  private static final String TOVERTEX = "ToVertex";
+  private static final String ARROWPOS = "DrawArrowOnPosition";
 
   // Tree
-  private final String TREE = "Tree";
-  private final String NODES = "Nodes";
-  private final String DEFAULTNODE = "DefaultNode";
-  private final String BINARYNODE = "BinaryNode";
-  private final String TREEROOTID = "TreeRootId";
-  private final String CHILDID = "Childid";
-  private final String RIGTHCHILD = "Rigthchild";
-  private final String LEFTCHILD = "Leftchild";
+  private static final String TREE = "Tree";
+  private static final String NODES = "Nodes";
+  private static final String DEFAULTNODE = "DefaultNode";
+  private static final String BINARYNODE = "BinaryNode";
+  private static final String TREEROOTID = "TreeRootId";
+  private static final String CHILDID = "Childid";
+  private static final String RIGTHCHILD = "Rigthchild";
+  private static final String LEFTCHILD = "Leftchild";
 
   // Logger
   private Logger serverLogger = null;
 
+  /**
+   * ModelBuilder.
+   */
   private ModelBuilder() {
-    // TODO: check replacement of logger
+    // TODO check replacement of logger
     // serverLogger = gvs.common.Logger.getInstance().getServerLogger();
     serverLogger = LoggerFactory.getLogger(ModelBuilder.class);
     appController = ApplicationController.getInstance();
     typs = Configuration.getInstance();
   }
 
-  public synchronized static ModelBuilder getInstance() {
+  /**
+   * Get model builder singleton.
+   * 
+   * @return modelBuilder modelBuilder
+   */
+  public static synchronized ModelBuilder getInstance() {
     if (modelBuilder == null) {
       modelBuilder = new ModelBuilder();
     }
@@ -100,9 +108,10 @@ public class ModelBuilder {
   }
 
   /**
-   * Builds a model from the recieved XML
+   * Builds a model from the recieved XML.
    * 
    * @param document
+   *          Document
    */
   public synchronized void buildModelFromXML(Document document) {
     serverLogger.debug("Model will be built from XML");
@@ -124,6 +133,13 @@ public class ModelBuilder {
 
   // ***************************BUILDERS
   // XML**************************************
+
+  /**
+   * Graph Builder.
+   * 
+   * @param pDocRoot
+   *          documentRoot
+   */
   private void buildGraph(Element pDocRoot) {
     serverLogger.debug("Build graph from XML");
     Element eGraph = pDocRoot.element(GRAPH);
@@ -170,6 +186,12 @@ public class ModelBuilder {
     appController.addModel(gm, graphId, graphLabel);
   }
 
+  /**
+   * TreeBuilder.
+   * 
+   * @param pDocRoot
+   *          documentRoot
+   */
   private void buildTree(Element pDocRoot) {
     serverLogger.debug("Build tree from XML");
     Element eTree = pDocRoot.element(TREE);
@@ -241,6 +263,13 @@ public class ModelBuilder {
     appController.addTreeModel(tm, treeId, treeLabel);
   }
 
+  /**
+   * Default Node Builder.
+   * 
+   * @param pNode
+   *          node
+   * @return Node
+   */
   private INode buildDefaultNode(Element pNode) {
     serverLogger.debug("Build DefaultNode XML");
     long nodeId = Long.parseLong(pNode.attributeValue(ATTRIBUTEID));
@@ -274,6 +303,13 @@ public class ModelBuilder {
         childs);
   }
 
+  /**
+   * Binary Node Builder.
+   * 
+   * @param pNode
+   *          node
+   * @return binaryNode
+   */
   private IBinaryNode buildBinaryNode(Element pNode) {
     serverLogger.debug("Build BinaryNode XML");
     long nodeId = Long.parseLong(pNode.attributeValue(ATTRIBUTEID));
@@ -307,6 +343,13 @@ public class ModelBuilder {
         leftchildId, rigthchildId);
   }
 
+  /**
+   * Default Vertex Builder.
+   * 
+   * @param pVertex
+   *          vertex
+   * @return vertex
+   */
   private IVertex buildDefaultVertex(Element pVertex) {
     serverLogger.debug("Build DefaultVertex XML");
     long vertexId = Long.parseLong(pVertex.attributeValue(ATTRIBUTEID));
@@ -340,6 +383,13 @@ public class ModelBuilder {
     }
   }
 
+  /**
+   * Relative Vertex Builder.
+   * 
+   * @param pVertex
+   *          vertex
+   * @return vertex
+   */
   private IVertex buildRelativVertex(Element pVertex) {
     serverLogger.debug("Build RelativVertex XML");
     long vertexId = Long.parseLong(pVertex.attributeValue(ATTRIBUTEID));
@@ -379,6 +429,15 @@ public class ModelBuilder {
     }
   }
 
+  /**
+   * Directed Edge Builder.
+   * 
+   * @param pEdge
+   *          edge
+   * @param pVertizes
+   *          vertices
+   * @return edge
+   */
   private IEdge buildDirectedEdge(Element pEdge, Vector pVertizes) {
     serverLogger.debug("Build DirectedEdge XML");
     Element eLabel = pEdge.element(LABEL);
@@ -415,6 +474,15 @@ public class ModelBuilder {
 
   }
 
+  /**
+   * Unidirected Edge Builder.
+   * 
+   * @param pEdge
+   *          edge
+   * @param pVertizes
+   *          vertices
+   * @return edge
+   */
   private IEdge buildUndirectedEdge(Element pEdge, Vector pVertizes) {
     serverLogger.debug("Build UndirectedEdge XML");
     int arrowPos = Integer.parseInt(pEdge.attributeValue(ARROWPOS));

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 /**
- * Is responsible for the visualization of a model and its components
+ * Is responsible for the visualization of a model and its components.
  * 
  * @author aegli
  *
@@ -37,8 +37,8 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
 
   private Logger graphContLogger = null;
   private static final long serialVersionUID = 1L;
-  private final int PIXELLENGTH = 12;
-  private final int HUNDREDPERCENT = 100;
+  private static final int PIXELLENGTH = 12;
+  private static final int HUNDREDPERCENT = 100;
 
   private Vector nodeComponents = null;
   private Vector<EdgeComponent> edgeComponents = null;
@@ -63,25 +63,34 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
   private int prevDragPosY = 0;
 
   /**
-   * Build an instance of VisualizationGraphPanel
+   * Build an instance of VisualizationGraphPanel.
    * 
-   * @param visualModel
+   * @param vm
+   *          visualModel
    */
-  public VisualizationGraphPanel(VisualizationGraphModel visualModel) {
+  public VisualizationGraphPanel(VisualizationGraphModel vm) {
     super();
-    // TODO: check replacment of logger
-    // this.graphContLogger=gvs.common.Logger.getInstance().getGraphControllerLogger();
+    // TODO check replacment of logger
+    // this.graphContLogger =
+    // gvs.common.Logger.getInstance().getGraphControllerLogger();
     this.graphContLogger = LoggerFactory
         .getLogger(VisualizationGraphPanel.class);
     graphContLogger.debug("Build new Visualization-/panel and model");
-    this.visualModel = visualModel;
+    this.visualModel = vm;
     this.visualModel.addObserver(this);
     edgeComponents = new Vector<EdgeComponent>();
     nodeComponents = new Vector();
     mediaTracker = new MediaTracker(this);
   }
 
-  // Build for each vertex an appropriate vertex component
+  /**
+   * Build for each vertex an appropriate vertex component.
+   * 
+   * @param pVertizes
+   *          vetices
+   * @param pDimension
+   *          dimension
+   */
   @SuppressWarnings("unchecked")
   private void createVertexGraphComponents(Vector pVertizes,
       Dimension pDimension) {
@@ -108,7 +117,14 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
     }
   }
 
-  // Create for each edge an appropriate edge component
+  /**
+   * Create for each edge an appropriate edge component.
+   * 
+   * @param pEdges
+   *          edges
+   * @param dimension
+   *          dimension
+   */
   private void createEdgeGraphComponents(Vector pEdges, Dimension dimension) {
     graphContLogger.debug("Creating edge components");
     Iterator edgIt = pEdges.iterator();
@@ -120,8 +136,13 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
     }
   }
 
-  // Calculate maximal length of vertex components in order of longest
-  // vertex label
+  /**
+   * Calculate maximal length of vertex components in order of longest vertex
+   * label.
+   * 
+   * @param pVertizes
+   *          vetices
+   */
   private void checkLength(Vector pVertizes) {
     graphContLogger.debug("Calculate maximal vertex width");
     Vector vertizes = pVertizes;
@@ -161,13 +182,17 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
     calculateStringPixel();
   }
 
-  // Calculate pixel length of vertex components
+  /**
+   * Calculate pixel length of vertex components.
+   */
   private void calculateStringPixel() {
     graphContLogger.debug("Calculate vertex width in pixels");
     effectiveLabelPixel = PIXELLENGTH * effectiveLabelLength;
   }
 
-  // Add or removes mouse listener
+  /**
+   * Add or removes mouse listener.
+   */
   private void mouseController() {
     graphContLogger.info("Check if mouse dragging is allowed");
     removeMouseListener(this);
@@ -180,14 +205,18 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
   }
 
   /**
-   * Creates new vertex and edge components in order to notify visual model
+   * Creates new vertex and edge components in order to notify visual model.
    * 
+   * @param o
+   *          Observable
+   * @param arg
+   *          Object
    */
   public void update(Observable o, Object arg) {
     Dimension dimension = new Dimension((this.getWidth() / HUNDREDPERCENT),
         (this.getHeight() / HUNDREDPERCENT));
 
-    if (visualModel.isLayouting() == false) {
+    if (!visualModel.isLayouting()) {
       mouseController();
       check = new LabelConflictCheck();
       graphModel = visualModel.getGraphModel();
@@ -212,7 +241,10 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
   }
 
   /**
-   * Paints visual panel and its components
+   * Paints visual panel and its components.
+   * 
+   * @param g
+   *          Graphic
    */
   public void paint(Graphics g) {
     super.paint(g);
@@ -230,7 +262,7 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
       g.drawImage(icon, 0, 0, d.width, d.height, null);
     }
 
-    if (visualModel.isLayouting() == false) {
+    if (!visualModel.isLayouting()) {
       Iterator ver = nodeComponents.iterator();
       while (ver.hasNext()) {
         IVertexComponent nComponent = (IVertexComponent) ver.next();
@@ -276,7 +308,10 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
   }
 
   /**
-   * Updates positions when components are dragged
+   * Updates positions when components are dragged.
+   * 
+   * @param evt
+   *          MouseEvent
    */
   public void mouseDragged(MouseEvent evt) {
     graphContLogger.debug("Drag vertex");
@@ -292,7 +327,10 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
   }
 
   /**
-   * Loads pressed vertex component in order to change its positions
+   * Loads pressed vertex component in order to change its positions.
+   * 
+   * @param evt
+   *          MouseEvent
    */
   public void mousePressed(MouseEvent evt) {
     graphContLogger.info("Mouse pressed detected, prepare for dragging");
@@ -319,7 +357,10 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
   }
 
   /**
-   * Sets dragged vertex component as not active
+   * Sets dragged vertex component as not active.
+   * 
+   * @param e
+   *          MouseEvent
    */
   public void mouseReleased(MouseEvent e) {
     graphContLogger.debug("Mouse released, fixing new positions");
@@ -341,7 +382,7 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
     repaint();
   }
 
-  // TODO: why are these empty?
+  // TODO why are these empty?
   public void mouseEntered(MouseEvent e) {
   }
 

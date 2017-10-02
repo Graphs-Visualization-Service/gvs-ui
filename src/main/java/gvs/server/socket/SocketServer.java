@@ -51,7 +51,7 @@ public class SocketServer extends Thread {
    * Searches for free port and writes the communication information to a file
    */
   public SocketServer() {
-    // TODO: check logger replacement
+    // TODO check logger replacement
     // serverLogger=gvs.common.Logger.getInstance().getServerLogger();
     serverLogger = LoggerFactory.getLogger(SocketServer.class);
     try {

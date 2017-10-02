@@ -52,7 +52,7 @@ public class ServerConnectionXML extends Thread {
    */
   public ServerConnectionXML(Socket client) {
     this.client = client;
-    // TODO: check Logger relplacement
+    // TODO check Logger relplacement
     // serverLogger = gvs.common.Logger.getInstance().getServerLogger();
     serverLogger = LoggerFactory.getLogger(ServerConnectionXML.class);
     mb = ModelBuilder.getInstance();
@@ -149,7 +149,7 @@ public class ServerConnectionXML extends Thread {
     SAXReader reader = new SAXReader();
     try {
       reader.setValidation(true);
-      // TODO: store urls separately?
+      // TODO store urls separately?
       reader.setFeature("http://apache.org/xml/features/validation/schema",
           true);
       reader.setProperty(

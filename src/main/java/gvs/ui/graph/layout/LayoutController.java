@@ -45,7 +45,7 @@ public class LayoutController extends Observable implements Observer, Tickable {
    *
    */
   public LayoutController() {
-    // TODO: check replacement of Logger Instance
+    // TODO check replacement of Logger Instance
     // this.graphContLogger=gvs.common.Logger.getInstance().getGraphControllerLogger();
     this.graphContLogger = LoggerFactory.getLogger(LayoutController.class);
     vertizes = new Vector();

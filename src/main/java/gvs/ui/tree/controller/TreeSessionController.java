@@ -92,7 +92,7 @@ public class TreeSessionController implements ITreeSessionController {
   }
 
   private void initializeTreeSessionController() {
-    // TODO: check logger replacement
+    // TODO check logger replacement
     // this.treeContLogger =
     // gvs.common.Logger.getInstance().getTreeControllerLogger();
     treeContLogger = LoggerFactory.getLogger(TreeSessionController.class);

@@ -91,7 +91,7 @@ public class Persistor {
   private final String RIGTHCHILD = "Rigthchild";
   private final String LEFTCHILD = "Leftchild";
 
-  // TODO: fix save path
+  // TODO fix save path
   // Datas
   private String path = "DataStorage\\";
   private File output = null;
@@ -102,7 +102,7 @@ public class Persistor {
 
   public Persistor() {
     configuration = Configuration.getInstance();
-    // TODO: check logger replacement
+    // TODO check logger replacement
     // commonLogger = gvs.common.Logger.getInstance().getCommenLogger();
     commonLogger = LoggerFactory.getLogger(Persistor.class);
   }
@@ -184,7 +184,7 @@ public class Persistor {
       SimpleDateFormat dateformat = new SimpleDateFormat("yyyyMMddHHmmssS");
 
       String dateForName = dateformat.format(date);
-      // TODO: fix save path for unix
+      // TODO fix save path for unix
       output = new File(path + sessionName + "_" + dateForName + ".gvs");
 
       OutputFormat format = OutputFormat.createPrettyPrint();
@@ -516,7 +516,7 @@ public class Persistor {
         Iterator nodesModelIt = nodes.iterator();
         while (nodesModelIt.hasNext()) {
           Object tmp = nodesModelIt.next();
-          // TODO: refactor -> empty else
+          // TODO refactor -> empty else
           if (tmp.getClass() == BinaryNode.class) {
             BinaryNode actual = (BinaryNode) tmp;
             Iterator nodesModelIt2 = nodes.iterator();

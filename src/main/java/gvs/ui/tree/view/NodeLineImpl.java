@@ -33,7 +33,7 @@ class NodeLineImpl implements Line {
     mNodeStepDistance = mWidth / Math.pow(2, DEPTH) / 2;
     mArr = new Vector<IBinaryNode>();
     mArr.setSize(((int) Math.pow(2, DEPTH)));
-    // TODO: check Logger replacement
+    // TODO check Logger replacement
     // mTreeContLogger =
     // gvs.common.Logger.getInstance().getTreeControllerLogger();
     mTreeContLogger = LoggerFactory.getLogger(NodeLineImpl.class);

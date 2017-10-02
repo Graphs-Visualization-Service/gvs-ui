@@ -49,7 +49,7 @@ public class DefaultNode implements IDefaultNode {
   /**
    * Returns children
    */
-  // TODO: refactor name -> getChildren
+  // TODO refactor name -> getChildren
   public Vector getChilds() {
     return childs;
   }
@@ -139,7 +139,7 @@ public class DefaultNode implements IDefaultNode {
    * Sets if node has parent
    */
   public void hasParent(boolean hasParent) {
-    // TODO: check: why is this empty?
+    // TODO check: why is this empty?
   }
 
   /**

@@ -59,7 +59,7 @@ public class ApplicationView extends JFrame implements Observer {
   private int initialization = 0;
   private JComboBox combo = null;
   private SaveDialog saveDialog = null;
-  // TODO: do we need this? -> class not ported form GVS 1.0
+  // TODO do we need this? -> class not ported form GVS 1.0
   // private LoggerDialog logDialog = null;
   private Dimension screenSize = null;
   private Persistor persistor = null;
@@ -76,7 +76,7 @@ public class ApplicationView extends JFrame implements Observer {
   public ApplicationView() {
     super("Graphs-Visualization-Service GVS");
     this.setSize(1200, 800);
-    // TODO: check logger replacement
+    // TODO check logger replacement
     // this.appViewLogger=gvs.common.Logger.getInstance().getApplicationViewLogger();
     this.appViewLogger = LoggerFactory.getLogger(ApplicationView.class);
     appViewLogger.info("Build User-Interface, set default view");
@@ -358,7 +358,7 @@ public class ApplicationView extends JFrame implements Observer {
    * Show Trace dialog in oder to change trace level
    *
    */
-  // TODO: do we need this? -> class not ported from GVS 1.0
+  // TODO do we need this? -> class not ported from GVS 1.0
   public void logApplication() {
     appViewLogger.info("Showing Tracedialog");
     // logDialog = new LoggerDialog(this);

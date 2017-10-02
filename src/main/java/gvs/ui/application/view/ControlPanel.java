@@ -253,7 +253,7 @@ public class ControlPanel extends JPanel implements ImageObserver {
    * 
    * @param isEnabled
    */
-  // TODO: Refactor -> bad naming
+  // TODO Refactor -> bad naming
   public void setFirst(boolean isEnabled) {
     first.setEnabled(isEnabled);
   }
@@ -263,7 +263,7 @@ public class ControlPanel extends JPanel implements ImageObserver {
    * 
    * @param isEnabled
    */
-  // TODO: Refactor -> bad naming
+  // TODO Refactor -> bad naming
   public void setPrevious(boolean isEnabled) {
     previous.setEnabled(isEnabled);
   }
@@ -273,7 +273,7 @@ public class ControlPanel extends JPanel implements ImageObserver {
    * 
    * @param isEnabled
    */
-  // TODO: Refactor -> bad naming
+  // TODO Refactor -> bad naming
   public void setNext(boolean isEnabled) {
     next.setEnabled(isEnabled);
   }
@@ -283,7 +283,7 @@ public class ControlPanel extends JPanel implements ImageObserver {
    * 
    * @param isEnabled
    */
-  // TODO: Refactor -> bad naming
+  // TODO Refactor -> bad naming
   public void setLast(boolean isEnabled) {
     last.setEnabled(isEnabled);
   }
@@ -293,7 +293,7 @@ public class ControlPanel extends JPanel implements ImageObserver {
    * 
    * @param isEnabled
    */
-  // TODO: Refactor -> bad naming
+  // TODO Refactor -> bad naming
   public void setReplay(boolean isEnabled) {
     ApplicationView.setButton(isEnabled);
     replay.setEnabled(isEnabled);
@@ -304,7 +304,7 @@ public class ControlPanel extends JPanel implements ImageObserver {
    * 
    * @param isEnabled
    */
-  // TODO: Refactor -> bad naming
+  // TODO Refactor -> bad naming
   public void setLayout(boolean isEnabled) {
     ApplicationView.setButton(isEnabled);
     layout.setEnabled(isEnabled);
@@ -315,7 +315,7 @@ public class ControlPanel extends JPanel implements ImageObserver {
    * 
    * @param isEnabled
    */
-  // TODO: Refactor -> bad naming
+  // TODO Refactor -> bad naming
   public void setSlider(boolean isEnabled) {
     slider.setEnabled(isEnabled);
   }
@@ -325,7 +325,7 @@ public class ControlPanel extends JPanel implements ImageObserver {
    * 
    * @param isEnabled
    */
-  // TODO: Refactor -> bad naming
+  // TODO Refactor -> bad naming
   public void setLayoutState(boolean isLayouting) {
     if (isLayouting == true) {
       layout.setBackground(Color.RED);
@@ -359,7 +359,7 @@ public class ControlPanel extends JPanel implements ImageObserver {
    * @param id
    * @param models
    */
-  // TODO: Refactor -> bad naming
+  // TODO Refactor -> bad naming
   public void setText(int id, int models) {
     progressBar.setMaximum(models);
     progressBar.setValue(id);

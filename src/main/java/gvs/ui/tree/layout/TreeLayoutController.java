@@ -47,7 +47,7 @@ public class TreeLayoutController {
    *
    */
   public TreeLayoutController() {
-    // TODO: check Logger replacement
+    // TODO check Logger replacement
     // this.treeContLogger =
     // gvs.common.Logger.getInstance().getTreeControllerLogger();
     this.treeContLogger = LoggerFactory.getLogger(TreeLayoutController.class);
@@ -87,7 +87,7 @@ public class TreeLayoutController {
           numberOfRoots++;
         }
       }
-      // TODO: refactor naming
+      // TODO refactor naming
       this.geteilteDim = numberOfRoots;
 
       Iterator it3 = rootNodes.iterator();
@@ -109,7 +109,7 @@ public class TreeLayoutController {
   }
 
   // Sets y position of each node, depends on treelevel
-  // TODO: this is X-Position !? (23.03.08/tl)
+  // TODO this is X-Position !? (23.03.08/tl)
   private void setNodeYPositions() {
     treeContLogger
         .debug("setNodeYPositions(): Tree LayoutController set node positions");
@@ -213,7 +213,7 @@ public class TreeLayoutController {
   }
 
   // Calculates x position of each node in current model
-  // TODO: this is Y-Position !? (23.03.08/tl)
+  // TODO this is Y-Position !? (23.03.08/tl)
   private void setNodesXPosition(IBinaryNode pRoot, int pDepth, int pPosition) {
     treeContLogger
         .debug("Tree LayoutController is seting depth of child nodes");
@@ -272,7 +272,7 @@ public class TreeLayoutController {
     }
   }
 
-  // TODO: rewrite comment... what did they mean??
+  // TODO rewrite comment... what did they mean??
   // When more than one root in a collection arrives, split nodes in order
   // of roots
   private void addNodesToSplittedVector(IBinaryNode root) {

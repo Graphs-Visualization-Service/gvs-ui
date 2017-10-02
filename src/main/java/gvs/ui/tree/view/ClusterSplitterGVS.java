@@ -17,7 +17,7 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
   Logger mTreeContLogger;
 
   ClusterSplitterGVS() {
-    // TODO: check Logger replacement
+    // TODO check Logger replacement
     // mTreeContLogger =
     // gvs.common.Logger.getInstance().getTreeControllerLogger();
     mTreeContLogger = LoggerFactory.getLogger(ClusterSplitterGVS.class);
@@ -33,7 +33,7 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
     int depth;
     NodeLineImpl nodeLine = null;
     Vector<IBinaryNode> sortedNodes = null;
-    // TODO: investigate NullPointerException: occurs if clustersplitting is
+    // TODO investigate NullPointerException: occurs if clustersplitting is
     // active. Same happens in GVS 1.0
     double width = mPanel.getTreeLayoutController().getMaxDimensionWidth();
     int result = 0;

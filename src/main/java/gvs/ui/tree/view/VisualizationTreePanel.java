@@ -56,7 +56,7 @@ public class VisualizationTreePanel extends JPanel
    */
   public VisualizationTreePanel(VisualizationTreeModel visualModel) {
     super();
-    // TODO: check Logger replacement
+    // TODO check Logger replacement
     // this.treeContLogger =
     // gvs.common.Logger.getInstance().getTreeControllerLogger();
     treeContLogger = LoggerFactory.getLogger(VisualizationTreePanel.class);

@@ -117,7 +117,7 @@ public class GraphModel {
    * 
    * @return
    */
-  // TODO: refactor name: getVertices()
+  // TODO refactor name: getVertices()
   public Vector getVertizes() {
     return vertizes;
   }

@@ -135,7 +135,7 @@ public class AreaVector {
    * Inverts vector. Used by tractions and forces
    *
    */
-  // TODO: refactor name -> eg invert
+  // TODO refactor name -> eg invert
   public void changeOfSign() {
     this.x = -(this.x);
     this.y = -(this.y);
@@ -167,7 +167,7 @@ public class AreaVector {
    * 
    * @return
    */
-  // TODO: refactor name -> getSpeedSum
+  // TODO refactor name -> getSpeedSum
   public double getSpeedSummary() {
     return x + y;
   }

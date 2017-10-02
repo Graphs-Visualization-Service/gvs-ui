@@ -63,7 +63,7 @@ public class SaveDialog extends JDialog {
    */
   public SaveDialog(ApplicationView pApplicationView, Persistor persistor,
       boolean pIsExit) {
-    // TODO: check Logger replacement
+    // TODO check Logger replacement
     // this.appViewLogger =
     // gvs.common.Logger.getInstance().getApplicationViewLogger();
     this.appViewLogger = LoggerFactory.getLogger(SaveDialog.class);

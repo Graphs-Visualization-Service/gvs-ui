@@ -24,7 +24,7 @@ public class ConnectionMonitor {
     lastUse = System.currentTimeMillis();
   }
 
-  public synchronized static ConnectionMonitor getInstance() {
+  public static synchronized ConnectionMonitor getInstance() {
     if (connectionMonitor == null) {
       connectionMonitor = new ConnectionMonitor();
     }

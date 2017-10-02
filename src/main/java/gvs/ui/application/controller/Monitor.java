@@ -19,7 +19,7 @@ public class Monitor {
   /**
    * Returns an instance of the looking monitor
    */
-  public synchronized static Monitor getInstance() {
+  public static synchronized Monitor getInstance() {
     if (getMyMonitor() == null) {
       setMyMonitor(new Monitor());
     }

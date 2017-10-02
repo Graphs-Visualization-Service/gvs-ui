@@ -54,7 +54,6 @@ public class Configuration {
   private static final String STARTPORT = "StartPort";
   private static final String COMMUFILE = "CommunicationFile";
   private static final String SERVERTYP = "ServerTyp";
-  private static final String CORBATIMEOUT = "CorbaTimeout";
   public static final String SOCKET = "Socket";
   public static final String CORBA = "Corba";
 
@@ -326,6 +325,7 @@ public class Configuration {
   public synchronized String getLineStyleName(float[] pDash) {
     String name = null;
     Collection<String> tmp = linestyleReversal.values();
+    @SuppressWarnings("rawtypes")
     Iterator todo = tmp.iterator();
     while (todo.hasNext()) {
       String key = (String) todo.next();
@@ -469,6 +469,7 @@ public class Configuration {
    */
   private void loadColors(Element pTyp) {
     Element eColors = pTyp.element(COLORS);
+    @SuppressWarnings("rawtypes")
     Iterator colorIt = eColors.elementIterator();
     while (colorIt.hasNext()) {
       Element eColor = (Element) (colorIt.next());
@@ -503,6 +504,7 @@ public class Configuration {
    */
   private void loadLineStyles(Element pTyp) {
     Element eLineStyles = pTyp.element(LINESTYLE);
+    @SuppressWarnings("rawtypes")
     Iterator styleIt = eLineStyles.elementIterator();
     while (styleIt.hasNext()) {
       Element eStyle = (Element) (styleIt.next());

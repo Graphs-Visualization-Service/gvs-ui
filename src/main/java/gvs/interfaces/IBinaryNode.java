@@ -3,26 +3,26 @@ package gvs.interfaces;
 import java.awt.Color;
 import java.awt.Stroke;
 
-public interface IBinaryNode extends INode{
+public interface IBinaryNode extends INode {
 
-	public abstract Color getFillColor();
+  Color getFillColor();
 
-	public abstract IBinaryNode getLeftChild();
+  IBinaryNode getLeftChild();
 
-	public abstract Color getLineColor();
+  Color getLineColor();
 
-	public abstract Stroke getLineStroke();
+  Stroke getLineStroke();
 
-	public abstract String getNodeLabel();
+  String getNodeLabel();
 
-	public abstract IBinaryNode getRightChild();
+  IBinaryNode getRightChild();
 
-	public abstract int getMyTreePosition();
+  int getMyTreePosition();
 
-	public abstract void setMyTreePosition(int myTreePosition);
-	
-	public abstract int getMyTreeLevel();
+  void setMyTreePosition(int myTreePosition);
 
-	public abstract void setMyTreeLevel(int myTreeLevel) ;
+  int getMyTreeLevel();
+
+  void setMyTreeLevel(int myTreeLevel);
 
 }

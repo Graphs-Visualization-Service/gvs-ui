@@ -5,25 +5,25 @@ import java.awt.Stroke;
 
 public interface INode {
 
-	public abstract Color getFillColor();
+  Color getFillColor();
 
-	public abstract Color getLineColor();
+  Color getLineColor();
 
-	public abstract Stroke getLineStroke();
+  Stroke getLineStroke();
 
-	public abstract String getNodeLabel();
-	
-	public abstract double getXPosition();
+  String getNodeLabel();
 
-	public abstract double getYPosition();
-	
-	public abstract long getNodeId(); 
+  double getXPosition();
 
-	public abstract void setXPosition(double position);
+  double getYPosition();
 
-	public abstract void setYPosition(double position);
+  long getNodeId();
 
-	public abstract void hasParent(boolean hasParent);
-	
-	public abstract boolean hasParent();
+  void setXPosition(double position);
+
+  void setYPosition(double position);
+
+  void hasParent(boolean hasParent);
+
+  boolean hasParent();
 }

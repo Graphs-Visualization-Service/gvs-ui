@@ -1,61 +1,65 @@
 package gvs.ui.tree.view;
 
-class NodeClusterImpl implements Cluster {
+public class NodeClusterImpl implements Cluster {
 
-	private NodeLineImpl mLine;
-	private int mStartPos;
-	private int mEndPos;
+  private NodeLineImpl mLine;
+  private int mStartPos;
+  private int mEndPos;
 
-	public NodeClusterImpl(NodeLineImpl pLine) {
-		mLine = pLine;
-	}
+  public NodeClusterImpl(NodeLineImpl pLine) {
+    mLine = pLine;
+  }
 
-	public NodeClusterImpl(NodeLineImpl pLine, int pStartPos,
-			int pEndPos) {
-		this(pLine);
-		mStartPos = pStartPos;
-		mEndPos = pEndPos;
-		print();
-	}
+  public NodeClusterImpl(NodeLineImpl pLine, int pStartPos, int pEndPos) {
+    this(pLine);
+    mStartPos = pStartPos;
+    mEndPos = pEndPos;
+    print();
+  }
 
-	public int getLeftNodePos() {
-		return mStartPos;
-	}
+  public int getLeftNodePos() {
+    return mStartPos;
+  }
 
-	public int getRightNodePos() {
-		return mEndPos;
-	}
+  public int getRightNodePos() {
+    return mEndPos;
+  }
 
-	public int length() {
-		int nodesOfCluster = 0;
-		for (int i = mStartPos; i <= mEndPos; i++) {
-			if (mLine.mArr.get(i) != null) {
-				nodesOfCluster++;
-			}
-		}
-		return nodesOfCluster;
-	}
+  public int length() {
+    int nodesOfCluster = 0;
+    for (int i = mStartPos; i <= mEndPos; i++) {
+      if (mLine.getmArr().get(i) != null) {
+        nodesOfCluster++;
+      }
+    }
+    return nodesOfCluster;
+  }
 
-	public void moveLeftNode() {
-		int leftPost = mStartPos-1;
-		mLine.mArr.set(leftPost, mLine.mArr.get(mStartPos));
-		mLine.mArr.set(mStartPos, null);
-		mLine.mArr.get(leftPost).setXPosition((leftPost*2+1)*mLine.mNodeStepDistance);
-		while(mLine.mArr.get(++mStartPos) == null) {}
-		mLine.print();
-	}
+  public void moveLeftNode() {
+    int leftPost = mStartPos - 1;
+    mLine.getmArr().set(leftPost, mLine.getmArr().get(mStartPos));
+    mLine.getmArr().set(mStartPos, null);
+    mLine.getmArr().get(leftPost)
+        .setXPosition((leftPost * 2 + 1) * mLine.getmNodeStepDistance());
+    while (mLine.getmArr().get(++mStartPos) == null) {
+    }
+    mLine.print();
+  }
 
-	public void moveRightNode() {
-		int rightPos = mEndPos+1;
-		mLine.mArr.set(rightPos, mLine.mArr.get(mEndPos));
-		mLine.mArr.set(mEndPos, null);
-		mLine.mArr.get(rightPos).setXPosition((rightPos*2+1)*mLine.mNodeStepDistance);
-		while(mLine.mArr.get(--mEndPos) == null) {}
-		mLine.print();
-	}
-	
-	public void print() {
-		mLine.mTreeContLogger.debug("NodeClusterImpl: " + mStartPos + "/" + mEndPos);
-	}
+  public void moveRightNode() {
+    int rightPos = mEndPos + 1;
+    mLine.getmArr().set(rightPos, mLine.getmArr().get(mEndPos));
+    mLine.getmArr().set(mEndPos, null);
+    mLine.getmArr().get(rightPos)
+        .setXPosition((rightPos * 2 + 1) * mLine.getmNodeStepDistance());
+    while (mLine.getmArr().get(--mEndPos) == null) {
+    }
+    mLine.print();
+  }
+
+  public void print() {
+    mLine.getmTreeContLogger()
+        .debug("NodeClusterImpl: " + mStartPos + "/" + mEndPos);
+  }
 
 }

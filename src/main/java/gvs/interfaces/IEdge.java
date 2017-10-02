@@ -5,16 +5,16 @@ import java.awt.Stroke;
 
 public interface IEdge {
 
-	public abstract IVertex getEndVertex();
+  IVertex getEndVertex();
 
-	public abstract boolean isDirected();
+  boolean isDirected();
 
-	public abstract String getLabel();
+  String getLabel();
 
-	public abstract Color getLineColor();
+  Color getLineColor();
 
-	public abstract Stroke getLineStroke();
+  Stroke getLineStroke();
 
-	public abstract IVertex getStartVertex();
+  IVertex getStartVertex();
 
 }

@@ -55,41 +55,41 @@ import org.dom4j.io.XMLWriter;
 public class Persistor {
 
   // Generally
-  private final String ROOT = "Data";
-  private final String ATTRIBUTEID = "Id";
-  private final String LABEL = "Label";
-  private final String FILLCOLOR = "Fillcolor";
-  private final String ICON = "Icon";
-  private final String LINECOLOR = "Linecolor";
-  private final String LINESTYLE = "Linestyle";
-  private final String LINETHICKNESS = "Linethickness";
+  private static final String ROOT = "Data";
+  private static final String ATTRIBUTEID = "Id";
+  private static final String LABEL = "Label";
+  private static final String FILLCOLOR = "Fillcolor";
+  private static final String ICON = "Icon";
+  private static final String LINECOLOR = "Linecolor";
+  private static final String LINESTYLE = "Linestyle";
+  private static final String LINETHICKNESS = "Linethickness";
   private static final String STANDARD = "Standard";
 
   // Graph
-  private final String GRAPH = "GraphSession";
-  private final String GRAPHMODEL = "GraphModel";
-  private final String BACKGROUND = "Background";
-  private final String MAXLABELLENGTH = "MaxLabelLength";
-  private final String VERTIZES = "Vertizes";
-  private final String RELATIVVERTEX = "RelativVertex";
-  private final String DEFAULTVERTEX = "DefaultVertex";
-  private final String XPOS = "XPos";
-  private final String YPOS = "YPos";
-  private final String EDGES = "Edges";
-  private final String EDGE = "Edge";
-  private final String ISDIRECTED = "IsDirected";
-  private final String FROMVERTEX = "FromVertex";
-  private final String TOVERTEX = "ToVertex";
+  private static final String GRAPH = "GraphSession";
+  private static final String GRAPHMODEL = "GraphModel";
+  private static final String BACKGROUND = "Background";
+  private static final String MAXLABELLENGTH = "MaxLabelLength";
+  private static final String VERTIZES = "Vertizes";
+  private static final String RELATIVVERTEX = "RelativVertex";
+  private static final String DEFAULTVERTEX = "DefaultVertex";
+  private static final String XPOS = "XPos";
+  private static final String YPOS = "YPos";
+  private static final String EDGES = "Edges";
+  private static final String EDGE = "Edge";
+  private static final String ISDIRECTED = "IsDirected";
+  private static final String FROMVERTEX = "FromVertex";
+  private static final String TOVERTEX = "ToVertex";
 
   // Tree
-  private final String TREE = "TreeSession";
-  private final String TREEMODEL = "TreeModel";
-  private final String NODES = "Nodes";
-  private final String DEFAULTNODE = "DefaultNode";
-  private final String BINARYNODE = "BinaryNode";
-  private final String TREEROOTID = "TreeRootId";
-  private final String RIGTHCHILD = "Rigthchild";
-  private final String LEFTCHILD = "Leftchild";
+  private static final String TREE = "TreeSession";
+  private static final String TREEMODEL = "TreeModel";
+  private static final String NODES = "Nodes";
+  private static final String DEFAULTNODE = "DefaultNode";
+  private static final String BINARYNODE = "BinaryNode";
+  private static final String TREEROOTID = "TreeRootId";
+  private static final String RIGTHCHILD = "Rigthchild";
+  private static final String LEFTCHILD = "Leftchild";
 
   // TODO fix save path
   // Datas

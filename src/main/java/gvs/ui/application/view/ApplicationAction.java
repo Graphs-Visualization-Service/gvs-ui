@@ -7,7 +7,7 @@ import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
 /**
- * Represents most of the application and menu actions
+ * Represents most of the application and menu actions.
  * 
  * @author aegli
  *
@@ -17,7 +17,7 @@ class ApplicationAction extends AbstractAction {
   private ApplicationView applicationView;
 
   /**
-   * Assigns an action to each user interface button
+   * Assigns an action to each user interface button.
    * 
    * @param pText
    * @param pIcon

@@ -39,7 +39,7 @@ public class Traction {
     AreaVector force = new AreaVector(from.getPointPosition(),
         to.getPointPosition());
 
-    if (force.length != 0) {
+    if (force.getLength() != 0) {
       double dev = (force.getDistance() - distance) / distance;
       force.scaleTo(dev * impact);
       from.accelerate(force);

@@ -205,10 +205,11 @@ public class TreeLayoutController {
     } else {
       int leftMax = countNodes(root.getLeftChild(), depth + 1);
       int rightMax = countNodes(root.getRightChild(), depth + 1);
-      if (leftMax > rightMax)
+      if (leftMax > rightMax) {
         return leftMax;
-      else
+      } else {
         return rightMax;
+      }
     }
   }
 

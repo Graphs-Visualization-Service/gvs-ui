@@ -9,17 +9,17 @@ package gvs.ui.graph.layout.helpers;
 
 public class AreaVector {
 
-  public double x = 0;
-  public double y = 0;
-  public double length = 0;
+  private double x = 0;
+  private double y = 0;
+  private double length = 0;
 
   /**
    * Represents a default vector
    *
    */
   public AreaVector() {
-    this.x = 0;
-    this.y = 0;
+    this.setX(0);
+    this.setY(0);
   }
 
   /**
@@ -29,8 +29,8 @@ public class AreaVector {
    * @param y
    */
   public AreaVector(double x, double y) {
-    this.x = x;
-    this.y = y;
+    this.setX(x);
+    this.setY(y);
     update();
   }
 
@@ -46,8 +46,8 @@ public class AreaVector {
     double tx = toPoint.getX();
     double ty = toPoint.getY();
 
-    x = px - tx;
-    y = py - ty;
+    setX(px - tx);
+    setY(py - ty);
 
     update();
   }
@@ -59,9 +59,9 @@ public class AreaVector {
    * @param newLength
    */
   public void scaleTo(double newLength) {
-    x *= newLength
-        / Math.abs(length)/* Nur Vorzeichenwechsel immer ins Positive */;
-    y *= newLength / Math.abs(length);
+    setX(getX() * (newLength
+        / Math.abs(getLength())/* Nur Vorzeichenwechsel immer ins Positive */));
+    setY(getY() * (newLength / Math.abs(getLength())));
 
     update();
   }
@@ -74,8 +74,8 @@ public class AreaVector {
    * @param scale
    */
   public void add(AreaVector v, double scale) {
-    this.x -= v.getX() * scale;
-    this.y -= v.getY() * scale;
+    this.setX(this.getX() - v.getX() * scale);
+    this.setY(this.getY() - v.getY() * scale);
 
     update();
   }
@@ -85,8 +85,8 @@ public class AreaVector {
    *
    */
   private void update() {
-    double pyth = x * x + y * y;
-    this.length = Math.sqrt(pyth);
+    double pyth = getX() * getX() + getY() * getY();
+    this.setLength(Math.sqrt(pyth));
   }
 
   /**
@@ -96,8 +96,8 @@ public class AreaVector {
    * @param v
    */
   public void add(AreaVector v) {
-    this.x += v.getX();
-    this.y += v.getY();
+    this.setX(this.getX() + v.getX());
+    this.setY(this.getY() + v.getY());
 
     update();
   }
@@ -125,8 +125,8 @@ public class AreaVector {
    *
    */
   public void resetAcc() {
-    x = 0.0;
-    y = 0.0;
+    setX(0.0);
+    setY(0.0);
 
     update();
   }
@@ -137,8 +137,8 @@ public class AreaVector {
    */
   // TODO refactor name -> eg invert
   public void changeOfSign() {
-    this.x = -(this.x);
-    this.y = -(this.y);
+    this.setX(-(this.getX()));
+    this.setY(-(this.getY()));
   }
 
   /**
@@ -147,8 +147,8 @@ public class AreaVector {
    * @param v
    */
   public void reduceMultiplicator(double v) {
-    this.x *= v;
-    this.y *= v;
+    this.setX(this.getX() * v);
+    this.setY(this.getY() * v);
     update();
   }
 
@@ -158,7 +158,7 @@ public class AreaVector {
    * @return
    */
   public double getDistance() {
-    return length;
+    return getLength();
   }
 
   /**
@@ -169,7 +169,7 @@ public class AreaVector {
    */
   // TODO refactor name -> getSpeedSum
   public double getSpeedSummary() {
-    return x + y;
+    return getX() + getY();
   }
 
   /**
@@ -180,9 +180,9 @@ public class AreaVector {
    */
   public double getField(int i) {
     if (i == 0) {
-      return x;
+      return getX();
     } else {
-      return y;
+      return getY();
     }
   }
 
@@ -194,11 +194,27 @@ public class AreaVector {
    */
   public void setField(int i, double d) {
     if (i == 0) {
-      x = d;
+      setX(d);
     } else {
-      y = d;
+      setY(d);
     }
 
     update();
+  }
+
+  public double getLength() {
+    return length;
+  }
+
+  public void setLength(double length) {
+    this.length = length;
+  }
+
+  public void setX(double x) {
+    this.x = x;
+  }
+
+  public void setY(double y) {
+    this.y = y;
   }
 }

@@ -9,8 +9,8 @@ import java.awt.Point;
  *
  */
 public class AreaPoint {
-  public double x = 0;
-  public double y = 0;
+  private double x = 0;
+  private double y = 0;
 
   /**
    * Represents a default particle point in area
@@ -26,8 +26,8 @@ public class AreaPoint {
    * @param point
    */
   public AreaPoint(Point point) {
-    this.x = point.x;
-    this.y = point.y;
+    this.setX(point.x);
+    this.setY(point.y);
   }
 
   /**
@@ -37,8 +37,8 @@ public class AreaPoint {
    * @param y
    */
   public AreaPoint(double x, double y) {
-    this.x = x;
-    this.y = y;
+    this.setX(x);
+    this.setY(y);
   }
 
   /**
@@ -47,8 +47,8 @@ public class AreaPoint {
    * @param v
    */
   public void addVector(AreaVector v) {
-    this.x += v.getX();
-    this.y += v.getY();
+    this.setX(this.getX() + v.getX());
+    this.setY(this.getY() + v.getY());
   }
 
   /**
@@ -77,9 +77,9 @@ public class AreaPoint {
    */
   public double getField(int i) {
     if (i == 0) {
-      return x;
+      return getX();
     } else {
-      return y;
+      return getY();
     }
   }
 
@@ -91,9 +91,17 @@ public class AreaPoint {
    */
   public void setField(int i, double d) {
     if (i == 0) {
-      x = d;
+      setX(d);
     } else {
-      y = d;
+      setY(d);
     }
+  }
+
+  public void setX(double x) {
+    this.x = x;
+  }
+
+  public void setY(double y) {
+    this.y = y;
   }
 }

@@ -36,7 +36,7 @@ class ComboRenderer extends JLabel implements ListCellRenderer {
     }
 
     if (value != null) {
-      if (!((ComboItem) value).isShown) {
+      if (!((ComboItem) value).isShown()) {
         setBackground(list.getBackground());
       }
       setText(((ComboItem) value).getSessionName());

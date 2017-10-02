@@ -70,14 +70,14 @@ interface Cluster {
 class CharArrayLineImpl implements Line {
 
   private final int DISTANCE;
-  char[] mArr;
+  private char[] mArr;
 
   CharArrayLineImpl(char[] pArr) {
     this(pArr, 1);
   }
 
   CharArrayLineImpl(char[] pArr, int pDistance) {
-    mArr = pArr;
+    setmArr(pArr);
     DISTANCE = pDistance;
     print();
   }
@@ -142,10 +142,10 @@ class CharArrayLineImpl implements Line {
   public Cluster getNextCluster(int pSearchStartPos) {
     int startPos = -1;
     int endPos = -1;
-    for (int i = pSearchStartPos; i < mArr.length; i++) {
+    for (int i = pSearchStartPos; i < getmArr().length; i++) {
       startPos = -1;
-      for (int j = i; j < mArr.length; j++) {
-        if (mArr[j] != ' ') {
+      for (int j = i; j < getmArr().length; j++) {
+        if (getmArr()[j] != ' ') {
           startPos = j;
           break;
         }
@@ -153,9 +153,9 @@ class CharArrayLineImpl implements Line {
       if (startPos == -1) { // no Nodes
         return null;
       }
-      endPos = mArr.length - 1;
-      for (int j = startPos + 1; j < mArr.length; j++) {
-        if (mArr[j] == ' ') {
+      endPos = getmArr().length - 1;
+      for (int j = startPos + 1; j < getmArr().length; j++) {
+        if (getmArr()[j] == ' ') {
           endPos = j - 1;
           break;
         }
@@ -174,7 +174,7 @@ class CharArrayLineImpl implements Line {
   }
 
   public int length() {
-    return mArr.length;
+    return getmArr().length;
   }
 
   void print() {
@@ -184,7 +184,7 @@ class CharArrayLineImpl implements Line {
     }
     System.out.println("");
     System.out.print(">");
-    System.out.print(mArr);
+    System.out.print(getmArr());
     System.out.println("<");
   }
 
@@ -194,11 +194,11 @@ class CharArrayLineImpl implements Line {
 
   public BigInteger getBigIntegerInterpretation() {
     // Interpret pLine as Binary-Polynom:
-    int nrOfBits = mArr.length;
+    int nrOfBits = getmArr().length;
     int nrOfBytes = nrOfBits / 8 + (((nrOfBits % 8) > 0) ? 1 : 0);
     byte[] bytes = new byte[nrOfBytes];
     for (int i = 0; i < nrOfBits; i++) {
-      if (mArr[i] != ' ') {
+      if (getmArr()[i] != ' ') {
         byte actualByte = bytes[bytes.length - 1 - i / 8];
         actualByte = (byte) (actualByte | (byte) (1 << (i % 8)));
         bytes[bytes.length - 1 - i / 8] = actualByte;
@@ -207,6 +207,14 @@ class CharArrayLineImpl implements Line {
     BigInteger bigInt = new BigInteger(bytes);
     System.out.println("BigInteger = " + bigInt);
     return bigInt;
+  }
+
+  char[] getmArr() {
+    return mArr;
+  }
+
+  void setmArr(char[] mArr) {
+    this.mArr = mArr;
   }
 
 } // End of class CharArrayClusterImpl
@@ -246,15 +254,15 @@ class CharArrayClusterImpl implements Cluster {
   }
 
   public void moveLeftNode() {
-    mLine.mArr[mStartPos - 1] = mLine.mArr[mStartPos];
-    mLine.mArr[mStartPos] = ' ';
+    mLine.getmArr()[mStartPos - 1] = mLine.getmArr()[mStartPos];
+    mLine.getmArr()[mStartPos] = ' ';
     mStartPos++;
     mLine.print();
   }
 
   public void moveRightNode() {
-    mLine.mArr[mEndPos + 1] = mLine.mArr[mEndPos];
-    mLine.mArr[mEndPos] = ' ';
+    mLine.getmArr()[mEndPos + 1] = mLine.getmArr()[mEndPos];
+    mLine.getmArr()[mEndPos] = ' ';
     mEndPos--;
     mLine.print();
   }

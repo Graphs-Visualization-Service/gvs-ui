@@ -19,7 +19,7 @@ public class ComboItem {
   private long sessionId = 0;
   private Date date = null;
   private SimpleDateFormat dateformat = null;
-  public boolean isShown;
+  private boolean isShown;
 
   /**
    * Represents available sessions which are displayed in combobox
@@ -59,7 +59,7 @@ public class ComboItem {
    * @param state
    */
   public void setEnabled(boolean state) {
-    isShown = state;
+    setShown(state);
   }
 
   /**
@@ -91,5 +91,9 @@ public class ComboItem {
    */
   public String getSessionName() {
     return sessionName;
+  }
+
+  public void setShown(boolean isShown) {
+    this.isShown = isShown;
   }
 }

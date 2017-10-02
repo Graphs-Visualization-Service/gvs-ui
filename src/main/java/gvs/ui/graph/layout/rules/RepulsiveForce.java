@@ -32,8 +32,8 @@ public class RepulsiveForce {
     AreaVector force = new AreaVector(refP.getPointPosition(),
         relationP.getPointPosition());
 
-    if (force.length != 0) {
-      double nDist = force.length;
+    if (force.getLength() != 0) {
+      double nDist = force.getLength();
       if (nDist <= 1.0) {
         nDist = 1.0;
       }
@@ -43,7 +43,7 @@ public class RepulsiveForce {
       double dev = -refP.getWeight() * relationP.getWeight() / nDist;
       force.reduceMultiplicator(dev * impact);
 
-      if (force.length > impact) {
+      if (force.getLength() > impact) {
         force.scaleTo(impact);
       }
       refP.accelerate(force);

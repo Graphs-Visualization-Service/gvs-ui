@@ -39,7 +39,7 @@ public class EdgeComponent extends JComponent {
 
   private String edgeLabel = null;
   private Color lineColor = null;
-  public Stroke lineStroke = null;
+  private Stroke lineStroke = null;
   private boolean isDirected = false;
   private IVertex startVertex = null;
   private IVertex endVertex = null;
@@ -90,7 +90,7 @@ public class EdgeComponent extends JComponent {
 
     this.edgeLabel = edge.getLabel();
     this.lineColor = edge.getLineColor();
-    this.lineStroke = edge.getLineStroke();
+    this.setLineStroke(edge.getLineStroke());
     this.isDirected = edge.isDirected();
     this.startVertex = edge.getStartVertex();
     this.endVertex = edge.getEndVertex();
@@ -308,7 +308,7 @@ public class EdgeComponent extends JComponent {
         RenderingHints.VALUE_ANTIALIAS_ON);
 
     g2.setColor(lineColor);
-    g2.setStroke(lineStroke);
+    g2.setStroke(getLineStroke());
     if (isDirected) {
       if (startVertex != endVertex) {
         calculateLength();
@@ -330,7 +330,7 @@ public class EdgeComponent extends JComponent {
             (int) endVertexYPos, 1.0f);
       }
     } else {
-      g2.setStroke(lineStroke);
+      g2.setStroke(getLineStroke());
       if (startVertex != endVertex) {
         calculateLength();
         g2.draw(new Line2D.Double(startVertexXPos, startVertexYPos,
@@ -352,5 +352,13 @@ public class EdgeComponent extends JComponent {
     }
     labelEdge(g2);
     wasDragged = false;
+  }
+
+  public Stroke getLineStroke() {
+    return lineStroke;
+  }
+
+  public void setLineStroke(Stroke lineStroke) {
+    this.lineStroke = lineStroke;
   }
 }

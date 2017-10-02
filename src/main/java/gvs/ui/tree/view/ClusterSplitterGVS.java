@@ -12,20 +12,20 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
 
   private static boolean mEnabled = false;
 
-  static VisualizationTreePanel mPanel;
+  private static VisualizationTreePanel mPanel;
 
-  Logger mTreeContLogger;
+  private Logger mTreeContLogger;
 
   ClusterSplitterGVS() {
     // TODO check Logger replacement
     // mTreeContLogger =
     // gvs.common.Logger.getInstance().getTreeControllerLogger();
-    mTreeContLogger = LoggerFactory.getLogger(ClusterSplitterGVS.class);
+    setmTreeContLogger(LoggerFactory.getLogger(ClusterSplitterGVS.class));
   }
 
   ClusterSplitterGVS(VisualizationTreePanel pPanel) {
     this();
-    mPanel = pPanel;
+    setmPanel(pPanel);
   }
 
   public void run() {
@@ -35,12 +35,12 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
     Vector<IBinaryNode> sortedNodes = null;
     // TODO investigate NullPointerException: occurs if clustersplitting is
     // active. Same happens in GVS 1.0
-    double width = mPanel.getTreeLayoutController().getMaxDimensionWidth();
+    double width = getmPanel().getTreeLayoutController().getMaxDimensionWidth();
     int result = 0;
 
     depth = 5;
     nodeLine = new NodeLineImpl(depth, width, 1);
-    sortedNodes = mPanel.getTreeLayoutController().getSortedNodes();
+    sortedNodes = getmPanel().getTreeLayoutController().getSortedNodes();
     for (IBinaryNode node : sortedNodes) {
       if (node.getMyTreeLevel() == depth) {
         nodeLine.add(node);
@@ -50,16 +50,16 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
       nodeLine.print();
       result = split(nodeLine);
       if (result != 0) {
-        mTreeContLogger.warn(
+        getmTreeContLogger().warn(
             "ClusterSplitterGVS::run(): no Solution for Depth = " + depth);
-        mTreeContLogger
+        getmTreeContLogger()
             .warn("  Reason: " + ((result == -1) ? "Same Line" : "No Actions"));
       }
     }
 
     depth = 6;
     nodeLine = new NodeLineImpl(depth, width, 3);
-    sortedNodes = mPanel.getTreeLayoutController().getSortedNodes();
+    sortedNodes = getmPanel().getTreeLayoutController().getSortedNodes();
     for (IBinaryNode node : sortedNodes) {
       if (node.getMyTreeLevel() == depth) {
         nodeLine.add(node);
@@ -69,16 +69,16 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
       nodeLine.print();
       result = split(nodeLine);
       if (result != 0) {
-        mTreeContLogger.warn(
+        getmTreeContLogger().warn(
             "ClusterSplitterGVS::run(): no Solution for Depth = " + depth);
-        mTreeContLogger
+        getmTreeContLogger()
             .warn("  Reason: " + ((result == -1) ? "Same Line" : "No Actions"));
       }
     }
 
     depth = 7;
     nodeLine = new NodeLineImpl(depth, width, 5);
-    sortedNodes = mPanel.getTreeLayoutController().getSortedNodes();
+    sortedNodes = getmPanel().getTreeLayoutController().getSortedNodes();
     for (IBinaryNode node : sortedNodes) {
       if (node.getMyTreeLevel() == depth) {
         nodeLine.add(node);
@@ -88,20 +88,20 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
       nodeLine.print();
       result = split(nodeLine);
       if (result != 0) {
-        mTreeContLogger.warn(
+        getmTreeContLogger().warn(
             "ClusterSplitterGVS::run(): no Solution for Depth = " + depth);
-        mTreeContLogger
+        getmTreeContLogger()
             .warn("  Reason: " + ((result == -1) ? "Same Line" : "No Actions"));
       }
     }
 
-    mPanel.repaint();
+    getmPanel().repaint();
     try {
       Thread.sleep(2000);
     } catch (InterruptedException e) {
     }
 
-    mPanel.setClusterSplitter(null);
+    getmPanel().setClusterSplitter(null);
 
   }
 
@@ -135,7 +135,7 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
     }
     nodeLine.print();
     result = split(nodeLine);
-    nodeLine.mTreeContLogger.debug("split(): " + result);
+    nodeLine.getmTreeContLogger().debug("split(): " + result);
 
     nodeLine = new NodeLineImpl(DEPTH, width, 2);
     for (int i = 1; i < 4; i++) {
@@ -146,7 +146,7 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
     }
     nodeLine.print();
     result = split(nodeLine);
-    nodeLine.mTreeContLogger.debug("split(): " + result);
+    nodeLine.getmTreeContLogger().debug("split(): " + result);
 
     nodeLine = new NodeLineImpl(DEPTH, width, 3);
     for (int i = 1; i < 3; i++) {
@@ -157,7 +157,7 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
     }
     nodeLine.print();
     result = split(nodeLine);
-    nodeLine.mTreeContLogger.debug("split(): " + result);
+    nodeLine.getmTreeContLogger().debug("split(): " + result);
 
     nodeLine = new NodeLineImpl(DEPTH, width, 6);
     for (int i = 3; i <= 4; i++) {
@@ -168,7 +168,7 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
     }
     nodeLine.print();
     result = split(nodeLine);
-    nodeLine.mTreeContLogger.debug("split(): " + result);
+    nodeLine.getmTreeContLogger().debug("split(): " + result);
 
     nodeLine = new NodeLineImpl(DEPTH, width, 2);
     for (int i = 4; i <= 6; i++) {
@@ -179,7 +179,7 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
     }
     nodeLine.print();
     result = split(nodeLine);
-    nodeLine.mTreeContLogger.debug("split(): " + result);
+    nodeLine.getmTreeContLogger().debug("split(): " + result);
 
     // No Solution:
     nodeLine = new NodeLineImpl(DEPTH, width, 1);
@@ -192,7 +192,7 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
     }
     nodeLine.print();
     result = split(nodeLine);
-    nodeLine.mTreeContLogger.debug("split(): " + result);
+    nodeLine.getmTreeContLogger().debug("split(): " + result);
 
   }
 
@@ -202,6 +202,22 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
 
   public static void setEnabled(boolean enabled) {
     mEnabled = enabled;
+  }
+
+  static VisualizationTreePanel getmPanel() {
+    return mPanel;
+  }
+
+  static void setmPanel(VisualizationTreePanel mPanel) {
+    ClusterSplitterGVS.mPanel = mPanel;
+  }
+
+  Logger getmTreeContLogger() {
+    return mTreeContLogger;
+  }
+
+  void setmTreeContLogger(Logger mTreeContLogger) {
+    this.mTreeContLogger = mTreeContLogger;
   }
 
 }

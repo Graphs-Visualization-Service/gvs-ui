@@ -11,7 +11,7 @@ package gvs.ui.application.controller;
 public class Monitor {
 
   private boolean locked = false;
-  public static Monitor myMonitor = null;
+  private static Monitor myMonitor = null;
 
   private Monitor() {
   }
@@ -20,10 +20,10 @@ public class Monitor {
    * Returns an instance of the looking monitor
    */
   public synchronized static Monitor getInstance() {
-    if (myMonitor == null) {
-      myMonitor = new Monitor();
+    if (getMyMonitor() == null) {
+      setMyMonitor(new Monitor());
     }
-    return myMonitor;
+    return getMyMonitor();
   }
 
   /**
@@ -31,8 +31,9 @@ public class Monitor {
    * lock
    */
   public synchronized void lock() throws InterruptedException {
-    while (locked)
+    while (locked) {
       wait();
+    }
     locked = true;
   }
 
@@ -43,5 +44,13 @@ public class Monitor {
   public synchronized void unlock() {
     locked = false;
     notifyAll();
+  }
+
+  public static Monitor getMyMonitor() {
+    return myMonitor;
+  }
+
+  public static void setMyMonitor(Monitor myMonitor) {
+    Monitor.myMonitor = myMonitor;
   }
 }

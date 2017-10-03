@@ -97,7 +97,7 @@ public class SocketServer extends Thread {
             .info("Shared communication file: " + communicationfilepath);
       } catch (Exception e) {
 
-        serverLogger.error("Failer share communication File");
+        serverLogger.error("Failed to share communication File");
       }
     } else {
       // Portfile current directory
@@ -119,7 +119,7 @@ public class SocketServer extends Thread {
         serverLogger.info("Local communication file: " + portFileCurent);
 
       } catch (Exception e) {
-        serverLogger.error("Failer local communication File");
+        serverLogger.error("Failed to create local communication File");
         e.printStackTrace();
 
       }

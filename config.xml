@@ -22,8 +22,6 @@
   <Server> 
     <ServerTyp>Socket</ServerTyp>  
     <StartPort>3000</StartPort>  
-    <CommunicationFile>J:/GVSCorbafile3.xml</CommunicationFile>  
-    <CorbaTimeout>30000</CorbaTimeout> 
   </Server>  
   <Typ> 
     <Backgroundimages> 

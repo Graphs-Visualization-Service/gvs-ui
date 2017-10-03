@@ -35,7 +35,7 @@ public class Configuration {
 
   // Config file
   private File config = null;
-  private static final String CONFIGFILEPROPERTIE = "GVSConfig";
+  private static final String CONFIGFILEPROPERTY = "GVSConfig";
 
   // Document
   private static final String TYP = "Typ";
@@ -146,7 +146,7 @@ public class Configuration {
     // ******************GO!!!!!*********************
     commonLogger.info("Load configuration...");
     SAXReader reader = new SAXReader();
-    String propConfig = System.getProperty(CONFIGFILEPROPERTIE);
+    String propConfig = System.getProperty(CONFIGFILEPROPERTY);
     if (propConfig != null) {
       commonLogger.info("Configfile from properties " + propConfig);
       config = new File(propConfig);
@@ -618,7 +618,7 @@ public class Configuration {
     } else {
       commFilePath = "GVSComm.xml";
       commonLogger.warn("Load Communicationfilepath failed");
-      commonLogger.warn("Write Communicationfile to cuuren directory");
+      commonLogger.warn("Write Communicationfile to current directory");
     }
   }
 

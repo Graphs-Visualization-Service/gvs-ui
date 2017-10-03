@@ -1,8 +1,11 @@
 apply plugin: 'java'
+apply plugin: 'application'
 apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
+apply plugin: "net.saliman.cobertura"
 
 sourceCompatibility = 1.8
+mainClassName = 'gvs.GVSLauncher' 
 
 repositories {
     mavenCentral()
@@ -26,7 +29,7 @@ dependencies {
 jar {
    	from {configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }  
     manifest {
-        attributes 'Main-Class': 'gvs.ui.application.controller.Main'        
+        attributes 'Main-Class': 'gvs.GVSLauncher'        
     }
 }
 
@@ -40,6 +43,17 @@ findbugs {
   ignoreFailures = true
   reportsDir = file("$project.buildDir/reports/findbugs")
   effort = "max" 
+}
+
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "net.saliman:gradle-cobertura-plugin:2.5.0"
+  }
 }
 
 

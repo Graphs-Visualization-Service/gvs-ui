@@ -35,6 +35,6 @@
    <left>
    </left>
    <center>
-      <AnchorPane fx:id="displayModelPane" prefWidth="600.0" BorderPane.alignment="CENTER" />
+      <AnchorPane fx:id="displaySessionPane" prefWidth="600.0" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>

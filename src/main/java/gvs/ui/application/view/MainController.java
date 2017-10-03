@@ -29,7 +29,7 @@ public class MainController {
     private MenuItem clearListMenuItem;
 
     @FXML
-    private AnchorPane displayModelPane;
+    private AnchorPane displaySessionPane;
 
     @FXML
     private void initialize() {
@@ -43,5 +43,6 @@ public class MainController {
     private void loadSession() {
 
     }
+  
 
 }

@@ -1,7 +1,7 @@
 package gvs;
 
 import gvs.server.socket.SocketServer;
-import gvs.ui.application.controller.Main;
+import gvs.ui.application.controller.GVSApplication;
 import gvs.ui.application.view.ApplicationView;
 
 /**
@@ -18,7 +18,7 @@ public class GVSLauncher {
   public static void main(String[] args) {
 
     ApplicationView av = new ApplicationView();
-    new Thread(() ->  Main.main(null)).start();
+    new Thread(() ->  GVSApplication.launch(GVSApplication.class)).start();
 
     av.setVisible(true);
     try {

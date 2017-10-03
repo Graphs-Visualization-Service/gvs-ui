@@ -13,9 +13,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class GVSApplication extends Application {
 
-    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+    private static final Logger logger = LoggerFactory.getLogger(GVSApplication.class);
 
     private Stage primaryStage;
     private BorderPane rootLayout;
@@ -33,7 +33,7 @@ public class Main extends Application {
         try {
             logger.debug("Initialize root layout");
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("../view/Main.fxml"));
+            loader.setLocation(GVSApplication.class.getResource("../view/Main.fxml"));
             rootLayout = (BorderPane) loader.load();
 
             // Show the scene containing the root layout.
@@ -51,7 +51,7 @@ public class Main extends Application {
         try {
             logger.debug("Load session layout");
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("../view/Session.fxml"));
+            loader.setLocation(GVSApplication.class.getResource("../view/Session.fxml"));
             sessionLayout = (BorderPane) loader.load();
             AnchorPane sessionContentPane = new AnchorPane();
             sessionContentPane.getChildren().add(sessionLayout);
@@ -70,9 +70,5 @@ public class Main extends Application {
         AnchorPane.setBottomAnchor(sessionLayout, (double) bottom);
         AnchorPane.setLeftAnchor(sessionLayout, (double) left);
         AnchorPane.setRightAnchor(sessionLayout, (double) right);
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }

@@ -19,8 +19,7 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 script:
-  - ./cc-test-reporter --debug
-  - ./cc-test-reporter format-coverage
+  - ./cc-test-reporter -d format-coverage
   - gradle cobertura
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT

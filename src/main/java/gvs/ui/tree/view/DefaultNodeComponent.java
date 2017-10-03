@@ -16,7 +16,7 @@ import javax.swing.JComponent;
 import gvs.interfaces.IBinaryNode;
 
 /**
- * Default visualization of a node
+ * Default visualization of a node.
  * 
  * @author aegli
  *
@@ -24,8 +24,8 @@ import gvs.interfaces.IBinaryNode;
 public class DefaultNodeComponent extends JComponent {
 
   private static final long serialVersionUID = 1L;
-  private final int DEFAULTHIGHT = 40;
-  private final int BORDEROFFSET = 30;
+  private static final int DEFAULT_HEIGHT = 40;
+  private static final int BORDER_OFFSET = 30;
 
   private IBinaryNode node;
   private String nodeLabel;
@@ -60,12 +60,16 @@ public class DefaultNodeComponent extends JComponent {
   private int ylineOffset;
 
   /**
-   * Builds an instance of a DefaultNodeComponent
+   * Builds an instance of a DefaultNodeComponent.
    * 
    * @param pNode
+   *          node
    * @param pDim
+   *          dim
    * @param pLabelLength
+   *          label length
    * @param pMaxPixel
+   *          max pixel
    */
   public DefaultNodeComponent(IBinaryNode pNode, Dimension pDim,
       int pLabelLength, int pMaxPixel) {
@@ -96,16 +100,18 @@ public class DefaultNodeComponent extends JComponent {
     displayLabel();
   }
 
-  // Calculate width and height of a node component accoriding to the
-  // maximale label length
+  /**
+   * calculate width and height of a node component according to the maximal
+   * label length.
+   */
   private void setNodeCoordinates() {
-    if (normLabelPixel < DEFAULTHIGHT) {
-      rectWidth = DEFAULTHIGHT;
+    if (normLabelPixel < DEFAULT_HEIGHT) {
+      rectWidth = DEFAULT_HEIGHT;
     } else {
       rectWidth = normLabelPixel;
     }
 
-    rectHeight = DEFAULTHIGHT;
+    rectHeight = DEFAULT_HEIGHT;
     xEllipseOffset = rectWidth / 2;
     yEllipseOffset = rectHeight / 2;
 
@@ -130,14 +136,19 @@ public class DefaultNodeComponent extends JComponent {
         yPosition - yEllipseOffset, rectWidth, rectHeight));
   }
 
-  // Paints edges to child nodes
+  /**
+   * Paints edges to child nodes.
+   * 
+   * @param g2
+   *          graphics2D
+   */
   private void drawChildEdges(Graphics2D g2) {
     if (node.getLeftChild() != null) {
       g2.setStroke(node.getLeftChild().getLineStroke());
       g2.setColor(node.getLeftChild().getLineColor());
       g2.drawLine((int) xPosition, (int) yPosition,
           (int) (node.getLeftChild().getXPosition() * onePercentX)
-              + BORDEROFFSET,
+              + BORDER_OFFSET,
           (int) (node.getLeftChild().getYPosition() * onePercentY));
     }
 
@@ -146,12 +157,17 @@ public class DefaultNodeComponent extends JComponent {
       g2.setColor(node.getRightChild().getLineColor());
       g2.drawLine((int) xPosition, (int) yPosition,
           (int) (node.getRightChild().getXPosition() * onePercentX)
-              + BORDEROFFSET,
+              + BORDER_OFFSET,
           (int) (node.getRightChild().getYPosition() * onePercentY));
     }
   }
 
-  // Writes label into node component
+  /**
+   * Writes label into node component.
+   * 
+   * @param g2
+   *          Graphics 2D
+   */
   private void labelNode(Graphics2D g2) {
     fm = getFontMetrics(font);
     g2.setFont(font);
@@ -163,8 +179,10 @@ public class DefaultNodeComponent extends JComponent {
     g2.drawString(displayLabel, xstart, ystart);
   }
 
-  // Calculates node label length according to maximum label length
-  // set in graph model
+  /**
+   * Calculates node label length according to maximum label length set in graph
+   * model.
+   */
   private void displayLabel() {
     if (nodeLabel.length() > labelLength) {
       char[] temp = new char[labelLength];
@@ -180,7 +198,10 @@ public class DefaultNodeComponent extends JComponent {
   }
 
   /**
-   * Paints node component
+   * Paints node component.
+   * 
+   * @param g
+   *          Graphic
    */
   public void paint(Graphics g) {
     super.paint(g);
@@ -202,9 +223,10 @@ public class DefaultNodeComponent extends JComponent {
   }
 
   /**
-   * Sets dimension, used for recalculating the position to resize frame
+   * Sets dimension, used for recalculating the position to resize frame.
    * 
    * @param pDim
+   *          dimension
    */
   public void setDimension(Dimension pDim) {
     dim = pDim;
@@ -212,24 +234,14 @@ public class DefaultNodeComponent extends JComponent {
     onePercentX = dim.getWidth() / 100;
     onePercentY = dim.getHeight() / 100;
 
-    this.xPosition = onePercentX * node.getXPosition() + BORDEROFFSET;
+    this.xPosition = onePercentX * node.getXPosition() + BORDER_OFFSET;
     this.yPosition = onePercentY * node.getYPosition();
   }
 
-  /**
-   * Returns x postion of node component
-   * 
-   * @return
-   */
   public double getXPosition() {
     return xPosition;
   }
 
-  /**
-   * Returns y position of node component
-   * 
-   * @return
-   */
   public double getYPosition() {
     return yPosition;
   }

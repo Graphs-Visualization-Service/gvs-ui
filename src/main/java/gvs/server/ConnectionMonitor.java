@@ -3,7 +3,6 @@ package gvs.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.ui.application.controller.Main;
 
 /**
  * Everyone who wants to send data, must reserve this service. This class is the
@@ -17,7 +16,7 @@ public class ConnectionMonitor {
   private String owner = "";
   private long lastUse;
   private static final Logger serverLogger = LoggerFactory
-      .getLogger(Main.class);
+      .getLogger(ConnectionMonitor.class);
   // private Logger serverLogger = null;
 
   private ConnectionMonitor() {

@@ -20,7 +20,7 @@ env:
     - ./cc-test-reporter before-build
   script:
     - gradle cobertura
-    - ./cc-test-reporter format-coverage -t cobertura build/reports/cobertura
+    - ./cc-test-reporter format-coverage -t cobertura build/reports/cobertura/cobertura.ser
     - ./cc-test-reporter upload-coverage
   after_script:
     - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT

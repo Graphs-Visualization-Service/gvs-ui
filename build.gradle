@@ -57,5 +57,5 @@ findbugs {
 }
 
 cobertura {
-  coverageFormats = ['xml', 'html']
+  coverageFormats = ['xml']
 }

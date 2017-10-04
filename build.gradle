@@ -26,6 +26,17 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "net.saliman:gradle-cobertura-plugin:2.5.0"
+  }
+}
+
 jar {
    	from {configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest {
@@ -45,13 +56,6 @@ findbugs {
   effort = "max"
 }
 
-buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
-  }
-  dependencies {
-    classpath "net.saliman:gradle-cobertura-plugin:2.5.0"
-  }
+cobertura {
+  coverageFormats = ['xml']
 }

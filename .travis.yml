@@ -14,16 +14,17 @@ cache:
 env:
   global:
     - CC_TEST_REPORTER_ID=c208c2dcb4c1daaa1dff97abcdc4f21c12e5842c64c7039629dc62a636ba3676
-  before_script:
-    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-    - chmod +x ./cc-test-reporter
-    - ./cc-test-reporter before-build
-  script:
-    - gradle cobertura
-    - ./cc-test-reporter -d format-coverage -t cobertura build/reports/cobertura/cobertura.ser
-    - ./cc-test-reporter upload-coverage
-  after_script:
-    - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+    
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+script:
+  - gradle coberturaReport
+  - ./cc-test-reporter -d format-coverage -t cobertura build/reports/cobertura/cobertura.ser
+  - ./cc-test-reporter upload-coverage
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 # Automatic Github deploy of the gvs-ui jar for tagged commits
 deploy:

@@ -15,6 +15,7 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 
+import org.dom4j.util.NodeComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
   private static final int PIXELLENGTH = 12;
   private static final int HUNDREDPERCENT = 100;
 
-  private Vector nodeComponents = null;
+  private Vector<IVertexComponent> nodeComponents = null;
   private Vector<EdgeComponent> edgeComponents = null;
   private EdgeComponent edgeComponent = null;
   private IVertexComponent vertexBeingDragged = null;

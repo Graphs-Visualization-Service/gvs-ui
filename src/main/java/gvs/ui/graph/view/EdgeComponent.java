@@ -19,7 +19,8 @@ import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
 
 /**
- * Default component for an edge
+ * 
+ * Swing representation of a graph edge.
  * 
  * @author aegli
  *

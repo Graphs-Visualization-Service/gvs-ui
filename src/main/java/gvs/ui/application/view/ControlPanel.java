@@ -32,10 +32,10 @@ import gvs.interfaces.ITreeSessionController;
 import gvs.interfaces.IVisualizationPanel;
 
 /**
- * Gives a user several interaction possibilities with current session
+ * Contains Swing components for interaction with the current session, such as
+ * replay, next, previous.
  * 
  * @author aegli
- *
  */
 public class ControlPanel extends JPanel implements ImageObserver {
 

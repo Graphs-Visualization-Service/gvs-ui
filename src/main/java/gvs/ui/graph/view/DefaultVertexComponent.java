@@ -17,7 +17,7 @@ import gvs.interfaces.IDefaultVertex;
 import gvs.interfaces.IDefaultVertexComponent;
 
 /**
- * Default component for a vertex
+ * Swing representation of a graph vertex.
  * 
  * @author aegli
  *

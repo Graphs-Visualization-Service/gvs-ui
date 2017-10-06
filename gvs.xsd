@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="GVS" type="Content"></xs:element>
+      
+    <xs:complexType name="Content">
+        <xs:sequence minOccurs="1" maxOccurs="1">
+            <xs:choice minOccurs="1" maxOccurs="1">
+                 <xs:sequence minOccurs="1" maxOccurs="1">
+                    <xs:element name="Graph" type="Graph"></xs:element>
+                    <xs:element name="Vertizes" type="Vertizes"></xs:element>
+                    <xs:element name="Edges" type="Edges"></xs:element>
+                </xs:sequence>
+                 <xs:sequence minOccurs="1" maxOccurs="1">
+                    <xs:element name="Tree" type="Tree"></xs:element>
+                    <xs:element name="Nodes" type="Nodes"></xs:element>
+                    
+                </xs:sequence>
+            </xs:choice>
+          </xs:sequence>          
+    </xs:complexType>
+      
+    <xs:complexType name="Graph">
+        <xs:sequence minOccurs="1" maxOccurs="1">
+            <xs:element name="Label" type="xs:string"></xs:element>
+            <xs:element name="Background" type="xs:string"></xs:element>
+            <xs:element name="MaxLabelLength" type="xs:int"></xs:element>
+        </xs:sequence>
+        <xs:attribute name="Id" type="xs:long"></xs:attribute>
+    </xs:complexType>
+   
+    
+    <xs:complexType name="Vertizes">
+        <xs:choice minOccurs="0" maxOccurs="1">
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">  
+                <xs:element name="DefaultVertex" type="DefaultVertex"></xs:element>
+            </xs:sequence>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="RelativVertex" type="RelativVertex"></xs:element>
+            </xs:sequence>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="DefaultVertex">
+            <xs:sequence minOccurs="0" maxOccurs="1">
+                <xs:element name="Label" type="xs:string"></xs:element>
+                <xs:element name="Linecolor" type="xs:string"></xs:element>
+                <xs:element name="Linestyle" type="xs:string"></xs:element>
+                <xs:element name="Linethickness" type="xs:string"></xs:element>
+                <xs:choice>
+                    <xs:element name="Fillcolor" type="xs:string"></xs:element>
+                    <xs:element name="Icon" type="xs:string"></xs:element>
+                </xs:choice>
+            </xs:sequence>
+        <xs:attribute name="Id" type="xs:long"></xs:attribute>
+    </xs:complexType>
+    
+    <xs:complexType name="RelativVertex">
+        <xs:sequence minOccurs="0" maxOccurs="1">
+            <xs:element name="Label" type="xs:string"></xs:element>
+            <xs:element name="Linecolor" type="xs:string"></xs:element>
+            <xs:element name="Linestyle" type="xs:string"></xs:element>
+            <xs:element name="Linethickness" type="xs:string"></xs:element>
+            <xs:choice>
+                <xs:element name="Fillcolor" type="xs:string"></xs:element>
+                <xs:element name="Icon" type="xs:string"></xs:element>
+            </xs:choice>
+            <xs:element name="XPos" type="xs:double"></xs:element>
+            <xs:element name="YPos" type="xs:double"></xs:element>
+        </xs:sequence>
+        <xs:attribute name="Id" type="xs:long"></xs:attribute>
+    </xs:complexType>
+    
+    <xs:complexType name="Edges">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="Edge" type="Edge"></xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="Edge">
+        <xs:sequence minOccurs="0" maxOccurs="1">
+            <xs:element name="Label" type="xs:string"></xs:element>
+            <xs:element name="Linecolor" type="xs:string"></xs:element>
+            <xs:element name="Linestyle" type="xs:string"></xs:element>
+            <xs:element name="Linethickness" type="xs:string"></xs:element>
+            <xs:element name="FromVertex" type="xs:long"></xs:element>
+            <xs:element name="ToVertex" type="xs:long"></xs:element>
+        </xs:sequence>
+        <xs:attribute name="Id" type="xs:long"></xs:attribute>
+        <xs:attribute name="IsDirected" type="xs:boolean"></xs:attribute>
+        <xs:attribute name="DrawArrowOnPosition" type="xs:integer"></xs:attribute>
+       
+    </xs:complexType>
+    
+    <xs:complexType name="Tree">
+        <xs:sequence minOccurs="1" maxOccurs="1">
+            <xs:element name="Label" type="xs:string"></xs:element>
+            <xs:element name="MaxLabelLength" type="xs:int"></xs:element>
+            <xs:sequence minOccurs="0" maxOccurs="1">
+                <xs:element name="TreeRootId" type="xs:long"></xs:element>
+            </xs:sequence>
+        </xs:sequence>
+        <xs:attribute name="Id" type="xs:long"></xs:attribute>
+    </xs:complexType>
+    
+    <xs:complexType name="Nodes">
+        <xs:choice minOccurs="0" maxOccurs="1">
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">  
+                <xs:element name="DefaultNode" type="DefaultNode"></xs:element>
+            </xs:sequence>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="BinaryNode" type="BinaryNode"></xs:element>
+            </xs:sequence>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="DefaultNode">
+        <xs:sequence minOccurs="0" maxOccurs="1">
+            <xs:element name="Linestyle" type="xs:string"></xs:element>
+            <xs:element name="Label" type="xs:string"></xs:element>
+            <xs:element name="Linecolor" type="xs:string"></xs:element>
+            <xs:element name="Linethickness" type="xs:string"></xs:element>
+            <xs:element name="Fillcolor" type="xs:string"></xs:element>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="Childid" type="xs:long"></xs:element>
+            </xs:sequence>
+         </xs:sequence>
+        <xs:attribute name="id" type="xs:long"></xs:attribute>
+    </xs:complexType>
+    
+    <xs:complexType name="BinaryNode">
+        <xs:sequence minOccurs="0" maxOccurs="1">           
+            <xs:element name="Label" type="xs:string"></xs:element>
+            <xs:element name="Linecolor" type="xs:string"></xs:element>
+            <xs:element name="Linestyle" type="xs:string"></xs:element>
+            <xs:element name="Linethickness" type="xs:string"></xs:element>
+            <xs:element name="Fillcolor" type="xs:string"></xs:element>
+            <xs:sequence minOccurs="0" maxOccurs="1">    
+                <xs:element name="Leftchild" type="xs:long"></xs:element>
+            </xs:sequence>
+            <xs:sequence minOccurs="0" maxOccurs="1">   
+                <xs:element name="Rigthchild" type="xs:long"></xs:element>
+            </xs:sequence>
+        </xs:sequence>
+        <xs:attribute name="Id" type="xs:long"></xs:attribute>
+    </xs:complexType>
+    
+</xs:schema>

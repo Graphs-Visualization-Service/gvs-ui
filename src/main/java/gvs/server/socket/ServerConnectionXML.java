@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.net.URL;
 
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
@@ -154,14 +155,18 @@ public class ServerConnectionXML extends Thread {
     try {
       reader.setValidation(true);
       // TODO store urls separately?
+
+      URL schemaURL = ServerConnectionXML.class.getClassLoader()
+          .getResource(SCHEMA);
+
       reader.setFeature(VALIDATION_SCHEMA, true);
-      reader.setProperty(NO_NAMESPACE_SCHEMA_LOCATION, SCHEMA);
+      reader.setProperty(NO_NAMESPACE_SCHEMA_LOCATION,
+          schemaURL.toURI().toString());
       Document document = reader.read(pFile);
 
       mb.buildModelFromXML(document);
     } catch (Exception e) {
-      serverLogger.error("Document invalid");
-      serverLogger.error(e.getMessage());
+      serverLogger.error("Document invalid", e);
     }
   }
 }

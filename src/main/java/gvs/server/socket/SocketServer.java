@@ -13,6 +13,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.net.UnknownHostException;
 
 import org.dom4j.Document;
@@ -24,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.common.Configuration;
+import gvs.ui.application.controller.GVSApplication;
 
 /**
  * Socket communciation for GVS. For each client a new server-connection will be
@@ -103,7 +105,11 @@ public class SocketServer extends Thread {
       // Portfile current directory
       serverLogger.info("Create local communication file");
       try {
-        portFileCurent = new File("GVSComm.xml");
+
+        URL portFileUrl = SocketServer.class.getClassLoader()
+            .getResource("GVSComm.xml");
+
+        portFileCurent = new File(portFileUrl.toURI());
         Document document = DocumentHelper.createDocument();
         Element docRoot = document.addElement("GVSServer");
         Element ePort = docRoot.addElement("Port");
@@ -119,9 +125,7 @@ public class SocketServer extends Thread {
         serverLogger.info("Local communication file: " + portFileCurent);
 
       } catch (Exception e) {
-        serverLogger.error("Failed to create local communication File");
-        e.printStackTrace();
-
+        serverLogger.error("Failed to create local communication File", e);
       }
     }
   }

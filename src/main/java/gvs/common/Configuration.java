@@ -6,6 +6,8 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -120,7 +122,7 @@ public class Configuration {
   private Color defaultBackgroundColor = Color.WHITE;
 
   // Logger
-  private Logger commonLogger = null;
+  private Logger logger = null;
 
   /**
    * Loads the values from the config-file.
@@ -129,7 +131,7 @@ public class Configuration {
   private Configuration() {
     // TODO check usage of gvs.common.logger
     // commonLogger=gvs.common.Logger.getInstance().getCommenLogger();
-    commonLogger = LoggerFactory.getLogger(Configuration.class);
+    logger = LoggerFactory.getLogger(Configuration.class);
     colors = new HashMap<String, Color>();
     linestyle = new HashMap<String, float[]>();
     linethickness = new HashMap<String, Integer>();
@@ -144,19 +146,24 @@ public class Configuration {
     iconsReversal = new HashMap<Image, String>();
 
     // ******************GO!!!!!*********************
-    commonLogger.info("Load configuration...");
+    logger.info("Load configuration...");
     SAXReader reader = new SAXReader();
     String propConfig = System.getProperty(CONFIGFILEPROPERTY);
     if (propConfig != null) {
-      commonLogger.info("Configfile from properties " + propConfig);
+      logger.info("Configfile from properties " + propConfig);
       config = new File(propConfig);
     } else {
-      commonLogger.info("Load config from currentdirectory.");
-      config = new File("config.xml");
+      try {
+        logger.info("Load config from classpath");
+        URL configUrl = Configuration.class.getClassLoader().getResource("config.xml");
+        config = new File(configUrl.toURI());
+      } catch (URISyntaxException e) {
+        logger.error("Config.xml not found. Invalid URI", e);
+      }
     }
 
     try {
-      commonLogger.info("Build configuration");
+      logger.info("Build configuration");
       // Build configuration
       configDocument = reader.read(config);
       Element docRoot = configDocument.getRootElement();
@@ -185,7 +192,7 @@ public class Configuration {
       // https://www.slf4j.org/faq.html#fatal
       // commonLogger.fatal("No configuration found. System exit");
       Marker fatal = MarkerFactory.getMarker("FATAL");
-      commonLogger.error(fatal, "No configuration found. System exit");
+      logger.error(fatal, "No configuration found. System exit");
       System.exit(0);
     }
   }
@@ -216,10 +223,10 @@ public class Configuration {
     if (theColor == null) {
       if (backgroundfailed) {
         theColor = defaultBackgroundColor;
-        commonLogger.warn("Background not found. Set defaultcolor");
+        logger.warn("Background not found. Set defaultcolor");
       } else {
         theColor = defaultColor;
-        commonLogger.warn("Color not found. Set defaultcolor");
+        logger.warn("Color not found. Set defaultcolor");
       }
     }
     return theColor;
@@ -239,7 +246,7 @@ public class Configuration {
     float[] dash = linestyle.get(pLinestyle);
     Integer width = linethickness.get(pLineThickness);
     if (dash == null || width == null) {
-      commonLogger.warn("Linestroke not found. Set defaultstroke");
+      logger.warn("Linestroke not found. Set defaultstroke");
       return defaultStroke;
     } else {
       return new BasicStroke(width, BasicStroke.CAP_BUTT,
@@ -257,7 +264,7 @@ public class Configuration {
   public synchronized Image getBackgroundImage(String pBackground) {
     Image background = backgroundimage.get(pBackground);
     if (background == null) {
-      commonLogger.warn("Backgroundimage not found. Set standardimage");
+      logger.warn("Backgroundimage not found. Set standardimage");
       background = backgroundimage.get("standard");
     }
     return background;
@@ -273,7 +280,7 @@ public class Configuration {
   public synchronized Image getIcon(String pIcon) {
     Image icon = icons.get(pIcon);
     if (icon == null) {
-      commonLogger.warn("Iconimage not found. Set standardimage");
+      logger.warn("Iconimage not found. Set standardimage");
       icon = icons.get("standard");
     }
     return icon;
@@ -434,7 +441,7 @@ public class Configuration {
     if (level != null) {
       return level;
     } else {
-      commonLogger.warn("Loglevel not found. Set standarlevel:INFO");
+      logger.warn("Loglevel not found. Set standarlevel:INFO");
       return "INFO";
     }
   }
@@ -485,13 +492,13 @@ public class Configuration {
           int b = Integer.parseInt(eB.getText());
           colors.put(name, new Color(r, g, b));
           colorsReversal.put(new Color(r, g, b), name);
-          commonLogger
+          logger
               .debug("New Color: " + name + " : " + r + "/" + g + "/" + b);
         } else {
-          commonLogger.warn("Load Color RGB failed");
+          logger.warn("Load Color RGB failed");
         }
       } else {
-        commonLogger.warn("Load color failed");
+        logger.warn("Load color failed");
       }
     }
   }
@@ -518,10 +525,10 @@ public class Configuration {
 
           linestyleReversal.put(dash, name);
         } catch (Exception ex) {
-          commonLogger.warn("Load Linestyle space/draw failed");
+          logger.warn("Load Linestyle space/draw failed");
         }
       } else {
-        commonLogger.warn("Load Linestyle failed");
+        logger.warn("Load Linestyle failed");
       }
     }
   }
@@ -544,10 +551,10 @@ public class Configuration {
           linethickness.put(name, new Integer(width));
           linethicknessReversal.put(new Integer(width), name);
         } catch (Exception ex) {
-          commonLogger.warn("Load Linethickkness width failed");
+          logger.warn("Load Linethickkness width failed");
         }
       } else {
-        commonLogger.warn("Load Linethickkness failed");
+        logger.warn("Load Linethickkness failed");
       }
     }
   }
@@ -573,10 +580,10 @@ public class Configuration {
           iconsReversal.put(icon, name);
 
         } catch (Exception ex) {
-          commonLogger.warn("Load Icon name/path failed");
+          logger.warn("Load Icon name/path failed");
         }
       } else {
-        commonLogger.warn("Load Icon failed");
+        logger.warn("Load Icon failed");
       }
     }
   }
@@ -602,10 +609,10 @@ public class Configuration {
           backgroundimageReversal.put(back, name);
 
         } catch (Exception ex) {
-          commonLogger.warn("Load Background name/path failed");
+          logger.warn("Load Background name/path failed");
         }
       } else {
-        commonLogger.warn("Load Background failed");
+        logger.warn("Load Background failed");
       }
     }
   }
@@ -617,8 +624,8 @@ public class Configuration {
       commFilePath = ePortFile.getText();
     } else {
       commFilePath = "GVSComm.xml";
-      commonLogger.warn("Load Communicationfilepath failed");
-      commonLogger.warn("Write Communicationfile to current directory");
+      logger.warn("Load Communicationfilepath failed");
+      logger.warn("Write Communicationfile to current directory");
     }
   }
 
@@ -634,12 +641,12 @@ public class Configuration {
       try {
         startPort = eStartPort.getText();
       } catch (Exception ex) {
-        commonLogger.warn("Load Startport failed. Set default: 3000");
+        logger.warn("Load Startport failed. Set default: 3000");
         startPort = "3000";
       }
     } else {
       startPort = "3000";
-      commonLogger.warn("No Startport. Set default: 3000");
+      logger.warn("No Startport. Set default: 3000");
     }
   }
 
@@ -655,11 +662,11 @@ public class Configuration {
       try {
         serverTyp = eServerTyp.getText();
       } catch (Exception ex) {
-        commonLogger.warn("Load Servertyp failed. Set default: Socket");
+        logger.warn("Load Servertyp failed. Set default: Socket");
         serverTyp = SOCKET;
       }
     } else {
-      commonLogger.warn("No Servertyp. Set default: Socket");
+      logger.warn("No Servertyp. Set default: Socket");
       serverTyp = SOCKET;
     }
   }
@@ -676,10 +683,10 @@ public class Configuration {
       try {
         maxLabelLength = Integer.parseInt(eMaxLabelLength.getText());
       } catch (Exception ex) {
-        commonLogger.warn("Load MaxlabelLength failed. Set default: 8");
+        logger.warn("Load MaxlabelLength failed. Set default: 8");
       }
     } else {
-      commonLogger.warn("No MaxlabelLength. Set default: 8");
+      logger.warn("No MaxlabelLength. Set default: 8");
     }
   }
 
@@ -698,10 +705,10 @@ public class Configuration {
           this.writeToConsole = true;
         }
       } catch (Exception ex) {
-        commonLogger.warn("Load writeToConsole failed. Set default: false");
+        logger.warn("Load writeToConsole failed. Set default: false");
       }
     } else {
-      commonLogger.warn("No writeToConsole. Set default: false");
+      logger.warn("No writeToConsole. Set default: false");
     }
   }
 
@@ -747,10 +754,10 @@ public class Configuration {
           String level = eLogger.getText();
           loggers.put(name, level);
         } catch (Exception ex) {
-          commonLogger.warn("Load Loggers failed.");
+          logger.warn("Load Loggers failed.");
         }
       } else {
-        commonLogger.warn("No Loggers.");
+        logger.warn("No Loggers.");
       }
     }
   }
@@ -766,12 +773,12 @@ public class Configuration {
     if (eLayoutDelay != null) {
       try {
         layoutDelay = Integer.parseInt(eLayoutDelay.getText());
-        commonLogger.debug("Delay loaded " + layoutDelay);
+        logger.debug("Delay loaded " + layoutDelay);
       } catch (Exception ex) {
-        commonLogger.warn("Load LayoutDelay failed. Set default: 1500ms");
+        logger.warn("Load LayoutDelay failed. Set default: 1500ms");
       }
     } else {
-      commonLogger.warn("Load LayoutDelay failed. Set default: 1500ms");
+      logger.warn("Load LayoutDelay failed. Set default: 1500ms");
     }
   }
 }

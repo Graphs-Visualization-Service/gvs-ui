@@ -7,6 +7,14 @@ apply plugin: "net.saliman.cobertura"
 sourceCompatibility = 1.8
 mainClassName = 'gvs.GVSLauncher'
 
+sourceSets {
+	main {
+		resources {
+			srcDirs = ["src/main/java", "src/main/resources"]
+		}
+	}
+}
+
 repositories {
     mavenCentral()
     jcenter()

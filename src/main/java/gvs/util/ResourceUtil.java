@@ -5,6 +5,7 @@ package gvs.util;
  * 
  * @author Michi
  */
+//TODO: delete this class, replace usage in SessionController with 'getResource'
 public class ResourceUtil {
 
   private static final String RESOURCES_PATH = "src/main/resources/";

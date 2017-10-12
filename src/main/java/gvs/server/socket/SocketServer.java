@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.common.Configuration;
-import gvs.ui.application.controller.GVSApplication;
 
 /**
  * Socket communciation for GVS. For each client a new server-connection will be

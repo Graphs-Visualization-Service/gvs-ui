@@ -1,8 +1,5 @@
 package gvs.ui.application.view;
 
-import java.io.File;
-
-import gvs.util.ResourceUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
@@ -11,6 +8,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 
+/**
+ * 
+ * @author Michi
+ */
 public class SessionController {
 
   @FXML
@@ -41,19 +42,20 @@ public class SessionController {
   private AnchorPane modelPane;
 
   /**
-   * Called automatically by JavaFX Framework to initialize the view
+   * Called automatically by JavaFX Framework to initialize the view.
    */
   @FXML
   private void initialize() {
-    firstBtn.setImage(buildImage(ResourceUtil.getImagePath("firstBtn.png")));
-    prevBtn.setImage(buildImage(ResourceUtil.getImagePath("prevBtn.png")));
-    nextBtn.setImage(buildImage(ResourceUtil.getImagePath("nextBtn.png")));
-    lastBtn.setImage(buildImage(ResourceUtil.getImagePath("lastBtn.png")));
-    playBtn.setImage(buildImage(ResourceUtil.getImagePath("playBtn.png")));
-  }
-
-  private Image buildImage(String path) {
-    return new Image(new File(path).toURI().toString());
+    firstBtn.setImage(new Image(SessionController.class.getClassLoader()
+        .getResourceAsStream("images/firstBtn.png")));
+    prevBtn.setImage(new Image(SessionController.class.getClassLoader()
+        .getResourceAsStream("images/prevBtn.png")));
+    nextBtn.setImage(new Image(SessionController.class.getClassLoader()
+        .getResourceAsStream("images/nextBtn.png")));
+    lastBtn.setImage(new Image(SessionController.class.getClassLoader()
+        .getResourceAsStream("images/lastBtn.png")));
+    playBtn.setImage(new Image(SessionController.class.getClassLoader()
+        .getResourceAsStream("images/playBtn.png")));
   }
 
 }

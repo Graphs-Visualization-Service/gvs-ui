@@ -5,9 +5,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,10 +32,6 @@ public class Configuration {
 
   // Configuration
   private Document configDocument = null;
-
-  // Config file
-  private File config = null;
-  private static final String CONFIGFILEPROPERTY = "GVSConfig";
 
   // Document
   private static final String TYP = "Typ";
@@ -148,19 +142,9 @@ public class Configuration {
     // ******************GO!!!!!*********************
     logger.info("Load configuration...");
     SAXReader reader = new SAXReader();
-    String propConfig = System.getProperty(CONFIGFILEPROPERTY);
-    if (propConfig != null) {
-      logger.info("Configfile from properties " + propConfig);
-      config = new File(propConfig);
-    } else {
-      try {
-        logger.info("Load config from classpath");
-        URL configUrl = Configuration.class.getClassLoader().getResource("config.xml");
-        config = new File(configUrl.toURI());
-      } catch (URISyntaxException e) {
-        logger.error("Config.xml not found. Invalid URI", e);
-      }
-    }
+    logger.info("Load config from classpath");
+    InputStream config = Configuration.class.getClassLoader()
+        .getResourceAsStream("config.xml");
 
     try {
       logger.info("Build configuration");
@@ -492,8 +476,7 @@ public class Configuration {
           int b = Integer.parseInt(eB.getText());
           colors.put(name, new Color(r, g, b));
           colorsReversal.put(new Color(r, g, b), name);
-          logger
-              .debug("New Color: " + name + " : " + r + "/" + g + "/" + b);
+          logger.debug("New Color: " + name + " : " + r + "/" + g + "/" + b);
         } else {
           logger.warn("Load Color RGB failed");
         }

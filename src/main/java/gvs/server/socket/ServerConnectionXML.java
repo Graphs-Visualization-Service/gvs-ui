@@ -41,22 +41,23 @@ public class ServerConnectionXML extends Thread {
   private PrintStream outStream = null;
   private ConnectionMonitor monitor = null;
   private String remoteHost = null;
-  private final String SCHEMA = "gvs.xsd";
+  private static final String SCHEMA = "gvs.xsd";
 
   // PROTOCOL
-  private final String OK = "OK";
-  private final String FAILED = "FAILED";
-  private final String RESERVEGVS = "reserveGVS";
-  private final String RELEASEGVS = "releaseGVS";
+  private static final String OK = "OK";
+  private static final String FAILED = "FAILED";
+  private static final String RESERVEGVS = "reserveGVS";
+  private static final String RELEASEGVS = "releaseGVS";
   private Logger serverLogger = null;
 
   /**
-   * Opens the streams
+   * Opens the streams.
    * 
-   * @param client
+   * @param c
+   *          Socket client
    */
-  public ServerConnectionXML(Socket client) {
-    this.client = client;
+  public ServerConnectionXML(Socket c) {
+    this.client = c;
     // TODO check Logger relplacement
     // serverLogger = gvs.common.Logger.getInstance().getServerLogger();
     serverLogger = LoggerFactory.getLogger(ServerConnectionXML.class);
@@ -74,7 +75,7 @@ public class ServerConnectionXML extends Thread {
   }
 
   /**
-   * Reads the client commands
+   * Reads the client commands.
    */
   public void run() {
     String str = "";

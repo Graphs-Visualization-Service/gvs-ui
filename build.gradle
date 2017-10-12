@@ -2,7 +2,8 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
-apply plugin: "net.saliman.cobertura"
+apply plugin: 'net.saliman.cobertura'
+apply plugin: 'org.junit.platform.gradle.plugin'
 
 sourceCompatibility = 1.8
 mainClassName = 'gvs.GVSLauncher'
@@ -29,9 +30,9 @@ dependencies {
 	compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
 	compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 	compile group: 'org.dom4j', name: 'dom4j', version: '2.1.0'
-
-    // test
-    testCompile 'junit:junit:4.12'
+	
+	testCompile("org.junit.jupiter:junit-jupiter-api:5.0.1")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.1")	
 }
 
 buildscript {
@@ -42,7 +43,12 @@ buildscript {
   }
   dependencies {
     classpath "net.saliman:gradle-cobertura-plugin:2.5.0"
+    	classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.1'
   }
+}
+
+junitPlatform {
+    platformVersion '1.0.0'
 }
 
 jar {

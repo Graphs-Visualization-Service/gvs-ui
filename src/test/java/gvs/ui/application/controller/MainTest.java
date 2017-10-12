@@ -1,22 +1,19 @@
 package gvs.ui.application.controller;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
- * Test test.
  * 
  * @author Michi
+ *
  */
-public class MainTest {
+class FirstJUnit5Tests {
 
-  /**
-   * Remove this test because it is just a dummy for code coverage.
-   */
   @Test
-  public void test() {
-    assertTrue(true);
+  void myFirstTest() {
+    assertEquals(2, 1 + 1);
   }
 
 }

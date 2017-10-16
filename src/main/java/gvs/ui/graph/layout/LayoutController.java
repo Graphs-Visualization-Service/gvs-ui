@@ -28,7 +28,7 @@ import gvs.ui.graph.layout.ticker.Tickable;
  * @author aegli
  *
  */
-public class LayoutController extends Observable implements Observer, Tickable {
+public class LayoutController extends Observable implements Tickable {
 
   private final int setLayoutStableAfterTime = 10000;
   private Logger graphContLogger = null;
@@ -62,10 +62,7 @@ public class LayoutController extends Observable implements Observer, Tickable {
     random = new Random();
     random.setSeed(4000);
   }
-
-  public void update(Observable o, Object arg) {
-  }
-
+  
   /**
    * Checks if particles in area are stable. If true, stops layouting engine,
    * waits 1500ms and displays with correct components

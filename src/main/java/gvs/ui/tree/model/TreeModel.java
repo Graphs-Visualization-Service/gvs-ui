@@ -2,7 +2,7 @@ package gvs.ui.tree.model;
 
 import java.awt.Color;
 import java.util.Vector;
-
+import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.INode;
 
 /**
@@ -14,7 +14,7 @@ import gvs.interfaces.INode;
 public class TreeModel {
   private String treeLabel;
   private Color backgroundColor;
-  private Vector nodes;
+  private Vector<IBinaryNode> nodes;
   private INode rootNode;
   private int modelId;
   private int maxLabelLength;

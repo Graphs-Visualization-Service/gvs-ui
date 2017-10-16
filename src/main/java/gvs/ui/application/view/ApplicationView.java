@@ -61,7 +61,7 @@ public class ApplicationView extends JFrame implements Observer {
   private JLabel titelOfSession = new JLabel();
   private JPanel myVisualPanel = null;
   private int initialization = 0;
-  private JComboBox combo = null;
+  private JComboBox<ComboItem> combo = null;
   private SaveDialog saveDialog = null;
   // TODO do we need this? -> class not ported form GVS 1.0
   // private LoggerDialog logDialog = null;
@@ -258,7 +258,7 @@ public class ApplicationView extends JFrame implements Observer {
    */
   private void initCombo() {
     appViewLogger.debug("Create combobox");
-    combo = new JComboBox();
+    combo = new JComboBox<>();
     combo.setRenderer(new ComboRenderer());
     combo.addActionListener(new ComboListener(combo, this));
   }

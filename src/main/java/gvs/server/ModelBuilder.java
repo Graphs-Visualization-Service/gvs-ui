@@ -438,7 +438,7 @@ public class ModelBuilder {
    *          vertices
    * @return edge
    */
-  private IEdge buildDirectedEdge(Element pEdge, Vector pVertizes) {
+  private IEdge buildDirectedEdge(Element pEdge, Vector<IVertex> pVertizes) {
     serverLogger.debug("Build DirectedEdge XML");
     Element eLabel = pEdge.element(LABEL);
     Element eLineColor = pEdge.element(LINECOLOR);
@@ -483,7 +483,7 @@ public class ModelBuilder {
    *          vertices
    * @return edge
    */
-  private IEdge buildUndirectedEdge(Element pEdge, Vector pVertizes) {
+  private IEdge buildUndirectedEdge(Element pEdge, Vector<IVertex> pVertizes) {
     serverLogger.debug("Build UndirectedEdge XML");
     int arrowPos = Integer.parseInt(pEdge.attributeValue(ARROWPOS));
 

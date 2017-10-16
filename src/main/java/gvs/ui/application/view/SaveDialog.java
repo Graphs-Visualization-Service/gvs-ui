@@ -47,7 +47,7 @@ public class SaveDialog extends JDialog {
   private static final long serialVersionUID = 1L;
   private GridBagLayout gbl = null;
   private GridBagLayout selectGbl = null;
-  private JList list = null;
+  private JList<?> list = null;
   private JDialog dialog = null;
 
   private Persistor persistor = null;
@@ -136,7 +136,7 @@ public class SaveDialog extends JDialog {
   public void setAvailableSession(ISessionController[] sessiontitel) {
     appViewLogger.debug("Available save session arrived");
     this.font = new Font("Arial", Font.BOLD, 18);
-    this.list = new JList(createData(sessiontitel));
+    this.list = new JList<>(createData(sessiontitel));
 
     getList();
 
@@ -172,7 +172,7 @@ public class SaveDialog extends JDialog {
     JButton selectAllButton = new JButton("Select All");
     selectAllButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        ListModel model = list.getModel();
+        ListModel<?> model = list.getModel();
         int n = model.getSize();
         for (int i = 0; i < n; i++) {
           CheckableItem item = (CheckableItem) model.getElementAt(i);
@@ -214,9 +214,8 @@ public class SaveDialog extends JDialog {
     }
 
     saveButton.addActionListener(new ActionListener() {
-      @SuppressWarnings("unchecked")
       public void actionPerformed(ActionEvent e) {
-        Vector saveToDisk = new Vector();
+        Vector<ISessionController> saveToDisk = new Vector<>();
         ListModel model = list.getModel();
         int n = model.getSize();
 

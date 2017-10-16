@@ -22,7 +22,6 @@ import gvs.common.Configuration;
 import gvs.interfaces.IDefaultVertex;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IIconVertex;
-import gvs.interfaces.INode;
 import gvs.interfaces.IVertex;
 import gvs.interfaces.IVertexComponent;
 import gvs.interfaces.IVisualizationGraphPanel;
@@ -83,8 +82,8 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
     graphContLogger.debug("Build new Visualization-/panel and model");
     this.visualModel = vm;
     this.visualModel.addObserver(this);
-    edgeComponents = new Vector<EdgeComponent>();
-    nodeComponents = new Vector();
+    edgeComponents = new Vector<>();
+    nodeComponents = new Vector<>();
     mediaTracker = new MediaTracker(this);
   }
 
@@ -96,16 +95,14 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
    * @param pDimension
    *          dimension
    */
-  @SuppressWarnings("unchecked")
-  private void createVertexGraphComponents(Vector pVertizes,
+  private void createVertexGraphComponents(Vector<IVertex> pVertizes,
       Dimension pDimension) {
     graphContLogger.debug("Creating vertizes components");
-    Iterator verIt = pVertizes.iterator();
+    Iterator<IVertex> verIt = pVertizes.iterator();
     while (verIt.hasNext()) {
       Object vertex = verIt.next();
 
-      @SuppressWarnings("rawtypes")
-      Class[] interfaces = vertex.getClass().getInterfaces();
+      Class<?>[] interfaces = vertex.getClass().getInterfaces();
       for (int i = 0; i < interfaces.length; i++) {
         if (interfaces[i] == IDefaultVertex.class) {
           graphContLogger.debug("Creating default vertex");
@@ -132,9 +129,10 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
    * @param dimension
    *          dimension
    */
-  private void createEdgeGraphComponents(Vector pEdges, Dimension dimension) {
+  private void createEdgeGraphComponents(Vector<IEdge> pEdges,
+      Dimension dimension) {
     graphContLogger.debug("Creating edge components");
-    Iterator edgIt = pEdges.iterator();
+    Iterator<IEdge> edgIt = pEdges.iterator();
     while (edgIt.hasNext()) {
       IEdge edge = (IEdge) edgIt.next();
       edgeComponent = new EdgeComponent(edge, dimension, backgroundColor, check,
@@ -150,11 +148,11 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
    * @param pVertizes
    *          vetices
    */
-  private void checkLength(Vector pVertizes) {
+  private void checkLength(Vector<IVertex> pVertizes) {
     graphContLogger.debug("Calculate maximal vertex width");
-    Vector vertizes = pVertizes;
+    Vector<IVertex> vertizes = pVertizes;
 
-    Iterator it = vertizes.iterator();
+    Iterator<IVertex> it = vertizes.iterator();
     while (it.hasNext()) {
       String label = ((IVertex) it.next()).getLabel();
       int labelLength = label.length();
@@ -229,8 +227,8 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
       graphModel = visualModel.getGraphModel();
       icon = graphModel.getBackgroundImage();
       backgroundColor = graphModel.getBackgroundColor();
-      edgeComponents = new Vector<EdgeComponent>();
-      nodeComponents = new Vector();
+      edgeComponents = new Vector<>();
+      nodeComponents = new Vector<>();
 
       effectiveLabelLength = 0;
       effectiveLabelPixel = 0;
@@ -277,7 +275,7 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
         nComponent.paint(g);
       }
 
-      Iterator edg = edgeComponents.iterator();
+      Iterator<EdgeComponent> edg = edgeComponents.iterator();
       while (edg.hasNext()) {
         EdgeComponent eComponent = (EdgeComponent) edg.next();
         eComponent.setDimension(d);
@@ -286,7 +284,7 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
     } else {
       double onePercentX = d.getWidth() / HUNDREDPERCENT;
       double onePercentY = d.getHeight() / HUNDREDPERCENT;
-      Iterator verL = graphModel.getVertizes().iterator();
+      Iterator<IVertex> verL = graphModel.getVertizes().iterator();
       while (verL.hasNext()) {
         IVertex temp = ((IVertex) verL.next());
         int x = (int) (temp.getXPosition() * onePercentX),
@@ -299,7 +297,7 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
             OVAL_HEIGHT);
       }
 
-      Iterator edg = graphModel.getEdges().iterator();
+      Iterator<IEdge> edg = graphModel.getEdges().iterator();
       while (edg.hasNext()) {
         IEdge temp = ((IEdge) edg.next());
         IVertex tempStart = temp.getStartVertex();
@@ -379,12 +377,12 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
     } catch (Exception ex) {
     }
 
-    Iterator it1 = nodeComponents.iterator();
+    Iterator<IVertexComponent> it1 = nodeComponents.iterator();
     while (it1.hasNext()) {
       ((IVertexComponent) (it1.next())).setActive(false);
     }
 
-    Iterator it = edgeComponents.iterator();
+    Iterator<EdgeComponent> it = edgeComponents.iterator();
     while (it.hasNext()) {
       ((EdgeComponent) (it.next())).vertexDragged(true);
     }

@@ -74,12 +74,12 @@ public class TreeLayoutController {
       prepareTreeBuild(splitNodes);
       setNodeYPositions();
     } else {
-      Iterator it = myModel.getNodes().iterator();
+      Iterator<IBinaryNode> it = myModel.getNodes().iterator();
       while (it.hasNext()) {
         searchRootNode((IBinaryNode) it.next());
       }
 
-      Iterator it2 = myModel.getNodes().iterator();
+      Iterator<IBinaryNode> it2 = myModel.getNodes().iterator();
       while (it2.hasNext()) {
         IBinaryNode isRoot = ((IBinaryNode) it2.next());
         if (!isRoot.hasParent()) {
@@ -117,7 +117,7 @@ public class TreeLayoutController {
     boolean isFound = true;
     int nodeCounter = 0;
 
-    Iterator it = sortedNodes.iterator();
+    Iterator<IBinaryNode> it = sortedNodes.iterator();
     while (it.hasNext()) {
       BinaryNode temp = (BinaryNode) it.next();
 
@@ -181,8 +181,7 @@ public class TreeLayoutController {
   }
 
   // Prepare model vector for layouting, check dimension
-  @SuppressWarnings("unchecked")
-  private void prepareTreeBuild(Vector splitNodes) {
+  private void prepareTreeBuild(Vector<IBinaryNode> splitNodes) {
     maxHeight = countNodes(rootNode, 0);
     minHeightPerc = maxDimensionHeight / (maxHeight);
 
@@ -236,11 +235,11 @@ public class TreeLayoutController {
     treeContLogger.debug("Tree LayoutController is sorting nodes");
     Vector<IBinaryNode> origEntrys = new Vector<IBinaryNode>(pNodes);
     Vector<IBinaryNode> searchArea = new Vector<IBinaryNode>(pNodes);
-    Iterator itSearch = origEntrys.iterator();
+    Iterator<IBinaryNode> itSearch = origEntrys.iterator();
     while (itSearch.hasNext()) {
       BinaryNode searchEntry = (BinaryNode) itSearch.next();
       searchArea.remove(searchEntry);
-      Iterator itArea = searchArea.iterator();
+      Iterator<IBinaryNode> itArea = searchArea.iterator();
       boolean smallest = true;
       while (itArea.hasNext()) {
         BinaryNode areaEntry = (BinaryNode) itArea.next();

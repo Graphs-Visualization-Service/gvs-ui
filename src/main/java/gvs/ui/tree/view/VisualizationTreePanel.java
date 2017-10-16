@@ -79,10 +79,10 @@ public class VisualizationTreePanel extends JPanel
 
   // Calculates maximum length of node components in order of longest
   // node label
-  private void checkLength(Vector pNodes) {
+  private void checkLength(Vector<INode> pNodes) {
     treeContLogger.debug("Calculate maximal node width");
-    Vector nodes = pNodes;
-    Iterator it = nodes.iterator();
+    Vector<INode> nodes = pNodes;
+    Iterator<INode> it = nodes.iterator();
 
     while (it.hasNext()) {
       String label = ((INode) it.next()).getNodeLabel();
@@ -158,7 +158,7 @@ public class VisualizationTreePanel extends JPanel
     super.paint(g);
     Dimension dimension = this.getSize();
 
-    Iterator it;
+    Iterator<DefaultNodeComponent> it;
 
     // Now just drawing the Edges and Labels (not the Ellipse):
     it = nodeComponents.iterator();

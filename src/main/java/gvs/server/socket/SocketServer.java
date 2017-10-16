@@ -69,6 +69,7 @@ public class SocketServer extends Thread {
     for (int searchPort = startPort; searchPort <= 60000; searchPort++) {
       try {
         InetSocketAddress isa = new InetSocketAddress("localhost", searchPort);
+        //TODO check if this is really working, because the global variable is taken
         Socket socket = new Socket();
         socket.connect(isa, 1); // Timeout auf 1ms setzen
       } catch (Exception e) {

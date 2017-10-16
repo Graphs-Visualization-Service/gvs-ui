@@ -257,7 +257,7 @@ public class Persistor {
 
     Element eVertizes = eGraphModel.addElement(VERTIZES);
 
-    Iterator vertexIt = pModel.getVertizes().iterator();
+    Iterator<IVertex> vertexIt = pModel.getVertizes().iterator();
     while (vertexIt.hasNext()) {
       Object temp = vertexIt.next();
       if (temp.getClass() == DefaultVertex.class) {
@@ -268,7 +268,7 @@ public class Persistor {
     }
 
     Element eEdges = eGraphModel.addElement(EDGES);
-    Iterator edgeIt = pModel.getEdges().iterator();
+    Iterator<IEdge> edgeIt = pModel.getEdges().iterator();
     while (edgeIt.hasNext()) {
       Edge temp = (Edge) edgeIt.next();
       saveEdge(temp, eEdges);
@@ -452,7 +452,7 @@ public class Persistor {
 
         Vector<IVertex> vertizes = new Vector<IVertex>();
         Element eVertizes = eGraphModel.element(VERTIZES);
-        Iterator vertizesIt = eVertizes.elementIterator();
+        Iterator<Element> vertizesIt = eVertizes.elementIterator();
         while (vertizesIt.hasNext()) {
           Element eVertex = (Element) (vertizesIt.next());
           if (eVertex.getName().equals(DEFAULTVERTEX)) {
@@ -464,7 +464,7 @@ public class Persistor {
 
         Vector<IEdge> edges = new Vector<IEdge>();
         Element eEdges = eGraphModel.element(EDGES);
-        Iterator edgesIt = eEdges.elementIterator();
+        Iterator<Element> edgesIt = eEdges.elementIterator();
         while (edgesIt.hasNext()) {
           Element eEdge = (Element) (edgesIt.next());
           edges.add(loadEdge(eEdge, vertizes));
@@ -506,7 +506,7 @@ public class Persistor {
 
         Vector<INode> nodes = new Vector<INode>();
         Element eNodes = eTreeModel.element(NODES);
-        Iterator nodeIt = eNodes.elementIterator();
+        Iterator<Element> nodeIt = eNodes.elementIterator();
         while (nodeIt.hasNext()) {
           Element eNode = (Element) (nodeIt.next());
           if (eNode.getName().equals(BINARYNODE)) {
@@ -523,7 +523,7 @@ public class Persistor {
           // TODO refactor -> empty else
           if (tmp.getClass() == BinaryNode.class) {
             BinaryNode actual = (BinaryNode) tmp;
-            Iterator nodesModelIt2 = nodes.iterator();
+            Iterator<INode> nodesModelIt2 = nodes.iterator();
             while (nodesModelIt2.hasNext()) {
               BinaryNode child = (BinaryNode) (nodesModelIt2.next());
               if (actual.getLeftChildId() == child.getNodeId()) {
@@ -545,7 +545,7 @@ public class Persistor {
 
         }
         IBinaryNode rootNode = null;
-        Iterator rootNodeModelIt = nodes.iterator();
+        Iterator<INode> rootNodeModelIt = nodes.iterator();
         while (rootNodeModelIt.hasNext()) {
           BinaryNode child = (BinaryNode) (rootNodeModelIt.next());
           if (rootNodeId == child.getNodeId()) {
@@ -633,7 +633,7 @@ public class Persistor {
     }
   }
 
-  private IEdge loadEdge(Element pEdge, Vector pVertizes) {
+  private IEdge loadEdge(Element pEdge, Vector<IVertex> pVertizes) {
     String isDirected = pEdge.attributeValue(ISDIRECTED);
     Element eLabel = pEdge.element(LABEL);
     Element eLineColor = pEdge.element(LINECOLOR);
@@ -655,7 +655,7 @@ public class Persistor {
     IVertex fromVertex = null;
     IVertex toVertex = null;
 
-    Iterator searchVertex = pVertizes.iterator();
+    Iterator<IVertex> searchVertex = pVertizes.iterator();
     while (searchVertex.hasNext()) {
       IVertex tmp = (IVertex) (searchVertex.next());
       if (tmp.getId() == fromVertexId) {

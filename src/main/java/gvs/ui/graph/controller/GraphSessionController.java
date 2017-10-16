@@ -36,8 +36,7 @@ public class GraphSessionController
   private LayoutController layoutController = null;
   private GraphModel actualGraphModel = null;
   private ControlPanel controlPanel = null;
-  @SuppressWarnings("rawtypes")
-  private Vector graphModels = null;
+  private Vector<GraphModel> graphModels = null;
   private Timer replayTimer = null;
   private GraphSessionReplay sessionReplay = null;
 
@@ -45,7 +44,8 @@ public class GraphSessionController
   private int serverSessionId = 1;
   private String sessionName = null;
 
-  private int picsPersMinute = 1000;
+  private static final int DEFAULT_PICS_PER_MINUTE = 1000;
+  private int picsPersMinute = DEFAULT_PICS_PER_MINUTE;
   private boolean callLayoutEngine = false;
   private boolean replayMode = false;
   private boolean autoLayoutingMode = false;
@@ -73,9 +73,8 @@ public class GraphSessionController
    * @param pGraphModels
    *          graphModel
    */
-  @SuppressWarnings("rawtypes")
   public GraphSessionController(long pSessionId, String pSessionName,
-      Vector pGraphModels) {
+      Vector<GraphModel> pGraphModels) {
     this.clientSessionId = pSessionId;
     this.sessionName = pSessionName;
     this.graphModels = pGraphModels;
@@ -112,7 +111,7 @@ public class GraphSessionController
     this.sessionName = pSessionName;
 
     initializeGraphSessionController();
-    
+
     graphModels = new Vector();
     graphContLogger.info("Build new graph session controller");
     actualGraphModel = pGraphModel;
@@ -163,7 +162,6 @@ public class GraphSessionController
    * @param pGraphModel
    *          graphModel
    */
-  @SuppressWarnings("unchecked")
   public void addGraphModel(GraphModel pGraphModel) {
     graphContLogger.info("New graph arrived");
     try {
@@ -369,6 +367,8 @@ public class GraphSessionController
 
   /**
    * Returns current graph model.
+   * 
+   * @return actual graph model
    */
   public GraphModel getActualGraphModel() {
     return actualGraphModel;
@@ -376,6 +376,9 @@ public class GraphSessionController
 
   /**
    * Sets current graph model.
+   * 
+   * @param actualGraphModel
+   *          new graph model
    */
   public void setActualGraphModel(GraphModel actualGraphModel) {
     this.actualGraphModel = actualGraphModel;
@@ -409,7 +412,7 @@ public class GraphSessionController
     if (!isRelativeSession) {
       if (actualGraphModel.getModelId() == graphModels.size()) {
         graphContLogger.debug("Graph is last element in Queue, call Layouter");
-        Iterator it = actualGraphModel.getVertizes().iterator();
+        Iterator<IVertex> it = actualGraphModel.getVertizes().iterator();
         while (it.hasNext()) {
           ((IVertex) it.next()).setFixedPosition(false);
         }
@@ -437,8 +440,7 @@ public class GraphSessionController
    * 
    * @return graphModels
    */
-  @SuppressWarnings("rawtypes")
-  public AbstractList getMyGraphModels() {
+  public AbstractList<GraphModel> getMyGraphModels() {
     return graphModels;
   }
 
@@ -460,21 +462,20 @@ public class GraphSessionController
   /**
    * Copy positions of former vertizes to actual model in order of no changes.
    */
-  @SuppressWarnings("rawtypes")
   private void setFormerVertexCoordinate() {
     GraphModel formerModel = (GraphModel) graphModels
         .elementAt(actualGraphModel.getModelId() - 2);
-    Vector formerVertizes = formerModel.getVertizes();
-    Vector actualVertizes = actualGraphModel.getVertizes();
+    Vector<IVertex> formerVertizes = formerModel.getVertizes();
+    Vector<IVertex> actualVertizes = actualGraphModel.getVertizes();
 
-    Iterator it1 = actualVertizes.iterator();
+    Iterator<IVertex> it1 = actualVertizes.iterator();
     boolean isFormerVertexPosAvailable = false;
     graphContLogger.debug("Setting former graph position to actual graph");
     while (it1.hasNext()) {
       IVertex actualVertex = (IVertex) it1.next();
       isFormerVertexPosAvailable = false;
 
-      Iterator it = formerVertizes.iterator();
+      Iterator<IVertex> it = formerVertizes.iterator();
       while (it.hasNext()) {
         IVertex formerVertex = ((IVertex) it.next());
         if (actualVertex.getId() == formerVertex.getId()) {

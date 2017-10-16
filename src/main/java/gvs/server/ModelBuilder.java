@@ -116,7 +116,7 @@ public class ModelBuilder {
   public synchronized void buildModelFromXML(Document document) {
     serverLogger.debug("Model will be built from XML");
     Element docRoot = document.getRootElement();
-    Iterator contentIt = docRoot.elementIterator();
+    Iterator<Element> contentIt = docRoot.elementIterator();
     while (contentIt.hasNext()) {
       Element eTag = (Element) (contentIt.next());
       if (eTag.getName().equals(GRAPH)) {
@@ -152,7 +152,7 @@ public class ModelBuilder {
     Vector<IEdge> edges = new Vector<IEdge>();
 
     Element eVertizes = pDocRoot.element(VERTIZES);
-    Iterator vertizesIt = eVertizes.elementIterator();
+    Iterator<Element> vertizesIt = eVertizes.elementIterator();
     while (vertizesIt.hasNext()) {
       Element eVertex = (Element) (vertizesIt.next());
       if (eVertex.getName().equals(DEFAULTVERTEX)) {
@@ -162,7 +162,7 @@ public class ModelBuilder {
       }
     }
     Element eEdges = pDocRoot.element(EDGES);
-    Iterator edgesIt = eEdges.elementIterator();
+    Iterator<Element> edgesIt = eEdges.elementIterator();
     while (edgesIt.hasNext()) {
       Element eEdge = (Element) (edgesIt.next());
       if (eEdge.attributeValue(ISDIRECTED).equals("true")) {
@@ -203,7 +203,7 @@ public class ModelBuilder {
     String maxLabelLength = eTree.element(MAXLABELLENGTH).getText();
 
     Vector<INode> nodes = new Vector<INode>();
-    Iterator nodesIt = eNodes.elementIterator();
+    Iterator<Element> nodesIt = eNodes.elementIterator();
     while (nodesIt.hasNext()) {
       Element eNode = (Element) (nodesIt.next());
       if (eNode.getName().equals(DEFAULTNODE)) {
@@ -214,12 +214,12 @@ public class ModelBuilder {
 
     }
 
-    Iterator nodesModelIt = nodes.iterator();
+    Iterator<INode> nodesModelIt = nodes.iterator();
     while (nodesModelIt.hasNext()) {
       Object tmp = nodesModelIt.next();
       if (tmp.getClass() == BinaryNode.class) {
         BinaryNode actual = (BinaryNode) tmp;
-        Iterator nodesModelIt2 = nodes.iterator();
+        Iterator<INode> nodesModelIt2 = nodes.iterator();
         while (nodesModelIt2.hasNext()) {
           BinaryNode child = (BinaryNode) (nodesModelIt2.next());
           if (actual.getLeftChildId() == child.getNodeId()) {
@@ -230,7 +230,7 @@ public class ModelBuilder {
         }
       } else if (tmp.getClass() == DefaultNode.class) {
         DefaultNode actual = (DefaultNode) tmp;
-        Iterator nodesModelIt2 = nodes.iterator();
+        Iterator<INode> nodesModelIt2 = nodes.iterator();
         while (nodesModelIt2.hasNext()) {
           DefaultNode child = (DefaultNode) (nodesModelIt2.next());
           long[] allchilds = actual.getChildIds();
@@ -247,7 +247,7 @@ public class ModelBuilder {
     if (eRoot != null) {
 
       long rootId = Long.parseLong(eRoot.getText());
-      Iterator nodeIt = nodes.iterator();
+      Iterator<INode> nodeIt = nodes.iterator();
       while (nodeIt.hasNext()) {
         INode tmp = (INode) (nodeIt.next());
         if (tmp.getNodeId() == rootId) {
@@ -278,7 +278,7 @@ public class ModelBuilder {
     Element eLineStyle = pNode.element(LINESTYLE);
     Element eLineThickness = pNode.element(LINETHICKNESS);
     Element eFillcolor = pNode.element(FILLCOLOR);
-    List childIds = pNode.elements(CHILDID);
+    List<Element> childIds = pNode.elements(CHILDID);
 
     String label = eLabel.getText();
     String linecolor = eLineColor.getText();
@@ -290,7 +290,7 @@ public class ModelBuilder {
     Color fillColor = typs.getColor(fillcolor, false);
     long[] childs = new long[childIds.size()];
 
-    Iterator childIt = childIds.iterator();
+    Iterator<Element> childIt = childIds.iterator();
     int counter = 0;
     while (childIt.hasNext()) {
       Element childIdTmp = (Element) (childIt.next());
@@ -459,7 +459,7 @@ public class ModelBuilder {
     IVertex fromVertex = null;
     IVertex toVertex = null;
 
-    Iterator searchVertex = pVertizes.iterator();
+    Iterator<IVertex> searchVertex = pVertizes.iterator();
     while (searchVertex.hasNext()) {
       IVertex tmp = (IVertex) (searchVertex.next());
       if (tmp.getId() == fromVertexId) {
@@ -506,7 +506,7 @@ public class ModelBuilder {
     IVertex fromVertex = null;
     IVertex toVertex = null;
 
-    Iterator searchVertex = pVertizes.iterator();
+    Iterator<IVertex> searchVertex = pVertizes.iterator();
     while (searchVertex.hasNext()) {
       IVertex tmp = (IVertex) (searchVertex.next());
       if (tmp.getId() == fromVertexId) {

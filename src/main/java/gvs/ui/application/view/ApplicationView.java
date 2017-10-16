@@ -51,6 +51,9 @@ import gvs.ui.tree.view.ClusterSplitterGVS;
  */
 public class ApplicationView extends JFrame implements Observer {
 
+  private static final int DEFAULT_FONT_SIZE = 25;
+  private static final int WINDOW_HEIGHT = 800;
+  private static final int WINDOW_WIDTH = 1200;
   private static final long serialVersionUID = 1L;
   private Logger appViewLogger = null;
   private BorderLayout gbl = null;
@@ -71,12 +74,12 @@ public class ApplicationView extends JFrame implements Observer {
   private ApplicationModel am = null;
 
   /**
-   * Creates main user interface
+   * Creates main user interface.
    *
    */
   public ApplicationView() {
     super("Graphs-Visualization-Service GVS");
-    this.setSize(1200, 800);
+    this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     // TODO check logger replacement
     // this.appViewLogger =
     // gvs.common.Logger.getInstance().getApplicationViewLogger();
@@ -85,7 +88,7 @@ public class ApplicationView extends JFrame implements Observer {
 
     persistor = new Persistor();
     gbl = new BorderLayout();
-    font = new Font("Times", Font.ITALIC + Font.BOLD, 25);
+    font = new Font("Times", Font.ITALIC + Font.BOLD, DEFAULT_FONT_SIZE);
 
     am = new ApplicationModel();
     am.addObserver(this);
@@ -119,7 +122,11 @@ public class ApplicationView extends JFrame implements Observer {
     deleteButton.setEnabled(false);
   }
 
-  // Create menubar, items and item actions
+  /**
+   * Create menubar, items and item actions.
+   * 
+   * @return JMenuBar
+   */
   private JMenuBar initMenubar() {
     JMenuBar bar = new JMenuBar();
 
@@ -213,9 +220,13 @@ public class ApplicationView extends JFrame implements Observer {
     return bar;
   }
 
-  // Updates view after choosing another session or after newly arrived
-  // updates from
-  // layout engine
+  /**
+   * Updates view after choosing another session or after newly arrived updates
+   * from layout engine.
+   * 
+   * @param s
+   *          session controller
+   */
   private void setApplicationView(ISessionController s) {
     appViewLogger.info("New view update arrived");
     if (initialization == 0) {
@@ -242,7 +253,9 @@ public class ApplicationView extends JFrame implements Observer {
 
   }
 
-  // Initialze combobox
+  /**
+   * Initialze combobox.
+   */
   private void initCombo() {
     appViewLogger.debug("Create combobox");
     combo = new JComboBox();
@@ -250,7 +263,10 @@ public class ApplicationView extends JFrame implements Observer {
     combo.addActionListener(new ComboListener(combo, this));
   }
 
-  // Update combobox in order of new session
+  /**
+   * Update combobox in order of new session.
+   * @param s session controller
+   */
   private void updateCombo(ISessionController s) {
     appViewLogger.debug("Update combobox");
     ISessionController[] comboTitel = getSessiontoSave();
@@ -278,7 +294,9 @@ public class ApplicationView extends JFrame implements Observer {
 
   }
 
-  // Generates information panel on top of user interface.
+  /**
+   * Generates information panel on top of user interface.
+   */
   private void generateHeaderPanel() {
     appViewLogger.debug("Create header panel");
     headerPanel.setLayout(new GridLayout(1, 2));
@@ -312,7 +330,12 @@ public class ApplicationView extends JFrame implements Observer {
 
   /**
    * Update view while choosing another session or of arriving updates from
-   * layout engine
+   * layout engine.
+   * 
+   * @param o
+   *          observable
+   * @param arg
+   *          arguments
    */
   public void update(Observable o, Object arg) {
     ISessionController s = ((ISessionController) am.getSession());
@@ -323,15 +346,14 @@ public class ApplicationView extends JFrame implements Observer {
   /**
    * Returns references of available sessions. Used by combobox and saveDialog
    * 
-   * @return
+   * @return ISessionController sessioncontroller
    */
   public ISessionController[] getSessiontoSave() {
     int counter = 0;
-    @SuppressWarnings("rawtypes")
-    Vector v = ac.getSessionContoller();
+    Vector<ISessionController> v = ac.getSessionContoller();
 
     ISessionController[] sessionNames = new ISessionController[v.size()];
-    Iterator it = v.iterator();
+    Iterator<ISessionController> it = v.iterator();
     while (it.hasNext()) {
       sessionNames[counter] = ((ISessionController) it.next());
       counter++;
@@ -340,7 +362,7 @@ public class ApplicationView extends JFrame implements Observer {
   }
 
   /**
-   * Deletes actual displayed session
+   * Deletes actual displayed session.
    *
    */
   public void deleteSession() {
@@ -349,16 +371,17 @@ public class ApplicationView extends JFrame implements Observer {
   }
 
   /**
-   * Sets a choosen seesion from combobox to main panel
+   * Sets a choosen seesion from combobox to main panel.
    * 
    * @param cs
+   *          session controller
    */
   public void comboSet(ISessionController cs) {
     am.setSession(cs);
   }
 
   /**
-   * Show Trace dialog in oder to change trace level
+   * Show Trace dialog in oder to change trace level.
    *
    */
   // TODO do we need this? -> class not ported from GVS 1.0
@@ -376,6 +399,7 @@ public class ApplicationView extends JFrame implements Observer {
    * Show session dialog, check if user wants to exit program.
    * 
    * @param isExitRequested
+   *          exist requested
    */
   public void saveSesssions(boolean isExitRequested) {
     appViewLogger.info("Showing Savedialog");
@@ -389,7 +413,7 @@ public class ApplicationView extends JFrame implements Observer {
   }
 
   /**
-   * Shows About Menu
+   * Shows About Menu.
    *
    */
   public void loadAboutMenu() {
@@ -401,7 +425,7 @@ public class ApplicationView extends JFrame implements Observer {
   }
 
   /**
-   * Load a session and display
+   * Load a session and display.
    *
    */
   public void loadSession() {
@@ -427,7 +451,7 @@ public class ApplicationView extends JFrame implements Observer {
   }
 
   /**
-   * Before exit program, show save dialog
+   * Before exit program, show save dialog.
    *
    */
   public void exitProgram() {
@@ -436,9 +460,10 @@ public class ApplicationView extends JFrame implements Observer {
   }
 
   /**
-   * Set new layout option
+   * Set new layout option.
    * 
    * @param layoutOption
+   *          layout option
    */
   public void layoutOption(boolean layoutOption) {
     appViewLogger.info("Set new layout option");
@@ -446,9 +471,10 @@ public class ApplicationView extends JFrame implements Observer {
   }
 
   /**
-   * While layouting, disable delete button
+   * While layouting, disable delete button.
    * 
    * @param pIsDeleteButtonEnable
+   *          enable delete button
    */
   public static void setButton(boolean pIsDeleteButtonEnable) {
     deleteButton.setEnabled(pIsDeleteButtonEnable);

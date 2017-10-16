@@ -8,13 +8,19 @@ import gvs.ui.graph.layout.rules.RepulsiveForce;
 import gvs.ui.graph.layout.rules.Traction;
 
 /**
- * Layout area where the elements are set to their positions
+ * Layout area where the elements are set to their positions.
  * 
  * @author aegli
  *
  */
 public class Area extends Observable {
 
+  private static final double DEFAULT_VISCOSITY = 0.15;
+  private static final int DEFAULT_DISTANCE = 20;
+  private static final int OFFSET_Y = 10;
+  private static final int OFFSET_X = 30;
+  private static final double DEFAULT_PERCENTAGE = 0.9;
+  private static final int DEFAULT_AREA_DIM = 1000;
   private final int dimensions = 2;
   private Vector<Particle> particles = new Vector<Particle>();
   private Vector<Traction> traction = new Vector<Traction>();
@@ -28,11 +34,11 @@ public class Area extends Observable {
 
   /**
    * Builds new default area where particle positions are calculated Default
-   * dimension: 1000*1000
+   * dimension: 1000*1000.
    *
    */
   public Area() {
-    this(new AreaDimension(1000, 1000));
+    this(new AreaDimension(DEFAULT_AREA_DIM, DEFAULT_AREA_DIM));
   }
 
   /**
@@ -40,9 +46,10 @@ public class Area extends Observable {
    * overwriting the default dimension
    * 
    * @param dimension
+   *          dimension
    */
   public Area(AreaDimension dimension) {
-    this(dimension, 0.15);
+    this(dimension, DEFAULT_VISCOSITY);
   }
 
   /**
@@ -51,7 +58,9 @@ public class Area extends Observable {
    * how fast accelerated particles slow down
    * 
    * @param dimension
+   *          dimension
    * @param viscosity
+   *          viscosity
    */
   public Area(AreaDimension dimension, double viscosity) {
     this.dimension = dimension;
@@ -59,9 +68,9 @@ public class Area extends Observable {
   }
 
   /**
-   * Returns dimension of actual area
+   * Returns dimension of actual area.
    * 
-   * @return
+   * @return area dimension
    */
   public AreaDimension getUniverseDimension() {
     return dimension;
@@ -69,18 +78,20 @@ public class Area extends Observable {
 
   /**
    * Sets a new viscosity. Viscosity has an influence on how fast accelerated
-   * particles slow down
+   * particles slow down.
    * 
    * @param d
+   *          viscosity
    */
   public void setViscosity(double d) {
     viscosity = d;
   }
 
   /**
-   * Places new particles in area, so their positions can be calculated
+   * Places new particles in area, so their positions can be calculated.
    * 
    * @param p
+   *          particle
    */
   public synchronized void addParticles(Particle p) {
     particles.add(p);
@@ -89,7 +100,7 @@ public class Area extends Observable {
   /**
    * Returns centre of area. Default: 500*500
    * 
-   * @return
+   * @return Area Point
    */
   public AreaPoint getAreaCenter() {
     return dimension.getCenter();
@@ -99,19 +110,21 @@ public class Area extends Observable {
    * Adds tractions. Used by particles which are connected to each other.
    * 
    * @param t
+   *          traction
    */
   public synchronized void addTraction(Traction t) {
     traction.add(t);
   }
 
   /**
-   * Returns particle with requested id
+   * Returns particle with requested id.
    * 
    * @param id
-   * @return
+   *          particle id
+   * @return Particle
    */
   public Particle getParticleWithID(long id) {
-    Iterator it = particles.iterator();
+    Iterator<Particle> it = particles.iterator();
     while (it.hasNext()) {
       Particle p = (Particle) it.next();
       if (id == p.getParticleId()) {
@@ -126,15 +139,16 @@ public class Area extends Observable {
    * will then return postions to Session controller for drawing
    * 
    * @param pState
+   *          particle state
    */
   public void setAreaState(boolean pState) {
     isAreaStable = pState;
   }
 
   /**
-   * Returns if all available particles in area are fixed
+   * Returns if all available particles in area are fixed.
    * 
-   * @return
+   * @return is area stable
    */
   public boolean getAreaState() {
     return isAreaStable;
@@ -146,19 +160,19 @@ public class Area extends Observable {
    *
    */
   public synchronized void updateAll() {
-    Iterator it1 = particles.iterator();
+    Iterator<Particle> it1 = particles.iterator();
     while (it1.hasNext()) {
       Particle p = (Particle) it1.next();
       p.getAcceleration().resetAcc();
     }
-    Iterator it9 = traction.iterator();
+    Iterator<Traction> it9 = traction.iterator();
     while (it9.hasNext()) {
       Traction t = (Traction) it9.next();
       t.compute();
     }
 
-    Iterator it3 = particles.iterator();
-    Iterator it4;
+    Iterator<Particle> it3 = particles.iterator();
+    Iterator<Particle> it4;
     while (it3.hasNext()) {
       Particle refP = (Particle) it3.next();
       it4 = particles.iterator();
@@ -170,7 +184,7 @@ public class Area extends Observable {
       }
     }
 
-    Iterator it = particles.iterator();
+    Iterator<Particle> it = particles.iterator();
     while (it.hasNext()) {
       Particle p = (Particle) it.next();
       AreaVector vectorToCentre = new AreaVector(p.getPointPosition(),
@@ -182,17 +196,17 @@ public class Area extends Observable {
       p.update();
     }
 
-    Iterator it11 = particles.iterator();
+    Iterator<Particle> it11 = particles.iterator();
     while (it11.hasNext()) {
       Particle p = (Particle) it11.next();
       p.update();
-      if (p.getSpeed().getDistance() > 20) {
-        p.getSpeed().scaleTo(20);
+      if (p.getSpeed().getDistance() > DEFAULT_DISTANCE) {
+        p.getSpeed().scaleTo(DEFAULT_DISTANCE);
       }
       checkAreaBounds(p);
     }
 
-    Iterator it0 = particles.iterator();
+    Iterator<Particle> it0 = particles.iterator();
     fixedParticles = 0;
     while (it0.hasNext()) {
       Particle p = (Particle) it0.next();
@@ -206,15 +220,20 @@ public class Area extends Observable {
     }
   }
 
-  // Check if particles are leaving area boundarys.
-  // If true acclerate them in opposite direction
+  /**
+   * Check if particles are leaving area boundarys. If true acclerate them in
+   * opposite direction.
+   * 
+   * @param p
+   *          particle
+   */
   private void checkAreaBounds(Particle p) {
 
     AreaPoint pos = p.getPointPosition();
     AreaVector vel = p.getSpeed();
 
-    int offx = 30;
-    int offy = 10;
+    int offx = OFFSET_X;
+    int offy = OFFSET_Y;
 
     for (int i = 0; i < dimensions; i++) {
       int off = 0;
@@ -235,10 +254,10 @@ public class Area extends Observable {
 
       if (ub < ua) {
         pos.setField(i, ua);
-        vel.setField(i, -0.9 * vel.getField(i));
+        vel.setField(i, -DEFAULT_PERCENTAGE * vel.getField(i));
       } else if (ub > uc) {
         pos.setField(i, uc);
-        vel.setField(i, -0.9 * vel.getField(i));
+        vel.setField(i, -DEFAULT_PERCENTAGE * vel.getField(i));
       }
 
     }

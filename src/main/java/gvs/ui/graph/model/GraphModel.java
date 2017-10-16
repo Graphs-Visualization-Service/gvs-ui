@@ -4,17 +4,18 @@ import java.awt.Color;
 import java.awt.Image;
 import java.util.Vector;
 
+import gvs.interfaces.IEdge;
+import gvs.interfaces.IVertex;
+
 /**
- * Model of a graph which holds its vertices and other parameters
+ * Model of a graph which holds its vertices and other parameters.
  * 
  * @author aegli
  *
  */
 public class GraphModel {
-  @SuppressWarnings("rawtypes")
-  private Vector vertizes = null;
-  @SuppressWarnings("rawtypes")
-  private Vector edges = null;
+  private Vector<IVertex> vertizes = null;
+  private Vector<IEdge> edges = null;
   private Image backgroundImage = null;
   private Color backgroundColor = null;
   private String graphLabel = null;
@@ -23,17 +24,21 @@ public class GraphModel {
   private int maxLabelLength = 0;
 
   /**
-   * Builds graph model with background image
+   * Builds graph model with background image.
    * 
    * @param pGraphLabel
-   * @param pBackgroundColor
+   *          label
+   * @param pBackgroundImage
+   *          background image
    * @param pVertizes
+   *          vertices
    * @param pEdges
+   *          edges
    * @param pMaxLabelLength
+   *          max label length
    */
-  @SuppressWarnings("rawtypes")
   public GraphModel(String pGraphLabel, Image pBackgroundImage,
-      Vector pVertizes, Vector pEdges, int pMaxLabelLength) {
+      Vector<IVertex> pVertizes, Vector<IEdge> pEdges, int pMaxLabelLength) {
     this.graphLabel = pGraphLabel;
     this.backgroundImage = pBackgroundImage;
     this.vertizes = pVertizes;
@@ -43,17 +48,21 @@ public class GraphModel {
   }
 
   /**
-   * Builds graph model without background image
+   * Builds graph model without background image.
    * 
    * @param pGraphLabel
+   *          graph label
    * @param pBackgroundColor
+   *          background color
    * @param pVertizes
+   *          vertices
    * @param pEdges
+   *          edges
    * @param pMaxLabelLength
+   *          max label length
    */
-  @SuppressWarnings("rawtypes")
   public GraphModel(String pGraphLabel, Color pBackgroundColor,
-      Vector pVertizes, Vector pEdges, int pMaxLabelLength) {
+      Vector<IVertex> pVertizes, Vector<IEdge> pEdges, int pMaxLabelLength) {
     this.graphLabel = pGraphLabel;
     this.backgroundColor = pBackgroundColor;
     this.vertizes = pVertizes;
@@ -63,84 +72,82 @@ public class GraphModel {
   }
 
   /**
-   * Returns background color
+   * Returns background color.
    * 
-   * @return
+   * @return background color
    */
   public Color getBackgroundColor() {
     return backgroundColor;
   }
 
   /**
-   * Returns background image
+   * Returns background image.
    * 
-   * @return
+   * @return background image
    */
   public Image getBackgroundImage() {
     return backgroundImage;
   }
 
   /**
-   * Returns existing edges
+   * Returns existing edges.
    * 
-   * @return
+   * @return vector of edges
    */
-  @SuppressWarnings("rawtypes")
-  public Vector getEdges() {
+  public Vector<IEdge> getEdges() {
     return edges;
   }
 
   /**
-   * Returns graph label
+   * Returns graph label.
    * 
-   * @return
+   * @return graph label
    */
   public String getGraphLabel() {
     return graphLabel;
   }
 
   /**
-   * Checks if graph has background image
+   * Checks if graph has background image.
    * 
-   * @return
+   * @return has background image
    */
   public boolean isHasBackgroundImage() {
     return hasBackgroundImage;
   }
 
   /**
-   * Returns model id
+   * Returns model id.
    * 
-   * @return
+   * @return model id
    */
   public int getModelId() {
     return modelId;
   }
 
   /**
-   * Returns vertices
+   * Returns vertices.
    * 
-   * @return
+   * @return vector of vertices
    */
-  // TODO refactor name: getVertices()
-  @SuppressWarnings("rawtypes")
-  public Vector getVertizes() {
+  public Vector<IVertex> getVertizes() {
     return vertizes;
   }
 
   /**
-   * Returns maximale label length
+   * Returns maximale label length.
    * 
-   * @return
+   * @return max label length
    */
   public int getMaxLabelLength() {
     return maxLabelLength;
   }
 
   /**
-   * Sets model id
+   * Sets model id.
    * 
    * @param modelId
+   *          modelId
    */
   public void setModelId(int modelId) {
     this.modelId = modelId;

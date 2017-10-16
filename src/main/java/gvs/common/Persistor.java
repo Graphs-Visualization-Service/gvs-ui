@@ -114,10 +114,10 @@ public class Persistor {
    */
   public void saveToDisk(Vector<ISessionController> pSessions) {
     commonLogger.info("Start saving ...");
-    Iterator sessionIt = pSessions.iterator();
+    Iterator<ISessionController> sessionIt = pSessions.iterator();
     while (sessionIt.hasNext()) {
       Object tmp = sessionIt.next();
-      
+
       @SuppressWarnings("rawtypes")
       Class[] interfaces = tmp.getClass().getInterfaces();
       for (int count = 0; count < interfaces.length; count++) {
@@ -158,7 +158,7 @@ public class Persistor {
       e.printStackTrace();
     }
     Element docRoot = documentToRead.getRootElement();
-    Iterator contentIt = docRoot.elementIterator();
+    Iterator<Element> contentIt = docRoot.elementIterator();
     while (contentIt.hasNext()) {
       Element eTag = (Element) (contentIt.next());
       if (eTag.getName().equals(GRAPH)) {
@@ -293,6 +293,7 @@ public class Persistor {
     while (nodeIt.hasNext()) {
       Object temp = nodeIt.next();
       if (temp.getClass() == DefaultNode.class) {
+        // TODO check if still needed
         // saveDefaultNode((DefaultNode)temp,eNodes);
       } else if (temp.getClass() == BinaryNode.class) {
         saveBinaryNode((BinaryNode) temp, eNodes);
@@ -511,6 +512,7 @@ public class Persistor {
           if (eNode.getName().equals(BINARYNODE)) {
             nodes.add(loadBinaryNode(eNode));
           } else if (eNode.getName().equals(DEFAULTNODE)) {
+            // TODO check if still needed
             // nodes.add();
           }
         }
@@ -531,6 +533,7 @@ public class Persistor {
               }
             }
           } else {
+            // TODO check if still needed
             // DEFAULT NODES
           }
         }

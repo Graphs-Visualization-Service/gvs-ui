@@ -524,7 +524,7 @@ public class Configuration {
    */
   private void loadLineThickness(Element pTyp) {
     Element eLineThickness = pTyp.element(LINETHICKNESS);
-    Iterator thickIt = eLineThickness.elementIterator();
+    Iterator<Element> thickIt = eLineThickness.elementIterator();
     while (thickIt.hasNext()) {
       Element eThick = (Element) (thickIt.next());
       if (eThick != null) {
@@ -550,7 +550,7 @@ public class Configuration {
    */
   private void loadIcons(Element pTyp) {
     Element eIcons = pTyp.element(ICONS);
-    Iterator iconIt = eIcons.elementIterator();
+    Iterator<Element> iconIt = eIcons.elementIterator();
     while (iconIt.hasNext()) {
       Element eIcon = (Element) (iconIt.next());
       if (eIcon != null) {
@@ -579,7 +579,7 @@ public class Configuration {
    */
   private void loadBackgrounds(Element pTyp) {
     Element eBackground = pTyp.element(BACKGROUND);
-    Iterator backgroundIt = eBackground.elementIterator();
+    Iterator<Element> backgroundIt = eBackground.elementIterator();
     while (backgroundIt.hasNext()) {
       Element eBack = (Element) (backgroundIt.next());
       if (eBack != null) {
@@ -600,6 +600,12 @@ public class Configuration {
     }
   }
 
+  /**
+   * Load communication file path.
+   * 
+   * @param pServer
+   *          sever element
+   */
   private void loadCommFilePath(Element pServer) {
 
     Element ePortFile = pServer.element(COMMUFILE);
@@ -683,8 +689,9 @@ public class Configuration {
     Element eWriteConsole = pLogging.element(WRITECONSOLE);
     if (eWriteConsole != null) {
       try {
-        String writeToConsole = eWriteConsole.getText();
-        if (writeToConsole.equals("true") || writeToConsole.equals("True")) {
+        String writeToConsoleString = eWriteConsole.getText();
+        if (writeToConsoleString.equals("true")
+            || writeToConsoleString.equals("True")) {
           this.writeToConsole = true;
         }
       } catch (Exception ex) {
@@ -728,7 +735,7 @@ public class Configuration {
    */
   private void loadLoggers(Element pLogging) {
     Element eLoggers = pLogging.element(LOGGERS);
-    Iterator loggerIt = eLoggers.elementIterator();
+    Iterator<Element> loggerIt = eLoggers.elementIterator();
     while (loggerIt.hasNext()) {
       Element eLogger = (Element) (loggerIt.next());
       if (eLogger != null) {

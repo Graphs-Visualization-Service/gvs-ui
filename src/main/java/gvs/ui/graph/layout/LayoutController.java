@@ -3,7 +3,6 @@ package gvs.ui.graph.layout;
 import java.awt.Point;
 import java.util.Iterator;
 import java.util.Observable;
-import java.util.Observer;
 import java.util.Random;
 import java.util.Timer;
 import java.util.Vector;
@@ -23,25 +22,35 @@ import gvs.ui.graph.layout.ticker.AreaTicker;
 import gvs.ui.graph.layout.ticker.Tickable;
 
 /**
- * Creates and prepares the elements which have to be layouted
+ * Creates and prepares the elements which have to be layouted.
  * 
  * @author aegli
  *
  */
 public class LayoutController extends Observable implements Tickable {
 
+  private static final int DEFAULT_RADIUS = 40/* radius */;
+  private static final int DEFAULT_MASS = 50/* masse */;
+  private static final int SOFT_MULTIPLIER = 100;
+  private static final int FIXED_MULTIPLIER = 10;
+  private static final int DEFAULT_DISTANCE = 70;
+  private static final int DEFAULT_IMPACT = 10;
+  private static final int DEFAULT_AREA_Y = 900;
+  private static final int DEFAULT_AREA_X = 950;
+  private static final int DEFAULT_SEED = 4000;
+  private static final int DEFAULT_RATE = 40;
   private final int setLayoutStableAfterTime = 10000;
   private Logger graphContLogger = null;
   private Area area = null;
   private AreaTicker ticker = null;
   private Particle particle = null;
-  private Vector vertizes = null;
-  private Vector edges = null;
+  private Vector<IVertex> vertizes = null;
+  private Vector<IEdge> edges = null;
   private boolean doSoftLayout = false;
   private Random random = null;
 
   /**
-   * Starts layout engine
+   * Starts layout engine.
    *
    */
   public LayoutController() {
@@ -49,10 +58,10 @@ public class LayoutController extends Observable implements Tickable {
     // this.graphContLogger =
     // gvs.common.Logger.getInstance().getGraphControllerLogger();
     this.graphContLogger = LoggerFactory.getLogger(LayoutController.class);
-    vertizes = new Vector();
-    edges = new Vector();
-    area = new Area(new AreaDimension(950, 900));
-    ticker = new AreaTicker(this, 40);
+    vertizes = new Vector<>();
+    edges = new Vector<>();
+    area = new Area(new AreaDimension(DEFAULT_AREA_X, DEFAULT_AREA_Y));
+    ticker = new AreaTicker(this, DEFAULT_RATE);
     ticker.start();
     graphContLogger.info("Starting graph layout controller");
     graphContLogger.debug("Starting layout guard");
@@ -60,12 +69,23 @@ public class LayoutController extends Observable implements Tickable {
     LayoutGuard layoutGuard = new LayoutGuard(area);
     guard.schedule(layoutGuard, setLayoutStableAfterTime);
     random = new Random();
-    random.setSeed(4000);
+    random.setSeed(DEFAULT_SEED);
   }
-  
+
   /**
    * Checks if particles in area are stable. If true, stops layouting engine,
-   * waits 1500ms and displays with correct components
+   * waits 1500ms and displays with correct components.
+   * 
+   * @param rate
+   *          rate
+   * @param rateRatio
+   *          ratio
+   * @param drop
+   *          drop
+   * @param iteration
+   *          iteration
+   * @param time
+   *          time
    */
   public void tick(double rate, double rateRatio, boolean drop, long iteration,
       long time) {
@@ -87,13 +107,17 @@ public class LayoutController extends Observable implements Tickable {
   }
 
   /**
-   * Receives vertices which have to be layouted
+   * Receives vertices which have to be layouted.
    * 
    * @param vertices
+   *          vertices
    * @param edges
+   *          vector of edges
    * @param doSoftLayout
+   *          soft layout
    */
-  public void setElements(Vector vertices, Vector edges, boolean doSoftLayout) {
+  public void setElements(Vector<IVertex> vertices, Vector<IEdge> edges,
+      boolean doSoftLayout) {
 
     graphContLogger.info("LayoutController has new elements detected, "
         + "start layouting procedure");
@@ -108,12 +132,12 @@ public class LayoutController extends Observable implements Tickable {
   }
 
   /**
-   * Creates a particle for each vertex
+   * Creates a particle for each vertex.
    *
    */
   public void createVertexParticles() {
     Point p = new Point();
-    Iterator it = vertizes.iterator();
+    Iterator<IVertex> it = vertizes.iterator();
     while (it.hasNext()) {
       IVertex myVertex = (IVertex) it.next();
 
@@ -128,13 +152,19 @@ public class LayoutController extends Observable implements Tickable {
       }
 
       particle = new Particle(new AreaPoint(p), myVertex.getId(), myVertex,
-          myVertex.isFixedPosition(), 50/* masse */, 40/* radius */);
+          myVertex.isFixedPosition(), DEFAULT_MASS, DEFAULT_RADIUS);
       area.addParticles(particle);
 
     }
   }
 
-  // Use random coordinates as input for engine
+  /**
+   * Use random coordinates as input for engine.
+   * 
+   * @param vertex
+   *          vertex
+   * @return point
+   */
   private Point generateRandomPoints(IVertex vertex) {
     Point randomPoint = new Point();
     randomPoint.x = (int) ((double) (area.getUniverseDimension()
@@ -145,47 +175,60 @@ public class LayoutController extends Observable implements Tickable {
 
   }
 
-  // Use soft random coordinates as input for engine
+  /**
+   * Use soft random coordinates as input for engine.
+   * 
+   * @param vertex
+   *          vertex
+   * @return point
+   */
   private Point generateSoftPoints(IVertex vertex) {
     Point softPoint = new Point();
-    softPoint.x = (int) (random.nextDouble() * 100);
-    softPoint.y = (int) (random.nextDouble() * 100);
+    softPoint.x = (int) (random.nextDouble() * SOFT_MULTIPLIER);
+    softPoint.y = (int) (random.nextDouble() * SOFT_MULTIPLIER);
     System.err.println(softPoint.y);
 
     return softPoint;
   }
 
-  // Use existing vertex coordinates as input for engine
+  /**
+   * Use existing vertex coordinates as input for engine.
+   * 
+   * @param vertex
+   *          vertex
+   * @return Point
+   */
   private Point generateFixedPoints(IVertex vertex) {
     Point fixedPoint = new Point();
-    fixedPoint.x = (int) ((double) vertex.getXPosition() * 10);
-    fixedPoint.y = (int) ((double) vertex.getYPosition() * 10);
+    fixedPoint.x = (int) ((double) vertex.getXPosition() * FIXED_MULTIPLIER);
+    fixedPoint.y = (int) ((double) vertex.getYPosition() * FIXED_MULTIPLIER);
     return fixedPoint;
 
   }
 
   /**
-   * Creates tractions between related vertices
+   * Creates tractions between related vertices.
    *
    */
   public void createEdgeTractions() {
-    Iterator it1 = edges.iterator();
+    Iterator<IEdge> it1 = edges.iterator();
     while (it1.hasNext()) {
       IEdge edge = (IEdge) it1.next();
       IVertex vertexFrom = edge.getStartVertex();
       IVertex vertexTo = edge.getEndVertex();
 
       Traction t = new Traction(area.getParticleWithID(vertexFrom.getId()),
-          area.getParticleWithID(vertexTo.getId()), 10, 70);
+          area.getParticleWithID(vertexTo.getId()), DEFAULT_IMPACT,
+          DEFAULT_DISTANCE);
 
       area.addTraction(t);
     }
   }
 
   /**
-   * Returns layoutig area
+   * Returns layoutig area.
    * 
-   * @return
+   * @return area
    */
   public Area getUniverse() {
     return area;

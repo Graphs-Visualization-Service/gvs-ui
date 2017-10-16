@@ -15,7 +15,6 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 
-import org.dom4j.util.NodeComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +22,7 @@ import gvs.common.Configuration;
 import gvs.interfaces.IDefaultVertex;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IIconVertex;
+import gvs.interfaces.INode;
 import gvs.interfaces.IVertex;
 import gvs.interfaces.IVertexComponent;
 import gvs.interfaces.IVisualizationGraphPanel;
@@ -38,6 +38,8 @@ import gvs.ui.graph.model.VisualizationGraphModel;
 public class VisualizationGraphPanel extends JPanel implements Observer,
     MouseListener, MouseMotionListener, IVisualizationGraphPanel {
 
+  private static final int OVAL_HEIGHT = 20;
+  private static final int OVAL_WIDTH = 20;
   private Logger graphContLogger = null;
   private static final long serialVersionUID = 1L;
   private static final int PIXELLENGTH = 12;
@@ -101,7 +103,7 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
     Iterator verIt = pVertizes.iterator();
     while (verIt.hasNext()) {
       Object vertex = verIt.next();
-      
+
       @SuppressWarnings("rawtypes")
       Class[] interfaces = vertex.getClass().getInterfaces();
       for (int i = 0; i < interfaces.length; i++) {
@@ -289,10 +291,12 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
         IVertex temp = ((IVertex) verL.next());
         int x = (int) (temp.getXPosition() * onePercentX),
             y = (int) (temp.getYPosition() * onePercentY);
+        // TODO Why is property overwritten?
         g.setColor(Color.BLUE);
         g.fillOval(x - 14, y - 14, 28, 28);
         g.setColor(Color.RED);
-        g.fillOval(x - 10, y - 10, 20, 20);
+        g.fillOval(x - OVAL_WIDTH / 2, y - OVAL_HEIGHT / 2, OVAL_WIDTH,
+            OVAL_HEIGHT);
       }
 
       Iterator edg = graphModel.getEdges().iterator();
@@ -343,7 +347,7 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
       int x = evt.getX(); // x-coordinate of point where mouse was clicked
       int y = evt.getY(); // y-coordinate of point
 
-      Iterator it = nodeComponents.iterator();
+      Iterator<IVertexComponent> it = nodeComponents.iterator();
       while (it.hasNext()) {
         IVertexComponent n = (IVertexComponent) it.next();
 

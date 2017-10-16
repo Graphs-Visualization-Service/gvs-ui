@@ -126,7 +126,7 @@ public class ApplicationController {
     long loadedSessionId = loadedSession.getSessionId();
     ISessionController tempSession = null;
 
-    Iterator it = sessionControllers.iterator();
+    Iterator<ISessionController> it = sessionControllers.iterator();
     while (it.hasNext()) {
       tempSession = ((ISessionController) it.next());
 
@@ -159,7 +159,7 @@ public class ApplicationController {
     long deleteSessionId = pSessionController.getSessionId();
     ISessionController temp = null;
 
-    Iterator it = sessionControllers.iterator();
+    Iterator<ISessionController> it = sessionControllers.iterator();
     while (it.hasNext()) {
       temp = ((ISessionController) it.next());
 
@@ -201,7 +201,7 @@ public class ApplicationController {
       e.printStackTrace();
     }
 
-    Iterator sessionIt = sessionControllers.iterator();
+    Iterator<ISessionController> sessionIt = sessionControllers.iterator();
     boolean isSessionExisting = false;
     while (sessionIt.hasNext()) {
       ISessionController sc = (ISessionController) (sessionIt.next());
@@ -236,7 +236,7 @@ public class ApplicationController {
   public synchronized void addModel(GraphModel pGraphModel, long pId,
       String pSessionName) {
     appContLogger.info("New graph arrived");
-    Iterator sessionIt = sessionControllers.iterator();
+    Iterator<ISessionController> sessionIt = sessionControllers.iterator();
     boolean isSessionExisting = false;
     while (sessionIt.hasNext()) {
       ISessionController sc = (ISessionController) (sessionIt.next());

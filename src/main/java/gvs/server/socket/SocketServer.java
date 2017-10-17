@@ -67,11 +67,10 @@ public class SocketServer extends Thread {
 
     // Search for free port
     for (int searchPort = startPort; searchPort <= 60000; searchPort++) {
-      try {
+      try (Socket portScanSocket = new Socket()) {
         InetSocketAddress isa = new InetSocketAddress("localhost", searchPort);
-        //TODO check if this is really working, because the global variable is taken
-        Socket socket = new Socket();
-        socket.connect(isa, 1); // Timeout auf 1ms setzen
+        int timeout = 1; // in ms
+        portScanSocket.connect(isa, timeout);
       } catch (Exception e) {
         port = searchPort;
         break;

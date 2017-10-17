@@ -86,7 +86,6 @@ public class ServerConnectionXML extends Thread {
           if (status >= 0) {
             serverLogger.info("Service reserved: " + remoteHost);
             File dateiServer = new File("input.xml");
-            FileWriter schreibeStrom = new FileWriter(dateiServer);
             outStream.println(OK);
             outStream.flush();
             StringBuffer b = new StringBuffer();
@@ -102,18 +101,18 @@ public class ServerConnectionXML extends Thread {
                     String output = b.toString();
                     output = output.trim();
 
-                    schreibeStrom.write(output);
-                    schreibeStrom.flush();
-                    schreibeStrom.close();
+                    try (FileWriter schreibeStrom = new FileWriter(
+                        dateiServer)) {
+                      schreibeStrom.write(output);
+                      schreibeStrom.flush();
+                    }
 
                     buildDocument(dateiServer);
 
                     dateiServer = new File("input.xml");
-                    schreibeStrom = new FileWriter(dateiServer);
                     b = new StringBuffer();
                   } else {
                     b.append(str.charAt(i));
-
                   }
                 }
               }

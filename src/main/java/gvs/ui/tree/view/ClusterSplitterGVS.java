@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.interfaces.IBinaryNode;
+import gvs.interfaces.INode;
 import gvs.ui.tree.model.BinaryNode;
 
 public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
@@ -32,7 +33,7 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
 
     int depth;
     NodeLineImpl nodeLine = null;
-    Vector<IBinaryNode> sortedNodes = null;
+    Vector<INode> sortedNodes = null;
     // TODO investigate NullPointerException: occurs if clustersplitting is
     // active. Same happens in GVS 1.0
     double width = getmPanel().getTreeLayoutController().getMaxDimensionWidth();
@@ -41,9 +42,10 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
     depth = 5;
     nodeLine = new NodeLineImpl(depth, width, 1);
     sortedNodes = getmPanel().getTreeLayoutController().getSortedNodes();
-    for (IBinaryNode node : sortedNodes) {
-      if (node.getMyTreeLevel() == depth) {
-        nodeLine.add(node);
+    for (INode node : sortedNodes) {
+      IBinaryNode binaryNode = (IBinaryNode) node;
+      if (binaryNode.getMyTreeLevel() == depth) {
+        nodeLine.add(binaryNode);
       }
     }
     if (nodeLine.getSize() > 0) {
@@ -60,9 +62,10 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
     depth = 6;
     nodeLine = new NodeLineImpl(depth, width, 3);
     sortedNodes = getmPanel().getTreeLayoutController().getSortedNodes();
-    for (IBinaryNode node : sortedNodes) {
-      if (node.getMyTreeLevel() == depth) {
-        nodeLine.add(node);
+    for (INode node : sortedNodes) {
+      IBinaryNode binaryNode = (IBinaryNode) node;
+      if (binaryNode.getMyTreeLevel() == depth) {
+        nodeLine.add(binaryNode);
       }
     }
     if (nodeLine.getSize() > 0) {
@@ -79,9 +82,10 @@ public class ClusterSplitterGVS extends ClusterSplitter implements Runnable {
     depth = 7;
     nodeLine = new NodeLineImpl(depth, width, 5);
     sortedNodes = getmPanel().getTreeLayoutController().getSortedNodes();
-    for (IBinaryNode node : sortedNodes) {
-      if (node.getMyTreeLevel() == depth) {
-        nodeLine.add(node);
+    for (INode node : sortedNodes) {
+      IBinaryNode binaryNode = (IBinaryNode) node;
+      if (binaryNode.getMyTreeLevel() == depth) {
+        nodeLine.add(binaryNode);
       }
     }
     if (nodeLine.getSize() > 0) {

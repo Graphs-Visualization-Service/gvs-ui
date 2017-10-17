@@ -202,7 +202,7 @@ public class ModelBuilder {
     String treeLabel = eTree.element(LABEL).getText();
     String maxLabelLength = eTree.element(MAXLABELLENGTH).getText();
 
-    Vector<INode> nodes = new Vector<INode>();
+    Vector<INode> nodes = new Vector<>();
     Iterator<Element> nodesIt = eNodes.elementIterator();
     while (nodesIt.hasNext()) {
       Element eNode = (Element) (nodesIt.next());

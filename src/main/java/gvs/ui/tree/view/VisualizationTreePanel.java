@@ -65,9 +65,10 @@ public class VisualizationTreePanel extends JPanel
   }
 
   // Builds an appropriate node component for each node
-  private void createNodeComponents(Vector pNodes, Dimension pDimension) {
+  private void createNodeComponents(Vector<INode> pNodes,
+      Dimension pDimension) {
     treeContLogger.debug("Creating node components");
-    Iterator verIt = pNodes.iterator();
+    Iterator<INode> verIt = pNodes.iterator();
     while (verIt.hasNext()) {
       INode node = (INode) verIt.next();
       DefaultNodeComponent nodeComponent = new DefaultNodeComponent(
@@ -187,6 +188,13 @@ public class VisualizationTreePanel extends JPanel
 
   } // paint
 
+  /**
+   * Set cluster splitter.
+   * 
+   * @param pClusterSplitter
+   *          new cluster splitter
+   * @return old cluster splitter
+   */
   ClusterSplitter setClusterSplitter(ClusterSplitterGVS pClusterSplitter) {
     ClusterSplitter old = mClusterSplitter;
     mClusterSplitter = pClusterSplitter;

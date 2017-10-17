@@ -12,7 +12,7 @@ import javax.swing.JComboBox;
  *
  */
 public class ComboListener implements ActionListener {
-  private JComboBox combo;
+  private JComboBox<?> combo;
 
   private ComboItem currentItem;
   private ApplicationView applicationView;
@@ -24,7 +24,7 @@ public class ComboListener implements ActionListener {
    * @param pCombo
    * @param pApplicationView
    */
-  public ComboListener(JComboBox pCombo, ApplicationView pApplicationView) {
+  public ComboListener(JComboBox<?> pCombo, ApplicationView pApplicationView) {
     this.combo = pCombo;
     this.applicationView = pApplicationView;
   }

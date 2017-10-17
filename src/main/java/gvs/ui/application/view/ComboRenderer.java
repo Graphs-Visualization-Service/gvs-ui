@@ -14,7 +14,7 @@ import javax.swing.border.EmptyBorder;
  * @author aegli
  *
  */
-public class ComboRenderer extends JLabel implements ListCellRenderer {
+public class ComboRenderer extends JLabel implements ListCellRenderer<Object> {
   private static final long serialVersionUID = 1L;
 
   public ComboRenderer() {
@@ -25,7 +25,7 @@ public class ComboRenderer extends JLabel implements ListCellRenderer {
   /**
    * Returns behaviour of selected combo items
    */
-  public Component getListCellRendererComponent(JList list, Object value,
+  public Component getListCellRendererComponent(JList<?> list, Object value,
       int index, boolean isSelected, boolean cellHasFocus) {
 
     if (isSelected) {

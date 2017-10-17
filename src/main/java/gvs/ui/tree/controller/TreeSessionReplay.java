@@ -13,7 +13,7 @@ import gvs.ui.tree.model.TreeModel;
  */
 public class TreeSessionReplay extends TimerTask {
   private int replayCounter = 0;
-  private Vector treeSessions = null;
+  private Vector<TreeModel> treeSessions = null;
   private TreeSessionController treeSessionController = null;
   private TreeModel treeModel = null;
 
@@ -23,7 +23,7 @@ public class TreeSessionReplay extends TimerTask {
    * @param pTreeSessions
    * @param pTreeSessionController
    */
-  public TreeSessionReplay(Vector pTreeSessions,
+  public TreeSessionReplay(Vector<TreeModel> pTreeSessions,
       TreeSessionController pTreeSessionController) {
     this.treeSessions = pTreeSessions;
     this.treeSessionController = pTreeSessionController;

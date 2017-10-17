@@ -160,7 +160,7 @@ public class Persistor {
     Element docRoot = documentToRead.getRootElement();
     Iterator<Element> contentIt = docRoot.elementIterator();
     while (contentIt.hasNext()) {
-      Element eTag = (Element) (contentIt.next());
+      Element eTag = (contentIt.next());
       if (eTag.getName().equals(GRAPH)) {
         commonLogger.info("It's a graph");
         sessionController = loadGraphSession(eTag);
@@ -210,9 +210,10 @@ public class Persistor {
         String.valueOf(pSessionController.getSessionId()));
     Element eSessionName = eSession.addElement(LABEL);
     eSessionName.addText(pSessionController.getSessionName());
-    Iterator modelIt = pSessionController.getMyGraphModels().iterator();
+    Iterator<GraphModel> modelIt = pSessionController.getMyGraphModels()
+        .iterator();
     while (modelIt.hasNext()) {
-      GraphModel tmp = (GraphModel) modelIt.next();
+      GraphModel tmp = modelIt.next();
       saveGraphModel(tmp, eSession);
     }
   }
@@ -225,9 +226,10 @@ public class Persistor {
     Element eSessionName = eSession.addElement(LABEL);
     eSessionName.addText(pSessionController.getSessionName());
 
-    Iterator modelIt = pSessionController.getMyGraphModels().iterator();
+    Iterator<TreeModel> modelIt = pSessionController.getMyGraphModels()
+        .iterator();
     while (modelIt.hasNext()) {
-      TreeModel tmp = (TreeModel) modelIt.next();
+      TreeModel tmp = modelIt.next();
       saveTreeModel(tmp, eSession);
     }
   }
@@ -289,7 +291,7 @@ public class Persistor {
       eRootNode.addText(String.valueOf(rootNode.getNodeId()));
     }
     Element eNodes = eTreeModel.addElement(NODES);
-    Iterator nodeIt = pModel.getNodes().iterator();
+    Iterator<INode> nodeIt = pModel.getNodes().iterator();
     while (nodeIt.hasNext()) {
       Object temp = nodeIt.next();
       if (temp.getClass() == DefaultNode.class) {
@@ -439,7 +441,7 @@ public class Persistor {
     String sessionName = eSessionName.getText();
     long sessionId = Long.parseLong(pGraphSession.attributeValue(ATTRIBUTEID));
 
-    Iterator modelIt = pGraphSession.elementIterator();
+    Iterator<Element> modelIt = pGraphSession.elementIterator();
     while (modelIt.hasNext()) {
       Element eGraphModel = (Element) modelIt.next();
       if (eGraphModel.getName() == GRAPHMODEL) {
@@ -454,7 +456,7 @@ public class Persistor {
         Element eVertizes = eGraphModel.element(VERTIZES);
         Iterator<Element> vertizesIt = eVertizes.elementIterator();
         while (vertizesIt.hasNext()) {
-          Element eVertex = (Element) (vertizesIt.next());
+          Element eVertex = (vertizesIt.next());
           if (eVertex.getName().equals(DEFAULTVERTEX)) {
             vertizes.add(loadDefaultVertex(eVertex));
           } else if (eVertex.getName().equals(RELATIVVERTEX)) {
@@ -466,7 +468,7 @@ public class Persistor {
         Element eEdges = eGraphModel.element(EDGES);
         Iterator<Element> edgesIt = eEdges.elementIterator();
         while (edgesIt.hasNext()) {
-          Element eEdge = (Element) (edgesIt.next());
+          Element eEdge = (edgesIt.next());
           edges.add(loadEdge(eEdge, vertizes));
         }
 
@@ -495,7 +497,7 @@ public class Persistor {
     String sessionName = eSessionName.getText();
     long sessionId = Long.parseLong(pTreeSession.attributeValue(ATTRIBUTEID));
 
-    Iterator modelIt = pTreeSession.elementIterator();
+    Iterator<Element> modelIt = pTreeSession.elementIterator();
     while (modelIt.hasNext()) {
       Element eTreeModel = (Element) modelIt.next();
       if (eTreeModel.getName() == TREEMODEL) {
@@ -508,7 +510,7 @@ public class Persistor {
         Element eNodes = eTreeModel.element(NODES);
         Iterator<Element> nodeIt = eNodes.elementIterator();
         while (nodeIt.hasNext()) {
-          Element eNode = (Element) (nodeIt.next());
+          Element eNode = (nodeIt.next());
           if (eNode.getName().equals(BINARYNODE)) {
             nodes.add(loadBinaryNode(eNode));
           } else if (eNode.getName().equals(DEFAULTNODE)) {
@@ -517,7 +519,7 @@ public class Persistor {
           }
         }
 
-        Iterator nodesModelIt = nodes.iterator();
+        Iterator<INode> nodesModelIt = nodes.iterator();
         while (nodesModelIt.hasNext()) {
           Object tmp = nodesModelIt.next();
           // TODO refactor -> empty else
@@ -657,7 +659,7 @@ public class Persistor {
 
     Iterator<IVertex> searchVertex = pVertizes.iterator();
     while (searchVertex.hasNext()) {
-      IVertex tmp = (IVertex) (searchVertex.next());
+      IVertex tmp = (searchVertex.next());
       if (tmp.getId() == fromVertexId) {
         fromVertex = tmp;
       }

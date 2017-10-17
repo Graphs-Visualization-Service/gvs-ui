@@ -185,7 +185,7 @@ public class SaveDialog extends JDialog {
     JButton deselectButton = new JButton("Deselect");
     deselectButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        ListModel model = list.getModel();
+        ListModel<?> model = list.getModel();
         int n = model.getSize();
         for (int i = 0; i < n; i++) {
           CheckableItem item = (CheckableItem) model.getElementAt(i);
@@ -216,7 +216,7 @@ public class SaveDialog extends JDialog {
     saveButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         Vector<ISessionController> saveToDisk = new Vector<>();
-        ListModel model = list.getModel();
+        ListModel<?> model = list.getModel();
         int n = model.getSize();
 
         for (int i = 0; i < n; i++) {

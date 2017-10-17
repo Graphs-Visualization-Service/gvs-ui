@@ -31,7 +31,7 @@ public class TreeSessionController implements ITreeSessionController {
   private long clientSessionId = 0;
   private int serverSessionId = 1;
   private String sessionName = null;
-  private Vector treeModels = null;
+  private Vector<TreeModel> treeModels = null;
   private TreeModel actualTreeModel = null;
   private TreeSessionReplay ta = null;
   private Timer replayTimer = null;
@@ -46,7 +46,6 @@ public class TreeSessionController implements ITreeSessionController {
    * @param pSessionName
    * @param pTreeModel
    */
-  @SuppressWarnings("unchecked")
   public TreeSessionController(long pSessionId, String pSessionName,
       TreeModel pTreeModel) {
     this.clientSessionId = pSessionId;
@@ -55,7 +54,7 @@ public class TreeSessionController implements ITreeSessionController {
     initializeTreeSessionController();
 
     treeContLogger.info("Build new tree session controller");
-    this.treeModels = new Vector();
+    this.treeModels = new Vector<>();
     this.actualTreeModel = pTreeModel;
 
     cp.addVisualizationPanel(visualPanel);
@@ -77,7 +76,7 @@ public class TreeSessionController implements ITreeSessionController {
    * @param pTreeModels
    */
   public TreeSessionController(long pSessionId, String pSessionName,
-      Vector pTreeModels) {
+      Vector<TreeModel> pTreeModels) {
     this.clientSessionId = pSessionId;
     this.sessionName = pSessionName;
     this.treeModels = pTreeModels;
@@ -104,7 +103,6 @@ public class TreeSessionController implements ITreeSessionController {
   /**
    * Adds a new tree model to the actual session
    */
-  @SuppressWarnings("unchecked")
   public void addTreeModel(TreeModel pTreeModel) {
     treeContLogger.info("New tree model arrived");
     actualTreeModel = pTreeModel;
@@ -279,8 +277,7 @@ public class TreeSessionController implements ITreeSessionController {
    * 
    * @return treeModels
    */
-  @SuppressWarnings("rawtypes")
-  public AbstractList getMyGraphModels() {
+  public AbstractList<TreeModel> getMyGraphModels() {
     return treeModels;
   }
 

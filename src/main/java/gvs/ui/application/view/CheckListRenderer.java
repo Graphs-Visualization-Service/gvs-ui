@@ -13,7 +13,8 @@ import javax.swing.UIManager;
  * @author aegli
  *
  */
-public class CheckListRenderer extends JCheckBox implements ListCellRenderer<Object> {
+public class CheckListRenderer extends JCheckBox
+    implements ListCellRenderer<Object> {
   private static final long serialVersionUID = 1L;
 
   /**
@@ -28,7 +29,7 @@ public class CheckListRenderer extends JCheckBox implements ListCellRenderer<Obj
   /**
    * Returns save components
    */
-  public Component getListCellRendererComponent(JList list, Object value,
+  public Component getListCellRendererComponent(JList<?> list, Object value,
       int index, boolean isSelected, boolean hasFocus) {
     setEnabled(list.isEnabled());
     setSelected(((CheckableItem) value).isSelected());

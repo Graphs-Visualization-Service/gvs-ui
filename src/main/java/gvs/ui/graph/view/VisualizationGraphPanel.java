@@ -268,7 +268,7 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
     }
 
     if (!visualModel.isLayouting()) {
-      Iterator ver = nodeComponents.iterator();
+      Iterator<IVertexComponent> ver = nodeComponents.iterator();
       while (ver.hasNext()) {
         IVertexComponent nComponent = (IVertexComponent) ver.next();
         nComponent.setDimension(d);

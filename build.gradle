@@ -59,8 +59,8 @@ jar {
 }
 
 checkstyle {
-  ignoreFailures = true
-  showViolations = false
+  ignoreFailures = false
+  showViolations = true
   configFile = file("${project.rootDir}/checkstyle.xml")
 }
 

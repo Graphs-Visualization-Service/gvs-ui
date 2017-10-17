@@ -36,7 +36,7 @@ public class ApplicationModel extends Observable {
   /**
    * Returns current session, which is held by the model
    * 
-   * @return
+   * @return session controller
    */
   public ISessionController getSession() {
     return sessionController;

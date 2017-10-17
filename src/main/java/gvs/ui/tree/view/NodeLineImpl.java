@@ -10,8 +10,8 @@ import gvs.interfaces.IBinaryNode;
 
 class NodeLineImpl implements Line {
 
-  private final int DEPTH;
-  private final int DISTANCE;
+  private final int depth;
+  private final int distance;
   private Vector<IBinaryNode> mArr;
   /**
    * The width in percentage that can be used for Layouting.
@@ -27,19 +27,19 @@ class NodeLineImpl implements Line {
   private Logger mTreeContLogger = null;
 
   NodeLineImpl(int pDepth, double pWidth, int pDistance) {
-    DEPTH = pDepth;
+    depth = pDepth;
     mWidth = pWidth;
-    DISTANCE = pDistance;
-    mNodeStepDistance = mWidth / Math.pow(2, DEPTH) / 2;
+    distance = pDistance;
+    mNodeStepDistance = mWidth / Math.pow(2, depth) / 2;
     setmArr(new Vector<IBinaryNode>());
-    getmArr().setSize(((int) Math.pow(2, DEPTH)));
+    getmArr().setSize(((int) Math.pow(2, depth)));
     // TODO check Logger replacement
     // mTreeContLogger =
     // gvs.common.Logger.getInstance().getTreeControllerLogger();
     setmTreeContLogger(LoggerFactory.getLogger(NodeLineImpl.class));
     getmTreeContLogger().debug("NodeLineImpl::NodeLineImpl():"
-        + "  DISTANCE=" + DISTANCE
-        + "  DEPTH=" + DEPTH);
+        + "  DISTANCE=" + distance
+        + "  DEPTH=" + depth);
   }
 
   public Cluster getNextCluster(int pSearchStartPos) {
@@ -61,12 +61,12 @@ class NodeLineImpl implements Line {
       for (int j = startPos + 1; j < len; j++) {
         int nulls = 0;
         // are there Nodes in the Range of DISTANCE?
-        for (int k = 0; k < DISTANCE; k++) {
+        for (int k = 0; k < distance; k++) {
           if (getmArr().get(Math.min(j + k, getmArr().size() - 1)) == null) {
             nulls++;
           }
         }
-        if (nulls == DISTANCE) { // no Nodes inbetween DISTANCE: End
+        if (nulls == distance) { // no Nodes inbetween DISTANCE: End
           // reached
           endPos = j - 1;
           break;
@@ -119,7 +119,7 @@ class NodeLineImpl implements Line {
   }
 
   public int getNodeDistance() {
-    return DISTANCE;
+    return distance;
   }
 
   public BigInteger getBigIntegerInterpretation() {

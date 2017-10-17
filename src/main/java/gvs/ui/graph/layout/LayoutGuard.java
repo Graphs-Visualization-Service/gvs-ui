@@ -14,10 +14,19 @@ public class LayoutGuard extends TimerTask {
 
   private Area universe = null;
 
+  /**
+   * Set area.
+   * 
+   * @param pUniverse
+   *          area
+   */
   public LayoutGuard(Area pUniverse) {
     universe = pUniverse;
   }
 
+  /**
+   * Set state on area
+   */
   public void run() {
     universe.setAreaState(true);
   }

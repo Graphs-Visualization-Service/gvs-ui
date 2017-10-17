@@ -8,11 +8,18 @@ package gvs.ui.graph.layout.ticker;
  */
 public class HitsPerSecond {
 
+  private static final double DEFAULT_FACTOR = 1000.0;
   private long[] time;
   private long init;
   private int size;
   private int first, last;
 
+  /**
+   * Constructor
+   * 
+   * @param size
+   *          size
+   */
   public HitsPerSecond(int size) {
     init = System.currentTimeMillis();
 
@@ -25,19 +32,32 @@ public class HitsPerSecond {
     last = 0;
   }
 
+  /**
+   * Insert long
+   * 
+   * @param l
+   *          time
+   */
   private void insert(long l) {
     time[first] = l;
     last = first;
     first = (first + 1) % size;
-
   }
 
+  /**
+   * Insert current time in miliseconds.
+   */
   public void doHit() {
     insert(System.currentTimeMillis());
   }
 
+  /**
+   * Hits per seconds.
+   * 
+   * @return size / time difference * 1000
+   */
   public double getHitsPerSecond() {
     long td = time[last] - time[first];
-    return 1000.0 * size / td;
+    return DEFAULT_FACTOR * size / td;
   }
 }

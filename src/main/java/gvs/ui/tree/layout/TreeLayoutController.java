@@ -284,11 +284,11 @@ public class TreeLayoutController {
     }
   }
 
-  public Vector<INode> getSortedNodes() {
+  public final Vector<INode> getSortedNodes() {
     return sortedNodes;
   }
 
-  public double getMaxDimensionWidth() {
+  public final double getMaxDimensionWidth() {
     return maxDimensionWidth;
   }
 

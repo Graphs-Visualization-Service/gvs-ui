@@ -3,7 +3,6 @@ package gvs.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Everyone who wants to send data, must reserve this service. This class is the
  * central entrypoint for every data transfer.
@@ -15,7 +14,7 @@ public class ConnectionMonitor {
   private static ConnectionMonitor connectionMonitor = null;
   private String owner = "";
   private long lastUse;
-  private static final Logger serverLogger = LoggerFactory
+  private static final Logger logger = LoggerFactory
       .getLogger(ConnectionMonitor.class);
   // private Logger serverLogger = null;
 
@@ -42,10 +41,10 @@ public class ConnectionMonitor {
     if (owner.equals("") || owner == "") {
       lastUse = System.currentTimeMillis();
       this.owner = pOwner;
-      serverLogger.debug(owner + "reserved service");
+      logger.debug(owner + "reserved service");
       return 0;
     } else {
-      serverLogger.debug("Service is in use");
+      logger.debug("Service is in use");
       return -1;
     }
   }
@@ -59,11 +58,11 @@ public class ConnectionMonitor {
    */
   public synchronized boolean isOwner(String pOwner) {
     if (owner.equals(pOwner) || owner == pOwner) {
-      serverLogger.debug(owner + "is owner");
+      logger.debug(owner + "is owner");
       lastUse = System.currentTimeMillis();
       return true;
     } else {
-      serverLogger.debug(owner + "is not owner");
+      logger.debug(owner + "is not owner");
       return false;
     }
   }
@@ -76,7 +75,7 @@ public class ConnectionMonitor {
   public synchronized void releaseServer(String pOwner) {
     if (owner.equals(pOwner) || owner == pOwner) {
       owner = "";
-      serverLogger.debug("Serivce will be released");
+      logger.debug("Serivce will be released");
     }
   }
 

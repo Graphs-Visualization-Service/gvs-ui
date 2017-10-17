@@ -30,9 +30,9 @@ public class AreaDimension {
   }
 
   /**
-   * Returns centre of area
+   * Returns center of area
    * 
-   * @return
+   * @return area point
    */
   public AreaPoint getCenter() {
     return new AreaPoint(vector.getX() / 2, vector.getY() / 2);
@@ -42,7 +42,7 @@ public class AreaDimension {
    * Returns width of dimension, used by Layout Controller to set random x
    * points for each particle.
    * 
-   * @return
+   * @return X dimension
    */
   public double dimensionWidth() {
     return vector.getX();

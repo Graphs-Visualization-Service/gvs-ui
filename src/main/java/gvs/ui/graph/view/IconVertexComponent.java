@@ -26,11 +26,11 @@ public class IconVertexComponent extends JComponent
     implements IIconVertexComponent {
 
   private static final long serialVersionUID = 1L;
-  private final int ICONHEIGHT = 50;
-  private final int ICONWIDTH = 50;
-  private final double HUNDREDPERCENT = 100;
-  private int BOUNDARYXOFFSET = 30;
-  private int BOUNDARYYOFFSET = 25;
+  private static final int ICONHEIGHT = 50;
+  private static final int ICONWIDTH = 50;
+  private static final double HUNDREDPERCENT = 100;
+  private int boundaryXOffset = 30;
+  private int boundaryYOffset = 25;
 
   private IIconVertex vertex = null;
   private String vertexLabel = null;
@@ -83,14 +83,13 @@ public class IconVertexComponent extends JComponent
         return false;
       }
     };
-    ;
 
     font = new Font("Arial", Font.BOLD, 12);
     this.labelLength = pLabelLength;
 
     if (isRelative) {
-      BOUNDARYXOFFSET = 0;
-      BOUNDARYYOFFSET = 0;
+      boundaryXOffset = 0;
+      boundaryYOffset = 0;
     }
     displayLabel();
   }
@@ -128,9 +127,9 @@ public class IconVertexComponent extends JComponent
     g2.setColor(lineColor);
     g2.setStroke(lineStroke);
 
-    g2.drawRect(xpos + BOUNDARYXOFFSET - 5, yPos + BOUNDARYYOFFSET - 5,
+    g2.drawRect(xpos + boundaryXOffset - 5, yPos + boundaryYOffset - 5,
         ICONWIDTH + 10, ICONHEIGHT + 10);
-    g2.drawImage(vertexIcon, xpos + BOUNDARYXOFFSET, yPos + BOUNDARYYOFFSET,
+    g2.drawImage(vertexIcon, xpos + boundaryXOffset, yPos + boundaryYOffset,
         ICONHEIGHT, ICONWIDTH, null);
   }
 
@@ -151,8 +150,8 @@ public class IconVertexComponent extends JComponent
     int ystart = (int) yPosition + ICONHEIGHT;
 
     g2.setColor(Color.BLACK);
-    g2.drawString(displayLabel, xstart + BOUNDARYXOFFSET,
-        ystart + BOUNDARYYOFFSET);
+    g2.drawString(displayLabel, xstart + boundaryXOffset,
+        ystart + boundaryYOffset);
   }
 
   /**
@@ -180,14 +179,14 @@ public class IconVertexComponent extends JComponent
    * Returns x position of component
    */
   public double getXPosition() {
-    return xPosition + BOUNDARYXOFFSET;
+    return xPosition + boundaryXOffset;
   }
 
   /**
    * Returns y position of component
    */
   public double getYPosition() {
-    return yPosition + BOUNDARYYOFFSET;
+    return yPosition + boundaryYOffset;
   }
 
   /**

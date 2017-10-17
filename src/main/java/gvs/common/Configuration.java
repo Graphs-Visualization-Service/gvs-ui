@@ -440,7 +440,8 @@ public class Configuration {
   public synchronized void saveLoggerConfiguration(Vector pLoggers) {
     // TODO check if remove of this method is permitted. slf4j does not
     // support changing log level at runtime
-    // https://stackoverflow.com/questions/13442967/how-to-dynamically-change-log-level-in-slf4j-or-log4j
+    // https://stackoverflow.com/questions/13442967/
+    // how-to-dynamically-change-log-level-in-slf4j-or-log4j
   }
 
   /**

@@ -32,8 +32,8 @@ public class VisualizationTreePanel extends JPanel
 
   private Logger treeContLogger = null;
   private static final long serialVersionUID = 1L;
-  private final int PIXELLENGTH = 12;
-  private final int HUNDREDPERCENT = 100;
+  private static final int PIXELLENGTH = 12;
+  private static final int HUNDREDPERCENT = 100;
 
   private VisualizationTreeModel visualModel;
   private TreeModel myTreeModel;
@@ -157,7 +157,6 @@ public class VisualizationTreePanel extends JPanel
   public void paint(Graphics g) {
     treeContLogger.debug("VisualizationTreePanel.paint()");
     super.paint(g);
-    Dimension dimension = this.getSize();
 
     Iterator<DefaultNodeComponent> it;
 
@@ -195,17 +194,18 @@ public class VisualizationTreePanel extends JPanel
    *          new cluster splitter
    * @return old cluster splitter
    */
-  ClusterSplitter setClusterSplitter(ClusterSplitterGVS pClusterSplitter) {
+  public final ClusterSplitter setClusterSplitter(
+      ClusterSplitterGVS pClusterSplitter) {
     ClusterSplitter old = mClusterSplitter;
     mClusterSplitter = pClusterSplitter;
     return old;
   }
 
-  public Vector<DefaultNodeComponent> getNodeComponents() {
+  public final Vector<DefaultNodeComponent> getNodeComponents() {
     return nodeComponents;
   }
 
-  public TreeLayoutController getTreeLayoutController() {
+  public final TreeLayoutController getTreeLayoutController() {
     return mTreeLayoutController;
   }
 

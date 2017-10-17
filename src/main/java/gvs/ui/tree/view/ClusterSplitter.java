@@ -210,7 +210,7 @@ class CharArrayLineImpl implements Line {
 
 } // End of class CharArrayClusterImpl
 
-//TODO create own file and add public modifier
+// TODO create own file and add public modifier
 class CharArrayClusterImpl implements Cluster {
 
   private CharArrayLineImpl mLine;
@@ -225,11 +225,11 @@ class CharArrayClusterImpl implements Cluster {
    */
   private int mEndPos;
 
-  public CharArrayClusterImpl(CharArrayLineImpl pLine) {
+  CharArrayClusterImpl(CharArrayLineImpl pLine) {
     mLine = pLine;
   }
 
-  public CharArrayClusterImpl(CharArrayLineImpl pLine, int pStartPos,
+  CharArrayClusterImpl(CharArrayLineImpl pLine, int pStartPos,
       int pEndPos) {
     this(pLine);
     mStartPos = pStartPos;

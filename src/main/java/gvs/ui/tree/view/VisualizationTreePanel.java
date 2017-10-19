@@ -157,7 +157,7 @@ public class VisualizationTreePanel extends JPanel
   public void paint(Graphics g) {
     treeContLogger.debug("VisualizationTreePanel.paint()");
     super.paint(g);
-
+    Dimension paintDimension = this.getSize();
     Iterator<DefaultNodeComponent> it;
 
     // Now just drawing the Edges and Labels (not the Ellipse):
@@ -165,7 +165,7 @@ public class VisualizationTreePanel extends JPanel
     while (it.hasNext()) {
       DefaultNodeComponent nComponent = (DefaultNodeComponent) it.next();
       nComponent.drawEdges();
-      nComponent.setDimension(dimension);
+      nComponent.setDimension(paintDimension);
       nComponent.paint(g);
     }
 

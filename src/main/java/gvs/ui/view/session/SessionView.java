@@ -1,6 +1,7 @@
-package gvs.ui.application.view;
+package gvs.ui.view.session;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
@@ -9,10 +10,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 
 /**
+ * MVVM View Class.
  * 
- * @author Michi
+ * @author mtrentini
  */
-public class SessionController {
+public class SessionView {
 
   @FXML
   private HBox stepButtons;
@@ -39,6 +41,9 @@ public class SessionController {
   private ImageView playBtn;
 
   @FXML
+  private Button autoLayoutBtn;
+
+  @FXML
   private AnchorPane modelPane;
 
   /**
@@ -46,15 +51,15 @@ public class SessionController {
    */
   @FXML
   private void initialize() {
-    firstBtn.setImage(new Image(SessionController.class.getClassLoader()
+    firstBtn.setImage(new Image(SessionView.class.getClassLoader()
         .getResourceAsStream("images/firstBtn.png")));
-    prevBtn.setImage(new Image(SessionController.class.getClassLoader()
+    prevBtn.setImage(new Image(SessionView.class.getClassLoader()
         .getResourceAsStream("images/prevBtn.png")));
-    nextBtn.setImage(new Image(SessionController.class.getClassLoader()
+    nextBtn.setImage(new Image(SessionView.class.getClassLoader()
         .getResourceAsStream("images/nextBtn.png")));
-    lastBtn.setImage(new Image(SessionController.class.getClassLoader()
+    lastBtn.setImage(new Image(SessionView.class.getClassLoader()
         .getResourceAsStream("images/lastBtn.png")));
-    playBtn.setImage(new Image(SessionController.class.getClassLoader()
+    playBtn.setImage(new Image(SessionView.class.getClassLoader()
         .getResourceAsStream("images/playBtn.png")));
   }
 

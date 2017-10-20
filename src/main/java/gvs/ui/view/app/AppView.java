@@ -1,13 +1,12 @@
 package gvs.ui.view.app;
 
-import gvs.ui.application.view.SessionController;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -15,6 +14,11 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 
+
+/**
+ * MVVM View Class.
+ * @author mtrentini
+ */
 public class AppView {
 
   @FXML
@@ -63,6 +67,14 @@ public class AppView {
   @FXML
   private void loadSession() {
 
+  }
+  
+  /**
+   * Called when the user clicks on the quit menu item.
+   */
+  @FXML
+  private void quitGVS() {
+    Platform.exit();
   }
 
 }

@@ -32,7 +32,7 @@
               <menus>
                 <Menu fx:id="gvsMenu" mnemonicParsing="false" text="GVS">
                   <items>
-                        <MenuItem fx:id="quitMenuItem" mnemonicParsing="false" text="Quit" />
+                        <MenuItem fx:id="quitMenuItem" mnemonicParsing="false" onAction="#quitGVS" text="Quit" />
                   </items>
                 </Menu>
                 <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
@@ -52,9 +52,9 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <ComboBox fx:id="chooseSessionBox" prefWidth="450.0" promptText="choose Session" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS">
+                  <ComboBox fx:id="chooseSessionBox" prefWidth="450.0" promptText="choose Session" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS">
                      <GridPane.margin>
-                        <Insets />
+                        <Insets left="10.0" />
                      </GridPane.margin>
                   </ComboBox>
                   <Button fx:id="deleteSessionBtn" mnemonicParsing="false" text="Delete" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER">

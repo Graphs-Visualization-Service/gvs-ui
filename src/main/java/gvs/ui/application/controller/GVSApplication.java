@@ -1,12 +1,16 @@
 package gvs.ui.application.controller;
 
 import java.io.IOException;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.util.FontAwesome;
-import gvs.util.FontAwesome.Glyph;
+import gvs.common.Persistor;
+import gvs.ui.application.model.ApplicationModel;
+import gvs.ui.logic.app.AppViewModel;
+import gvs.ui.view.app.AppView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,7 +18,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-public class GVSApplication extends Application {
+/**
+ * This class is the entrypoint to the GVS application. It loads the application
+ * frame.
+ * 
+ * @author muriele
+ *
+ */
+public class GVSApplication extends Application implements Observer {
 
   private static final Logger logger = LoggerFactory
       .getLogger(GVSApplication.class);
@@ -22,6 +33,7 @@ public class GVSApplication extends Application {
   private Stage primaryStage;
   private BorderPane rootLayout;
   private BorderPane sessionLayout;
+  private AppView appView;
 
   /**
    * Set up the main frame
@@ -34,11 +46,11 @@ public class GVSApplication extends Application {
     this.primaryStage = mainStage;
     this.primaryStage.setTitle("GVS");
     initRootLayout();
-   // displaySession();
+    // displaySession();
   }
 
   /**
-   * Loads the main fxml and shows the main frame.
+   * Loads the application fxml and shows the application frame.
    */
   private void initRootLayout() {
     try {
@@ -51,6 +63,12 @@ public class GVSApplication extends Application {
       Scene scene = new Scene(rootLayout);
       primaryStage.setScene(scene);
       primaryStage.show();
+
+      appView = loader.getController();
+      ApplicationModel appModel = new ApplicationModel();
+      appModel.addObserver(this);
+      appView.setAppViewModel(new AppViewModel(appModel,
+          ApplicationController.getInstance(appModel), new Persistor()));
     } catch (IOException e) {
       logger.error("Could not initialize root layout");
       // TODO error handling
@@ -85,5 +103,18 @@ public class GVSApplication extends Application {
     AnchorPane.setBottomAnchor(sessionLayout, (double) bottom);
     AnchorPane.setLeftAnchor(sessionLayout, (double) left);
     AnchorPane.setRightAnchor(sessionLayout, (double) right);
+  }
+
+  /**
+   * The GVSApplication gets notified by the ApplicationModel whenever a new
+   * current session is set.
+   * 
+   * @param o
+   * @param arg
+   */
+  @Override
+  public void update(Observable o, Object arg) {
+    // TODO Auto-generated method stub
+
   }
 }

@@ -104,9 +104,9 @@ public class ApplicationController {
   /**
    * Returns available session for displaying in combobox.
    * 
-   * @return sessionController
+   * @return sessionControllers
    */
-  public Vector<ISessionController> getSessionContoller() {
+  public Vector<ISessionController> getSessionContollers() {
     return sessionControllers;
   }
 

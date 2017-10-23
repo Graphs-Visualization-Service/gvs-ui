@@ -16,10 +16,9 @@ public class GVSLauncher {
    * @param args console arguments
    */
   public static void main(String[] args) {
-
-    ApplicationView av = new ApplicationView();
+//    GVSApplication.launch(GVSApplication.class);
     new Thread(() ->  GVSApplication.launch(GVSApplication.class)).start();
-
+    ApplicationView av = new ApplicationView();
     av.setVisible(true);
     try {
       SocketServer server = new SocketServer();

@@ -1,6 +1,16 @@
 package gvs.ui.view.app;
 
+import gvs.interfaces.ISessionController;
+import gvs.ui.logic.app.AppViewModel;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -14,9 +24,9 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 
-
 /**
  * MVVM View Class.
+ * 
  * @author mtrentini
  */
 public class AppView {
@@ -35,14 +45,13 @@ public class AppView {
 
   @FXML
   private MenuItem importMenuItem;
-  
+
   @FXML
   private Button deleteSessionBtn;
 
-  //TODO: input correct generic
   @FXML
-  private ComboBox<?> chooseSessionBox;
-  
+  private ComboBox<String> chooseSessionBox;
+
   @FXML
   private AnchorPane displaySessionPane;
 
@@ -50,6 +59,13 @@ public class AppView {
   private void initialize() {
     setLogoAsBackground();
   }
+
+  private void fillDropDown() {    
+    chooseSessionBox.setItems(model.getSessionControllers());
+    chooseSessionBox.valueProperty().bindBidirectional(model.getCurrentSessionName());
+  }
+
+  private AppViewModel model;
 
   private void setLogoAsBackground() {
     BackgroundImage myBI = new BackgroundImage(
@@ -61,20 +77,24 @@ public class AppView {
     displaySessionPane.setBackground(new Background(myBI));
   }
 
-  /**
-   * Called when the user clicks on the load button.
-   */
   @FXML
   private void loadSession() {
 
   }
-  
-  /**
-   * Called when the user clicks on the quit menu item.
-   */
+
+  @FXML
+  private void removeSession() {
+    model.removeCurrentSession();
+  }
+
   @FXML
   private void quitGVS() {
     Platform.exit();
+  }
+
+  public void setAppViewModel(AppViewModel appViewModel) {
+    model = appViewModel;
+    fillDropDown();
   }
 
 }

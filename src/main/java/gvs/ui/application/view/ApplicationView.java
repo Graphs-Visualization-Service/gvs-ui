@@ -350,7 +350,7 @@ public class ApplicationView extends JFrame implements Observer {
    */
   public ISessionController[] getSessiontoSave() {
     int counter = 0;
-    Vector<ISessionController> v = ac.getSessionContoller();
+    Vector<ISessionController> v = ac.getSessionContollers();
 
     ISessionController[] sessionNames = new ISessionController[v.size()];
     Iterator<ISessionController> it = v.iterator();

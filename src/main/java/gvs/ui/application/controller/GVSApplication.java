@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gvs.util.FontAwesome;
+import gvs.util.FontAwesome.Glyph;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -32,7 +34,7 @@ public class GVSApplication extends Application {
     this.primaryStage = mainStage;
     this.primaryStage.setTitle("GVS");
     initRootLayout();
-    displaySession();
+   // displaySession();
   }
 
   /**
@@ -43,7 +45,7 @@ public class GVSApplication extends Application {
       logger.debug("Initialize root layout");
       FXMLLoader loader = new FXMLLoader();
       rootLayout = (BorderPane) loader.load(GVSApplication.class
-          .getResourceAsStream("/gvs/ui/application/view/Main.fxml"));
+          .getResourceAsStream("/gvs/ui/view/app/AppView.fxml"));
 
       // Show the scene containing the root layout.
       Scene scene = new Scene(rootLayout);
@@ -63,8 +65,8 @@ public class GVSApplication extends Application {
     try {
       logger.debug("Load session layout");
       FXMLLoader loader = new FXMLLoader();
-      sessionLayout = (BorderPane) loader.load(GVSApplication.class
-          .getResourceAsStream("/gvs/ui/application/view/Session.fxml"));
+      sessionLayout = (BorderPane) loader.load(getClass()
+          .getResourceAsStream("/gvs/ui/view/session/SessionView.fxml"));
       AnchorPane sessionContentPane = new AnchorPane();
       sessionContentPane.getChildren().add(sessionLayout);
       final int top = 0;

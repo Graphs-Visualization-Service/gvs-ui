@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gvs.util.FontAwesome;
+import gvs.util.FontAwesome.Glyph;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -32,7 +34,7 @@ public class GVSApplication extends Application {
     this.primaryStage = mainStage;
     this.primaryStage.setTitle("GVS");
     initRootLayout();
-    displaySession();
+   // displaySession();
   }
 
   /**

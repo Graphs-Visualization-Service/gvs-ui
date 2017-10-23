@@ -1,5 +1,7 @@
 package gvs.ui.view.session;
 
+import gvs.util.FontAwesome;
+import gvs.util.FontAwesome.Glyph;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
@@ -7,6 +9,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
 /**
@@ -15,30 +18,17 @@ import javafx.scene.layout.HBox;
  * @author mtrentini
  */
 public class SessionView {
-
   @FXML
-  private HBox stepButtons;
+  private GridPane playGrid;
 
   @FXML
   private ProgressBar stepIndicator;
 
   @FXML
-  private ImageView firstBtn;
-
-  @FXML
-  private ImageView prevBtn;
-
-  @FXML
-  private ImageView nextBtn;
-
-  @FXML
-  private ImageView lastBtn;
+  private GridPane stepButtons;
 
   @FXML
   private TextArea descriptionField;
-
-  @FXML
-  private ImageView playBtn;
 
   @FXML
   private Button autoLayoutBtn;
@@ -51,16 +41,16 @@ public class SessionView {
    */
   @FXML
   private void initialize() {
-    firstBtn.setImage(new Image(SessionView.class.getClassLoader()
-        .getResourceAsStream("images/firstBtn.png")));
-    prevBtn.setImage(new Image(SessionView.class.getClassLoader()
-        .getResourceAsStream("images/prevBtn.png")));
-    nextBtn.setImage(new Image(SessionView.class.getClassLoader()
-        .getResourceAsStream("images/nextBtn.png")));
-    lastBtn.setImage(new Image(SessionView.class.getClassLoader()
-        .getResourceAsStream("images/lastBtn.png")));
-    playBtn.setImage(new Image(SessionView.class.getClassLoader()
-        .getResourceAsStream("images/playBtn.png")));
+    stepButtons.add(
+        new Button("", new FontAwesome().create(Glyph.STEP_BACKWARD)), 0, 0);
+    stepButtons.add(
+        new Button("", new FontAwesome().create(Glyph.BACKWARD)), 1, 0);
+    stepButtons.add(
+        new Button("", new FontAwesome().create(Glyph.FORWARD)), 2, 0);
+    stepButtons.add(
+        new Button("", new FontAwesome().create(Glyph.STEP_FORWARD)), 3, 0);
+    playGrid.add(
+        new Button("", new FontAwesome().create(Glyph.PLAY)), 0, 0);   
   }
 
 }

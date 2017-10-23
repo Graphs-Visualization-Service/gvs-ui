@@ -7,6 +7,7 @@ import gvs.common.Persistor;
 import gvs.interfaces.ISessionController;
 import gvs.ui.application.controller.ApplicationController;
 import gvs.ui.application.model.ApplicationModel;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
@@ -55,10 +56,9 @@ public class AppViewModel implements Observer {
    */
   @Override
   public void update(Observable o, Object arg) {
-    System.out.println("being updated");
     String name = ((ApplicationModel) o).getSession().getSessionName();
     sessionControllers.add(name);
-    currentSessionName.setValue(name);
+    Platform.runLater(() -> currentSessionName.set(name));
   }
 
   public void removeCurrentSession() {

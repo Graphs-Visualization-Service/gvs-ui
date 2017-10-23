@@ -1,13 +1,19 @@
 package gvs.ui.application.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gluonhq.ignite.guice.GuiceContext;
+import com.google.inject.Inject;
+
+import gvs.GuiceBaseModule;
 import gvs.common.Persistor;
+import gvs.interfaces.ISessionController;
 import gvs.ui.application.model.ApplicationModel;
 import gvs.ui.logic.app.AppViewModel;
 import gvs.ui.view.app.AppView;
@@ -30,6 +36,12 @@ public class GVSApplication extends Application implements Observer {
   private static final Logger logger = LoggerFactory
       .getLogger(GVSApplication.class);
 
+  private GuiceContext context = new GuiceContext(this,
+      () -> Arrays.asList(new GuiceBaseModule()));
+
+  @Inject
+  private FXMLLoader fxmlLoader;
+
   private Stage primaryStage;
   private BorderPane rootLayout;
   private BorderPane sessionLayout;
@@ -43,6 +55,8 @@ public class GVSApplication extends Application implements Observer {
    */
   @Override
   public void start(Stage mainStage) {
+    context.init();
+
     this.primaryStage = mainStage;
     this.primaryStage.setTitle("GVS");
     initRootLayout();
@@ -55,16 +69,18 @@ public class GVSApplication extends Application implements Observer {
   private void initRootLayout() {
     try {
       logger.debug("Initialize root layout");
-      FXMLLoader loader = new FXMLLoader();
-      rootLayout = (BorderPane) loader.load(GVSApplication.class
-          .getResourceAsStream("/gvs/ui/view/app/AppView.fxml"));
+
+      fxmlLoader
+          .setLocation(getClass().getResource("/gvs/ui/view/app/AppView.fxml"));
+
+      rootLayout = (BorderPane) fxmlLoader.load();
 
       // Show the scene containing the root layout.
       Scene scene = new Scene(rootLayout);
       primaryStage.setScene(scene);
       primaryStage.show();
 
-      appView = loader.getController();
+      appView = fxmlLoader.getController();
       ApplicationModel appModel = new ApplicationModel();
       appModel.addObserver(this);
       appView.setAppViewModel(new AppViewModel(appModel,

@@ -48,7 +48,7 @@ public class SessionView {
 
   @FXML
   private Button playBtn;
-  
+
   private SessionViewModel sessionViewModel;
 
   /**
@@ -57,32 +57,34 @@ public class SessionView {
   @FXML
   private void initialize() {
     initStepButtons();
-    playBtn.setGraphic(new Button("", new FontAwesome().create(Glyph.PLAY)));
-    
+    playBtn.setGraphic(
+        new Button("", FontAwesome.getInstance().createLabel(Glyph.PLAY)));
   }
 
   private void initStepButtons() {
-    firstBtn.setGraphic(new FontAwesome().create(Glyph.STEP_BACKWARD));
-    prevBtn.setGraphic(new FontAwesome().create(Glyph.BACKWARD));
-    nextBtn.setGraphic(new FontAwesome().create(Glyph.FORWARD));
-    lastBtn.setGraphic(new FontAwesome().create(Glyph.STEP_FORWARD));
+    firstBtn
+        .setGraphic(FontAwesome.getInstance().createLabel(Glyph.STEP_BACKWARD));
+    prevBtn.setGraphic(FontAwesome.getInstance().createLabel(Glyph.BACKWARD));
+    nextBtn.setGraphic(FontAwesome.getInstance().createLabel(Glyph.FORWARD));
+    lastBtn
+        .setGraphic(FontAwesome.getInstance().createLabel(Glyph.STEP_FORWARD));
   }
-  
+
   @FXML
   private void stepForward() {
     sessionViewModel.changeCurrentGraphToNext();
   }
-  
+
   @FXML
   private void stepBackward() {
     sessionViewModel.changeCurrentGraphToPrevious();
   }
-  
+
   @FXML
   private void stepToFirst() {
     sessionViewModel.changeCurrentGraphToFirst();
   }
-  
+
   @FXML
   private void stepToLast() {
     sessionViewModel.changeCurrentGraphToLast();

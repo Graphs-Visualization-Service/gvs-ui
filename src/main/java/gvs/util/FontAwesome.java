@@ -11,13 +11,57 @@ import javafx.scene.text.Font;
  *
  */
 public class FontAwesome {
-  private static Font font;
-
+  
+  private static FontAwesome instance = null;
+  private Font font;
+  
+  private FontAwesome() {
+     // Exists only to defeat instantiation.
+  }
+  
+  /**
+   * Returns the singleton instance of the {@link FontAwesome} class
+   * @return singleton instance
+   */
+  public static final FontAwesome getInstance() {
+    if (instance == null) {
+      instance = new FontAwesome();
+      // load font only once
+      instance.font = loadFontResource();
+    }
+    return instance;
+  }
+  
+  private static Font loadFontResource() {
+    InputStream is = FontAwesome.class.getClassLoader()
+        .getResourceAsStream("fonts/fontawesome-webfont.ttf");
+    final int defaultSize = -1;
+    return Font.loadFont(is, defaultSize);
+  }
+  
+  /**
+   * Creates a Label with the given FontAwesome Icon. 
+   * 
+   * Usage:
+   * <code>
+   * new Button("labelText", 
+   *   FontAwesome().getInstance().createLabel(Glyph.PLAY))
+   * </code>
+   * 
+   * @param character
+   * @return
+   */
+  public Label createLabel(Glyph character) {
+    Label l = new Label();
+    l.setFont(font);
+    l.setText(String.valueOf(character.getChar()));
+    return l;
+  }
+  
   /**
    * The individual glyphs offered by the FontAwesome font.
    */
   public enum Glyph {
-
     ADJUST('\uf042'),
     ADN('\uf170'),
     ALIGN_CENTER('\uf037'),
@@ -627,23 +671,4 @@ public class FontAwesome {
       return ch;
     }
   };
-
-  public FontAwesome() {
-    InputStream is = getClass().getClassLoader()
-        .getResourceAsStream("fonts/fontawesome-webfont.ttf");
-    font = Font.loadFont(is, -1);
-  }
-
-  /**
-   * Creates a Label with the given FontAwesome Icon.
-   * Usage: new Button("", new FontAwesome().create(Glyph.PLAY))
-   * @param character
-   * @return
-   */
-  public Label create(Glyph character) {
-    Label l = new Label();
-    l.setFont(font);
-    l.setText(String.valueOf(character.getChar()));
-    return l;
-  }
 }

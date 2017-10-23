@@ -60,9 +60,10 @@ public class AppView {
     setLogoAsBackground();
   }
 
-  private void fillDropDown() {    
+  private void fillDropDown() {
     chooseSessionBox.setItems(model.getSessionControllers());
-    chooseSessionBox.valueProperty().bindBidirectional(model.getCurrentSessionName());
+    chooseSessionBox.valueProperty()
+        .bindBidirectional(model.getCurrentSessionName());
   }
 
   private AppViewModel model;

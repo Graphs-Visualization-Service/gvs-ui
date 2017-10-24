@@ -26,7 +26,7 @@ public class GVSLauncher {
     try {
       logger.info("Start GVS UI 2.0...");
       GVSApplication.launch(GVSApplication.class);
-      logger.info("GVS UI started.s");
+      logger.info("GVS UI started.");
 
       logger.info("Start Server Socket...");
       SocketServer server = new SocketServer();

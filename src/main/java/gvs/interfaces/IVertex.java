@@ -3,6 +3,7 @@ package gvs.interfaces;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Stroke;
+import java.util.Observer;
 
 public interface IVertex {
 
@@ -31,5 +32,7 @@ public interface IVertex {
   Image getIcon();
 
   Color getFillColor();
+  
+  void addObserver(Observer o);
   
 }

@@ -3,7 +3,7 @@ package gvs.ui.model.graph;
 import java.util.Observable;
 import java.util.Observer;
 
-import gvs.interfaces.IVertexViewModel;
+import gvs.interfaces.IVertex;
 import gvs.ui.graph.model.DefaultVertex;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -14,13 +14,13 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 
 /**
- * Contains JavaFX Properties, which are used for bidirectional bindings.
+ * Contains JavaFX Properties which are used for bidirectional bindings.
  * 
  * @author Michi
  */
-public class DefaultVertexViewModel implements IVertexViewModel, Observer {
+public class VertexViewModel implements Observer {
 
-  private final DefaultVertex vertex;
+  private final IVertex vertex;
   private final DoubleProperty xProperty;
   private final DoubleProperty yProperty;
   private final BooleanProperty activeProperty;
@@ -37,7 +37,7 @@ public class DefaultVertexViewModel implements IVertexViewModel, Observer {
    * @param vertex
    *          JavaFX independent vertex representation
    */
-  public DefaultVertexViewModel(DefaultVertex vertex) {
+  public VertexViewModel(IVertex vertex) {
     this.vertex = vertex;
     this.xProperty = new SimpleDoubleProperty();
     this.yProperty = new SimpleDoubleProperty();
@@ -51,7 +51,7 @@ public class DefaultVertexViewModel implements IVertexViewModel, Observer {
   }
 
   /**
-   * Informs the business logic {@link DefaultVertex} about changes, made in the
+   * Inform the business logic {@link DefaultVertex} about changes, made in the
    * UI. (e.g. drag vertex)
    * 
    * @param observable
@@ -68,7 +68,7 @@ public class DefaultVertexViewModel implements IVertexViewModel, Observer {
   }
 
   /**
-   * Informs the business logic {@link DefaultVertex} about changes, made in the
+   * Inform the business logic {@link DefaultVertex} about changes, made in the
    * UI. (e.g. drag vertex)
    * 
    * @param observable
@@ -85,8 +85,8 @@ public class DefaultVertexViewModel implements IVertexViewModel, Observer {
   }
 
   /**
-   * Creates the binding from the business logic {@link DefaultVertex} to the
-   * presentation {@link DefaultVertexViewModel} properties.
+   * Create the binding from the business logic {@link DefaultVertex} to the
+   * presentation {@link VertexViewModel} properties.
    * 
    * As soon as any {@link DefaultVertex} field is updated, the corresponding
    * property will be notified.
@@ -103,17 +103,14 @@ public class DefaultVertexViewModel implements IVertexViewModel, Observer {
     this.yProperty.set(updatedVertex.getYPosition());
   }
 
-  @Override
   public DoubleProperty getXProperty() {
     return xProperty;
   }
 
-  @Override
   public DoubleProperty getYProperty() {
     return yProperty;
   }
 
-  @Override
   public void setActive(boolean state) {
     this.activeProperty.set(state);
   }

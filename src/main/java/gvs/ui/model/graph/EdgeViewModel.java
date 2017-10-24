@@ -8,7 +8,7 @@ import gvs.interfaces.IVertex;
 import gvs.ui.graph.model.Edge;
 
 /**
- * 
+ * Contains JavaFX Properties which are used for bidirectional bindings.
  * @author Michi
  */
 public class EdgeViewModel implements Observer {
@@ -17,7 +17,7 @@ public class EdgeViewModel implements Observer {
   private IVertex endVertex;
 
   /**
-   * Create a new EdgeViewModel with the corresponding Vertices
+   * Create a new EdgeViewModel with the corresponding vertices.
    * 
    * @param startVertex
    *          start vertex

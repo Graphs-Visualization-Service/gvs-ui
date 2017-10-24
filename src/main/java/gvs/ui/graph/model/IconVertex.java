@@ -3,6 +3,8 @@ package gvs.ui.graph.model;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Stroke;
+import java.util.Observable;
+import java.util.Observer;
 
 import gvs.interfaces.IIconVertex;
 
@@ -12,7 +14,7 @@ import gvs.interfaces.IIconVertex;
  * @author aegli
  *
  */
-public class IconVertex implements IIconVertex {
+public class IconVertex extends Observable implements IIconVertex {
 
   private long id = 0;
   private String label = null;
@@ -150,4 +152,6 @@ public class IconVertex implements IIconVertex {
   public Color getFillColor() {
     return null;
   }
+  
+  
 }

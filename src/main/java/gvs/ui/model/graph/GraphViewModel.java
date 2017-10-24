@@ -9,25 +9,24 @@ import org.slf4j.LoggerFactory;
 import gvs.business.model.graph.Graph;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
-import gvs.interfaces.IVertexViewModel;
 import gvs.ui.graph.model.DefaultVertex;
 
 /**
- * Represents one snapshot of a graph visualization
+ * Represents one snapshot of a graph visualization.
  * 
  * @author Michi
  *
  */
 public class GraphViewModel {
 
-  private List<IVertexViewModel> vertexViewModels;
+  private List<VertexViewModel> vertexViewModels;
   private List<EdgeViewModel> edgeViewModels;
 
   private static final Logger logger = LoggerFactory
       .getLogger(GraphViewModel.class);
 
   /**
-   * Creates a new graph view model
+   * Creates a new graph view model.
    * 
    * @param graph
    *          corresponding graph instance
@@ -40,7 +39,7 @@ public class GraphViewModel {
   }
 
   /**
-   * Load all graph properties
+   * Load all graph properties.
    * 
    * @param graph
    *          business layer graph
@@ -52,7 +51,7 @@ public class GraphViewModel {
   }
 
   /**
-   * Load all vertex properties
+   * Load all vertex properties.
    * 
    * @param vertices
    *          business layer vertices
@@ -60,15 +59,7 @@ public class GraphViewModel {
   private void loadVertices(List<IVertex> vertices) {
     logger.info("Import vertices to graph view model");
     vertices.forEach(v -> {
-      IVertexViewModel vertexViewModel = null;
-
-      if (v.getIcon() == null) {
-        DefaultVertex dv = (DefaultVertex) v;
-        vertexViewModel = new DefaultVertexViewModel(dv);
-      } else {
-        // TODO uncomments
-        // vertexViewModel = new IconVertexVModel();
-      }
+      VertexViewModel vertexViewModel = new VertexViewModel(v);
 
       vertexViewModel.getXProperty().set(v.getXPosition());
       vertexViewModel.getYProperty().set(v.getYPosition());
@@ -77,7 +68,7 @@ public class GraphViewModel {
   }
 
   /**
-   * Load all edge properties
+   * Load all edge properties.
    * 
    * @param edges
    *          business layer edges

@@ -1,6 +1,8 @@
 # Generated folders
 log/
 build/*
+*.gvs
+
 
 # Eclipse properties
 .classpath

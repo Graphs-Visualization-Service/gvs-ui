@@ -35,7 +35,7 @@
                         <MenuItem fx:id="quitMenuItem" mnemonicParsing="false" onAction="#quitGVS" text="Quit" />
                   </items>
                 </Menu>
-                <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
+                <Menu fx:id="fileMenu" mnemonicParsing="true" text="File">
                   <items>
                     <MenuItem fx:id="importMenuItem" onAction="#loadSession" text="_Import" />
                         <MenuItem fx:id="exportMenuItem" onAction="#saveSession" text="_Export" />
@@ -52,7 +52,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <ComboBox fx:id="chooseSessionBox" onAction="#changeSession" prefWidth="450.0" promptText="choose Session" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS">
+                  <ComboBox fx:id="chooseSessionBox" onAction="#changeSession" prefWidth="450.0" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS">
                      <GridPane.margin>
                         <Insets left="10.0" />
                      </GridPane.margin>

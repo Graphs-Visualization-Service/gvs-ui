@@ -21,7 +21,8 @@ import javafx.collections.ObservableList;
 
 /**
  * The ViewModel class for the GVS Application. Corresponds to the classical
- * ViewModel of the MVVM Pattern. It observs the ApplicationModel.
+ * ViewModel of the MVVM Pattern. It observs the ApplicationModel and handles
+ * the GUI logic.
  * 
  * @author muriele
  *
@@ -77,7 +78,7 @@ public class AppViewModel implements Observer {
         currentSessionName.set(PROMT_MESSAGE);
       }
     } else {
-      logger.warn("ApplicationModel holds no current session.");
+      logger.warn("ApplicationModel is not holding a current session.");
     }
   }
 

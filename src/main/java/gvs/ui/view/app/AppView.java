@@ -6,9 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.ui.logic.app.AppViewModel;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -25,7 +22,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /**
- * MVVM View Class.
+ * MVVM View Class. Defines functions for all fxml actions. Defines bindings to
+ * current session and active sessions.
  * 
  * @author mtrentini
  */
@@ -65,21 +63,13 @@ public class AppView {
   }
 
   /**
-   * Bind dropdwon menu to active sessions. Bind selected dropdown menu item to
+   * Bind dropdown menu to active sessions. Bind selected dropdown menu item to
    * current session.
    */
   private void fillDropDown() {
     chooseSessionBox.setItems(model.getSessionControllers());
     chooseSessionBox.valueProperty()
         .bindBidirectional(model.getCurrentSessionName());
-     
-//    chooseSessionBox.valueProperty()
-//        .addListener((observable, oldValue, newValue) -> {
-//          logger.debug(
-//              String.format("Detecting change in ComboBox: from %s to %s",
-//                  oldValue, newValue));
-//        });
-    
   }
 
   private void setLogoAsBackground() {
@@ -116,6 +106,7 @@ public class AppView {
 
   @FXML
   private void changeSession() {
+    logger.debug("Detecting change in combobox.");
     String name = chooseSessionBox.getValue();
     model.changeSession(name);
   }

@@ -13,11 +13,11 @@ import com.google.inject.Inject;
 
 import gvs.GuiceBaseModule;
 import gvs.common.Persistor;
-import gvs.interfaces.ISessionController;
 import gvs.ui.application.model.ApplicationModel;
 import gvs.ui.logic.app.AppViewModel;
 import gvs.ui.view.app.AppView;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -57,8 +57,13 @@ public class GVSApplication extends Application implements Observer {
   public void start(Stage mainStage) {
     context.init();
 
-    this.primaryStage = mainStage;
-    this.primaryStage.setTitle("GVS");
+    primaryStage = mainStage;
+    primaryStage.setTitle("GVS");
+    primaryStage.setOnCloseRequest(e -> {
+      Platform.exit();
+      System.exit(0);
+    });
+
     initRootLayout();
     // displaySession();
   }
@@ -86,9 +91,7 @@ public class GVSApplication extends Application implements Observer {
       appView.setAppViewModel(new AppViewModel(appModel,
           ApplicationController.getInstance(appModel), new Persistor()));
     } catch (IOException e) {
-      logger.error("Could not initialize root layout");
-      // TODO error handling
-      e.printStackTrace();
+      logger.error("Could not initialize root layout", e);
     }
   }
 

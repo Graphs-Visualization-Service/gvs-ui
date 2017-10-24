@@ -23,17 +23,13 @@ public class GVSLauncher {
    *          console arguments
    */
   public static void main(String[] args) {
-    try {
-      logger.info("Start GVS UI 2.0...");
-      GVSApplication.launch(GVSApplication.class);
-      logger.info("GVS UI started.");
+    logger.info("Start Server Socket...");
+    SocketServer server = new SocketServer();
+    server.start();
+    logger.info("Sever Socket started.");
 
-      logger.info("Start Server Socket...");
-      SocketServer server = new SocketServer();
-      server.start();
-      logger.info("Sever Socket started.");
-    } catch (Exception e) {
-      logger.error("Unable to start GVS UI", e);
-    }
+    logger.info("Start GVS UI 2.0...");
+    GVSApplication.launch(GVSApplication.class);
+    logger.info("GVS UI started.");
   }
 }

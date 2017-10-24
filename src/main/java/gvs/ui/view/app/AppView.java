@@ -2,9 +2,6 @@ package gvs.ui.view.app;
 
 import java.io.File;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import gvs.ui.logic.app.AppViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -54,8 +51,6 @@ public class AppView {
   private AnchorPane displaySessionPane;
 
   private AppViewModel model;
-  private static final Logger logger = LoggerFactory
-      .getLogger(AppViewModel.class);
 
   @FXML
   private void initialize() {
@@ -67,7 +62,7 @@ public class AppView {
    * current session.
    */
   private void fillDropDown() {
-    chooseSessionBox.setItems(model.getSessionControllers());
+    chooseSessionBox.setItems(model.getSessionNames());
     chooseSessionBox.valueProperty()
         .bindBidirectional(model.getCurrentSessionName());
   }
@@ -84,7 +79,6 @@ public class AppView {
 
   @FXML
   private void loadSession() {
-    logger.debug("Loading session from file...");
     Stage stage = (Stage) displaySessionPane.getScene().getWindow();
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Open Session File");
@@ -94,26 +88,22 @@ public class AppView {
 
   @FXML
   private void saveSession() {
-    logger.debug("Saving session to file...");
     model.saveSession();
   }
 
   @FXML
   private void removeSession() {
-    logger.debug("Removing current session...");
     model.removeCurrentSession();
   }
 
   @FXML
   private void changeSession() {
-    logger.debug("Detecting change in combobox.");
     String name = chooseSessionBox.getValue();
     model.changeSession(name);
   }
 
   @FXML
   private void quitGVS() {
-    logger.debug("Quitting GVS...");
     model.terminateApplication();
   }
 

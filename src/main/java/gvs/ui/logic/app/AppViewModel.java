@@ -21,7 +21,7 @@ import javafx.collections.ObservableList;
 
 /**
  * The ViewModel class for the GVS Application. Corresponds to the classical
- * ViewModel of the MVVM Pattern. It observs the ApplicationModel and handles
+ * ViewModel of the MVVM Pattern. It observes the ApplicationModel and handles
  * the GUI logic.
  * 
  * @author muriele
@@ -32,14 +32,15 @@ public class AppViewModel implements Observer {
   private ApplicationModel appModel;
   private ApplicationController appController;
   private IPersistor persistor;
+
+  private final StringProperty currentSessionName = new SimpleStringProperty();
+  private final ObservableList<String> sessionNames = FXCollections
+      .observableArrayList();
+  private final Map<String, ISessionController> controllerMap = new HashMap<>();
+
+  private static final String PROMT_MESSAGE = "no active session";
   private static final Logger logger = LoggerFactory
       .getLogger(AppViewModel.class);
-
-  private final ObservableList<String> sessionControllers = FXCollections
-      .observableArrayList();
-  private StringProperty currentSessionName = new SimpleStringProperty();
-  private final Map<String, ISessionController> controllerMap = new HashMap<>();
-  private static final String PROMT_MESSAGE = "no active session";
 
   // TODO: do we still need the persistor here? @mtrentini
   public AppViewModel(ApplicationModel appModel,
@@ -51,8 +52,8 @@ public class AppViewModel implements Observer {
     currentSessionName.setValue(PROMT_MESSAGE);
   }
 
-  public ObservableList<String> getSessionControllers() {
-    return sessionControllers;
+  public ObservableList<String> getSessionNames() {
+    return sessionNames;
   }
 
   public StringProperty getCurrentSessionName() {
@@ -68,11 +69,11 @@ public class AppViewModel implements Observer {
     ISessionController c = ((ApplicationModel) o).getSession();
     if (c != null) {
       String name = c.getSessionName();
-      if (name != null && name != "") {
+      if (name != null && !name.isEmpty()) {
         currentSessionName.set(name);
         controllerMap.put(name, c);
-        if (!sessionControllers.contains(name)) {
-          sessionControllers.add(name);
+        if (!sessionNames.contains(name)) {
+          sessionNames.add(name);
         }
       } else {
         currentSessionName.set(PROMT_MESSAGE);
@@ -83,27 +84,31 @@ public class AppViewModel implements Observer {
   }
 
   public void removeCurrentSession() {
+    logger.debug("Removing current session...");
     ISessionController currentSession = appModel.getSession();
-    sessionControllers.remove(currentSession.getSessionName());
-    controllerMap.remove(currentSession.getSessionName());
+    String sessionName = currentSession.getSessionName();
+    sessionNames.remove(sessionName);
+    controllerMap.remove(sessionName);
     appController.deleteSession(currentSession);
   }
 
   public void loadSession(File file) {
-    if (file != null) {
-      appController.setRequestedFile(file.getPath(), persistor);
-    }
+    logger.debug("Loading session from file...");
+    appController.setRequestedFile(file.getPath(), persistor);
   }
 
   public void saveSession() {
+    logger.debug("Saving session to file...");
     appModel.getSession().saveSession();
   }
 
   public void changeSession(String name) {
-    ISessionController c = controllerMap.get(name);
-    if (c == null) {
+    logger.debug("Detecting change in combobox.");
+    if (name.equals(PROMT_MESSAGE)) {
       return;
     }
+
+    ISessionController c = controllerMap.get(name);
     if (appModel.getSession().getSessionName() != name) {
       appController.changeCurrentSession(c);
       logger.debug(String.format("Changing current session to '%s'...", name));
@@ -111,6 +116,7 @@ public class AppViewModel implements Observer {
   }
 
   public void terminateApplication() {
+    logger.debug("Quitting GVS...");
     Platform.exit();
     System.exit(0);
   }

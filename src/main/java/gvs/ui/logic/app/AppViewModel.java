@@ -6,9 +6,13 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gvs.interfaces.IPersistor;
 import gvs.interfaces.ISessionController;
 import gvs.ui.application.controller.ApplicationController;
+import gvs.ui.application.controller.GVSApplication;
 import gvs.ui.application.model.ApplicationModel;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -31,13 +35,15 @@ public class AppViewModel implements Observer {
   private ApplicationModel appModel;
   private ApplicationController appController;
   private IPersistor persistor;
+  private static final Logger logger = LoggerFactory
+      .getLogger(AppViewModel.class);
 
   private final ObservableList<String> sessionControllers = FXCollections
       .observableArrayList();
   private StringProperty currentSessionName = new SimpleStringProperty();
   private final Map<String, ISessionController> controllerMap = new HashMap<>();
 
-  //TODO: do we still need the persistor here? @mtrentini
+  // TODO: do we still need the persistor here? @mtrentini
   public AppViewModel(ApplicationModel appModel,
       ApplicationController appController, IPersistor persistor) {
     this.appModel = appModel;
@@ -62,10 +68,19 @@ public class AppViewModel implements Observer {
   @Override
   public void update(Observable o, Object arg) {
     ISessionController c = ((ApplicationModel) o).getSession();
-    String name = c.getSessionName();
-    controllerMap.put(name, c);
-    sessionControllers.add(name);
-    Platform.runLater(() -> currentSessionName.set(name));
+    if (c != null) {
+      logger.debug("Set new current session in GUI.");
+      String name = c.getSessionName();
+      controllerMap.put(name, c);
+      if (!sessionControllers.contains(name)) {
+        sessionControllers.add(name);
+      }
+      //TODO: change selected item in combobox
+      Platform.runLater(() -> currentSessionName.set(name));
+    } else {
+      logger.warn("ApplicationModel holds no current session.");
+    }
+
   }
 
   // TODO: still shows session in dropdown

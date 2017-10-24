@@ -49,7 +49,7 @@ public class AppViewModel implements Observer {
     this.appModel.addObserver(this);
     this.appController = appController;
     this.persistor = persistor;
-    currentSessionName.setValue(PROMT_MESSAGE);
+    this.currentSessionName.set(PROMT_MESSAGE);
   }
 
   public ObservableList<String> getSessionNames() {
@@ -67,19 +67,15 @@ public class AppViewModel implements Observer {
   @Override
   public void update(Observable o, Object arg) {
     ISessionController c = ((ApplicationModel) o).getSession();
-    if (c != null) {
-      String name = c.getSessionName();
-      if (name != null && !name.isEmpty()) {
-        currentSessionName.set(name);
-        controllerMap.put(name, c);
-        if (!sessionNames.contains(name)) {
-          sessionNames.add(name);
-        }
-      } else {
-        currentSessionName.set(PROMT_MESSAGE);
-      }
+    String name = c.getSessionName();
+    if (name == null) {
+      currentSessionName.set(PROMT_MESSAGE);
     } else {
-      logger.warn("ApplicationModel is not holding a current session.");
+      currentSessionName.set(name);
+      controllerMap.put(name, c);
+      if (!sessionNames.contains(name)) {
+        sessionNames.add(name);
+      }
     }
   }
 
@@ -104,7 +100,7 @@ public class AppViewModel implements Observer {
 
   public void changeSession(String name) {
     logger.debug("Detecting change in combobox.");
-    if (name.equals(PROMT_MESSAGE)) {
+    if (isInvalidSessionName(name)) {
       return;
     }
 
@@ -113,6 +109,10 @@ public class AppViewModel implements Observer {
       appController.changeCurrentSession(c);
       logger.debug(String.format("Changing current session to '%s'...", name));
     }
+  }
+
+  private boolean isInvalidSessionName(String name) {
+    return name == null || name.isEmpty() || PROMT_MESSAGE.equals(name);
   }
 
   public void terminateApplication() {

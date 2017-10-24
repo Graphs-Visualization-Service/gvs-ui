@@ -13,12 +13,12 @@ import javafx.scene.text.Font;
 public class FontAwesome {
   
   /**
-   * Creates a Label with the given FontAwesome Icon. 
+   * Creates a Label with the given FontAwesome icon. 
    * 
    * Usage:
    * <code>
    * new Button("labelText", 
-   *   FontAwesome().getInstance().createLabel(Glyph.PLAY))
+   *   FontAwesome().createLabel(Glyph.PLAY))
    * </code>
    * 
    * @param character

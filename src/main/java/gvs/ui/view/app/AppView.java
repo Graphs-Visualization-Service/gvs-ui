@@ -2,17 +2,7 @@ package gvs.ui.view.app;
 
 import java.io.File;
 
-import gvs.interfaces.ISessionController;
 import gvs.ui.logic.app.AppViewModel;
-import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -109,7 +99,7 @@ public class AppView {
 
   @FXML
   private void quitGVS() {
-    Platform.exit();
+    model.terminateApplication();
   }
 
   public void setAppViewModel(AppViewModel appViewModel) {

@@ -75,12 +75,11 @@ public class AppViewModel implements Observer {
       if (!sessionControllers.contains(name)) {
         sessionControllers.add(name);
       }
-      //TODO: change selected item in combobox
+      // TODO: change selected item in combobox
       Platform.runLater(() -> currentSessionName.set(name));
     } else {
       logger.warn("ApplicationModel holds no current session.");
     }
-
   }
 
   // TODO: still shows session in dropdown
@@ -104,6 +103,11 @@ public class AppViewModel implements Observer {
   public void changeSession(String name) {
     ISessionController c = controllerMap.get(name);
     appController.changeCurrentSession(c);
+  }
+
+  public void terminateApplication() {
+    Platform.exit();
+    System.exit(0);
   }
 
 }

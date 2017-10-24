@@ -55,7 +55,7 @@ public class GraphSessionController
   private boolean autoLayoutingMode = false;
   private boolean isRelativeSession = false;
 
-  //TODO: add inject
+  // TODO: add inject
   private IPersistor persistor = new Persistor();
 
   /**
@@ -250,10 +250,11 @@ public class GraphSessionController
    * Sets calculated model to visualization panel.
    */
   public void setVisualModel() {
-    graphContLogger.debug("Display graph");
-    controlPanel.setText(actualGraphModel.getModelId(), graphModels.size());
-    visualModel.setGraphModel(actualGraphModel);
-    setButtonState(actualGraphModel.getModelId());
+    // TODO: currently deactivates all GVS 1.0 GUI functionality
+    // graphContLogger.debug("Display graph");
+    // controlPanel.setText(actualGraphModel.getModelId(), graphModels.size());
+    // visualModel.setGraphModel(actualGraphModel);
+    // setButtonState(actualGraphModel.getModelId());
   }
 
   /**
@@ -589,15 +590,16 @@ public class GraphSessionController
    * Disable all buttons.
    */
   private void setEmptyButtonState() {
-    graphContLogger.debug("Disable all User-Interface components");
-    controlPanel.setLayout(false);
-    controlPanel.setPrevious(false);
-    controlPanel.setFirst(false);
-    controlPanel.setNext(false);
-    controlPanel.setLast(false);
-    controlPanel.setReplay(false);
-    controlPanel.setLayout(false);
-    controlPanel.setSlider(false);
+    // TODO: currently deactivates all GVS 1.0 GUI functionality
+    // graphContLogger.debug("Disable all User-Interface components");
+    // controlPanel.setLayout(false);
+    // controlPanel.setPrevious(false);
+    // controlPanel.setFirst(false);
+    // controlPanel.setNext(false);
+    // controlPanel.setLast(false);
+    // controlPanel.setReplay(false);
+    // controlPanel.setLayout(false);
+    // controlPanel.setSlider(false);
   }
 
   /**

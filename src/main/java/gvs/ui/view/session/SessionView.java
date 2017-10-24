@@ -57,17 +57,14 @@ public class SessionView {
   @FXML
   private void initialize() {
     initStepButtons();
-    playBtn.setGraphic(
-        new Button("", FontAwesome.getInstance().createLabel(Glyph.PLAY)));
+    playBtn.setGraphic(new Button("", FontAwesome.createLabel(Glyph.PLAY)));
   }
 
   private void initStepButtons() {
-    firstBtn
-        .setGraphic(FontAwesome.getInstance().createLabel(Glyph.STEP_BACKWARD));
-    prevBtn.setGraphic(FontAwesome.getInstance().createLabel(Glyph.BACKWARD));
-    nextBtn.setGraphic(FontAwesome.getInstance().createLabel(Glyph.FORWARD));
-    lastBtn
-        .setGraphic(FontAwesome.getInstance().createLabel(Glyph.STEP_FORWARD));
+    firstBtn.setGraphic(FontAwesome.createLabel(Glyph.STEP_BACKWARD));
+    prevBtn.setGraphic(FontAwesome.createLabel(Glyph.BACKWARD));
+    nextBtn.setGraphic(FontAwesome.createLabel(Glyph.FORWARD));
+    lastBtn.setGraphic(FontAwesome.createLabel(Glyph.STEP_FORWARD));
   }
 
   @FXML

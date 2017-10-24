@@ -12,24 +12,23 @@ import javafx.scene.text.Font;
  */
 public class FontAwesome {
   
-  private static FontAwesome instance = null;
-  private Font font;
-  
-  private FontAwesome() {
-     // Exists only to defeat instantiation.
-  }
-  
   /**
-   * Returns the singleton instance of the {@link FontAwesome} class
-   * @return singleton instance
+   * Creates a Label with the given FontAwesome icon. 
+   * 
+   * Usage:
+   * <code>
+   * new Button("labelText", 
+   *   FontAwesome().createLabel(Glyph.PLAY))
+   * </code>
+   * 
+   * @param character
+   * @return
    */
-  public static final FontAwesome getInstance() {
-    if (instance == null) {
-      instance = new FontAwesome();
-      // load font only once
-      instance.font = loadFontResource();
-    }
-    return instance;
+  public static Label createLabel(Glyph character) {
+    Label l = new Label();
+    l.setFont(loadFontResource());
+    l.setText(String.valueOf(character.getChar()));
+    return l;
   }
   
   private static Font loadFontResource() {
@@ -37,25 +36,6 @@ public class FontAwesome {
         .getResourceAsStream("fonts/fontawesome-webfont.ttf");
     final int defaultSize = -1;
     return Font.loadFont(is, defaultSize);
-  }
-  
-  /**
-   * Creates a Label with the given FontAwesome Icon. 
-   * 
-   * Usage:
-   * <code>
-   * new Button("labelText", 
-   *   FontAwesome().getInstance().createLabel(Glyph.PLAY))
-   * </code>
-   * 
-   * @param character
-   * @return
-   */
-  public Label createLabel(Glyph character) {
-    Label l = new Label();
-    l.setFont(font);
-    l.setText(String.valueOf(character.getChar()));
-    return l;
   }
   
   /**
@@ -656,19 +636,19 @@ public class FontAwesome {
     YOUTUBE_PLAY('\uf16A'),
     YOUTUBE_SQUARE('\uf166');
 
-    private final char ch;
+    private final char unicodeChar;
 
     /**
      * Creates a named Glyph mapped to the given character
      * 
-     * @param ch
+     * @param character unicode character
      */
-    Glyph(char ch) {
-      this.ch = ch;
+    Glyph(char character) {
+      this.unicodeChar = character;
     }
 
     public char getChar() {
-      return ch;
+      return unicodeChar;
     }
   };
 }

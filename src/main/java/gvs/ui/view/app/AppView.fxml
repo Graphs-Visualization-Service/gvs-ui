@@ -37,8 +37,8 @@
                 </Menu>
                 <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem fx:id="importMenuItem" text="_Import" />
-                        <MenuItem fx:id="exportMenuItem" text="_Export" />
+                    <MenuItem fx:id="importMenuItem" onAction="#loadSession" text="_Import" />
+                        <MenuItem fx:id="exportMenuItem" onAction="#saveSession" text="_Export" />
                   </items>
                 </Menu>
               </menus>
@@ -52,12 +52,12 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <ComboBox fx:id="chooseSessionBox" prefWidth="450.0" promptText="choose Session" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS">
+                  <ComboBox fx:id="chooseSessionBox" onAction="#changeSession" prefWidth="450.0" promptText="choose Session" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS">
                      <GridPane.margin>
                         <Insets left="10.0" />
                      </GridPane.margin>
                   </ComboBox>
-                  <Button fx:id="deleteSessionBtn" mnemonicParsing="false" text="Delete" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER">
+                  <Button fx:id="deleteSessionBtn" mnemonicParsing="false" onAction="#removeSession" text="Delete" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER">
                      <GridPane.margin>
                         <Insets right="10.0" />
                      </GridPane.margin>

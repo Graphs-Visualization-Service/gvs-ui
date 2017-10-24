@@ -1,5 +1,7 @@
 package gvs.ui.view.app;
 
+import java.io.File;
+
 import gvs.interfaces.ISessionController;
 import gvs.ui.logic.app.AppViewModel;
 import javafx.application.Platform;
@@ -23,6 +25,8 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 /**
  * MVVM View Class.
@@ -55,6 +59,8 @@ public class AppView {
   @FXML
   private AnchorPane displaySessionPane;
 
+  private AppViewModel model;
+  
   @FXML
   private void initialize() {
     setLogoAsBackground();
@@ -65,8 +71,6 @@ public class AppView {
     chooseSessionBox.valueProperty()
         .bindBidirectional(model.getCurrentSessionName());
   }
-
-  private AppViewModel model;
 
   private void setLogoAsBackground() {
     BackgroundImage myBI = new BackgroundImage(
@@ -80,12 +84,26 @@ public class AppView {
 
   @FXML
   private void loadSession() {
-
+    Stage stage = (Stage) displaySessionPane.getScene().getWindow();
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Open Session File");
+    File file = fileChooser.showOpenDialog(stage);
+    model.loadSession(file);
+  }
+  
+  @FXML
+  private void saveSession() {
+    
   }
 
   @FXML
   private void removeSession() {
     model.removeCurrentSession();
+  }
+  
+  @FXML
+  private void changeSession() {
+    
   }
 
   @FXML

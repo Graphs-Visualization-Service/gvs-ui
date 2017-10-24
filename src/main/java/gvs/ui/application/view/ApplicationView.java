@@ -91,7 +91,8 @@ public class ApplicationView extends JFrame implements Observer {
     font = new Font("Times", Font.ITALIC + Font.BOLD, DEFAULT_FONT_SIZE);
 
     am = new ApplicationModel();
-    am.addObserver(this);
+    // TODO: observer is now deactivated for gvs 1.0
+    // am.addObserver(this);
     ac = ApplicationController.getInstance(am);
 
     initCombo();
@@ -265,7 +266,9 @@ public class ApplicationView extends JFrame implements Observer {
 
   /**
    * Update combobox in order of new session.
-   * @param s session controller
+   * 
+   * @param s
+   *          session controller
    */
   private void updateCombo(ISessionController s) {
     appViewLogger.debug("Update combobox");

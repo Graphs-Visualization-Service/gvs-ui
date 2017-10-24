@@ -7,6 +7,10 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
+
+import gvs.common.Persistor;
+import gvs.interfaces.IPersistor;
 import gvs.interfaces.ITreeSessionController;
 import gvs.ui.application.view.ControlPanel;
 import gvs.ui.tree.layout.TreeLayoutController;
@@ -38,6 +42,9 @@ public class TreeSessionController implements ITreeSessionController {
 
   private boolean replayMode = false;
   private int picsPersMinute = 1000;
+
+  // TODO: change to inject
+  private IPersistor persistor = new Persistor();
 
   /**
    * Builds an instance of a tree session controller
@@ -122,10 +129,11 @@ public class TreeSessionController implements ITreeSessionController {
    * Sets calculated model for drawing
    */
   public void setVisualModel() {
-    treeContLogger.debug("Display tree");
-    cp.setText(actualTreeModel.getModelId(), treeModels.size());
-    visualModel.setTreeModel(actualTreeModel, layoutController);
-    setButtonState(actualTreeModel.getModelId());
+    // TODO: currently deactivates all GVS 1.0 GUI functionality
+    // treeContLogger.debug("Display tree");
+    // cp.setText(actualTreeModel.getModelId(), treeModels.size());
+    // visualModel.setTreeModel(actualTreeModel, layoutController);
+    // setButtonState(actualTreeModel.getModelId());
   }
 
   /**
@@ -340,14 +348,20 @@ public class TreeSessionController implements ITreeSessionController {
 
   // Disable all button. Occurs when replay or layouting is active
   private void setEmptyButtonState() {
-    treeContLogger.debug("Disable all User-Interface components");
-    cp.setPrevious(false);
-    cp.setFirst(false);
-    cp.setNext(false);
-    cp.setLast(false);
-    cp.setReplay(false);
-    cp.setLayout(false);
-    cp.setSlider(false);
+    // TODO: currently deactivates all GVS 1.0 GUI functionality
+    // treeContLogger.debug("Disable all User-Interface components");
+    // cp.setPrevious(false);
+    // cp.setFirst(false);
+    // cp.setNext(false);
+    // cp.setLast(false);
+    // cp.setReplay(false);
+    // cp.setLayout(false);
+    // cp.setSlider(false);
+  }
+
+  @Override
+  public void saveSession() {
+    persistor.saveToDisk(this);
   }
 
 }

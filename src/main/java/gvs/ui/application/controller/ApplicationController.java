@@ -6,7 +6,7 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.common.Persistor;
+import gvs.interfaces.IPersistor;
 import gvs.interfaces.ISessionController;
 import gvs.interfaces.ITreeSessionController;
 import gvs.ui.application.model.ApplicationModel;
@@ -97,16 +97,16 @@ public class ApplicationController {
    * @param pSessionController
    *          sessionController
    */
-  public void setComboSession(ISessionController pSessionController) {
+  public void changeCurrentSession(ISessionController pSessionController) {
     applicationModel.setSession(pSessionController);
   }
 
   /**
    * Returns available session for displaying in combobox.
    * 
-   * @return sessionController
+   * @return sessionControllers
    */
-  public Vector<ISessionController> getSessionContoller() {
+  public Vector<ISessionController> getSessionContollers() {
     return sessionControllers;
   }
 
@@ -118,7 +118,7 @@ public class ApplicationController {
    * @param persistor
    *          persistor
    */
-  public void setRequestedFile(String fileName, Persistor persistor) {
+  public void setRequestedFile(String fileName, IPersistor persistor) {
     appContLogger.info("Load session from directory");
     ISessionController loadedSession = (ISessionController) persistor
         .loadFile(fileName);
@@ -174,6 +174,7 @@ public class ApplicationController {
           .setSession(((ISessionController) sessionControllers.firstElement()));
 
     } else {
+      //TODO: when no session is active -> dont set empty session but close session-fxml etc
       appContLogger.debug("Set empty graph session");
       defaultGraphSession = new GraphSessionController();
       applicationModel.setSession(defaultGraphSession);

@@ -1,6 +1,8 @@
 package gvs.ui.view.app;
 
-import javafx.application.Platform;
+import java.io.File;
+
+import gvs.ui.logic.app.AppViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -13,10 +15,13 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
-
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 /**
- * MVVM View Class.
+ * MVVM View Class. Defines functions for all fxml actions. Defines bindings to
+ * current session and active sessions.
+ * 
  * @author mtrentini
  */
 public class AppView {
@@ -35,20 +40,31 @@ public class AppView {
 
   @FXML
   private MenuItem importMenuItem;
-  
+
   @FXML
   private Button deleteSessionBtn;
 
-  //TODO: input correct generic
   @FXML
-  private ComboBox<?> chooseSessionBox;
-  
+  private ComboBox<String> chooseSessionBox;
+
   @FXML
   private AnchorPane displaySessionPane;
+
+  private AppViewModel model;
 
   @FXML
   private void initialize() {
     setLogoAsBackground();
+  }
+
+  /**
+   * Bind dropdown menu to active sessions. Bind selected dropdown menu item to
+   * current session.
+   */
+  private void fillDropDown() {
+    chooseSessionBox.setItems(model.getSessionNames());
+    chooseSessionBox.valueProperty()
+        .bindBidirectional(model.getCurrentSessionName());
   }
 
   private void setLogoAsBackground() {
@@ -61,20 +77,39 @@ public class AppView {
     displaySessionPane.setBackground(new Background(myBI));
   }
 
-  /**
-   * Called when the user clicks on the load button.
-   */
   @FXML
   private void loadSession() {
-
+    Stage stage = (Stage) displaySessionPane.getScene().getWindow();
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Open Session File");
+    File file = fileChooser.showOpenDialog(stage);
+    model.loadSession(file);
   }
-  
-  /**
-   * Called when the user clicks on the quit menu item.
-   */
+
+  @FXML
+  private void saveSession() {
+    model.saveSession();
+  }
+
+  @FXML
+  private void removeSession() {
+    model.removeCurrentSession();
+  }
+
+  @FXML
+  private void changeSession() {
+    String name = chooseSessionBox.getValue();
+    model.changeSession(name);
+  }
+
   @FXML
   private void quitGVS() {
-    Platform.exit();
+    model.terminateApplication();
+  }
+
+  public void setAppViewModel(AppViewModel appViewModel) {
+    model = appViewModel;
+    fillDropDown();
   }
 
 }

@@ -81,7 +81,8 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
         .getLogger(VisualizationGraphPanel.class);
     graphContLogger.debug("Build new Visualization-/panel and model");
     this.visualModel = vm;
-    this.visualModel.addObserver(this);
+    // TODO: observer is now deactivated for gvs 1.0
+    // this.visualModel.addObserver(this);
     edgeComponents = new Vector<>();
     nodeComponents = new Vector<>();
     mediaTracker = new MediaTracker(this);

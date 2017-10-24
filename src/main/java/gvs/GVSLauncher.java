@@ -1,32 +1,35 @@
 package gvs;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gvs.server.socket.SocketServer;
 import gvs.ui.application.controller.GVSApplication;
-import gvs.ui.application.view.ApplicationView;
 
 /**
  * Starts the Graphs-Visualization Service.
  * 
- * @author aegli
+ * @author mwieland
  */
 public class GVSLauncher {
 
+  private static final Logger logger = LoggerFactory
+      .getLogger(GVSLauncher.class);
+
   /**
-   * Main method. 
-   * @param args console arguments
+   * Main method.
+   * 
+   * @param args
+   *          console arguments
    */
   public static void main(String[] args) {
+    logger.info("Start Server Socket...");
+    SocketServer server = new SocketServer();
+    server.start();
+    logger.info("Sever Socket started.");
 
-    ApplicationView av = new ApplicationView();
-    new Thread(() ->  GVSApplication.launch(GVSApplication.class)).start();
-
-    av.setVisible(true);
-    try {
-      SocketServer server = new SocketServer();
-      server.start();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
+    logger.info("Start GVS UI 2.0...");
+    GVSApplication.launch(GVSApplication.class);
+    logger.info("GVS UI started.");
   }
 }

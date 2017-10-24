@@ -93,7 +93,7 @@ public class AppView {
   
   @FXML
   private void saveSession() {
-    
+    model.saveSession();
   }
 
   @FXML

@@ -10,7 +10,11 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
+
+import gvs.common.Persistor;
 import gvs.interfaces.IGraphSessionController;
+import gvs.interfaces.IPersistor;
 import gvs.interfaces.IVertex;
 import gvs.ui.application.controller.ApplicationController;
 import gvs.ui.application.controller.Monitor;
@@ -51,12 +55,14 @@ public class GraphSessionController
   private boolean autoLayoutingMode = false;
   private boolean isRelativeSession = false;
 
+  //TODO: add inject
+  private IPersistor persistor = new Persistor();
+
   /**
    * Builds default session controller.
    *
    */
   public GraphSessionController() {
-
     initializeGraphSessionController();
 
     graphContLogger.info("Build empty graph session");
@@ -607,6 +613,11 @@ public class GraphSessionController
         actualGraphModel.getEdges(),
         ApplicationController.getInstance().getLayoutOption());
 
+  }
+
+  @Override
+  public void saveSession() {
+    persistor.saveToDisk(this);
   }
 
 }

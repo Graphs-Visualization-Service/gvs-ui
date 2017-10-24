@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-import gvs.common.Persistor;
+import gvs.interfaces.IPersistor;
 import gvs.interfaces.ISessionController;
 import gvs.ui.application.controller.ApplicationController;
 import gvs.ui.application.model.ApplicationModel;
@@ -30,15 +30,16 @@ public class AppViewModel implements Observer {
 
   private ApplicationModel appModel;
   private ApplicationController appController;
-  private Persistor persistor;
+  private IPersistor persistor;
 
   private final ObservableList<String> sessionControllers = FXCollections
       .observableArrayList();
   private StringProperty currentSessionName = new SimpleStringProperty();
-  private final Map<String,ISessionController> controllerMap = new HashMap<>();
+  private final Map<String, ISessionController> controllerMap = new HashMap<>();
 
+  //TODO: do we still need the persistor here? @mtrentini
   public AppViewModel(ApplicationModel appModel,
-      ApplicationController appController, Persistor persistor) {
+      ApplicationController appController, IPersistor persistor) {
     this.appModel = appModel;
     this.appModel.addObserver(this);
     this.appController = appController;
@@ -67,7 +68,7 @@ public class AppViewModel implements Observer {
     Platform.runLater(() -> currentSessionName.set(name));
   }
 
-  //TODO: still shows session in dropdown
+  // TODO: still shows session in dropdown
   public void removeCurrentSession() {
     ISessionController currentSession = appModel.getSession();
     appController.deleteSession(currentSession);
@@ -79,6 +80,10 @@ public class AppViewModel implements Observer {
     if (file != null) {
       appController.setRequestedFile(file.getPath(), persistor);
     }
+  }
+
+  public void saveSession() {
+    appModel.getSession().saveSession();
   }
 
 }

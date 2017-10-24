@@ -7,6 +7,10 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
+
+import gvs.common.Persistor;
+import gvs.interfaces.IPersistor;
 import gvs.interfaces.ITreeSessionController;
 import gvs.ui.application.view.ControlPanel;
 import gvs.ui.tree.layout.TreeLayoutController;
@@ -38,6 +42,9 @@ public class TreeSessionController implements ITreeSessionController {
 
   private boolean replayMode = false;
   private int picsPersMinute = 1000;
+
+  // TODO: change to inject
+  private IPersistor persistor = new Persistor();
 
   /**
    * Builds an instance of a tree session controller
@@ -348,6 +355,11 @@ public class TreeSessionController implements ITreeSessionController {
     cp.setReplay(false);
     cp.setLayout(false);
     cp.setSlider(false);
+  }
+
+  @Override
+  public void saveSession() {
+    persistor.saveToDisk(this);
   }
 
 }

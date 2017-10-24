@@ -145,4 +145,9 @@ public class IconVertex implements IIconVertex {
   public void setFixedPosition(boolean pIsFixed) {
     isFixed = pIsFixed;
   }
+
+  @Override
+  public Color getFillColor() {
+    return null;
+  }
 }

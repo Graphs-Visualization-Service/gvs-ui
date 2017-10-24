@@ -2,6 +2,7 @@ package gvs.ui.graph.model;
 
 import java.awt.Color;
 import java.awt.Stroke;
+import java.util.Observable;
 
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
@@ -12,7 +13,7 @@ import gvs.interfaces.IVertex;
  * @author aegli
  *
  */
-public class Edge implements IEdge {
+public class Edge extends Observable implements IEdge {
 
   private String label = null;
   private Color lineColor = null;

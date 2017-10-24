@@ -1,7 +1,9 @@
 package gvs.ui.graph.model;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.Stroke;
+import java.util.Observable;
 
 import gvs.interfaces.IDefaultVertex;
 
@@ -11,7 +13,7 @@ import gvs.interfaces.IDefaultVertex;
  * @author aegli
  *
  */
-public class DefaultVertex implements IDefaultVertex {
+public class DefaultVertex extends Observable implements IDefaultVertex {
 
   private long id = 0;
   private String label = null;
@@ -160,5 +162,10 @@ public class DefaultVertex implements IDefaultVertex {
    */
   public long getId() {
     return id;
+  }
+
+  @Override
+  public Image getIcon() {
+    return null;
   }
 }

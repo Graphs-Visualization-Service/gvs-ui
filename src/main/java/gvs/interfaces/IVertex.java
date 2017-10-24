@@ -1,6 +1,7 @@
 package gvs.interfaces;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.Stroke;
 
 public interface IVertex {
@@ -26,4 +27,9 @@ public interface IVertex {
   void setFixedPosition(boolean isFixed);
 
   long getId();
+  
+  Image getIcon();
+
+  Color getFillColor();
+  
 }

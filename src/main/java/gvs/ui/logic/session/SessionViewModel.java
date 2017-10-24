@@ -6,13 +6,19 @@ import java.util.Observer;
 import gvs.interfaces.ISessionController;
 
 /**
- * Represents the ViewModel for the Session.
+ * Represents the currently loaded session.
  * @author muriele
  *
  */
 public class SessionViewModel implements Observer{
   private ISessionController sessionController;
   
+  /**
+   * Creates a new graph view model
+   * 
+   * @param controller
+   *          related session controller
+   */
   public SessionViewModel(ISessionController controller) {
     sessionController = controller;
     

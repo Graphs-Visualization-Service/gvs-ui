@@ -12,12 +12,8 @@ import org.slf4j.LoggerFactory;
 import gvs.interfaces.IPersistor;
 import gvs.interfaces.ISessionController;
 import gvs.ui.application.controller.ApplicationController;
-import gvs.ui.application.controller.GVSApplication;
 import gvs.ui.application.model.ApplicationModel;
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -42,6 +38,7 @@ public class AppViewModel implements Observer {
       .observableArrayList();
   private StringProperty currentSessionName = new SimpleStringProperty();
   private final Map<String, ISessionController> controllerMap = new HashMap<>();
+  private static final String PROMT_MESSAGE = "no active session";
 
   // TODO: do we still need the persistor here? @mtrentini
   public AppViewModel(ApplicationModel appModel,
@@ -50,7 +47,7 @@ public class AppViewModel implements Observer {
     this.appModel.addObserver(this);
     this.appController = appController;
     this.persistor = persistor;
-    currentSessionName.setValue("no active session");
+    currentSessionName.setValue(PROMT_MESSAGE);
   }
 
   public ObservableList<String> getSessionControllers() {
@@ -69,25 +66,26 @@ public class AppViewModel implements Observer {
   public void update(Observable o, Object arg) {
     ISessionController c = ((ApplicationModel) o).getSession();
     if (c != null) {
-      logger.debug("Set new current session in GUI.");
       String name = c.getSessionName();
-      controllerMap.put(name, c);
-      if (!sessionControllers.contains(name)) {
-        sessionControllers.add(name);
+      if (name != null && name != "") {
+        currentSessionName.set(name);
+        controllerMap.put(name, c);
+        if (!sessionControllers.contains(name)) {
+          sessionControllers.add(name);
+        }
+      } else {
+        currentSessionName.set(PROMT_MESSAGE);
       }
-      // TODO: change selected item in combobox
-      Platform.runLater(() -> currentSessionName.set(name));
     } else {
       logger.warn("ApplicationModel holds no current session.");
     }
   }
 
-  // TODO: still shows session in dropdown
   public void removeCurrentSession() {
     ISessionController currentSession = appModel.getSession();
-    appController.deleteSession(currentSession);
     sessionControllers.remove(currentSession.getSessionName());
     controllerMap.remove(currentSession.getSessionName());
+    appController.deleteSession(currentSession);
   }
 
   public void loadSession(File file) {
@@ -102,7 +100,13 @@ public class AppViewModel implements Observer {
 
   public void changeSession(String name) {
     ISessionController c = controllerMap.get(name);
-    appController.changeCurrentSession(c);
+    if (c == null) {
+      return;
+    }
+    if (appModel.getSession().getSessionName() != name) {
+      appController.changeCurrentSession(c);
+      logger.debug(String.format("Changing current session to '%s'...", name));
+    }
   }
 
   public void terminateApplication() {

@@ -30,9 +30,9 @@
          <children>
             <MenuBar>
               <menus>
-                <Menu fx:id="gvsMenu" mnemonicParsing="false" text="GVS">
+                <Menu fx:id="gvsMenu" mnemonicParsing="true" text="GVS">
                   <items>
-                        <MenuItem fx:id="quitMenuItem" mnemonicParsing="false" onAction="#quitGVS" text="Quit" />
+                        <MenuItem fx:id="quitMenuItem" mnemonicParsing="false" onAction="#quitGVS" text="_Quit" />
                   </items>
                 </Menu>
                 <Menu fx:id="fileMenu" mnemonicParsing="true" text="File">
@@ -57,7 +57,7 @@
                         <Insets left="10.0" />
                      </GridPane.margin>
                   </ComboBox>
-                  <Button fx:id="deleteSessionBtn" mnemonicParsing="false" onAction="#removeSession" text="Delete" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER">
+                  <Button fx:id="deleteSessionBtn" mnemonicParsing="false" onMouseClicked="#removeSession" text="Delete" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER">
                      <GridPane.margin>
                         <Insets right="10.0" />
                      </GridPane.margin>

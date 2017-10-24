@@ -174,6 +174,7 @@ public class ApplicationController {
           .setSession(((ISessionController) sessionControllers.firstElement()));
 
     } else {
+      //TODO: when no session is active -> dont set empty session but close session-fxml etc
       appContLogger.debug("Set empty graph session");
       defaultGraphSession = new GraphSessionController();
       applicationModel.setSession(defaultGraphSession);

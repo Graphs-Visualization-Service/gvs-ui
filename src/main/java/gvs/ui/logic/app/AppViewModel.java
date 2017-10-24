@@ -1,5 +1,8 @@
 package gvs.ui.logic.app;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -32,6 +35,7 @@ public class AppViewModel implements Observer {
   private final ObservableList<String> sessionControllers = FXCollections
       .observableArrayList();
   private StringProperty currentSessionName = new SimpleStringProperty();
+  private final Map<String,ISessionController> controllerMap = new HashMap<>();
 
   public AppViewModel(ApplicationModel appModel,
       ApplicationController appController, Persistor persistor) {
@@ -56,15 +60,25 @@ public class AppViewModel implements Observer {
    */
   @Override
   public void update(Observable o, Object arg) {
-    String name = ((ApplicationModel) o).getSession().getSessionName();
+    ISessionController c = ((ApplicationModel) o).getSession();
+    String name = c.getSessionName();
+    controllerMap.put(name, c);
     sessionControllers.add(name);
     Platform.runLater(() -> currentSessionName.set(name));
   }
 
+  //TODO: still shows session in dropdown
   public void removeCurrentSession() {
     ISessionController currentSession = appModel.getSession();
     appController.deleteSession(currentSession);
-    sessionControllers.remove(currentSession);
+    sessionControllers.remove(currentSession.getSessionName());
+    controllerMap.remove(currentSession.getSessionName());
+  }
+
+  public void loadSession(File file) {
+    if (file != null) {
+      appController.setRequestedFile(file.getPath(), persistor);
+    }
   }
 
 }

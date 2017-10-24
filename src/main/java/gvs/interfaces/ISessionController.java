@@ -27,5 +27,7 @@ public interface ISessionController {
   void autoLayout();
 
   boolean validateNavigation(long requestedModelId);
+  
+  void saveSession();
 
 }

@@ -32,6 +32,7 @@ import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IGraphSessionController;
 import gvs.interfaces.INode;
+import gvs.interfaces.IPersistor;
 import gvs.interfaces.ISessionController;
 import gvs.interfaces.ITreeSessionController;
 import gvs.interfaces.IVertex;
@@ -47,12 +48,12 @@ import gvs.ui.tree.model.TreeModel;
 
 /**
  * This class loads and saves data. The color, line ... objects will be
- * translated into the enum typ. The data will be saved in the directory
- * DataStorage
+ * translated into the enum type. The data will be saved in the directory
+ * DataStorage.
  * 
  * @author mkoller
  */
-public class Persistor {
+public class Persistor implements IPersistor {
 
   // Generally
   private static final String ROOT = "Data";
@@ -107,11 +108,30 @@ public class Persistor {
     commonLogger = LoggerFactory.getLogger(Persistor.class);
   }
 
+
+  @Override
+  public void saveToDisk(GraphSessionController session) {
+    Document document = DocumentHelper.createDocument();
+    Element docRoot = document.addElement(ROOT);
+    this.saveGraphSession(docRoot, session);
+    this.writeToDisk(document, session);
+  }
+
+
+  @Override
+  public void saveToDisk(TreeSessionController session) {
+    Document document = DocumentHelper.createDocument();
+    Element docRoot = document.addElement(ROOT);
+    this.saveTreeSession(docRoot, session);
+    this.writeToDisk(document, session);
+  }
+
   /**
    * Saves the Sessions to the disk
    * 
    * @param pSessions
    */
+  //TODO: remove this method @muriele
   public void saveToDisk(Vector<ISessionController> pSessions) {
     commonLogger.info("Start saving ...");
     Iterator<ISessionController> sessionIt = pSessions.iterator();
@@ -139,13 +159,7 @@ public class Persistor {
     commonLogger.info("Finish saving");
   }
 
-  /**
-   * Load a file
-   * 
-   * @param pPath
-   *          the file to load
-   * @return the SessionController
-   */
+  @Override
   public ISessionController loadFile(String pPath) {
     commonLogger.info("Load file: " + pPath);
     File input = new File(pPath);

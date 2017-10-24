@@ -6,7 +6,7 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.common.Persistor;
+import gvs.interfaces.IPersistor;
 import gvs.interfaces.ISessionController;
 import gvs.interfaces.ITreeSessionController;
 import gvs.ui.application.model.ApplicationModel;
@@ -118,7 +118,7 @@ public class ApplicationController {
    * @param persistor
    *          persistor
    */
-  public void setRequestedFile(String fileName, Persistor persistor) {
+  public void setRequestedFile(String fileName, IPersistor persistor) {
     appContLogger.info("Load session from directory");
     ISessionController loadedSession = (ISessionController) persistor
         .loadFile(fileName);

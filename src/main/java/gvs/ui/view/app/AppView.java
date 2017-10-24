@@ -103,7 +103,8 @@ public class AppView {
   
   @FXML
   private void changeSession() {
-    
+    String name = chooseSessionBox.getValue();
+    model.changeSession(name);
   }
 
   @FXML

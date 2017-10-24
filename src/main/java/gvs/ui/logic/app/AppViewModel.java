@@ -86,4 +86,9 @@ public class AppViewModel implements Observer {
     appModel.getSession().saveSession();
   }
 
+  public void changeSession(String name) {
+    ISessionController c = controllerMap.get(name);
+    appController.changeCurrentSession(c);
+  }
+
 }

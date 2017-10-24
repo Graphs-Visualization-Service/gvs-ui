@@ -97,7 +97,7 @@ public class ApplicationController {
    * @param pSessionController
    *          sessionController
    */
-  public void setComboSession(ISessionController pSessionController) {
+  public void changeCurrentSession(ISessionController pSessionController) {
     applicationModel.setSession(pSessionController);
   }
 

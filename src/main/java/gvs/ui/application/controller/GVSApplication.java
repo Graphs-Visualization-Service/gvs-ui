@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.gluonhq.ignite.guice.GuiceContext;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import gvs.GuiceBaseModule;
 import gvs.common.Persistor;
@@ -31,12 +32,13 @@ import javafx.stage.Stage;
  * @author muriele
  *
  */
+@Singleton
 public class GVSApplication extends Application implements Observer {
 
   private static final Logger logger = LoggerFactory
       .getLogger(GVSApplication.class);
 
-  private GuiceContext context = new GuiceContext(this,
+  private final GuiceContext context = new GuiceContext(this,
       () -> Arrays.asList(new GuiceBaseModule()));
 
   @Inject

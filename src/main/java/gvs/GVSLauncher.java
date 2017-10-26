@@ -3,6 +3,11 @@ package gvs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+
 import gvs.server.socket.SocketServer;
 import gvs.ui.application.controller.GVSApplication;
 
@@ -11,10 +16,30 @@ import gvs.ui.application.controller.GVSApplication;
  * 
  * @author mwieland
  */
+@Singleton
 public class GVSLauncher {
+
+  private final SocketServer socketServer;
 
   private static final Logger logger = LoggerFactory
       .getLogger(GVSLauncher.class);
+
+  @Inject
+  public GVSLauncher(SocketServer socketServer) {
+    this.socketServer = socketServer;
+  }
+
+  /**
+   * Launch the socket server in a separate thread. <br>
+   * Launch the JavaFX application within UI thread.
+   */
+  private void launch() {
+    logger.info("Start Server Socket...");
+    socketServer.start();
+
+    logger.info("Start GVS UI 2.0...");
+    GVSApplication.launch(GVSApplication.class);
+  }
 
   /**
    * Main method.
@@ -23,13 +48,8 @@ public class GVSLauncher {
    *          console arguments
    */
   public static void main(String[] args) {
-    logger.info("Start Server Socket...");
-    SocketServer server = new SocketServer();
-    server.start();
-    logger.info("Sever Socket started.");
-
-    logger.info("Start GVS UI 2.0...");
-    GVSApplication.launch(GVSApplication.class);
-    logger.info("GVS UI started.");
+    Injector injector = Guice.createInjector(new GuiceBaseModule());
+    GVSLauncher launcher = injector.getInstance(GVSLauncher.class);
+    launcher.launch();
   }
 }

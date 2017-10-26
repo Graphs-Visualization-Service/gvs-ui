@@ -13,7 +13,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URL;
 import java.net.UnknownHostException;
 
 import org.dom4j.Document;
@@ -27,122 +26,107 @@ import org.slf4j.LoggerFactory;
 import gvs.common.Configuration;
 
 /**
- * Socket communciation for GVS. For each client a new server-connection will be
- * created. This class is the entry point for socket-connections.
+ * Socket Endpoint of GVS UI. The server is running in its own thread.
  * 
- * @author mkoller
+ * For each incoming request, a new {@link ServerConnectionXML} is created.
+ * 
+ * @author mwieland
  */
 public class SocketServer extends Thread {
 
-  private int port = 0;
-  private int startPort = 0;
-  private String hostName;
-  private ServerSocket socket = null;
-  private Socket client = null;
+  private String hostname;
+  private Integer port;
 
-  private String communicationfilepath = null;
-  private InetAddress inetAdress = null;
+  private static final String DEFAULT_PORT_FILE_NAME = "GVSComm.xml";
 
-  private File portFile = null;
-  private File portFileCurent = null;
-
-  private Logger serverLogger = null;
+  private static final Logger logger = LoggerFactory
+      .getLogger(SocketServer.class);;
 
   /**
    * Searches for free port and writes the communication information to a file
    */
   public SocketServer() {
-    // TODO check logger replacement
-    // serverLogger=gvs.common.Logger.getInstance().getServerLogger();
-    serverLogger = LoggerFactory.getLogger(SocketServer.class);
-    try {
-      inetAdress = InetAddress.getLocalHost();
-    } catch (UnknownHostException e1) {
-      e1.printStackTrace();
-    }
+    hostname = getLocalHostName();
+    port = findFreePort();
 
-    hostName = inetAdress.getHostName();
-    communicationfilepath = Configuration.getInstance().getCommFilePath();
-    startPort = Integer.parseInt(Configuration.getInstance().getStartPort());
-
-    // Search for free port
-    for (int searchPort = startPort; searchPort <= 60000; searchPort++) {
-      try (Socket portScanSocket = new Socket()) {
-        InetSocketAddress isa = new InetSocketAddress("localhost", searchPort);
-        int timeout = 1; // in ms
-        portScanSocket.connect(isa, timeout);
-      } catch (Exception e) {
-        port = searchPort;
-        break;
-      }
-    }
-
-    // Portfile on Share
-    if (communicationfilepath != null || communicationfilepath != ""
-        || !communicationfilepath.equals("GVSComm.xml")) {
-      serverLogger.info("Create shared communication file");
-      portFile = new File(communicationfilepath);
-      Document document = DocumentHelper.createDocument();
-      Element docRoot = document.addElement("GVSServer");
-      Element ePort = docRoot.addElement("Port");
-      Element eHost = docRoot.addElement("Host");
-      ePort.addText(String.valueOf(port));
-      eHost.addText(hostName);
-
-      OutputFormat format = OutputFormat.createPrettyPrint();
-      try {
-        XMLWriter writer = new XMLWriter(new FileOutputStream(portFile),
-            format);
-        writer.write(document);
-        serverLogger
-            .info("Shared communication file: " + communicationfilepath);
-      } catch (Exception e) {
-
-        serverLogger.error("Failed to share communication File");
-      }
-    } else {
-      // Portfile current directory
-      serverLogger.info("Create local communication file");
-      try {
-
-        URL portFileUrl = SocketServer.class.getClassLoader()
-            .getResource("GVSComm.xml");
-
-        portFileCurent = new File(portFileUrl.toURI());
-        Document document = DocumentHelper.createDocument();
-        Element docRoot = document.addElement("GVSServer");
-        Element ePort = docRoot.addElement("Port");
-        Element eHost = docRoot.addElement("Host");
-        ePort.addText(String.valueOf(port));
-        eHost.addText(hostName);
-
-        OutputFormat format = OutputFormat.createPrettyPrint();
-        XMLWriter writerCurrent = new XMLWriter(
-            new FileOutputStream(portFileCurent), format);
-        writerCurrent.write(document);
-
-        serverLogger.info("Local communication file: " + portFileCurent);
-
-      } catch (Exception e) {
-        serverLogger.error("Failed to create local communication File", e);
-      }
-    }
+    writePortFile();
   }
 
   /**
    * Starts the server. Once started, it runs endlessly.
    */
   public void run() {
-    try {
-      socket = new ServerSocket(port);
+    try (ServerSocket javaSocket = new ServerSocket(port)) {
+      logger.info("Server is running on {}:{}", hostname, port);
+
       while (true) {
-        serverLogger.info("Server ready: " + hostName + " Port: " + port);
-        client = socket.accept();
+        Socket client = javaSocket.accept();
         ServerConnectionXML con = new ServerConnectionXML(client);
         con.start();
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error("Cannot create ServerSocket", e);
+    }
+  }
+
+  private String getLocalHostName() {
+    try {
+      return InetAddress.getLocalHost().getHostName();
+    } catch (UnknownHostException e) {
+      logger.error("Cannot retrieve local host address", e);
+      return null;
+    }
+  }
+
+  private Integer findFreePort() {
+    String startPortString = Configuration.getInstance().getStartPort();
+    int configuredStartPort = Integer.parseInt(startPortString);
+
+    for (int searchPort = configuredStartPort; searchPort <= 60000; searchPort++) {
+      try (Socket portScanSocket = new Socket()) {
+        InetSocketAddress endpointAddress = new InetSocketAddress(
+            getLocalHostName(), searchPort);
+        int timeout = 1; // in ms
+        portScanSocket.connect(endpointAddress, timeout);
+      } catch (Exception e) {
+        logger.info("Free port found at {}", searchPort);
+        return searchPort;
+      }
+    }
+    return null;
+  }
+
+  private void writePortFile() {
+    String filePath = Configuration.getInstance().getCommFilePath();
+
+    if (filePath != null && !filePath.isEmpty()
+        && !DEFAULT_PORT_FILE_NAME.equals(filePath)) {
+
+      logger.info("Write file to configured location");
+      writeFile(new File(filePath));
+    } else {
+
+      logger.info("Write file to current directory");
+      writeFile(new File(DEFAULT_PORT_FILE_NAME));
+    }
+  }
+
+  private void writeFile(File portFile) {
+    Document document = DocumentHelper.createDocument();
+    Element docRoot = document.addElement("GVSServer");
+    Element ePort = docRoot.addElement("Port");
+    Element eHost = docRoot.addElement("Host");
+    ePort.addText(String.valueOf(port));
+    eHost.addText(hostname);
+
+    OutputFormat format = OutputFormat.createPrettyPrint();
+    XMLWriter writerCurrent;
+    try {
+      writerCurrent = new XMLWriter(new FileOutputStream(portFile), format);
+      writerCurrent.write(document);
+      logger.info("File {} successfully written. ", portFile);
+    } catch (IOException e) {
+      logger.info("Unable to write file {}", portFile, e);
     }
   }
 }

@@ -18,6 +18,8 @@ import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Singleton;
+
 import gvs.common.Configuration;
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
@@ -38,14 +40,12 @@ import gvs.ui.tree.model.TreeModel;
  * 
  * @author mkoller
  */
+@Singleton
 public class ModelBuilder {
 
   // Visualization-Service
   private ApplicationController appController = null;
   private Configuration typs = null;
-
-  // Singelton
-  private static ModelBuilder modelBuilder = null;
 
   // Generaly
   private static final String ATTRIBUTEID = "Id";
@@ -87,24 +87,12 @@ public class ModelBuilder {
   /**
    * ModelBuilder.
    */
-  private ModelBuilder() {
+  public ModelBuilder() {
     // TODO check replacement of logger
     // serverLogger = gvs.common.Logger.getInstance().getServerLogger();
     serverLogger = LoggerFactory.getLogger(ModelBuilder.class);
     appController = ApplicationController.getInstance();
     typs = Configuration.getInstance();
-  }
-
-  /**
-   * Get model builder singleton.
-   * 
-   * @return modelBuilder modelBuilder
-   */
-  public static synchronized ModelBuilder getInstance() {
-    if (modelBuilder == null) {
-      modelBuilder = new ModelBuilder();
-    }
-    return modelBuilder;
   }
 
   /**

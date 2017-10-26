@@ -3,31 +3,24 @@ package gvs.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Singleton;
+
 /**
  * Everyone who wants to send data, must reserve this service. This class is the
  * central entrypoint for every data transfer.
  * 
  * @author mkoller
  */
+@Singleton
 public class ConnectionMonitor {
 
-  private static ConnectionMonitor connectionMonitor = null;
   private String owner = "";
   private long lastUse;
   private static final Logger logger = LoggerFactory
       .getLogger(ConnectionMonitor.class);
-  // private Logger serverLogger = null;
 
-  private ConnectionMonitor() {
+  public ConnectionMonitor() {
     lastUse = System.currentTimeMillis();
-  }
-
-  public static synchronized ConnectionMonitor getInstance() {
-    if (connectionMonitor == null) {
-      connectionMonitor = new ConnectionMonitor();
-    }
-
-    return connectionMonitor;
   }
 
   /**
@@ -72,7 +65,7 @@ public class ConnectionMonitor {
    * 
    * @param pOwner
    */
-  public synchronized void releaseServer(String pOwner) {
+  public synchronized void releaseService(String pOwner) {
     if (owner.equals(pOwner) || owner == pOwner) {
       owner = "";
       logger.debug("Serivce will be released");

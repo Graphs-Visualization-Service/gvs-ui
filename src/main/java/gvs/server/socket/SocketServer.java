@@ -23,6 +23,9 @@ import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
+
+import gvs.access.ServerConnectionXMLFactory;
 import gvs.common.Configuration;
 
 /**
@@ -36,6 +39,7 @@ public class SocketServer extends Thread {
 
   private String hostname;
   private Integer port;
+  private ServerConnectionXMLFactory connectionFactory;
 
   private static final String DEFAULT_PORT_FILE_NAME = "GVSComm.xml";
 
@@ -45,9 +49,11 @@ public class SocketServer extends Thread {
   /**
    * Searches for free port and writes the communication information to a file
    */
-  public SocketServer() {
-    hostname = getLocalHostName();
-    port = findFreePort();
+  @Inject
+  public SocketServer(ServerConnectionXMLFactory factory) {
+    this.connectionFactory = factory;
+    this.hostname = getLocalHostName();
+    this.port = findFreePort();
 
     writePortFile();
   }
@@ -61,7 +67,8 @@ public class SocketServer extends Thread {
 
       while (true) {
         Socket client = javaSocket.accept();
-        ServerConnectionXML con = new ServerConnectionXML(client);
+        
+        ServerConnectionXML con = connectionFactory.create(client);
         con.start();
       }
     } catch (IOException e) {
@@ -71,7 +78,8 @@ public class SocketServer extends Thread {
 
   private String getLocalHostName() {
     try {
-      return InetAddress.getLocalHost().getHostName();
+      InetAddress.getLocalHost().getHostName();
+      return "localhost";
     } catch (UnknownHostException e) {
       logger.error("Cannot retrieve local host address", e);
       return null;

@@ -17,6 +17,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 /**
@@ -50,6 +51,21 @@ public class AppViewModel implements Observer {
     this.appController = appController;
     this.persistor = persistor;
     this.currentSessionName.set(PROMT_MESSAGE);
+    sessionNames.addListener((ListChangeListener.Change<? extends String> c) -> {
+      if (sessionNames.size() == 1) {
+        displaySession();
+      } else if (sessionNames.isEmpty()) {
+        hideSession();
+      }
+    });
+  }
+
+  private void hideSession() {
+    System.out.println("hiding session");
+  }
+
+  private void displaySession() {
+    System.out.println("showing session");
   }
 
   public ObservableList<String> getSessionNames() {

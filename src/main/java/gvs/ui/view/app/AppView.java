@@ -110,8 +110,8 @@ public class AppView {
     model.terminateApplication();
   }
 
-  public void setAppViewModel(AppViewModel appViewModel) {
-    model = appViewModel;
+  public void setAppViewModel(AppViewModel viewModel) {
+    model = viewModel;
     fillDropDown();
   }
 

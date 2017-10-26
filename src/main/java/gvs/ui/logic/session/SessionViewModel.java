@@ -4,50 +4,56 @@ import java.util.Observable;
 import java.util.Observer;
 
 import gvs.interfaces.ISessionController;
+import gvs.ui.application.model.ApplicationModel;
 
 /**
  * Represents the currently loaded session.
- * @author muriele
+ * 
+ * @author mtrentini
  *
  */
-public class SessionViewModel implements Observer{
-  private ISessionController sessionController;
-  
-  /**
-   * Creates a new graph view model
-   * 
-   * @param controller
-   *          related session controller
-   */
-  public SessionViewModel(ISessionController controller) {
-    sessionController = controller;
-    
+public class SessionViewModel implements Observer {
+  private ApplicationModel appModel;
+
+  public SessionViewModel(ApplicationModel model) {
+    appModel = model;
+    appModel.addObserver(this);
+
   }
 
   public void changeCurrentGraphToNext() {
-    // TODO Auto-generated method stub
-    
+    appModel.getSession().changeCurrentGraphToNext();
   }
 
   public void changeCurrentGraphToPrevious() {
-    // TODO Auto-generated method stub
-    
+    appModel.getSession().changeCurrentGraphToPrev();
   }
 
   public void changeCurrentGraphToFirst() {
-    // TODO Auto-generated method stub
-    
+    appModel.getSession().changeCurrentGraphToFirst();
   }
 
   public void changeCurrentGraphToLast() {
-    // TODO Auto-generated method stub
-    
+    appModel.getSession().changeCurrentGraphToLast();
   }
 
+  /**
+   * This method is invoked whenever a new current session is set in the
+   * ApplicationModel.
+   */
   @Override
   public void update(Observable o, Object arg) {
+    // TODO: change GraphViewModel & GraphView
+  }
+
+  public void replayGraph(int replaySpeed) {
     // TODO Auto-generated method stub
-    
+
+  }
+
+  public void autoLayout() {
+    // TODO Auto-generated method stub
+
   }
 
 }

@@ -1,6 +1,7 @@
 package gvs.ui.tree.controller;
 
 import java.util.AbstractList;
+import java.util.Observable;
 import java.util.Timer;
 import java.util.Vector;
 
@@ -25,7 +26,7 @@ import gvs.ui.tree.view.VisualizationTreePanel;
  * @author aegli
  *
  */
-public class TreeSessionController implements ITreeSessionController {
+public class TreeSessionController extends Observable implements ITreeSessionController {
 
   private Logger treeContLogger = null;
   private VisualizationTreeModel visualModel = null;
@@ -362,6 +363,36 @@ public class TreeSessionController implements ITreeSessionController {
   @Override
   public void saveSession() {
     persistor.saveToDisk(this);
+  }
+  
+  @Override
+  public void changeCurrentGraphToNext() {
+    int nextTreeId = actualTreeModel.getModelId() + 1;
+    if (validateNavigation(nextTreeId)) {
+      actualTreeModel = treeModels.get(nextTreeId - 1);
+      notifyObservers();
+    }
+  }
+
+  @Override
+  public void changeCurrentGraphToFirst() {
+    actualTreeModel = treeModels.firstElement();
+    notifyObservers();
+  }
+
+  @Override
+  public void changeCurrentGraphToPrev() {
+    int nextTreeId = actualTreeModel.getModelId() - 1;
+    if (validateNavigation(nextTreeId)) {
+      actualTreeModel = treeModels.get(nextTreeId - 1);
+      notifyObservers();
+    }
+  }
+
+  @Override
+  public void changeCurrentGraphToLast() {
+    actualTreeModel = treeModels.lastElement();
+    notifyObservers();
   }
 
 }

@@ -14,6 +14,8 @@ import gvs.interfaces.IPersistor;
 import gvs.interfaces.ISessionController;
 import gvs.ui.application.controller.ApplicationController;
 import gvs.ui.application.model.ApplicationModel;
+import gvs.ui.logic.session.SessionViewModel;
+import gvs.ui.view.session.SessionView;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -52,7 +54,8 @@ public class AppViewModel implements Observer {
 
   // TODO: do we still need the persistor here?
   public AppViewModel(ApplicationModel appModel,
-      ApplicationController appController, IPersistor persistor, BorderPane rootLayout) {
+      ApplicationController appController, IPersistor persistor,
+      BorderPane rootLayout) {
     this.appModel = appModel;
     this.appModel.addObserver(this);
     this.appController = appController;
@@ -71,7 +74,7 @@ public class AppViewModel implements Observer {
   }
 
   private void initSessionLayout() {
-    logger.debug("Initializing session layout.");
+    logger.info("Initializing session layout.");
     FXMLLoader loader = new FXMLLoader();
     try {
       BorderPane sessionLayout = (BorderPane) loader.load(getClass()
@@ -79,19 +82,22 @@ public class AppViewModel implements Observer {
       sessionContentPane = new AnchorPane();
       sessionContentPane.getChildren().add(sessionLayout);
       final int anchorMargin = 0;
-      setAnchors(sessionLayout, anchorMargin, anchorMargin, anchorMargin, anchorMargin);
+      setAnchors(sessionLayout, anchorMargin, anchorMargin, anchorMargin,
+          anchorMargin);
+      ((SessionView) loader.getController())
+          .setViewModel(new SessionViewModel(appModel));
     } catch (IOException e) {
       logger.error("Could not load session layout", e);
     }
   }
 
   private void hideSession() {
-    logger.debug("Hiding session layout.");
+    logger.info("Hiding session layout.");
     rootLayout.setCenter(null);
   }
 
   private void displaySession() {
-    logger.debug("Displaying session layout.");
+    logger.info("Displaying session layout.");
     rootLayout.setCenter(sessionContentPane);
   }
 
@@ -123,7 +129,7 @@ public class AppViewModel implements Observer {
   }
 
   public void removeCurrentSession() {
-    logger.debug("Removing current session...");
+    logger.info("Removing current session...");
     ISessionController currentSession = appModel.getSession();
     String sessionName = currentSession.getSessionName();
     sessionNames.remove(sessionName);
@@ -132,17 +138,17 @@ public class AppViewModel implements Observer {
   }
 
   public void loadSession(File file) {
-    logger.debug("Loading session from file...");
+    logger.info("Loading session from file...");
     appController.setRequestedFile(file.getPath(), persistor);
   }
 
   public void saveSession() {
-    logger.debug("Saving session to file...");
+    logger.info("Saving session to file...");
     appModel.getSession().saveSession();
   }
 
   public void changeSession(String name) {
-    logger.debug("Detecting change in combobox.");
+    logger.info("Detecting change in combobox.");
     if (isInvalidSessionName(name)) {
       return;
     }
@@ -150,7 +156,7 @@ public class AppViewModel implements Observer {
     ISessionController c = controllerMap.get(name);
     if (appModel.getSession().getSessionName() != name) {
       appController.changeCurrentSession(c);
-      logger.debug(String.format("Changing current session to '%s'...", name));
+      logger.info(String.format("Changing current session to '%s'...", name));
     }
   }
 
@@ -159,19 +165,21 @@ public class AppViewModel implements Observer {
   }
 
   public void terminateApplication() {
-    logger.debug("Quitting GVS...");
+    logger.info("Quitting GVS...");
     Platform.exit();
     System.exit(0);
   }
 
   /**
    * Helper function. Set anchors for a child of an AnchorPane.
+   * 
    * @param top
    * @param bottom
    * @param left
    * @param right
    */
-  private void setAnchors(Node sessionLayout, int top, int bottom, int left, int right) {
+  private void setAnchors(Node sessionLayout, int top, int bottom, int left,
+      int right) {
     AnchorPane.setTopAnchor(sessionLayout, (double) top);
     AnchorPane.setBottomAnchor(sessionLayout, (double) bottom);
     AnchorPane.setLeftAnchor(sessionLayout, (double) left);

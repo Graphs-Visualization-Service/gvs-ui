@@ -32,7 +32,7 @@ import gvs.ui.graph.view.VisualizationGraphPanel;
  * @author aegli
  *
  */
-public class GraphSessionController
+public class GraphSessionController extends Observable
     implements Observer, IGraphSessionController {
   private Logger graphContLogger = null;
   private VisualizationGraphModel visualModel = null;
@@ -40,6 +40,7 @@ public class GraphSessionController
   private LayoutController layoutController = null;
   private GraphModel actualGraphModel = null;
   private ControlPanel controlPanel = null;
+  // TODO: choose better structure to save models: e.g. map, doubly linked list
   private Vector<GraphModel> graphModels = null;
   private Timer replayTimer = null;
   private GraphSessionReplay sessionReplay = null;
@@ -620,6 +621,36 @@ public class GraphSessionController
   @Override
   public void saveSession() {
     persistor.saveToDisk(this);
+  }
+
+  @Override
+  public void changeCurrentGraphToNext() {
+    int nextGraphId = actualGraphModel.getModelId() + 1;
+    if (validateNavigation(nextGraphId)) {
+      actualGraphModel = graphModels.get(nextGraphId - 1);
+      notifyObservers();
+    }
+  }
+
+  @Override
+  public void changeCurrentGraphToFirst() {
+    actualGraphModel = graphModels.firstElement();
+    notifyObservers();
+  }
+
+  @Override
+  public void changeCurrentGraphToPrev() {
+    int prevGraphId = actualGraphModel.getModelId() - 1;
+    if (validateNavigation(prevGraphId)) {
+      actualGraphModel = (GraphModel) graphModels.get(prevGraphId - 1);
+      notifyObservers();
+    }
+  }
+
+  @Override
+  public void changeCurrentGraphToLast() {
+    actualGraphModel = graphModels.lastElement();
+    notifyObservers();
   }
 
 }

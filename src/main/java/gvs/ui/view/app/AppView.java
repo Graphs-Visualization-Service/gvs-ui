@@ -2,6 +2,7 @@ package gvs.ui.view.app;
 
 import java.io.File;
 
+import ch.qos.logback.classic.joran.action.RootLoggerAction;
 import gvs.ui.logic.app.AppViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -15,6 +16,7 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -48,7 +50,8 @@ public class AppView {
   private ComboBox<String> chooseSessionBox;
 
   @FXML
-  private AnchorPane displaySessionPane;
+  private BorderPane rootPane;
+
 
   private AppViewModel model;
 
@@ -74,12 +77,12 @@ public class AppView {
             200, 200, true, true),
         BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
         BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
-    displaySessionPane.setBackground(new Background(myBI));
+    rootPane.setBackground(new Background(myBI));
   }
 
   @FXML
   private void loadSession() {
-    Stage stage = (Stage) displaySessionPane.getScene().getWindow();
+    Stage stage = (Stage) rootPane.getScene().getWindow();
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Open Session File");
     File file = fileChooser.showOpenDialog(stage);

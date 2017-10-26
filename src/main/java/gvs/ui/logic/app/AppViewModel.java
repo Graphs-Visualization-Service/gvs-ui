@@ -1,6 +1,7 @@
 package gvs.ui.logic.app;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -19,6 +20,10 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 
 /**
  * The ViewModel class for the GVS Application. Corresponds to the classical
@@ -33,6 +38,8 @@ public class AppViewModel implements Observer {
   private ApplicationModel appModel;
   private ApplicationController appController;
   private IPersistor persistor;
+  private AnchorPane sessionContentPane;
+  private BorderPane rootLayout;
 
   private final StringProperty currentSessionName = new SimpleStringProperty();
   private final ObservableList<String> sessionNames = FXCollections
@@ -43,29 +50,49 @@ public class AppViewModel implements Observer {
   private static final Logger logger = LoggerFactory
       .getLogger(AppViewModel.class);
 
-  // TODO: do we still need the persistor here? @mtrentini
+  // TODO: do we still need the persistor here?
   public AppViewModel(ApplicationModel appModel,
-      ApplicationController appController, IPersistor persistor) {
+      ApplicationController appController, IPersistor persistor, BorderPane rootLayout) {
     this.appModel = appModel;
     this.appModel.addObserver(this);
     this.appController = appController;
     this.persistor = persistor;
     this.currentSessionName.set(PROMT_MESSAGE);
-    sessionNames.addListener((ListChangeListener.Change<? extends String> c) -> {
-      if (sessionNames.size() == 1) {
-        displaySession();
-      } else if (sessionNames.isEmpty()) {
-        hideSession();
-      }
-    });
+    this.rootLayout = rootLayout;
+    initSessionLayout();
+    sessionNames
+        .addListener((ListChangeListener.Change<? extends String> c) -> {
+          if (sessionNames.size() == 1) {
+            displaySession();
+          } else if (sessionNames.isEmpty()) {
+            hideSession();
+          }
+        });
+  }
+
+  private void initSessionLayout() {
+    logger.debug("Initializing session layout.");
+    FXMLLoader loader = new FXMLLoader();
+    try {
+      BorderPane sessionLayout = (BorderPane) loader.load(getClass()
+          .getResourceAsStream("/gvs/ui/view/session/SessionView.fxml"));
+      sessionContentPane = new AnchorPane();
+      sessionContentPane.getChildren().add(sessionLayout);
+      final int anchorMargin = 0;
+      setAnchors(sessionLayout, anchorMargin, anchorMargin, anchorMargin, anchorMargin);
+    } catch (IOException e) {
+      logger.error("Could not load session layout", e);
+    }
   }
 
   private void hideSession() {
-    System.out.println("hiding session");
+    logger.debug("Hiding session layout.");
+    rootLayout.setCenter(null);
   }
 
   private void displaySession() {
-    System.out.println("showing session");
+    logger.debug("Displaying session layout.");
+    rootLayout.setCenter(sessionContentPane);
   }
 
   public ObservableList<String> getSessionNames() {
@@ -137,4 +164,17 @@ public class AppViewModel implements Observer {
     System.exit(0);
   }
 
+  /**
+   * Helper function. Set anchors for a child of an AnchorPane.
+   * @param top
+   * @param bottom
+   * @param left
+   * @param right
+   */
+  private void setAnchors(Node sessionLayout, int top, int bottom, int left, int right) {
+    AnchorPane.setTopAnchor(sessionLayout, (double) top);
+    AnchorPane.setBottomAnchor(sessionLayout, (double) bottom);
+    AnchorPane.setLeftAnchor(sessionLayout, (double) left);
+    AnchorPane.setRightAnchor(sessionLayout, (double) right);
+  }
 }

@@ -21,7 +21,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -46,7 +45,6 @@ public class GVSApplication extends Application implements Observer {
 
   private Stage primaryStage;
   private BorderPane rootLayout;
-  private BorderPane sessionLayout;
   private AppView appView;
 
   /**
@@ -67,7 +65,6 @@ public class GVSApplication extends Application implements Observer {
     });
 
     initRootLayout();
-    // displaySession();
   }
 
   /**
@@ -91,39 +88,11 @@ public class GVSApplication extends Application implements Observer {
       ApplicationModel appModel = new ApplicationModel();
       appModel.addObserver(this);
       appView.setAppViewModel(new AppViewModel(appModel,
-          ApplicationController.getInstance(appModel), new Persistor()));
+          ApplicationController.getInstance(appModel), new Persistor(),
+          rootLayout));
     } catch (IOException e) {
       logger.error("Could not initialize root layout", e);
     }
-  }
-
-  /**
-   * Loads the session fxml and shows the session toolbars.
-   */
-  private void displaySession() {
-    try {
-      logger.debug("Load session layout");
-      FXMLLoader loader = new FXMLLoader();
-      sessionLayout = (BorderPane) loader.load(getClass()
-          .getResourceAsStream("/gvs/ui/view/session/SessionView.fxml"));
-      AnchorPane sessionContentPane = new AnchorPane();
-      sessionContentPane.getChildren().add(sessionLayout);
-      final int top = 0;
-      final int bottom = 0;
-      final int left = 0;
-      final int right = 0;
-      setAnchors(top, bottom, left, right);
-      rootLayout.setCenter(sessionContentPane);
-    } catch (IOException e) {
-      logger.error("Could not load session layout", e);
-    }
-  }
-
-  private void setAnchors(int top, int bottom, int left, int right) {
-    AnchorPane.setTopAnchor(sessionLayout, (double) top);
-    AnchorPane.setBottomAnchor(sessionLayout, (double) bottom);
-    AnchorPane.setLeftAnchor(sessionLayout, (double) left);
-    AnchorPane.setRightAnchor(sessionLayout, (double) right);
   }
 
   /**

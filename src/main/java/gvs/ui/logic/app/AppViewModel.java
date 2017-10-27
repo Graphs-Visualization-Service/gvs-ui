@@ -42,6 +42,7 @@ public class AppViewModel implements Observer {
   private IPersistor persistor;
   private AnchorPane sessionContentPane;
   private BorderPane rootLayout;
+  private boolean sessionIsInitialized = false;
 
   private final StringProperty currentSessionName = new SimpleStringProperty();
   private final ObservableList<String> sessionNames = FXCollections
@@ -51,6 +52,7 @@ public class AppViewModel implements Observer {
   private static final String PROMT_MESSAGE = "no active session";
   private static final Logger logger = LoggerFactory
       .getLogger(AppViewModel.class);
+  
 
   // TODO: do we still need the persistor here?
   public AppViewModel(ApplicationModel appModel,
@@ -62,9 +64,11 @@ public class AppViewModel implements Observer {
     this.persistor = persistor;
     this.currentSessionName.set(PROMT_MESSAGE);
     this.rootLayout = rootLayout;
-    initSessionLayout();
     sessionNames
         .addListener((ListChangeListener.Change<? extends String> c) -> {
+          if (!sessionIsInitialized) {
+            initSessionLayout();
+          }
           if (sessionNames.size() == 1) {
             displaySession();
           } else if (sessionNames.isEmpty()) {
@@ -86,6 +90,7 @@ public class AppViewModel implements Observer {
           anchorMargin);
       ((SessionView) loader.getController())
           .setViewModel(new SessionViewModel(appModel));
+      sessionIsInitialized = true;
     } catch (IOException e) {
       logger.error("Could not load session layout", e);
     }
@@ -178,11 +183,11 @@ public class AppViewModel implements Observer {
    * @param left
    * @param right
    */
-  private void setAnchors(Node sessionLayout, int top, int bottom, int left,
+  private void setAnchors(Node anchorChild, int top, int bottom, int left,
       int right) {
-    AnchorPane.setTopAnchor(sessionLayout, (double) top);
-    AnchorPane.setBottomAnchor(sessionLayout, (double) bottom);
-    AnchorPane.setLeftAnchor(sessionLayout, (double) left);
-    AnchorPane.setRightAnchor(sessionLayout, (double) right);
+    AnchorPane.setTopAnchor(anchorChild, (double) top);
+    AnchorPane.setBottomAnchor(anchorChild, (double) bottom);
+    AnchorPane.setLeftAnchor(anchorChild, (double) left);
+    AnchorPane.setRightAnchor(anchorChild, (double) right);
   }
 }

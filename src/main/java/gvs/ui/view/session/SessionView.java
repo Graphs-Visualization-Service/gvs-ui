@@ -2,9 +2,11 @@ package gvs.ui.view.session;
 
 import gvs.ui.logic.session.SessionViewModel;
 import gvs.util.FontAwesome;
+import gvs.util.StepProgressBar;
 import gvs.util.FontAwesome.Glyph;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -22,12 +24,9 @@ import javafx.scene.layout.GridPane;
 public class SessionView {
   @FXML
   private GridPane playGrid;
-  
-  @FXML
-  private Label stepLabel;
 
   @FXML
-  private ProgressBar stepIndicator;
+  private Label stepLabel;
 
   @FXML
   private GridPane stepButtons;
@@ -59,6 +58,10 @@ public class SessionView {
   @FXML
   private Slider speedSlider;
 
+  @FXML
+  private AnchorPane leftPanel;
+
+  private StepProgressBar stepProgressBar;
   private SessionViewModel sessionViewModel;
   private int replaySpeed;
 
@@ -76,7 +79,9 @@ public class SessionView {
   }
 
   private void initStepIndicator() {
-    
+    stepProgressBar = new StepProgressBar();
+    leftPanel.getChildren().add(stepProgressBar);
+    setAnchors(stepProgressBar, 0, 5, 5, 5);
   }
 
   private void initSlider() {
@@ -127,5 +132,30 @@ public class SessionView {
 
   public void setViewModel(SessionViewModel viewModel) {
     this.sessionViewModel = viewModel;
+    bindStepIndicator();
+  }
+
+  private void bindStepIndicator() {
+    stepProgressBar.totalStepProperty()
+        .bind(sessionViewModel.totalGraphCountProperty());
+    stepProgressBar.currentStepProperty()
+        .bind(sessionViewModel.currentGraphModelIdProperty());
+  }
+
+  /**
+   * Helper function. Set anchors for a child of an AnchorPane.
+   * 
+   * @param top
+   * @param bottom
+   * @param left
+   * @param right
+   */
+  // TODO: extract method from here and appviewmodel into own util class?
+  private void setAnchors(Node anchorChild, int top, int bottom, int left,
+      int right) {
+    AnchorPane.setTopAnchor(anchorChild, (double) top);
+    AnchorPane.setBottomAnchor(anchorChild, (double) bottom);
+    AnchorPane.setLeftAnchor(anchorChild, (double) left);
+    AnchorPane.setRightAnchor(anchorChild, (double) right);
   }
 }

@@ -5,6 +5,8 @@ import java.util.Observer;
 
 import gvs.interfaces.ISessionController;
 import gvs.ui.application.model.ApplicationModel;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  * Represents the currently loaded session.
@@ -14,27 +16,41 @@ import gvs.ui.application.model.ApplicationModel;
  */
 public class SessionViewModel implements Observer {
   private ApplicationModel appModel;
+  private ISessionController currentSession;
+  // TODO: find better names
+  private final StringProperty totalGraphCountProperty = new SimpleStringProperty();
+  private final StringProperty currentGraphModelIdProperty = new SimpleStringProperty();
 
   public SessionViewModel(ApplicationModel model) {
     appModel = model;
     appModel.addObserver(this);
+    currentSession = appModel.getSession();
+    updateStepProperties();
+  }
 
+  private void updateStepProperties() {
+    totalGraphCountProperty.set(currentSession.getTotalGraphCount() + "");
+    currentGraphModelIdProperty.set(totalGraphCountProperty.get());
   }
 
   public void changeCurrentGraphToNext() {
-    appModel.getSession().changeCurrentGraphToNext();
+    currentSession.changeCurrentGraphToNext();
+    currentGraphModelIdProperty.set(currentSession.getCurrentGraphId() + "");
   }
 
   public void changeCurrentGraphToPrevious() {
-    appModel.getSession().changeCurrentGraphToPrev();
+    currentSession.changeCurrentGraphToPrev();
+    currentGraphModelIdProperty.set(currentSession.getCurrentGraphId() + "");
   }
 
   public void changeCurrentGraphToFirst() {
-    appModel.getSession().changeCurrentGraphToFirst();
+    currentSession.changeCurrentGraphToFirst();
+    currentGraphModelIdProperty.set(currentSession.getCurrentGraphId() + "");
   }
 
   public void changeCurrentGraphToLast() {
-    appModel.getSession().changeCurrentGraphToLast();
+    currentSession.changeCurrentGraphToLast();
+    currentGraphModelIdProperty.set(currentSession.getCurrentGraphId() + "");
   }
 
   /**
@@ -43,7 +59,8 @@ public class SessionViewModel implements Observer {
    */
   @Override
   public void update(Observable o, Object arg) {
-    // TODO: change GraphViewModel & GraphView
+    currentSession = appModel.getSession();
+    updateStepProperties();
   }
 
   public void replayGraph(int replaySpeed) {
@@ -56,4 +73,11 @@ public class SessionViewModel implements Observer {
 
   }
 
+  public StringProperty totalGraphCountProperty() {
+    return totalGraphCountProperty;
+  }
+
+  public StringProperty currentGraphModelIdProperty() {
+    return currentGraphModelIdProperty;
+  }
 }

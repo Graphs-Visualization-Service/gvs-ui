@@ -1,172 +1,186 @@
-/*
- * Created on 10.11.2005
- *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
- */
 package gvs.server.socket;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.net.URL;
 
-import org.dom4j.Document;
-import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
+import gvs.access.InputXmlReader;
+import gvs.access.InputXmlWriter;
+import gvs.access.ProtocolCommand;
 import gvs.server.ConnectionMonitor;
-import gvs.server.ModelBuilder;
 
 /**
- * This class is the endpoint for every connection. The acctual communication is
- * completed over this class. The client information will be stored.
+ * This class is the endpoint for each incoming connection.
  * 
- * @author mkoller
+ * The class handles protocol commands and stores the incoming data in a xml
+ * file.
+ * 
+ * @author mwieland
  */
 public class ServerConnectionXML extends Thread {
 
-  private static final String VALIDATION_SCHEMA = "http://apache.org/"
-      + "xml/features/validation/schema";
-  private static final String NO_NAMESPACE_SCHEMA_LOCATION = "http://apache.org"
-      + "/xml/properties/schema/external-noNamespaceSchemaLocation";
-  private ModelBuilder mb = null;
-  private Socket client = null;
-  private BufferedReader in = null;
-  private PrintStream outStream = null;
-  private ConnectionMonitor monitor = null;
-  private String remoteHost = null;
-  private static final String SCHEMA = "gvs.xsd";
+  private ConnectionMonitor monitor;
+  private InputXmlReader inputXmlReader;
+  private InputXmlWriter inputXmlWriter;
 
-  // PROTOCOL
+  private Socket socketClient;
+
+  // protocol messages
   private static final String OK = "OK";
   private static final String FAILED = "FAILED";
-  private static final String RESERVEGVS = "reserveGVS";
-  private static final String RELEASEGVS = "releaseGVS";
-  private Logger serverLogger = null;
+
+  private static final Logger logger = LoggerFactory
+      .getLogger(ServerConnectionXML.class);
 
   /**
-   * Opens the streams.
+   * Default constructor.
    * 
-   * @param c
-   *          Socket client
+   * @param client
+   *          incoming client connection.
+   * @param monitor
+   *          monitor to reserve the GVS service
+   * @param inputXmlWriter
+   *          xml writer used to store the incoming data locally
+   * @param inputXmlReader
+   *          xml reader used to read the created xml
    */
-  public ServerConnectionXML(Socket c) {
-    this.client = c;
-    // TODO check Logger relplacement
-    // serverLogger = gvs.common.Logger.getInstance().getServerLogger();
-    serverLogger = LoggerFactory.getLogger(ServerConnectionXML.class);
-    mb = ModelBuilder.getInstance();
-    try {
-      monitor = ConnectionMonitor.getInstance();
-      in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+  @Inject
+  public ServerConnectionXML(ConnectionMonitor monitor,
+      InputXmlReader inputXmlReader, InputXmlWriter inputXmlWriter,
+      @Assisted Socket client) {
 
-      outStream = new PrintStream(client.getOutputStream(), true);
-      remoteHost = client.getRemoteSocketAddress().toString();
-      serverLogger.info("New connection created");
-    } catch (Exception e) {
-      serverLogger.error("Connection(Socket client): " + e);
-    }
+    this.socketClient = client;
+    this.inputXmlReader = inputXmlReader;
+    this.monitor = monitor;
+    this.inputXmlWriter = inputXmlWriter;
   }
 
   /**
-   * Reads the client commands.
+   * Read the incoming protocol messages and interpret them. Try to get the
+   * monitor lock of {@link ConnectionMonitor} If successful, read the
+   * transfered data and store it locally in a XML file.
    */
   public void run() {
-    String str = "";
     try {
-      while ((str = in.readLine()) != null) {
-        if (str.equals(RESERVEGVS)) {
-          int status = monitor.reserveService(remoteHost);
-          if (status >= 0) {
-            serverLogger.info("Service reserved: " + remoteHost);
-            File dateiServer = new File("input.xml");
-            outStream.println(OK);
-            outStream.flush();
-            StringBuffer b = new StringBuffer();
-            while ((str = in.readLine()) != null) {
-              if (str.equals(RELEASEGVS)) {
-                monitor.releaseServer(remoteHost);
-                serverLogger.info("Service released: " + remoteHost);
-                break;
-              } else {
+      processInputStream(socketClient.getInputStream());
 
-                for (int i = 0; i < str.length(); i++) {
-                  if ((str.charAt(i)) == ';') {
-                    String output = b.toString();
-                    output = output.trim();
+      inputXmlReader.read();
 
-                    try (FileWriter schreibeStrom = new FileWriter(
-                        dateiServer)) {
-                      schreibeStrom.write(output);
-                      schreibeStrom.flush();
-                    }
-
-                    buildDocument(dateiServer);
-
-                    dateiServer = new File("input.xml");
-                    b = new StringBuffer();
-                  } else {
-                    b.append(str.charAt(i));
-                  }
-                }
-              }
-            }
-          } else {
-            serverLogger.info("Server busy");
-            outStream.println(FAILED);
-            outStream.flush();
-            in.close();
-            outStream.close();
-            client.close();
-            break;
-          }
-        }
-        if (str.equals(RELEASEGVS)) {
-          monitor.releaseServer(remoteHost);
-          serverLogger.info("Service released: " + remoteHost);
-          break;
-        }
-      }
-      in.close();
-      outStream.close();
-      client.close();
-      monitor.releaseServer(remoteHost);
+      socketClient.close();
     } catch (IOException e) {
-      System.out.println("Exception" + e.getMessage());
-      monitor.releaseServer(remoteHost);
+      logger.error("Unable to read incoming message of client {}",
+          socketClient.getInetAddress(), e);
+    } finally {
+      releaseService();
     }
-
   }
 
   /**
-   * Checks the recieved data and passes it to the model builder
+   * Read the input line by line.
    * 
-   * @param pFile
+   * @param iStream
+   *          input stream of the client connection
+   * @throws IOException
+   *           error while reading a line
    */
-  public synchronized void buildDocument(File pFile) {
-    serverLogger.info("Build document from recieved datas");
-    SAXReader reader = new SAXReader();
-    try {
-      reader.setValidation(true);
-      // TODO store urls separately?
+  private void processInputStream(InputStream iStream) throws IOException {
+    BufferedReader inputReader = new BufferedReader(
+        new InputStreamReader(iStream));
 
-      URL schemaURL = ServerConnectionXML.class.getClassLoader()
-          .getResource(SCHEMA);
+    String line = null;
+    while ((line = inputReader.readLine()) != null) {
+      processLine(line);
+    }
+  }
 
-      reader.setFeature(VALIDATION_SCHEMA, true);
-      reader.setProperty(NO_NAMESPACE_SCHEMA_LOCATION,
-          schemaURL.toURI().toString());
-      Document document = reader.read(pFile);
+  /**
+   * Case distinctions for the input
+   * 
+   * @param line
+   *          incoming line
+   * 
+   * @throws IOException
+   *           I/O error
+   */
+  private void processLine(String line) throws IOException {
+    if (line.equals(ProtocolCommand.RESERVE_GVS.toString())) {
+      logger.info("Reserve command detected.");
+      reserveService();
+    } else if (line.equals(ProtocolCommand.RELEASE_GVS.toString())) {
+      logger.info("Release command detected.");
+      releaseService();
+    } else {
+      logger.info("Data detected");
+      writeXmlFile(line);
+    }
+  }
 
-      mb.buildModelFromXML(document);
-    } catch (Exception e) {
-      serverLogger.error("Document invalid", e);
+  /**
+   * Try to get the monitor lock and send status message back to the client.
+   * 
+   * @throws IOException
+   *           I/O error occurred when creating the output stream
+   */
+  private void reserveService() throws IOException {
+    String remoteHost = socketClient.getRemoteSocketAddress().toString();
+    int status = monitor.reserveService(remoteHost);
+    if (status >= 0) {
+      logger.info("Service reserved.");
+      sendMessage(OK);
+    } else {
+      logger.info("Service busy.");
+      sendMessage(FAILED);
+    }
+  }
+
+  /**
+   * Release monitor lock.
+   */
+  private void releaseService() {
+    String remoteHost = socketClient.getRemoteSocketAddress().toString();
+    monitor.releaseService(remoteHost);
+    logger.info("Service released: " + remoteHost);
+  }
+
+  /**
+   * Send a message to the connected client
+   * 
+   * @param message
+   *          hard coded message
+   * 
+   * @throws IOException
+   *           I/O error occurred when creating the output stream
+   */
+  private void sendMessage(String message) throws IOException {
+    PrintStream outStream = new PrintStream(socketClient.getOutputStream(),
+        true);
+    outStream.println(message);
+  }
+
+  /**
+   * Store the incoming data locally.
+   * 
+   * @param line
+   *          data line
+   */
+  private void writeXmlFile(String line) {
+    StringBuffer stringBuffer = new StringBuffer();
+    for (int i = 0; i < line.length(); i++) {
+      if ((line.charAt(i)) == ProtocolCommand.DATA_END.toString().charAt(0)) {
+        String output = stringBuffer.toString().trim();
+        inputXmlWriter.write(output);
+      } else {
+        stringBuffer.append(line.charAt(i));
+      }
     }
   }
 }

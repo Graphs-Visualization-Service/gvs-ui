@@ -34,7 +34,7 @@ public class ConnectionMonitor {
     if (owner.equals("") || owner == "") {
       lastUse = System.currentTimeMillis();
       this.owner = pOwner;
-      logger.debug(owner + "reserved service");
+      logger.debug("{} reserved the service.", owner);
       return 0;
     } else {
       logger.debug("Service is in use");
@@ -55,7 +55,7 @@ public class ConnectionMonitor {
       lastUse = System.currentTimeMillis();
       return true;
     } else {
-      logger.debug(owner + "is not owner");
+      logger.debug("Owner is {}", owner);
       return false;
     }
   }

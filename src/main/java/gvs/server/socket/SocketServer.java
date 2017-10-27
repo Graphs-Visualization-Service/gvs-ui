@@ -67,19 +67,19 @@ public class SocketServer extends Thread {
 
       while (true) {
         Socket client = javaSocket.accept();
-        
+
         ServerConnectionXML con = connectionFactory.create(client);
         con.start();
       }
     } catch (IOException e) {
-      logger.error("Cannot create ServerSocket", e);
+      logger.error("Cannot open Server Socket. Service may already runnings.",
+          e);
     }
   }
 
   private String getLocalHostName() {
     try {
-      InetAddress.getLocalHost().getHostName();
-      return "localhost";
+      return InetAddress.getLocalHost().getHostName();
     } catch (UnknownHostException e) {
       logger.error("Cannot retrieve local host address", e);
       return null;

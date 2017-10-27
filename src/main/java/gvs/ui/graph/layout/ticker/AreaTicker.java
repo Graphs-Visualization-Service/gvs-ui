@@ -18,7 +18,11 @@ public class AreaTicker extends Thread {
   private boolean active = false;
   private boolean shouldStop = false;
 
+  private static final String THREAD_NAME = "Area Ticker Thread";
+
   public AreaTicker(Tickable tickable, double desiredRate) {
+    super(THREAD_NAME);
+
     setDesiredRate(desiredRate);
     this.tickable = tickable;
     this.iteration = 0;

@@ -38,6 +38,8 @@ public class ServerConnectionXML extends Thread {
   private static final String OK = "OK";
   private static final String FAILED = "FAILED";
 
+  private static final String THREAD_NAME = "Server Connection Thread";
+
   private static final Logger logger = LoggerFactory
       .getLogger(ServerConnectionXML.class);
 
@@ -58,6 +60,7 @@ public class ServerConnectionXML extends Thread {
       InputXmlReader inputXmlReader, InputXmlWriter inputXmlWriter,
       @Assisted Socket client) {
 
+    super(THREAD_NAME);
     this.socketClient = client;
     this.inputXmlReader = inputXmlReader;
     this.monitor = monitor;

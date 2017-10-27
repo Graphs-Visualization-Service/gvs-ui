@@ -41,6 +41,7 @@ public class SocketServer extends Thread {
   private Integer port;
   private ServerConnectionXMLFactory connectionFactory;
 
+  private static final String THREAD_NAME = "Socket Server Thread";
   private static final String DEFAULT_PORT_FILE_NAME = "GVSComm.xml";
 
   private static final Logger logger = LoggerFactory
@@ -51,6 +52,8 @@ public class SocketServer extends Thread {
    */
   @Inject
   public SocketServer(ServerConnectionXMLFactory factory) {
+
+    super(THREAD_NAME);
     this.connectionFactory = factory;
     this.hostname = getLocalHostName();
     this.port = findFreePort();

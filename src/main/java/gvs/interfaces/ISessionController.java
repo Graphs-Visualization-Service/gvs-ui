@@ -41,5 +41,9 @@ public interface ISessionController{
   void changeCurrentGraphToPrev();
 
   void changeCurrentGraphToLast();
+  
+  int getCurrentGraphId();
+  
+  int getTotalGraphCount();
 
 }

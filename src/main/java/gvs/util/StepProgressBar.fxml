@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.TilePane?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root type="javafx.scene.layout.StackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ProgressBar fx:id="stepIndicator" minHeight="20.0" prefWidth="200.0" progress="0.0" />
       <TilePane maxWidth="80.0" StackPane.alignment="CENTER">
@@ -16,4 +16,4 @@
          </children>
       </TilePane>
    </children>
-</StackPane>
+</fx:root>

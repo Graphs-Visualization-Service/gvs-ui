@@ -43,6 +43,7 @@ public class TreeSessionController extends Observable implements ITreeSessionCon
 
   private boolean replayMode = false;
   private int picsPersMinute = 1000;
+  private int currentTreeId;
 
   // TODO: change to inject
   private IPersistor persistor = new Persistor();
@@ -64,6 +65,7 @@ public class TreeSessionController extends Observable implements ITreeSessionCon
     treeContLogger.info("Build new tree session controller");
     this.treeModels = new Vector<>();
     this.actualTreeModel = pTreeModel;
+    currentTreeId = actualTreeModel.getModelId();
 
     cp.addVisualizationPanel(visualPanel);
     actualTreeModel.setModelId(serverSessionId++);
@@ -94,7 +96,7 @@ public class TreeSessionController extends Observable implements ITreeSessionCon
     treeContLogger.info("Build new tree session controller from storage");
     cp.addVisualizationPanel(visualPanel);
     actualTreeModel = (TreeModel) treeModels.lastElement();
-
+    currentTreeId = actualTreeModel.getModelId();
     setVisualModel();
   }
 
@@ -115,6 +117,7 @@ public class TreeSessionController extends Observable implements ITreeSessionCon
     treeContLogger.info("New tree model arrived");
     actualTreeModel = pTreeModel;
     actualTreeModel.setModelId(serverSessionId++);
+    currentTreeId = actualTreeModel.getModelId();
     treeModels.add(actualTreeModel);
     treeContLogger.debug("Check if actual tree is empty");
     if ((actualTreeModel.getNodes()).size() != 0) {
@@ -367,9 +370,9 @@ public class TreeSessionController extends Observable implements ITreeSessionCon
   
   @Override
   public void changeCurrentGraphToNext() {
-    int nextTreeId = actualTreeModel.getModelId() + 1;
-    if (validateNavigation(nextTreeId)) {
-      actualTreeModel = treeModels.get(nextTreeId - 1);
+    currentTreeId = actualTreeModel.getModelId() + 1;
+    if (validateNavigation(currentTreeId)) {
+      actualTreeModel = treeModels.get(currentTreeId - 1);
       notifyObservers();
     }
   }
@@ -377,14 +380,15 @@ public class TreeSessionController extends Observable implements ITreeSessionCon
   @Override
   public void changeCurrentGraphToFirst() {
     actualTreeModel = treeModels.firstElement();
+    currentTreeId = actualTreeModel.getModelId();
     notifyObservers();
   }
 
   @Override
   public void changeCurrentGraphToPrev() {
-    int nextTreeId = actualTreeModel.getModelId() - 1;
-    if (validateNavigation(nextTreeId)) {
-      actualTreeModel = treeModels.get(nextTreeId - 1);
+    currentTreeId = actualTreeModel.getModelId() - 1;
+    if (validateNavigation(currentTreeId)) {
+      actualTreeModel = treeModels.get(currentTreeId - 1);
       notifyObservers();
     }
   }
@@ -392,7 +396,18 @@ public class TreeSessionController extends Observable implements ITreeSessionCon
   @Override
   public void changeCurrentGraphToLast() {
     actualTreeModel = treeModels.lastElement();
+    currentTreeId = actualTreeModel.getModelId();
     notifyObservers();
+  }
+
+  @Override
+  public int getCurrentGraphId() {
+   return currentTreeId;
+  }
+
+  @Override
+  public int getTotalGraphCount() {
+    return treeModels.size();
   }
 
 }

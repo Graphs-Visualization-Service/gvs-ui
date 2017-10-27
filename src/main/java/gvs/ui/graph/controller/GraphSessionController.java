@@ -55,6 +55,7 @@ public class GraphSessionController extends Observable
   private boolean replayMode = false;
   private boolean autoLayoutingMode = false;
   private boolean isRelativeSession = false;
+  private int currentGraphId;
 
   // TODO: add inject
   private IPersistor persistor = new Persistor();
@@ -90,6 +91,7 @@ public class GraphSessionController extends Observable
 
     graphContLogger.info("Build new graph session controller from storage");
     actualGraphModel = (GraphModel) graphModels.lastElement();
+    currentGraphId = actualGraphModel.getModelId();
 
     isDraggable();
     setVisualModel();
@@ -123,6 +125,7 @@ public class GraphSessionController extends Observable
     graphContLogger.info("Build new graph session controller");
     actualGraphModel = pGraphModel;
     actualGraphModel.setModelId(serverSessionId++);
+    currentGraphId = actualGraphModel.getModelId();
     graphModels.add(actualGraphModel);
 
     graphContLogger.debug("Check if graph model is empty");
@@ -625,9 +628,9 @@ public class GraphSessionController extends Observable
 
   @Override
   public void changeCurrentGraphToNext() {
-    int nextGraphId = actualGraphModel.getModelId() + 1;
-    if (validateNavigation(nextGraphId)) {
-      actualGraphModel = graphModels.get(nextGraphId - 1);
+    currentGraphId = actualGraphModel.getModelId() + 1;
+    if (validateNavigation(currentGraphId)) {
+      actualGraphModel = graphModels.get(currentGraphId - 1);
       notifyObservers();
     }
   }
@@ -635,14 +638,15 @@ public class GraphSessionController extends Observable
   @Override
   public void changeCurrentGraphToFirst() {
     actualGraphModel = graphModels.firstElement();
+    currentGraphId = actualGraphModel.getModelId();
     notifyObservers();
   }
 
   @Override
   public void changeCurrentGraphToPrev() {
-    int prevGraphId = actualGraphModel.getModelId() - 1;
-    if (validateNavigation(prevGraphId)) {
-      actualGraphModel = (GraphModel) graphModels.get(prevGraphId - 1);
+    currentGraphId = actualGraphModel.getModelId() - 1;
+    if (validateNavigation(currentGraphId)) {
+      actualGraphModel = (GraphModel) graphModels.get(currentGraphId - 1);
       notifyObservers();
     }
   }
@@ -650,7 +654,18 @@ public class GraphSessionController extends Observable
   @Override
   public void changeCurrentGraphToLast() {
     actualGraphModel = graphModels.lastElement();
+    currentGraphId = actualGraphModel.getModelId();
     notifyObservers();
+  }
+
+  @Override
+  public int getCurrentGraphId() {
+    return currentGraphId;
+  }
+
+  @Override
+  public int getTotalGraphCount() {
+    return graphModels.size();
   }
 
 }

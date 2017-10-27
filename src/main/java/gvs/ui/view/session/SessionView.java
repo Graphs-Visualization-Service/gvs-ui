@@ -1,5 +1,9 @@
 package gvs.ui.view.session;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import gvs.ui.application.controller.GVSApplication;
 import gvs.ui.logic.session.SessionViewModel;
 import gvs.util.FontAwesome;
 import gvs.util.StepProgressBar;
@@ -63,7 +67,6 @@ public class SessionView {
 
   private StepProgressBar stepProgressBar;
   private SessionViewModel sessionViewModel;
-  private int replaySpeed;
 
   private static final int DEFAULT_REPLAY_SPEED = 500;
 
@@ -81,16 +84,14 @@ public class SessionView {
   private void initStepIndicator() {
     stepProgressBar = new StepProgressBar();
     leftPanel.getChildren().add(stepProgressBar);
-    setAnchors(stepProgressBar, 0, 5, 5, 5);
+    int margin = 5;
+    AnchorPane.setBottomAnchor(stepProgressBar, (double) margin);
+    AnchorPane.setLeftAnchor(stepProgressBar, (double) margin);
+    AnchorPane.setRightAnchor(stepProgressBar, (double) margin);
   }
 
   private void initSlider() {
-    replaySpeed = DEFAULT_REPLAY_SPEED;
-    speedSlider.setValue(replaySpeed);
-    speedSlider.valueProperty()
-        .addListener((observable, oldValue, newValue) -> {
-          replaySpeed = newValue.intValue();
-        });
+    speedSlider.setValue(DEFAULT_REPLAY_SPEED);
   }
 
   private void initStepButtons() {
@@ -122,7 +123,7 @@ public class SessionView {
 
   @FXML
   private void replayGraph() {
-    sessionViewModel.replayGraph(replaySpeed);
+    sessionViewModel.replayGraph(speedSlider.getValue());
   }
 
   @FXML
@@ -140,22 +141,5 @@ public class SessionView {
         .bind(sessionViewModel.totalGraphCountProperty());
     stepProgressBar.currentStepProperty()
         .bind(sessionViewModel.currentGraphModelIdProperty());
-  }
-
-  /**
-   * Helper function. Set anchors for a child of an AnchorPane.
-   * 
-   * @param top
-   * @param bottom
-   * @param left
-   * @param right
-   */
-  // TODO: extract method from here and appviewmodel into own util class?
-  private void setAnchors(Node anchorChild, int top, int bottom, int left,
-      int right) {
-    AnchorPane.setTopAnchor(anchorChild, (double) top);
-    AnchorPane.setBottomAnchor(anchorChild, (double) bottom);
-    AnchorPane.setLeftAnchor(anchorChild, (double) left);
-    AnchorPane.setRightAnchor(anchorChild, (double) right);
   }
 }

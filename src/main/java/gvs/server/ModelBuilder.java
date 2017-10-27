@@ -82,15 +82,13 @@ public class ModelBuilder {
   private static final String LEFTCHILD = "Leftchild";
 
   // Logger
-  private Logger serverLogger = null;
+  private static final Logger serverLogger = LoggerFactory
+      .getLogger(ModelBuilder.class);
 
   /**
    * ModelBuilder.
    */
   public ModelBuilder() {
-    // TODO check replacement of logger
-    // serverLogger = gvs.common.Logger.getInstance().getServerLogger();
-    serverLogger = LoggerFactory.getLogger(ModelBuilder.class);
     appController = ApplicationController.getInstance();
     typs = Configuration.getInstance();
   }

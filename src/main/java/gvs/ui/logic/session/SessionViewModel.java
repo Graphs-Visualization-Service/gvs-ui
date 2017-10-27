@@ -3,13 +3,19 @@ package gvs.ui.logic.session;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gvs.interfaces.ISessionController;
 import gvs.ui.application.model.ApplicationModel;
+import gvs.ui.view.session.SessionView;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- * Represents the currently loaded session.
+ * The ViewModel class for the current session. Corresponds to the classical
+ * ViewModel of the MVVM Pattern. It observes the ApplicationModel and handles
+ * the GUI session logic.
  * 
  * @author mtrentini
  *
@@ -20,12 +26,16 @@ public class SessionViewModel implements Observer {
   // TODO: find better names
   private final StringProperty totalGraphCountProperty = new SimpleStringProperty();
   private final StringProperty currentGraphModelIdProperty = new SimpleStringProperty();
+  
+  private static final Logger logger = LoggerFactory
+      .getLogger(SessionViewModel.class);
 
   public SessionViewModel(ApplicationModel model) {
     appModel = model;
     appModel.addObserver(this);
     currentSession = appModel.getSession();
     updateStepProperties();
+    logger.info("Initializing SessionViewModel.");
   }
 
   private void updateStepProperties() {
@@ -36,21 +46,25 @@ public class SessionViewModel implements Observer {
   public void changeCurrentGraphToNext() {
     currentSession.changeCurrentGraphToNext();
     currentGraphModelIdProperty.set(currentSession.getCurrentGraphId() + "");
+    logger.info("Changing the displayed graph model...");
   }
 
   public void changeCurrentGraphToPrevious() {
     currentSession.changeCurrentGraphToPrev();
     currentGraphModelIdProperty.set(currentSession.getCurrentGraphId() + "");
+    logger.info("Changing the displayed graph model...");
   }
 
   public void changeCurrentGraphToFirst() {
     currentSession.changeCurrentGraphToFirst();
     currentGraphModelIdProperty.set(currentSession.getCurrentGraphId() + "");
+    logger.info("Changing the displayed graph model...");
   }
 
   public void changeCurrentGraphToLast() {
     currentSession.changeCurrentGraphToLast();
     currentGraphModelIdProperty.set(currentSession.getCurrentGraphId() + "");
+    logger.info("Changing the displayed graph model...");
   }
 
   /**
@@ -61,15 +75,15 @@ public class SessionViewModel implements Observer {
   public void update(Observable o, Object arg) {
     currentSession = appModel.getSession();
     updateStepProperties();
+    logger.info("Updating SessionViewModel because current session changed.");
   }
 
-  public void replayGraph(int replaySpeed) {
-    // TODO Auto-generated method stub
-
+  public void replayGraph(double d) {
+   logger.info("Starting replay with speed " + d) ;
   }
 
   public void autoLayout() {
-    // TODO Auto-generated method stub
+    logger.info("Auto-layouting the current graph model...") ;
 
   }
 

@@ -26,7 +26,8 @@ import gvs.ui.tree.view.VisualizationTreePanel;
  * @author aegli
  *
  */
-public class TreeSessionController extends Observable implements ITreeSessionController {
+public class TreeSessionController extends Observable
+    implements ITreeSessionController {
 
   private Logger treeContLogger = null;
   private VisualizationTreeModel visualModel = null;
@@ -214,7 +215,8 @@ public class TreeSessionController extends Observable implements ITreeSessionCon
   public boolean validateNavigation(long pRequestedModelId) {
     if ((pRequestedModelId >= 1)
         && (pRequestedModelId <= (treeModels.size()))) {
-      setButtonState(pRequestedModelId);
+      // deactivate GVS 1.0 GUI
+      // setButtonState(pRequestedModelId);
       return true;
     } else {
       return false;
@@ -367,12 +369,13 @@ public class TreeSessionController extends Observable implements ITreeSessionCon
   public void saveSession() {
     persistor.saveToDisk(this);
   }
-  
+
   @Override
   public void changeCurrentGraphToNext() {
-    currentTreeId = actualTreeModel.getModelId() + 1;
-    if (validateNavigation(currentTreeId)) {
-      actualTreeModel = treeModels.get(currentTreeId - 1);
+    int nextTreeId = actualTreeModel.getModelId() + 1;
+    if (validateNavigation(nextTreeId)) {
+      actualTreeModel = treeModels.get(nextTreeId - 1);
+      currentTreeId = nextTreeId;
       notifyObservers();
     }
   }
@@ -386,9 +389,10 @@ public class TreeSessionController extends Observable implements ITreeSessionCon
 
   @Override
   public void changeCurrentGraphToPrev() {
-    currentTreeId = actualTreeModel.getModelId() - 1;
-    if (validateNavigation(currentTreeId)) {
-      actualTreeModel = treeModels.get(currentTreeId - 1);
+    int prevTreeId = actualTreeModel.getModelId() - 1;
+    if (validateNavigation(prevTreeId)) {
+      actualTreeModel = treeModels.get(prevTreeId - 1);
+      currentTreeId = prevTreeId;
       notifyObservers();
     }
   }
@@ -402,7 +406,7 @@ public class TreeSessionController extends Observable implements ITreeSessionCon
 
   @Override
   public int getCurrentGraphId() {
-   return currentTreeId;
+    return currentTreeId;
   }
 
   @Override

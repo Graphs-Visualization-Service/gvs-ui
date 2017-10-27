@@ -36,17 +36,19 @@ public class StepProgressBar extends StackPane {
   private static final Logger logger = LoggerFactory
       .getLogger(StepProgressBar.class);
 
-  
   public StepProgressBar() {
 
-    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gvs/util/StepProgressBar.fxml"));
+    FXMLLoader fxmlLoader = new FXMLLoader(
+        getClass().getResource("/gvs/util/StepProgressBar.fxml"));
     try {
-      
+
       fxmlLoader.setRoot(this);
       fxmlLoader.setController(this);
       // set a save inital value, otherwise div by 0!
       totalStepCount = 1;
       fxmlLoader.load();
+      currentStepProperty().addListener((observable, oldValue,
+          newValue) -> updateProgressBar(Integer.parseInt(newValue)));
       logger.info("Initializing StepProgressBar");
     } catch (IOException e) {
       logger.error("Could not load StepProgressBar", e);
@@ -64,7 +66,6 @@ public class StepProgressBar extends StackPane {
 
   public void setCurrentStep(int step) {
     currentStepProperty().set(step + "");
-    updateProgressBar(step);
   }
 
   public StringProperty totalStepProperty() {
@@ -75,16 +76,10 @@ public class StepProgressBar extends StackPane {
     return totalStepProperty().get();
   }
 
-  public void setTotalStep(int steps) {
-    if (steps == 0) {
-      throw new IllegalArgumentException("TotalSteps cannot be 0.");
-    }
-    totalStepCount = steps;
-    totalStepProperty().set(steps + "");
-  }
-
   private void updateProgressBar(int step) {
-    stepIndicator.progressProperty().set(step / totalStepCount);
+    double totalStepCount = Double.parseDouble(totalStepProperty().get());
+    double progress = ((double)step) / (double) totalStepCount;
+    stepIndicator.progressProperty().set(progress);
   }
 
 }

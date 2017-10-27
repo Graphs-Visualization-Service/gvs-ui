@@ -26,10 +26,10 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Button fx:id="firstBtn" mnemonicParsing="false" onAction="#stepToFirst" onMouseClicked="#stepToFirst" />
-                        <Button fx:id="prevBtn" mnemonicParsing="false" onAction="#stepBackward" onMouseClicked="#stepBackward" GridPane.columnIndex="1" />
-                        <Button fx:id="nextBtn" mnemonicParsing="false" onAction="#stepForward" onMouseClicked="#stepForward" GridPane.columnIndex="2" />
-                        <Button fx:id="lastBtn" mnemonicParsing="false" onAction="#stepToLast" onMouseClicked="#stepToLast" GridPane.columnIndex="3" />
+                        <Button fx:id="firstBtn" mnemonicParsing="false" onMouseClicked="#stepToFirst" />
+                        <Button fx:id="prevBtn" mnemonicParsing="false" onMouseClicked="#stepBackward" GridPane.columnIndex="1" />
+                        <Button fx:id="nextBtn" mnemonicParsing="false" onMouseClicked="#stepForward" GridPane.columnIndex="2" />
+                        <Button fx:id="lastBtn" mnemonicParsing="false" onMouseClicked="#stepToLast" GridPane.columnIndex="3" />
                      </children>
                   </GridPane>
                </children>

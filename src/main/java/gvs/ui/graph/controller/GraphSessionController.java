@@ -66,6 +66,7 @@ public class GraphSessionController extends Observable
    */
   public GraphSessionController() {
     initializeGraphSessionController();
+    graphModels = new Vector<>();
 
     graphContLogger.info("Build empty graph session");
     setEmptyButtonState();
@@ -226,17 +227,18 @@ public class GraphSessionController extends Observable
       visualModel.setLayouting(false);
       validateNavigation(actualGraphModel.getModelId());
       isDraggable();
-      setVisualModel();
-
-      setButtonState(actualGraphModel.getModelId());
+      // deactivate GVS 1.0 GUI
+      // setVisualModel();
+      // setButtonState(actualGraphModel.getModelId());
       Monitor.getInstance().unlock();
 
     } else {
       graphContLogger.debug(
           "Continue layouting graph, vertizes without positions detected");
       visualModel.setLayouting(true);
-      setVisualModel();
-      controlPanel.setLayoutState(true);
+      // deactivate GVS 1.0 GUI
+      // setVisualModel();
+      // controlPanel.setLayoutState(true);
     }
 
   }
@@ -271,7 +273,8 @@ public class GraphSessionController extends Observable
   public boolean validateNavigation(long pRequestedModelId) {
     if ((pRequestedModelId >= 1)
         && (pRequestedModelId <= (graphModels.size()))) {
-      setButtonState(pRequestedModelId);
+      // deactivate GVS 1.0 GUI
+      // setButtonState(pRequestedModelId);
       return true;
     } else {
       return false;
@@ -628,9 +631,10 @@ public class GraphSessionController extends Observable
 
   @Override
   public void changeCurrentGraphToNext() {
-    currentGraphId = actualGraphModel.getModelId() + 1;
-    if (validateNavigation(currentGraphId)) {
-      actualGraphModel = graphModels.get(currentGraphId - 1);
+    int nextGraphId = actualGraphModel.getModelId() + 1;
+    if (validateNavigation(nextGraphId)) {
+      actualGraphModel = graphModels.get(nextGraphId - 1);
+      currentGraphId = nextGraphId;
       notifyObservers();
     }
   }
@@ -644,9 +648,10 @@ public class GraphSessionController extends Observable
 
   @Override
   public void changeCurrentGraphToPrev() {
-    currentGraphId = actualGraphModel.getModelId() - 1;
-    if (validateNavigation(currentGraphId)) {
-      actualGraphModel = (GraphModel) graphModels.get(currentGraphId - 1);
+    int prevGraphId = actualGraphModel.getModelId() - 1;
+    if (validateNavigation(prevGraphId)) {
+      actualGraphModel = (GraphModel) graphModels.get(prevGraphId - 1);
+      currentGraphId = prevGraphId;
       notifyObservers();
     }
   }

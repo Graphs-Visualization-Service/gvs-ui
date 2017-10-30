@@ -13,8 +13,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -30,11 +28,9 @@ import org.slf4j.LoggerFactory;
 
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
-import gvs.interfaces.IGraphSessionController;
 import gvs.interfaces.INode;
 import gvs.interfaces.IPersistor;
 import gvs.interfaces.ISessionController;
-import gvs.interfaces.ITreeSessionController;
 import gvs.interfaces.IVertex;
 import gvs.ui.graph.controller.GraphSessionController;
 import gvs.ui.graph.model.DefaultVertex;
@@ -43,7 +39,6 @@ import gvs.ui.graph.model.GraphModel;
 import gvs.ui.graph.model.IconVertex;
 import gvs.ui.tree.controller.TreeSessionController;
 import gvs.ui.tree.model.BinaryNode;
-import gvs.ui.tree.model.DefaultNode;
 import gvs.ui.tree.model.TreeModel;
 
 /**
@@ -86,82 +81,38 @@ public class Persistor implements IPersistor {
   private static final String TREE = "TreeSession";
   private static final String TREEMODEL = "TreeModel";
   private static final String NODES = "Nodes";
-  private static final String DEFAULTNODE = "DefaultNode";
   private static final String BINARYNODE = "BinaryNode";
   private static final String TREEROOTID = "TreeRootId";
   private static final String RIGTHCHILD = "Rigthchild";
   private static final String LEFTCHILD = "Leftchild";
 
-  // TODO fix save path
-  // Datas
-  private String path = "DataStorage\\";
-  private File output = null;
-  private Configuration configuration = null;
+  private Configuration configuration;
 
-  // Logger
-  private Logger commonLogger = null;
+  private static final Logger logger = LoggerFactory.getLogger(Persistor.class);
 
   public Persistor() {
     configuration = Configuration.getInstance();
-    // TODO check logger replacement
-    // commonLogger = gvs.common.Logger.getInstance().getCommenLogger();
-    commonLogger = LoggerFactory.getLogger(Persistor.class);
   }
 
-
   @Override
-  public void saveToDisk(GraphSessionController session) {
+  public void saveToDisk(GraphSessionController session, File file) {
     Document document = DocumentHelper.createDocument();
     Element docRoot = document.addElement(ROOT);
     this.saveGraphSession(docRoot, session);
-    this.writeToDisk(document, session);
+    this.writeToDisk(document, session, file);
   }
 
-
   @Override
-  public void saveToDisk(TreeSessionController session) {
+  public void saveToDisk(TreeSessionController session, File file) {
     Document document = DocumentHelper.createDocument();
     Element docRoot = document.addElement(ROOT);
     this.saveTreeSession(docRoot, session);
-    this.writeToDisk(document, session);
-  }
-
-  /**
-   * Saves the Sessions to the disk
-   * 
-   * @param pSessions
-   */
-  //TODO: remove this method @muriele
-  public void saveToDisk(Vector<ISessionController> pSessions) {
-    commonLogger.info("Start saving ...");
-    Iterator<ISessionController> sessionIt = pSessions.iterator();
-    while (sessionIt.hasNext()) {
-      Object tmp = sessionIt.next();
-
-      @SuppressWarnings("rawtypes")
-      Class[] interfaces = tmp.getClass().getInterfaces();
-      for (int count = 0; count < interfaces.length; count++) {
-        Document document = DocumentHelper.createDocument();
-        Element docRoot = document.addElement(ROOT);
-        if (interfaces[count] == IGraphSessionController.class) {
-          GraphSessionController session = (GraphSessionController) tmp;
-          this.saveGraphSession(docRoot, session);
-          this.writeToDisk(document, session);
-          break;
-        } else if (interfaces[count] == ITreeSessionController.class) {
-          TreeSessionController session = (TreeSessionController) tmp;
-          this.saveTreeSession(docRoot, session);
-          this.writeToDisk(document, session);
-          break;
-        }
-      }
-    }
-    commonLogger.info("Finish saving");
+    this.writeToDisk(document, session, file);
   }
 
   @Override
   public ISessionController loadFile(String pPath) {
-    commonLogger.info("Load file: " + pPath);
+    logger.info("Load file: " + pPath);
     File input = new File(pPath);
     Document documentToRead = null;
     SAXReader reader = new SAXReader();
@@ -176,11 +127,11 @@ public class Persistor implements IPersistor {
     while (contentIt.hasNext()) {
       Element eTag = (contentIt.next());
       if (eTag.getName().equals(GRAPH)) {
-        commonLogger.info("It's a graph");
+        logger.info("It's a graph");
         sessionController = loadGraphSession(eTag);
         break;
       } else if (eTag.getName().equals(TREE)) {
-        commonLogger.info("It's a tree");
+        logger.info("It's a tree");
         sessionController = loadTreeSession(eTag);
         break;
       }
@@ -190,26 +141,16 @@ public class Persistor implements IPersistor {
 
   // ************************************SAVER AND
   // LOADER*************************
-  private void writeToDisk(Document pDocument, ISessionController pSession) {
+  private void writeToDisk(Document pDocument, ISessionController pSession,
+      File output) {
     try {
-      String sessionName = pSession.getSessionName();
-      long sessionId = pSession.getSessionId();
-
-      Date date = new Date(sessionId);
-
-      SimpleDateFormat dateformat = new SimpleDateFormat("yyyyMMddHHmmssS");
-
-      String dateForName = dateformat.format(date);
-      // TODO fix save path for unix
-      output = new File(path + sessionName + "_" + dateForName + ".gvs");
-
       OutputFormat format = OutputFormat.createPrettyPrint();
 
       XMLWriter writer = new XMLWriter(new FileOutputStream(output), format);
       writer.write(pDocument);
       writer.flush();
       writer.close();
-      commonLogger.info("Session saved: " + output.getCanonicalPath());
+      logger.info("Session saved: " + output.getCanonicalPath());
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
     } catch (IOException e) {
@@ -217,35 +158,28 @@ public class Persistor implements IPersistor {
     }
   }
 
-  private void saveGraphSession(Element pElement,
-      GraphSessionController pSessionController) {
-    Element eSession = pElement.addElement(GRAPH);
-    eSession.addAttribute(ATTRIBUTEID,
-        String.valueOf(pSessionController.getSessionId()));
-    Element eSessionName = eSession.addElement(LABEL);
-    eSessionName.addText(pSessionController.getSessionName());
-    Iterator<GraphModel> modelIt = pSessionController.getMyGraphModels()
-        .iterator();
-    while (modelIt.hasNext()) {
-      GraphModel tmp = modelIt.next();
-      saveGraphModel(tmp, eSession);
-    }
+  private void addIdAndLabel(Element sessionElement,
+      ISessionController sessionController) {
+    sessionElement.addAttribute(ATTRIBUTEID,
+        String.valueOf(sessionController.getSessionId()));
+    Element sessionNameElement = sessionElement.addElement(LABEL);
+    sessionNameElement.addText(sessionController.getSessionName());
   }
 
-  private void saveTreeSession(Element pElement,
-      TreeSessionController pSessionController) {
-    Element eSession = pElement.addElement(TREE);
-    eSession.addAttribute(ATTRIBUTEID,
-        String.valueOf(pSessionController.getSessionId()));
-    Element eSessionName = eSession.addElement(LABEL);
-    eSessionName.addText(pSessionController.getSessionName());
+  private void saveGraphSession(Element element,
+      GraphSessionController sessionController) {
+    Element sessionElement = element.addElement(GRAPH);
+    addIdAndLabel(sessionElement, sessionController);
+    sessionController.getMyGraphModels()
+        .forEach(model -> saveGraphModel(model, sessionElement));
+  }
 
-    Iterator<TreeModel> modelIt = pSessionController.getMyGraphModels()
-        .iterator();
-    while (modelIt.hasNext()) {
-      TreeModel tmp = modelIt.next();
-      saveTreeModel(tmp, eSession);
-    }
+  private void saveTreeSession(Element element,
+      TreeSessionController sessionController) {
+    Element sessionElement = element.addElement(TREE);
+    addIdAndLabel(sessionElement, sessionController);
+    sessionController.getMyGraphModels()
+        .forEach(model -> saveTreeModel(model, sessionElement));
   }
 
   private void saveGraphModel(GraphModel pModel, Element pSession) {
@@ -272,23 +206,15 @@ public class Persistor implements IPersistor {
     eMaxLabelLength.addText(String.valueOf(pModel.getMaxLabelLength()));
 
     Element eVertizes = eGraphModel.addElement(VERTIZES);
-
-    Iterator<IVertex> vertexIt = pModel.getVertizes().iterator();
-    while (vertexIt.hasNext()) {
-      Object temp = vertexIt.next();
-      if (temp.getClass() == DefaultVertex.class) {
-        saveDefaultVertex((DefaultVertex) temp, eVertizes);
-      } else if (temp.getClass() == IconVertex.class) {
-        saveIconVertex((IconVertex) temp, eVertizes);
+    pModel.getVertizes().forEach(v -> {
+      if (v.getClass() == DefaultVertex.class) {
+        saveDefaultVertex((DefaultVertex) v, eVertizes);
+      } else if (v.getClass() == IconVertex.class) {
+        saveIconVertex((IconVertex) v, eVertizes);
       }
-    }
-
+    });
     Element eEdges = eGraphModel.addElement(EDGES);
-    Iterator<IEdge> edgeIt = pModel.getEdges().iterator();
-    while (edgeIt.hasNext()) {
-      Edge temp = (Edge) edgeIt.next();
-      saveEdge(temp, eEdges);
-    }
+    pModel.getEdges().forEach(e -> saveEdge(e, eEdges));
 
   }
 
@@ -305,16 +231,11 @@ public class Persistor implements IPersistor {
       eRootNode.addText(String.valueOf(rootNode.getNodeId()));
     }
     Element eNodes = eTreeModel.addElement(NODES);
-    Iterator<INode> nodeIt = pModel.getNodes().iterator();
-    while (nodeIt.hasNext()) {
-      Object temp = nodeIt.next();
-      if (temp.getClass() == DefaultNode.class) {
-        // TODO check if still needed
-        // saveDefaultNode((DefaultNode)temp,eNodes);
-      } else if (temp.getClass() == BinaryNode.class) {
-        saveBinaryNode((BinaryNode) temp, eNodes);
+    pModel.getNodes().forEach(n -> {
+      if (n.getClass() == BinaryNode.class) {
+        saveBinaryNode((BinaryNode) n, eNodes);
       }
-    }
+    });
   }
 
   private void saveDefaultVertex(DefaultVertex pVertex, Element pVertizes) {
@@ -389,7 +310,7 @@ public class Persistor implements IPersistor {
   /*
    * Creates the Edge element
    */
-  private void saveEdge(Edge pEdge, Element pEdges) {
+  private void saveEdge(IEdge pEdge, Element pEdges) {
     Element eEdge = pEdges.addElement(EDGE);
     eEdge.addAttribute(ISDIRECTED, String.valueOf(pEdge.isDirected()));
 
@@ -501,7 +422,6 @@ public class Persistor implements IPersistor {
         graphModels.add(gm);
       }
     }
-
     return new GraphSessionController(sessionId, sessionName, graphModels);
   }
 
@@ -527,32 +447,22 @@ public class Persistor implements IPersistor {
           Element eNode = (nodeIt.next());
           if (eNode.getName().equals(BINARYNODE)) {
             nodes.add(loadBinaryNode(eNode));
-          } else if (eNode.getName().equals(DEFAULTNODE)) {
-            // TODO check if still needed
-            // nodes.add();
           }
         }
 
-        Iterator<INode> nodesModelIt = nodes.iterator();
-        while (nodesModelIt.hasNext()) {
-          Object tmp = nodesModelIt.next();
-          // TODO refactor -> empty else
-          if (tmp.getClass() == BinaryNode.class) {
-            BinaryNode actual = (BinaryNode) tmp;
-            Iterator<INode> nodesModelIt2 = nodes.iterator();
-            while (nodesModelIt2.hasNext()) {
-              BinaryNode child = (BinaryNode) (nodesModelIt2.next());
-              if (actual.getLeftChildId() == child.getNodeId()) {
-                actual.setLeftChild(child);
-              } else if (actual.getRightChildId() == child.getNodeId()) {
-                actual.setRigthChild(child);
+        nodes.forEach(n -> {
+          if (n.getClass() == BinaryNode.class) {
+            BinaryNode current = (BinaryNode) n;
+            nodes.forEach(m -> {
+              BinaryNode child = (BinaryNode) m;
+              if (current.getLeftChildId() == child.getNodeId()) {
+                current.setLeftChild(child);
+              } else if (current.getRightChildId() == child.getNodeId()) {
+                current.setRigthChild(child);
               }
-            }
-          } else {
-            // TODO check if still needed
-            // DEFAULT NODES
+            });
           }
-        }
+        });
         /////////////////////////////////////////////////
         Element eRootNode = eTreeModel.element(TREEROOTID);
         long rootNodeId = -1;

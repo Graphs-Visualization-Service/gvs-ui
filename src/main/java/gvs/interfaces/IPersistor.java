@@ -1,13 +1,15 @@
 package gvs.interfaces;
 
+import java.io.File;
+
 import gvs.ui.graph.controller.GraphSessionController;
 import gvs.ui.tree.controller.TreeSessionController;
 
 public interface IPersistor {
 
-  void saveToDisk(GraphSessionController session);
+  void saveToDisk(GraphSessionController session, File file);
 
-  void saveToDisk(TreeSessionController session);
+  void saveToDisk(TreeSessionController session, File file);
 
   /**
    * Load a file

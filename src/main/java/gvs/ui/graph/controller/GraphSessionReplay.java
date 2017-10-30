@@ -34,7 +34,7 @@ public class GraphSessionReplay extends TimerTask {
   public void run() {
     if (sessionCounter < sessionControllers.size()) {
       graphModel = (GraphModel) sessionControllers.get(sessionCounter);
-      sessionController.setActualGraphModel(graphModel);
+      sessionController.setCurrentGraphModel(graphModel);
       sessionController.isDraggable();
       sessionController.setVisualModel();
       sessionCounter++;

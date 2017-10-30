@@ -6,8 +6,8 @@ public interface ITreeSessionController extends ISessionController {
 
   void addTreeModel(TreeModel pTreeModel);
 
-  TreeModel getActualTreeModel();
+  TreeModel getCurrentTreeModel();
 
-  void setActualTreeModel(TreeModel actualTreeModel);
+  void setCurrentTreeModel(TreeModel currentTreeModel);
 
 }

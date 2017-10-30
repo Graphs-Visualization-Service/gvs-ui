@@ -38,7 +38,7 @@ public class TreeSessionController extends Observable
   private int serverSessionId = 1;
   private String sessionName = null;
   private Vector<TreeModel> treeModels = null;
-  private TreeModel actualTreeModel = null;
+  private TreeModel currentTreeModel = null;
   private TreeSessionReplay ta = null;
   private Timer replayTimer = null;
 
@@ -65,14 +65,14 @@ public class TreeSessionController extends Observable
 
     treeContLogger.info("Build new tree session controller");
     this.treeModels = new Vector<>();
-    this.actualTreeModel = pTreeModel;
-    currentTreeId = actualTreeModel.getModelId();
+    this.currentTreeModel = pTreeModel;
+    currentTreeId = currentTreeModel.getModelId();
 
     cp.addVisualizationPanel(visualPanel);
-    actualTreeModel.setModelId(serverSessionId++);
-    treeModels.add(actualTreeModel);
+    currentTreeModel.setModelId(serverSessionId++);
+    treeModels.add(currentTreeModel);
 
-    if ((actualTreeModel.getNodes()).size() != 0) {
+    if ((currentTreeModel.getNodes()).size() != 0) {
       callLayouter();
     } else {
       setVisualModel();
@@ -96,8 +96,8 @@ public class TreeSessionController extends Observable
 
     treeContLogger.info("Build new tree session controller from storage");
     cp.addVisualizationPanel(visualPanel);
-    actualTreeModel = (TreeModel) treeModels.lastElement();
-    currentTreeId = actualTreeModel.getModelId();
+    currentTreeModel = (TreeModel) treeModels.lastElement();
+    currentTreeId = currentTreeModel.getModelId();
     setVisualModel();
   }
 
@@ -112,16 +112,16 @@ public class TreeSessionController extends Observable
   }
 
   /**
-   * Adds a new tree model to the actual session
+   * Adds a new tree model to the current session
    */
   public void addTreeModel(TreeModel pTreeModel) {
     treeContLogger.info("New tree model arrived");
-    actualTreeModel = pTreeModel;
-    actualTreeModel.setModelId(serverSessionId++);
-    currentTreeId = actualTreeModel.getModelId();
-    treeModels.add(actualTreeModel);
-    treeContLogger.debug("Check if actual tree is empty");
-    if ((actualTreeModel.getNodes()).size() != 0) {
+    currentTreeModel = pTreeModel;
+    currentTreeModel.setModelId(serverSessionId++);
+    currentTreeId = currentTreeModel.getModelId();
+    treeModels.add(currentTreeModel);
+    treeContLogger.debug("Check if current tree is empty");
+    if ((currentTreeModel.getNodes()).size() != 0) {
       treeContLogger.debug("tree isn't empty");
       callLayouter();
     } else {
@@ -145,10 +145,10 @@ public class TreeSessionController extends Observable
    * Displays first model of session
    */
   public void getFirstModel() {
-    treeContLogger.info("Show first tree of actual session");
+    treeContLogger.info("Show first tree of current session");
     int requestedModelId = ((TreeModel) treeModels.firstElement()).getModelId();
     if (validateNavigation(requestedModelId)) {
-      actualTreeModel = (TreeModel) treeModels.get(requestedModelId - 1);
+      currentTreeModel = (TreeModel) treeModels.get(requestedModelId - 1);
       setVisualModel();
     }
   }
@@ -157,10 +157,10 @@ public class TreeSessionController extends Observable
    * Displays previous model of session
    */
   public void getPreviousModel() {
-    treeContLogger.info("Show prevoius tree of actual session");
-    int requestedModelId = actualTreeModel.getModelId() - 1;
+    treeContLogger.info("Show prevoius tree of current session");
+    int requestedModelId = currentTreeModel.getModelId() - 1;
     if (validateNavigation(requestedModelId)) {
-      actualTreeModel = (TreeModel) treeModels.get(requestedModelId - 1);
+      currentTreeModel = (TreeModel) treeModels.get(requestedModelId - 1);
       setVisualModel();
     }
   }
@@ -169,10 +169,10 @@ public class TreeSessionController extends Observable
    * Displays next model of session
    */
   public synchronized void getNextModel() {
-    treeContLogger.info("Show next tree of actual session");
-    int requestedModelId = actualTreeModel.getModelId() + 1;
+    treeContLogger.info("Show next tree of current session");
+    int requestedModelId = currentTreeModel.getModelId() + 1;
     if (validateNavigation(requestedModelId)) {
-      actualTreeModel = (TreeModel) treeModels.get(requestedModelId - 1);
+      currentTreeModel = (TreeModel) treeModels.get(requestedModelId - 1);
       setVisualModel();
     }
   }
@@ -181,10 +181,10 @@ public class TreeSessionController extends Observable
    * Displays last model of session
    */
   public void getLastModel() {
-    treeContLogger.info("Show last tree of actual session");
+    treeContLogger.info("Show last tree of current session");
     int requestedModelId = ((TreeModel) treeModels.lastElement()).getModelId();
     if (validateNavigation(requestedModelId)) {
-      actualTreeModel = (TreeModel) treeModels.get(requestedModelId - 1);
+      currentTreeModel = (TreeModel) treeModels.get(requestedModelId - 1);
       setVisualModel();
     }
   }
@@ -203,7 +203,7 @@ public class TreeSessionController extends Observable
       replayTimer.schedule(ta, picsPersMinute, picsPersMinute);
     } else {
       this.setReplayMode(false);
-      this.validateNavigation(actualTreeModel.getModelId());
+      this.validateNavigation(currentTreeModel.getModelId());
       replayTimer.cancel();
     }
 
@@ -224,17 +224,17 @@ public class TreeSessionController extends Observable
   }
 
   /**
-   * Returns actual tree model
+   * Returns current tree model
    */
-  public TreeModel getActualTreeModel() {
-    return actualTreeModel;
+  public TreeModel getCurrentTreeModel() {
+    return currentTreeModel;
   }
 
   /**
-   * Marks model as actually used
+   * Marks model as currently used
    */
-  public void setActualTreeModel(TreeModel pActualTreeModel) {
-    this.actualTreeModel = pActualTreeModel;
+  public void setCurrentTreeModel(TreeModel pACurrentTreeModel) {
+    this.currentTreeModel = pACurrentTreeModel;
   }
 
   /**
@@ -245,7 +245,7 @@ public class TreeSessionController extends Observable
   }
 
   /**
-   * Returns actual session name
+   * Returns current session name
    */
   public String getSessionName() {
     return sessionName;
@@ -295,11 +295,11 @@ public class TreeSessionController extends Observable
     return treeModels;
   }
 
-  // Call layouter for layouting actual model
+  // Call layouter for layouting current model
   private void callLayouter() {
     treeContLogger.info("Layouting elements of tree");
     layoutController = new TreeLayoutController();
-    layoutController.setElements(actualTreeModel);
+    layoutController.setElements(currentTreeModel);
     treeContLogger.info("Finished layouting tree, all positions are set");
     setVisualModel();
   }
@@ -372,9 +372,9 @@ public class TreeSessionController extends Observable
 
   @Override
   public void changeCurrentGraphToNext() {
-    int nextTreeId = actualTreeModel.getModelId() + 1;
+    int nextTreeId = currentTreeModel.getModelId() + 1;
     if (validateNavigation(nextTreeId)) {
-      actualTreeModel = treeModels.get(nextTreeId - 1);
+      currentTreeModel = treeModels.get(nextTreeId - 1);
       currentTreeId = nextTreeId;
       notifyObservers();
     }
@@ -382,16 +382,16 @@ public class TreeSessionController extends Observable
 
   @Override
   public void changeCurrentGraphToFirst() {
-    actualTreeModel = treeModels.firstElement();
-    currentTreeId = actualTreeModel.getModelId();
+    currentTreeModel = treeModels.firstElement();
+    currentTreeId = currentTreeModel.getModelId();
     notifyObservers();
   }
 
   @Override
   public void changeCurrentGraphToPrev() {
-    int prevTreeId = actualTreeModel.getModelId() - 1;
+    int prevTreeId = currentTreeModel.getModelId() - 1;
     if (validateNavigation(prevTreeId)) {
-      actualTreeModel = treeModels.get(prevTreeId - 1);
+      currentTreeModel = treeModels.get(prevTreeId - 1);
       currentTreeId = prevTreeId;
       notifyObservers();
     }
@@ -399,8 +399,8 @@ public class TreeSessionController extends Observable
 
   @Override
   public void changeCurrentGraphToLast() {
-    actualTreeModel = treeModels.lastElement();
-    currentTreeId = actualTreeModel.getModelId();
+    currentTreeModel = treeModels.lastElement();
+    currentTreeId = currentTreeModel.getModelId();
     notifyObservers();
   }
 

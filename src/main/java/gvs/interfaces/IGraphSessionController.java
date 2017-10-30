@@ -11,9 +11,9 @@ public interface IGraphSessionController extends ISessionController {
 
   void update(Observable o, Object arg);
 
-  GraphModel getActualGraphModel();
+  GraphModel getCurrentGraphModel();
 
-  void setActualGraphModel(GraphModel actualGraphModel);
+  void setCurrentGraphModel(GraphModel currentGraphModel);
 
   @SuppressWarnings("rawtypes")
   AbstractList getMyGraphModels();

@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -26,38 +27,37 @@
          <children>
             <MenuBar>
               <menus>
-                <Menu fx:id="gvsMenu" mnemonicParsing="true" text="GVS">
-                  <items>
-                        <MenuItem fx:id="quitMenuItem" mnemonicParsing="false" onAction="#quitGVS" text="_Quit" />
-                  </items>
-                </Menu>
-                <Menu fx:id="fileMenu" mnemonicParsing="true" text="File">
+                <Menu fx:id="gvsMenu" text="GVS">
                   <items>
                     <MenuItem fx:id="importMenuItem" onAction="#loadSession" text="_Import" />
-                        <MenuItem fx:id="exportMenuItem" onAction="#saveSession" text="_Export" />
+                        <MenuItem fx:id="quitMenuItem" onAction="#quitGVS" text="_Quit" />
                   </items>
                 </Menu>
               </menus>
             </MenuBar>
             <GridPane GridPane.rowIndex="1">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="80.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" prefWidth="300.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <ComboBox fx:id="chooseSessionBox" onAction="#changeSession" prefWidth="450.0" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS">
+                  <ComboBox fx:id="chooseSessionBox" onAction="#changeSession" prefWidth="350.0" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS">
                      <GridPane.margin>
                         <Insets left="10.0" />
                      </GridPane.margin>
                   </ComboBox>
-                  <Button fx:id="deleteSessionBtn" mnemonicParsing="false" onMouseClicked="#removeSession" text="Delete" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER">
+                  <ButtonBar GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER">
                      <GridPane.margin>
                         <Insets right="10.0" />
                      </GridPane.margin>
-                  </Button>
+                     <buttons>
+                        <Button fx:id="saveSessionBtn" mnemonicParsing="false" onMouseClicked="#saveSession" text="Save" />
+                        <Button fx:id="deleteSessionBtn" mnemonicParsing="false" onMouseClicked="#removeSession" text="Delete" />
+                     </buttons>
+                  </ButtonBar>
                </children>
             </GridPane>
          </children>

@@ -1,5 +1,6 @@
 package gvs.ui.graph.controller;
 
+import java.io.File;
 import java.util.AbstractList;
 import java.util.Iterator;
 import java.util.Observable;
@@ -622,8 +623,8 @@ public class GraphSessionController extends Observable
   }
 
   @Override
-  public void saveSession() {
-    persistor.saveToDisk(this);
+  public void saveSession(File file) {
+    persistor.saveToDisk(this, file);
   }
 
   @Override

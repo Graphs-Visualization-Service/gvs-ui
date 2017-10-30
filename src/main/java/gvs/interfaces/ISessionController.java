@@ -1,5 +1,7 @@
 package gvs.interfaces;
 
+import java.io.File;
+
 import gvs.ui.application.view.ControlPanel;
 
 public interface ISessionController{
@@ -32,7 +34,7 @@ public interface ISessionController{
 
   boolean validateNavigation(long requestedModelId);
 
-  void saveSession();
+  void saveSession(File file);
 
   void changeCurrentGraphToNext();
 

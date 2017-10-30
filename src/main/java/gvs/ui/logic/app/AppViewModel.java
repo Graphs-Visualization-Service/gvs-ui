@@ -67,6 +67,7 @@ public class AppViewModel implements Observer {
   public AppViewModel(ApplicationModel appModel,
       ApplicationController appController, IPersistor persistor,
       BorderPane rootLayout) {
+    context.init();
     this.appModel = appModel;
     this.appModel.addObserver(this);
     this.appController = appController;
@@ -74,12 +75,10 @@ public class AppViewModel implements Observer {
     this.currentSessionName.set(PROMT_MESSAGE);
     this.rootLayout = rootLayout;
     sessionNames.addListener(this::changeSessionVisibility);
-    context.init();
   }
 
   private void changeSessionVisibility(
       ListChangeListener.Change<? extends String> c) {
-
     if (!sessionIsInitialized) {
       initSessionLayout();
     }
@@ -160,9 +159,9 @@ public class AppViewModel implements Observer {
     appController.setRequestedFile(file.getPath(), persistor);
   }
 
-  public void saveSession() {
+  public void saveSession(File file) {
     logger.info("Saving session to file...");
-    appModel.getSession().saveSession();
+    appModel.getSession().saveSession(file);
   }
 
   public void changeSession(String name) {

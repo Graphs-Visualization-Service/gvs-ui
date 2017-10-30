@@ -229,11 +229,11 @@ public class SaveDialog extends JDialog {
 
         if (isExit) {
           appViewLogger.info("Save and exit program");
-          persistor.saveToDisk(saveToDisk);
+//          persistor.saveToDisk(saveToDisk);
           System.exit(0);
         } else {
           appViewLogger.info("Save and close dialog");
-          persistor.saveToDisk(saveToDisk);
+//          persistor.saveToDisk(saveToDisk);
           dialog.setVisible(false);
           dialog.dispose();
         }

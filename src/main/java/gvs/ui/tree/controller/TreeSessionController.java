@@ -1,5 +1,6 @@
 package gvs.ui.tree.controller;
 
+import java.io.File;
 import java.util.AbstractList;
 import java.util.Observable;
 import java.util.Timer;
@@ -366,8 +367,8 @@ public class TreeSessionController extends Observable
   }
 
   @Override
-  public void saveSession() {
-    persistor.saveToDisk(this);
+  public void saveSession(File file) {
+    persistor.saveToDisk(this, file);
   }
 
   @Override

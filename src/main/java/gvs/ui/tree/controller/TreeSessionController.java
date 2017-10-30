@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
-import gvs.common.Persistor;
+import gvs.access.Persistor;
 import gvs.interfaces.IPersistor;
 import gvs.interfaces.ITreeSessionController;
 import gvs.ui.application.view.ControlPanel;

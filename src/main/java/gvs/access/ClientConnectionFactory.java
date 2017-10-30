@@ -2,8 +2,6 @@ package gvs.access;
 
 import java.net.Socket;
 
-import gvs.server.socket.ServerConnectionXML;
-
 /**
  * Factory interface for Guice
  * 
@@ -11,7 +9,7 @@ import gvs.server.socket.ServerConnectionXML;
  * @author Michi
  *
  */
-public interface ServerConnectionXMLFactory {
+public interface ClientConnectionFactory {
 
-  ServerConnectionXML create(Socket clients);
+  ClientConnection create(Socket clients);
 }

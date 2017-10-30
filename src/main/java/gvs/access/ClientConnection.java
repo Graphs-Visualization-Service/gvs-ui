@@ -1,4 +1,4 @@
-package gvs.server.socket;
+package gvs.access;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,11 +13,6 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
-import gvs.access.InputXmlReader;
-import gvs.access.InputXmlWriter;
-import gvs.access.ProtocolCommand;
-import gvs.server.ConnectionMonitor;
-
 /**
  * This class is the endpoint for each incoming connection.
  * 
@@ -26,7 +21,7 @@ import gvs.server.ConnectionMonitor;
  * 
  * @author mwieland
  */
-public class ServerConnectionXML extends Thread {
+public class ClientConnection extends Thread {
 
   private ConnectionMonitor monitor;
   private InputXmlReader inputXmlReader;
@@ -41,7 +36,7 @@ public class ServerConnectionXML extends Thread {
   private static final String THREAD_NAME = "Server Connection Thread";
 
   private static final Logger logger = LoggerFactory
-      .getLogger(ServerConnectionXML.class);
+      .getLogger(ClientConnection.class);
 
   /**
    * Default constructor.
@@ -56,7 +51,7 @@ public class ServerConnectionXML extends Thread {
    *          xml reader used to read the created xml
    */
   @Inject
-  public ServerConnectionXML(ConnectionMonitor monitor,
+  public ClientConnection(ConnectionMonitor monitor,
       InputXmlReader inputXmlReader, InputXmlWriter inputXmlWriter,
       @Assisted Socket client) {
 

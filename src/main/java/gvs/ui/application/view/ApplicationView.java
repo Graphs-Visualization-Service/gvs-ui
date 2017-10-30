@@ -36,7 +36,7 @@ import javax.swing.filechooser.FileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.common.Persistor;
+import gvs.access.Persistor;
 import gvs.interfaces.ISessionController;
 import gvs.ui.application.controller.ApplicationController;
 import gvs.ui.application.model.ApplicationModel;

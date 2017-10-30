@@ -1,4 +1,4 @@
-package gvs.server;
+package gvs.access;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

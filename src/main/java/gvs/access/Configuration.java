@@ -1,5 +1,5 @@
 
-package gvs.common;
+package gvs.access;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

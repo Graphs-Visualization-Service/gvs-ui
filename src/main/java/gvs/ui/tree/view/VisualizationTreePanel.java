@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.common.Configuration;
+import gvs.access.Configuration;
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.INode;
 import gvs.interfaces.IVisualizationTreePanel;

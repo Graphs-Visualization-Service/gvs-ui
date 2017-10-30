@@ -4,7 +4,7 @@
  * To change the template for this generated file go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-package gvs.server;
+package gvs.access;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Singleton;
 
-import gvs.common.Configuration;
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.INode;

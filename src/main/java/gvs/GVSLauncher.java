@@ -8,7 +8,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
-import gvs.server.socket.SocketServer;
+import gvs.access.SocketServer;
 import gvs.ui.application.controller.GVSApplication;
 
 /**

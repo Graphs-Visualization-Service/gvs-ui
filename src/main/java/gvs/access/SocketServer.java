@@ -4,7 +4,7 @@
  * To change the template for this generated file go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-package gvs.server.socket;
+package gvs.access;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,13 +25,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
-import gvs.access.ServerConnectionXMLFactory;
-import gvs.common.Configuration;
-
 /**
  * Socket Endpoint of GVS UI. The server is running in its own thread.
  * 
- * For each incoming request, a new {@link ServerConnectionXML} is created.
+ * For each incoming request, a new {@link ClientConnection} is created.
  * 
  * @author mwieland
  */
@@ -39,7 +36,7 @@ public class SocketServer extends Thread {
 
   private String hostname;
   private Integer port;
-  private ServerConnectionXMLFactory connectionFactory;
+  private ClientConnectionFactory connectionFactory;
 
   private static final String THREAD_NAME = "Socket Server Thread";
   private static final String DEFAULT_PORT_FILE_NAME = "GVSComm.xml";
@@ -51,7 +48,7 @@ public class SocketServer extends Thread {
    * Searches for free port and writes the communication information to a file
    */
   @Inject
-  public SocketServer(ServerConnectionXMLFactory factory) {
+  public SocketServer(ClientConnectionFactory factory) {
 
     super(THREAD_NAME);
     this.connectionFactory = factory;
@@ -71,7 +68,7 @@ public class SocketServer extends Thread {
       while (true) {
         Socket client = javaSocket.accept();
 
-        ServerConnectionXML con = connectionFactory.create(client);
+        ClientConnection con = connectionFactory.create(client);
         con.start();
       }
     } catch (IOException e) {

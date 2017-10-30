@@ -13,7 +13,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.GuiceBaseModule;
-import gvs.common.Persistor;
+import gvs.access.Persistor;
 import gvs.ui.application.model.ApplicationModel;
 import gvs.ui.logic.app.AppViewModel;
 import gvs.ui.view.app.AppView;

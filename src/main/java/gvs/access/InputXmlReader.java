@@ -11,8 +11,6 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.server.ModelBuilder;
-
 /**
  * Reads input XML of a {@link InputXmlWriter} and passes the document to the
  * {@link ModelBuilder}.

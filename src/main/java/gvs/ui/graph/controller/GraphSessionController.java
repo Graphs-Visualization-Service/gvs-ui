@@ -13,11 +13,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
-import gvs.common.Persistor;
+import gvs.access.ConnectionMonitor;
+import gvs.access.Persistor;
 import gvs.interfaces.IGraphSessionController;
 import gvs.interfaces.IPersistor;
 import gvs.interfaces.IVertex;
-import gvs.server.ConnectionMonitor;
 import gvs.ui.application.controller.ApplicationController;
 import gvs.ui.application.controller.Monitor;
 import gvs.ui.application.view.ApplicationView;

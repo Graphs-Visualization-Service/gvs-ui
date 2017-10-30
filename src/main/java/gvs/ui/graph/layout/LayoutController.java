@@ -10,7 +10,7 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.common.Configuration;
+import gvs.access.Configuration;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
 import gvs.ui.graph.layout.helpers.Area;

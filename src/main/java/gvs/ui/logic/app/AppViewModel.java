@@ -2,6 +2,7 @@ package gvs.ui.logic.app;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -10,6 +11,10 @@ import java.util.Observer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gluonhq.ignite.guice.GuiceContext;
+import com.google.inject.Inject;
+
+import gvs.GuiceBaseModule;
 import gvs.interfaces.IPersistor;
 import gvs.interfaces.ISessionController;
 import gvs.ui.application.controller.ApplicationController;
@@ -43,6 +48,8 @@ public class AppViewModel implements Observer {
   private AnchorPane sessionContentPane;
   private BorderPane rootLayout;
   private boolean sessionIsInitialized = false;
+  private GuiceContext context = new GuiceContext(this,
+      () -> Arrays.asList(new GuiceBaseModule()));
 
   private final StringProperty currentSessionName = new SimpleStringProperty();
   private final ObservableList<String> sessionNames = FXCollections
@@ -52,6 +59,10 @@ public class AppViewModel implements Observer {
   private static final String PROMT_MESSAGE = "no active session";
   private static final Logger logger = LoggerFactory
       .getLogger(AppViewModel.class);
+  
+  @Inject
+  private FXMLLoader fxmlLoader;
+ 
   
 
   // TODO: do we still need the persistor here?
@@ -65,30 +76,33 @@ public class AppViewModel implements Observer {
     this.currentSessionName.set(PROMT_MESSAGE);
     this.rootLayout = rootLayout;
     sessionNames
-        .addListener((ListChangeListener.Change<? extends String> c) -> {
-          if (!sessionIsInitialized) {
-            initSessionLayout();
-          }
-          if (sessionNames.size() == 1) {
-            displaySession();
-          } else if (sessionNames.isEmpty()) {
-            hideSession();
-          }
-        });
+        .addListener(this::changeSessionVisibility);
+    context.init();
+  }
+  
+  private void changeSessionVisibility(ListChangeListener.Change<? extends String> c) {
+      if (!sessionIsInitialized) {
+        initSessionLayout();
+      }
+      if (sessionNames.size() == 1) {
+        displaySession();
+      } else if (sessionNames.isEmpty()) {
+        hideSession();
+      }
   }
 
   private void initSessionLayout() {
     logger.info("Initializing session layout.");
-    FXMLLoader loader = new FXMLLoader();
     try {
-      BorderPane sessionLayout = (BorderPane) loader.load(getClass()
-          .getResourceAsStream("/gvs/ui/view/session/SessionView.fxml"));
+      fxmlLoader.setLocation(getClass()
+          .getResource("/gvs/ui/view/session/SessionView.fxml"));
+      BorderPane sessionLayout = (BorderPane) fxmlLoader.load();
       sessionContentPane = new AnchorPane();
       sessionContentPane.getChildren().add(sessionLayout);
       final int anchorMargin = 0;
       setAnchors(sessionLayout, anchorMargin, anchorMargin, anchorMargin,
           anchorMargin);
-      ((SessionView) loader.getController())
+      ((SessionView) fxmlLoader.getController())
           .setViewModel(new SessionViewModel(appModel));
       sessionIsInitialized = true;
     } catch (IOException e) {

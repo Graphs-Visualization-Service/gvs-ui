@@ -18,10 +18,6 @@ public class ConnectionMonitor {
   private static final Logger logger = LoggerFactory
       .getLogger(ConnectionMonitor.class);
 
-  public ConnectionMonitor() {
-    this.currentOwnerAddress = null;
-  }
-
   /**
    * Reserves the service for a client address.
    * 

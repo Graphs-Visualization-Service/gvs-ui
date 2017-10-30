@@ -59,11 +59,9 @@ public class AppViewModel implements Observer {
   private static final String PROMT_MESSAGE = "no active session";
   private static final Logger logger = LoggerFactory
       .getLogger(AppViewModel.class);
-  
+
   @Inject
   private FXMLLoader fxmlLoader;
- 
-  
 
   // TODO: do we still need the persistor here?
   public AppViewModel(ApplicationModel appModel,
@@ -75,27 +73,28 @@ public class AppViewModel implements Observer {
     this.persistor = persistor;
     this.currentSessionName.set(PROMT_MESSAGE);
     this.rootLayout = rootLayout;
-    sessionNames
-        .addListener(this::changeSessionVisibility);
+    sessionNames.addListener(this::changeSessionVisibility);
     context.init();
   }
-  
-  private void changeSessionVisibility(ListChangeListener.Change<? extends String> c) {
-      if (!sessionIsInitialized) {
-        initSessionLayout();
-      }
-      if (sessionNames.size() == 1) {
-        displaySession();
-      } else if (sessionNames.isEmpty()) {
-        hideSession();
-      }
+
+  private void changeSessionVisibility(
+      ListChangeListener.Change<? extends String> c) {
+
+    if (!sessionIsInitialized) {
+      initSessionLayout();
+    }
+    if (sessionNames.size() == 1) {
+      displaySession();
+    } else if (sessionNames.isEmpty()) {
+      hideSession();
+    }
   }
 
   private void initSessionLayout() {
     logger.info("Initializing session layout.");
     try {
-      fxmlLoader.setLocation(getClass()
-          .getResource("/gvs/ui/view/session/SessionView.fxml"));
+      fxmlLoader.setLocation(
+          getClass().getResource("/gvs/ui/view/session/SessionView.fxml"));
       BorderPane sessionLayout = (BorderPane) fxmlLoader.load();
       sessionContentPane = new AnchorPane();
       sessionContentPane.getChildren().add(sessionLayout);

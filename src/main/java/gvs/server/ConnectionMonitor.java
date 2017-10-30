@@ -3,98 +3,51 @@ package gvs.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Singleton;
+
 /**
- * Everyone who wants to send data, must reserve this service. This class is the
- * central entrypoint for every data transfer.
+ * Guarantees that only one client can communicate with the service at a time.
  * 
- * @author mkoller
+ * @author mwieland
  */
+@Singleton
 public class ConnectionMonitor {
 
-  private static ConnectionMonitor connectionMonitor = null;
-  private String owner = "";
-  private long lastUse;
+  private String currentOwnerAddress;
+
   private static final Logger logger = LoggerFactory
       .getLogger(ConnectionMonitor.class);
-  // private Logger serverLogger = null;
-
-  private ConnectionMonitor() {
-    lastUse = System.currentTimeMillis();
-  }
-
-  public static synchronized ConnectionMonitor getInstance() {
-    if (connectionMonitor == null) {
-      connectionMonitor = new ConnectionMonitor();
-    }
-
-    return connectionMonitor;
-  }
 
   /**
-   * The caller can reserve the service
+   * Reserves the service for a client address.
    * 
-   * @param pOwner
-   *          the caller
-   * @return isFree
+   * @param clientAddress
+   *          client address
+   * @return 0 if service was reserved <br>
+   *         -1 if service is busy
    */
-  public synchronized int reserveService(String pOwner) {
-    if (owner.equals("") || owner == "") {
-      lastUse = System.currentTimeMillis();
-      this.owner = pOwner;
-      logger.debug(owner + "reserved service");
+  public synchronized int reserveService(String clientAddress) {
+    if (currentOwnerAddress == null) {
+      currentOwnerAddress = clientAddress;
+      logger.debug("{} reserved the service.", currentOwnerAddress);
       return 0;
     } else {
-      logger.debug("Service is in use");
+      logger.debug("Service is busy");
       return -1;
     }
   }
 
   /**
-   * Check if the caller is owner
+   * Release the service. <br>
+   * Only the current owner of the service can release it for other clients.
    * 
-   * @param pOwner
-   *          the caller
-   * @return isOwner
+   * @param clientAddress
+   *          client address
    */
-  public synchronized boolean isOwner(String pOwner) {
-    if (owner.equals(pOwner) || owner == pOwner) {
-      logger.debug(owner + "is owner");
-      lastUse = System.currentTimeMillis();
-      return true;
-    } else {
-      logger.debug(owner + "is not owner");
-      return false;
-    }
-  }
-
-  /**
-   * The owner can release the service
-   * 
-   * @param pOwner
-   */
-  public synchronized void releaseServer(String pOwner) {
-    if (owner.equals(pOwner) || owner == pOwner) {
-      owner = "";
+  public synchronized void releaseService(String clientAddress) {
+    if (currentOwnerAddress.equals(clientAddress)) {
+      currentOwnerAddress = null;
       logger.debug("Serivce will be released");
     }
   }
-
-  /**
-   * If a timeout occurs the service can be rested.
-   *
-   */
-  public synchronized void resetConnection() {
-    this.owner = "";
-    lastUse = System.currentTimeMillis();
-  }
-
-  /**
-   * Return the last time a registerd client has used the connection.
-   * 
-   * @return lastusetime
-   */
-  public long getLastUse() {
-    return lastUse;
-  }
-
 }

@@ -2,8 +2,8 @@ package gvs.interfaces;
 
 import java.io.File;
 
-import gvs.ui.graph.controller.GraphSessionController;
-import gvs.ui.tree.controller.TreeSessionController;
+import gvs.business.logic.graph.GraphSessionController;
+import gvs.business.logic.tree.TreeSessionController;
 
 public interface IPersistor {
 

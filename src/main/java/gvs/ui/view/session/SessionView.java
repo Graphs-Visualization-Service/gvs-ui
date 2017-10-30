@@ -3,10 +3,10 @@ package gvs.ui.view.session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.ui.application.controller.GVSApplication;
+import gvs.ui.logic.app.GVSApplication;
 import gvs.ui.logic.session.SessionViewModel;
+import gvs.ui.view.controls.StepProgressBar;
 import gvs.util.FontAwesome;
-import gvs.util.StepProgressBar;
 import gvs.util.FontAwesome.Glyph;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

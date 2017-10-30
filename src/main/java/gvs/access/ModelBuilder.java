@@ -20,18 +20,18 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Singleton;
 
+import gvs.business.logic.ApplicationController;
+import gvs.business.model.graph.DefaultVertex;
+import gvs.business.model.graph.Edge;
+import gvs.business.model.graph.GraphModel;
+import gvs.business.model.graph.IconVertex;
+import gvs.business.model.tree.BinaryNode;
+import gvs.business.model.tree.DefaultNode;
+import gvs.business.model.tree.TreeModel;
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.INode;
 import gvs.interfaces.IVertex;
-import gvs.ui.application.controller.ApplicationController;
-import gvs.ui.graph.model.DefaultVertex;
-import gvs.ui.graph.model.Edge;
-import gvs.ui.graph.model.GraphModel;
-import gvs.ui.graph.model.IconVertex;
-import gvs.ui.tree.model.BinaryNode;
-import gvs.ui.tree.model.DefaultNode;
-import gvs.ui.tree.model.TreeModel;
 
 /**
  * This class builds the model which is required for the visualization. The

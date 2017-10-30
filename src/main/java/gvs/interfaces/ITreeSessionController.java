@@ -1,6 +1,6 @@
 package gvs.interfaces;
 
-import gvs.ui.tree.model.TreeModel;
+import gvs.business.model.tree.TreeModel;
 
 public interface ITreeSessionController extends ISessionController {
 

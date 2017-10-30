@@ -37,10 +37,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.access.Persistor;
+import gvs.business.logic.ApplicationController;
+import gvs.business.logic.cluster.ClusterSplitterGVS;
+import gvs.business.model.ApplicationModel;
 import gvs.interfaces.ISessionController;
-import gvs.ui.application.controller.ApplicationController;
-import gvs.ui.application.model.ApplicationModel;
-import gvs.ui.tree.view.ClusterSplitterGVS;
 
 /**
  * The application view builds the application frame and most of its components.

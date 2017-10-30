@@ -26,20 +26,20 @@ import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gvs.business.logic.graph.GraphSessionController;
+import gvs.business.logic.tree.TreeSessionController;
+import gvs.business.model.graph.DefaultVertex;
+import gvs.business.model.graph.Edge;
+import gvs.business.model.graph.GraphModel;
+import gvs.business.model.graph.IconVertex;
+import gvs.business.model.tree.BinaryNode;
+import gvs.business.model.tree.TreeModel;
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.INode;
 import gvs.interfaces.IPersistor;
 import gvs.interfaces.ISessionController;
 import gvs.interfaces.IVertex;
-import gvs.ui.graph.controller.GraphSessionController;
-import gvs.ui.graph.model.DefaultVertex;
-import gvs.ui.graph.model.Edge;
-import gvs.ui.graph.model.GraphModel;
-import gvs.ui.graph.model.IconVertex;
-import gvs.ui.tree.controller.TreeSessionController;
-import gvs.ui.tree.model.BinaryNode;
-import gvs.ui.tree.model.TreeModel;
 
 /**
  * This class loads and saves data. The color, line ... objects will be

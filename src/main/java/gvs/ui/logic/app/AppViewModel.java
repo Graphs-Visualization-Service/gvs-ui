@@ -15,10 +15,10 @@ import com.gluonhq.ignite.guice.GuiceContext;
 import com.google.inject.Inject;
 
 import gvs.GuiceBaseModule;
+import gvs.business.logic.ApplicationController;
+import gvs.business.model.ApplicationModel;
 import gvs.interfaces.IPersistor;
 import gvs.interfaces.ISessionController;
-import gvs.ui.application.controller.ApplicationController;
-import gvs.ui.application.model.ApplicationModel;
 import gvs.ui.logic.session.SessionViewModel;
 import gvs.ui.view.session.SessionView;
 import javafx.application.Platform;

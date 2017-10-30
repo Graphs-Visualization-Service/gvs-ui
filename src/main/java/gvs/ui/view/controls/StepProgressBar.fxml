@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.TilePane?>
+
+<fx:root type="javafx.scene.layout.StackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ProgressBar fx:id="stepIndicator" minHeight="20.0" prefWidth="200.0" progress="0.0" />
+      <TilePane maxWidth="80.0" StackPane.alignment="CENTER">
+         <children>
+            <Label fx:id="currentStepLabel" text="10" />
+            <Label text="/" />
+            <Label fx:id="totalStepLabel" text="100" />
+         </children>
+      </TilePane>
+   </children>
+</fx:root>

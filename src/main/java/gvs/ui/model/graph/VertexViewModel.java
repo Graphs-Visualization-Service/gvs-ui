@@ -3,8 +3,8 @@ package gvs.ui.model.graph;
 import java.util.Observable;
 import java.util.Observer;
 
+import gvs.business.model.graph.DefaultVertex;
 import gvs.interfaces.IVertex;
-import gvs.ui.graph.model.DefaultVertex;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;

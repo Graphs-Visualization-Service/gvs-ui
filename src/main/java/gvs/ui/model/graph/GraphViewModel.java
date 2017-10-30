@@ -6,10 +6,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Graph;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
-import gvs.ui.graph.model.DefaultVertex;
 
 /**
  * Represents one snapshot of a graph visualization.

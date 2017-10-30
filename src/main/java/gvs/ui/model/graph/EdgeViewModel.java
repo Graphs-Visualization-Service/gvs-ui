@@ -3,9 +3,9 @@ package gvs.ui.model.graph;
 import java.util.Observable;
 import java.util.Observer;
 
+import gvs.business.model.graph.Edge;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
-import gvs.ui.graph.model.Edge;
 
 /**
  * Contains JavaFX Properties which are used for bidirectional bindings.

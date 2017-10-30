@@ -3,7 +3,7 @@ package gvs.interfaces;
 import java.util.AbstractList;
 import java.util.Observable;
 
-import gvs.ui.graph.model.GraphModel;
+import gvs.business.model.graph.GraphModel;
 
 public interface IGraphSessionController extends ISessionController {
 

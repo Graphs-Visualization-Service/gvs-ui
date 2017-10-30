@@ -6,8 +6,8 @@ import java.util.Observer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gvs.business.model.ApplicationModel;
 import gvs.interfaces.ISessionController;
-import gvs.ui.application.model.ApplicationModel;
 import gvs.ui.view.session.SessionView;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

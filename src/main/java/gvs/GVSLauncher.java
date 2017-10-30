@@ -9,7 +9,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import gvs.access.SocketServer;
-import gvs.ui.application.controller.GVSApplication;
+import gvs.ui.logic.app.GVSApplication;
 
 /**
  * Starts the Graphs-Visualization Service.

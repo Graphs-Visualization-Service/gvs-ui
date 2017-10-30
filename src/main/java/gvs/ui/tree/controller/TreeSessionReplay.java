@@ -35,7 +35,7 @@ public class TreeSessionReplay extends TimerTask {
   public void run() {
     if (replayCounter < treeSessions.size()) {
       treeModel = (TreeModel) treeSessions.get(replayCounter);
-      treeSessionController.setActualTreeModel(treeModel);
+      treeSessionController.setCurrentTreeModel(treeModel);
       treeSessionController.setVisualModel();
       replayCounter++;
     } else {

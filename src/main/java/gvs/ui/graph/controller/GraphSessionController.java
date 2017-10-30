@@ -16,6 +16,7 @@ import gvs.common.Persistor;
 import gvs.interfaces.IGraphSessionController;
 import gvs.interfaces.IPersistor;
 import gvs.interfaces.IVertex;
+import gvs.server.ConnectionMonitor;
 import gvs.ui.application.controller.ApplicationController;
 import gvs.ui.application.controller.Monitor;
 import gvs.ui.application.view.ApplicationView;
@@ -32,14 +33,16 @@ import gvs.ui.graph.view.VisualizationGraphPanel;
  * @author aegli
  *
  */
-public class GraphSessionController
+public class GraphSessionController extends Observable
     implements Observer, IGraphSessionController {
-  private Logger graphContLogger = null;
+  private static final Logger logger = LoggerFactory
+      .getLogger(GraphSessionController.class);
   private VisualizationGraphModel visualModel = null;
   private VisualizationGraphPanel visualPanel = null;
   private LayoutController layoutController = null;
-  private GraphModel actualGraphModel = null;
+  private GraphModel currentGraphModel = null;
   private ControlPanel controlPanel = null;
+  // TODO: choose better structure to save models: e.g. map, doubly linked list
   private Vector<GraphModel> graphModels = null;
   private Timer replayTimer = null;
   private GraphSessionReplay sessionReplay = null;
@@ -54,6 +57,7 @@ public class GraphSessionController
   private boolean replayMode = false;
   private boolean autoLayoutingMode = false;
   private boolean isRelativeSession = false;
+  private int currentGraphId;
 
   // TODO: add inject
   private IPersistor persistor = new Persistor();
@@ -64,8 +68,9 @@ public class GraphSessionController
    */
   public GraphSessionController() {
     initializeGraphSessionController();
+    graphModels = new Vector<>();
 
-    graphContLogger.info("Build empty graph session");
+    logger.info("Build empty graph session");
     setEmptyButtonState();
   }
 
@@ -87,8 +92,9 @@ public class GraphSessionController
 
     initializeGraphSessionController();
 
-    graphContLogger.info("Build new graph session controller from storage");
-    actualGraphModel = (GraphModel) graphModels.lastElement();
+    logger.info("Build new graph session controller from storage");
+    currentGraphModel = (GraphModel) graphModels.lastElement();
+    currentGraphId = currentGraphModel.getModelId();
 
     isDraggable();
     setVisualModel();
@@ -119,30 +125,31 @@ public class GraphSessionController
     initializeGraphSessionController();
 
     graphModels = new Vector();
-    graphContLogger.info("Build new graph session controller");
-    actualGraphModel = pGraphModel;
-    actualGraphModel.setModelId(serverSessionId++);
-    graphModels.add(actualGraphModel);
+    logger.info("Build new graph session controller");
+    currentGraphModel = pGraphModel;
+    currentGraphModel.setModelId(serverSessionId++);
+    currentGraphId = currentGraphModel.getModelId();
+    graphModels.add(currentGraphModel);
 
-    graphContLogger.debug("Check if graph model is empty");
-    if ((actualGraphModel.getVertizes()).size() != 0) {
-      if (((IVertex) actualGraphModel.getVertizes().firstElement())
+    logger.debug("Check if graph model is empty");
+    if ((currentGraphModel.getVertizes()).size() != 0) {
+      if (((IVertex) currentGraphModel.getVertizes().firstElement())
           .isRelative()) {
-        graphContLogger.debug("Graph is relative");
+        logger.debug("Graph is relative");
         isRelativeSession = true;
-        validateNavigation(actualGraphModel.getModelId());
+        validateNavigation(currentGraphModel.getModelId());
         isDraggable();
         setVisualModel();
         Monitor.getInstance().unlock();
       } else {
-        graphContLogger.debug("Graph isn't relative");
+        logger.debug("Graph isn't relative");
         setVisualModel();
         callLayouter();
       }
     } else {
 
-      graphContLogger.debug("Empty graph");
-      validateNavigation(actualGraphModel.getModelId());
+      logger.debug("Empty graph");
+      validateNavigation(currentGraphModel.getModelId());
       setVisualModel();
       controlPanel.setLayout(false);
       Monitor.getInstance().unlock();
@@ -153,9 +160,6 @@ public class GraphSessionController
    * initialize graph session controller.
    */
   private void initializeGraphSessionController() {
-    // TODO check Logger replacement
-    this.graphContLogger = LoggerFactory
-        .getLogger(GraphSessionController.class);
     visualModel = new VisualizationGraphModel();
     visualPanel = new VisualizationGraphPanel(visualModel);
     controlPanel = new ControlPanel(this);
@@ -169,25 +173,25 @@ public class GraphSessionController
    *          graphModel
    */
   public void addGraphModel(GraphModel pGraphModel) {
-    graphContLogger.info("New graph arrived");
+    logger.info("New graph arrived");
     try {
       Monitor.getInstance().lock();
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
 
-    actualGraphModel = pGraphModel;
-    actualGraphModel.setModelId(serverSessionId++);
-    graphModels.add(actualGraphModel);
+    currentGraphModel = pGraphModel;
+    currentGraphModel.setModelId(serverSessionId++);
+    graphModels.add(currentGraphModel);
 
-    graphContLogger.debug("Check if graph is empty");
-    if ((actualGraphModel.getVertizes()).size() != 0) {
+    logger.debug("Check if graph is empty");
+    if ((currentGraphModel.getVertizes()).size() != 0) {
 
-      if (((IVertex) actualGraphModel.getVertizes().firstElement())
+      if (((IVertex) currentGraphModel.getVertizes().firstElement())
           .isRelative()) {
-        graphContLogger.debug("Graph is relative");
+        logger.debug("Graph is relative");
         isRelativeSession = true;
-        validateNavigation(actualGraphModel.getModelId());
+        validateNavigation(currentGraphModel.getModelId());
         isDraggable();
         setVisualModel();
         Monitor.getInstance().unlock();
@@ -195,7 +199,7 @@ public class GraphSessionController
         setFormerVertexCoordinate();
       }
     } else {
-      validateNavigation(actualGraphModel.getModelId());
+      validateNavigation(currentGraphModel.getModelId());
       setVisualModel();
       controlPanel.setLayout(false);
       ApplicationView.setButton(true);
@@ -215,24 +219,25 @@ public class GraphSessionController
   public void update(Observable o, Object arg) {
     String parameter = (String) arg;
     if (parameter.equals("TRUE")) {
-      graphContLogger.info("Finish layouting graph, all positions are set");
+      logger.info("Finish layouting graph, all positions are set");
       controlPanel.setLayoutState(false);
       autoLayoutingMode = false;
 
       visualModel.setLayouting(false);
-      validateNavigation(actualGraphModel.getModelId());
+      validateNavigation(currentGraphModel.getModelId());
       isDraggable();
-      setVisualModel();
-
-      setButtonState(actualGraphModel.getModelId());
+      // deactivate GVS 1.0 GUI
+      // setVisualModel();
+      // setButtonState(actualGraphModel.getModelId());
       Monitor.getInstance().unlock();
 
     } else {
-      graphContLogger.debug(
+      logger.debug(
           "Continue layouting graph, vertizes without positions detected");
       visualModel.setLayouting(true);
-      setVisualModel();
-      controlPanel.setLayoutState(true);
+      // deactivate GVS 1.0 GUI
+      // setVisualModel();
+      // controlPanel.setLayoutState(true);
     }
 
   }
@@ -267,7 +272,8 @@ public class GraphSessionController
   public boolean validateNavigation(long pRequestedModelId) {
     if ((pRequestedModelId >= 1)
         && (pRequestedModelId <= (graphModels.size()))) {
-      setButtonState(pRequestedModelId);
+      // deactivate GVS 1.0 GUI
+      // setButtonState(pRequestedModelId);
       return true;
     } else {
       return false;
@@ -279,17 +285,16 @@ public class GraphSessionController
    *
    */
   public void isDraggable() {
-    if (actualGraphModel.getModelId() == graphModels.size()) {
+    if (currentGraphModel.getModelId() == graphModels.size()) {
       visualModel.setDragging(true);
-      graphContLogger.debug("Last Graph in session queue, enable dragging");
-      if (((IVertex) actualGraphModel.getVertizes().firstElement())
+      logger.debug("Last Graph in session queue, enable dragging");
+      if (((IVertex) currentGraphModel.getVertizes().firstElement())
           .isRelative()) {
         visualModel.setDragging(false);
-        graphContLogger.debug("Graph is relative, disable dragging");
+        logger.debug("Graph is relative, disable dragging");
       }
     } else {
-      graphContLogger
-          .debug("Graph isn't last element in queue, disable dragging");
+      logger.debug("Graph isn't last element in queue, disable dragging");
       visualModel.setDragging(false);
 
     }
@@ -299,12 +304,12 @@ public class GraphSessionController
    * Displays requested model.
    */
   public synchronized void getFirstModel() {
-    graphContLogger.info("Show first graph of actual session");
+    logger.info("Show first graph of current session");
     int requestedModelId = ((GraphModel) graphModels.firstElement())
         .getModelId();
 
     if (validateNavigation(requestedModelId)) {
-      actualGraphModel = (GraphModel) graphModels.get(requestedModelId - 1);
+      currentGraphModel = (GraphModel) graphModels.get(requestedModelId - 1);
       isDraggable();
       setVisualModel();
     }
@@ -314,11 +319,11 @@ public class GraphSessionController
    * Displays requested model.
    */
   public void getPreviousModel() {
-    graphContLogger.info("Show previous graph of actual session");
-    int requestedModelId = actualGraphModel.getModelId() - 1;
+    logger.info("Show previous graph of current session");
+    int requestedModelId = currentGraphModel.getModelId() - 1;
 
     if (validateNavigation(requestedModelId)) {
-      actualGraphModel = (GraphModel) graphModels.get(requestedModelId - 1);
+      currentGraphModel = (GraphModel) graphModels.get(requestedModelId - 1);
       isDraggable();
       setVisualModel();
     }
@@ -328,11 +333,11 @@ public class GraphSessionController
    * Displays requested model.
    */
   public void getNextModel() {
-    graphContLogger.info("Show next graph of actual session");
-    int requestedModelId = actualGraphModel.getModelId() + 1;
+    logger.info("Show next graph of current session");
+    int requestedModelId = currentGraphModel.getModelId() + 1;
 
     if (validateNavigation(requestedModelId)) {
-      actualGraphModel = (GraphModel) graphModels.get(requestedModelId - 1);
+      currentGraphModel = (GraphModel) graphModels.get(requestedModelId - 1);
       isDraggable();
       setVisualModel();
     }
@@ -342,12 +347,12 @@ public class GraphSessionController
    * Displays requested model.
    */
   public void getLastModel() {
-    graphContLogger.info("Show last graph of actual session");
+    logger.info("Show last graph of current session");
     int requestedModelId = ((GraphModel) graphModels.lastElement())
         .getModelId();
 
     if (validateNavigation(requestedModelId)) {
-      actualGraphModel = (GraphModel) graphModels.get(requestedModelId - 1);
+      currentGraphModel = (GraphModel) graphModels.get(requestedModelId - 1);
       isDraggable();
       setVisualModel();
     }
@@ -357,7 +362,7 @@ public class GraphSessionController
    * Displays requested model.
    */
   public void replay() {
-    graphContLogger.info("Show a replay of the session");
+    logger.info("Show a replay of the session");
     if (!replayMode) {
       setEmptyButtonState();
       setReplayMode(true);
@@ -367,7 +372,7 @@ public class GraphSessionController
       replayTimer.schedule(sessionReplay, picsPersMinute, picsPersMinute);
     } else {
       this.setReplayMode(false);
-      this.validateNavigation(actualGraphModel.getModelId());
+      this.validateNavigation(currentGraphModel.getModelId());
       replayTimer.cancel();
     }
   }
@@ -375,20 +380,20 @@ public class GraphSessionController
   /**
    * Returns current graph model.
    * 
-   * @return actual graph model
+   * @return current graph model
    */
-  public GraphModel getActualGraphModel() {
-    return actualGraphModel;
+  public GraphModel getCurrentGraphModel() {
+    return currentGraphModel;
   }
 
   /**
    * Sets current graph model.
    * 
-   * @param actualGraphModel
+   * @param currentGraphModel
    *          new graph model
    */
-  public void setActualGraphModel(GraphModel actualGraphModel) {
-    this.actualGraphModel = actualGraphModel;
+  public void setCurrentGraphModel(GraphModel currentGraphModel) {
+    this.currentGraphModel = currentGraphModel;
   }
 
   /**
@@ -407,7 +412,7 @@ public class GraphSessionController
    *          picsPerSecond
    */
   public void speed(int picsPerSecond) {
-    graphContLogger.debug("Changing replay speed");
+    logger.debug("Changing replay speed");
     picsPersMinute = picsPerSecond;
   }
 
@@ -415,11 +420,11 @@ public class GraphSessionController
    * Layout current displayed graph.
    */
   public void autoLayout() {
-    graphContLogger.debug("Check if graph can be layouted");
+    logger.debug("Check if graph can be layouted");
     if (!isRelativeSession) {
-      if (actualGraphModel.getModelId() == graphModels.size()) {
-        graphContLogger.debug("Graph is last element in Queue, call Layouter");
-        Iterator<IVertex> it = actualGraphModel.getVertizes().iterator();
+      if (currentGraphModel.getModelId() == graphModels.size()) {
+        logger.debug("Graph is last element in Queue, call Layouter");
+        Iterator<IVertex> it = currentGraphModel.getVertizes().iterator();
         while (it.hasNext()) {
           ((IVertex) it.next()).setFixedPosition(false);
         }
@@ -467,26 +472,26 @@ public class GraphSessionController
   }
 
   /**
-   * Copy positions of former vertizes to actual model in order of no changes.
+   * Copy positions of former vertizes to current model in order of no changes.
    */
   private void setFormerVertexCoordinate() {
     GraphModel formerModel = (GraphModel) graphModels
-        .elementAt(actualGraphModel.getModelId() - 2);
+        .elementAt(currentGraphModel.getModelId() - 2);
     Vector<IVertex> formerVertizes = formerModel.getVertizes();
-    Vector<IVertex> actualVertizes = actualGraphModel.getVertizes();
+    Vector<IVertex> currentVertizes = currentGraphModel.getVertizes();
 
-    Iterator<IVertex> it1 = actualVertizes.iterator();
+    Iterator<IVertex> it1 = currentVertizes.iterator();
     boolean isFormerVertexPosAvailable = false;
-    graphContLogger.debug("Setting former graph position to actual graph");
+    logger.debug("Setting former graph position to current graph");
     while (it1.hasNext()) {
-      IVertex actualVertex = (IVertex) it1.next();
+      IVertex currentVertex = (IVertex) it1.next();
       isFormerVertexPosAvailable = false;
 
       Iterator<IVertex> it = formerVertizes.iterator();
       while (it.hasNext()) {
         IVertex formerVertex = ((IVertex) it.next());
-        if (actualVertex.getId() == formerVertex.getId()) {
-          setActualVertexCoordinate(actualVertex, formerVertex);
+        if (currentVertex.getId() == formerVertex.getId()) {
+          setCurrentVertexCoordinate(currentVertex, formerVertex);
           isFormerVertexPosAvailable = true;
         }
       }
@@ -497,13 +502,12 @@ public class GraphSessionController
     }
 
     if (callLayoutEngine) {
-      graphContLogger
-          .debug("Vertizes without positions detected, call layouter");
+      logger.debug("Vertizes without positions detected, call layouter");
       callLayouter();
       callLayoutEngine = false;
     } else {
-      graphContLogger.debug("All graph positions are set");
-      validateNavigation(actualGraphModel.getModelId());
+      logger.debug("All graph positions are set");
+      validateNavigation(currentGraphModel.getModelId());
       isDraggable();
       setVisualModel();
       Monitor.getInstance().unlock();
@@ -513,16 +517,16 @@ public class GraphSessionController
   /**
    * Set calculated vertex coordinates.
    * 
-   * @param pActualVertex
-   *          actualVertex
+   * @param pCurrentVertex
+   *          currentVertex
    * @param pFormerVertex
    *          formerVetex
    */
-  private void setActualVertexCoordinate(IVertex pActualVertex,
+  private void setCurrentVertexCoordinate(IVertex pCurrentVertex,
       IVertex pFormerVertex) {
-    pActualVertex.setXPosition(pFormerVertex.getXPosition());
-    pActualVertex.setYPosition(pFormerVertex.getYPosition());
-    pActualVertex.setFixedPosition(pFormerVertex.isFixedPosition());
+    pCurrentVertex.setXPosition(pFormerVertex.getXPosition());
+    pCurrentVertex.setYPosition(pFormerVertex.getYPosition());
+    pCurrentVertex.setFixedPosition(pFormerVertex.isFixedPosition());
   }
 
   /**
@@ -606,13 +610,13 @@ public class GraphSessionController
    * Call layout engine.
    */
   private void callLayouter() {
-    graphContLogger.info("Layouting elements of graph");
+    logger.info("Layouting elements of graph");
     controlPanel.setLayoutState(true);
     setEmptyButtonState();
     layoutController = new LayoutController();
     layoutController.addObserver(this);
-    layoutController.setElements(actualGraphModel.getVertizes(),
-        actualGraphModel.getEdges(),
+    layoutController.setElements(currentGraphModel.getVertizes(),
+        currentGraphModel.getEdges(),
         ApplicationController.getInstance().getLayoutOption());
 
   }
@@ -620,6 +624,50 @@ public class GraphSessionController
   @Override
   public void saveSession() {
     persistor.saveToDisk(this);
+  }
+
+  @Override
+  public void changeCurrentGraphToNext() {
+    int nextGraphId = currentGraphModel.getModelId() + 1;
+    if (validateNavigation(nextGraphId)) {
+      currentGraphModel = graphModels.get(nextGraphId - 1);
+      currentGraphId = nextGraphId;
+      notifyObservers();
+    }
+  }
+
+  @Override
+  public void changeCurrentGraphToFirst() {
+    currentGraphModel = graphModels.firstElement();
+    currentGraphId = currentGraphModel.getModelId();
+    notifyObservers();
+  }
+
+  @Override
+  public void changeCurrentGraphToPrev() {
+    int prevGraphId = currentGraphModel.getModelId() - 1;
+    if (validateNavigation(prevGraphId)) {
+      currentGraphModel = (GraphModel) graphModels.get(prevGraphId - 1);
+      currentGraphId = prevGraphId;
+      notifyObservers();
+    }
+  }
+
+  @Override
+  public void changeCurrentGraphToLast() {
+    currentGraphModel = graphModels.lastElement();
+    currentGraphId = currentGraphModel.getModelId();
+    notifyObservers();
+  }
+
+  @Override
+  public int getCurrentGraphId() {
+    return currentGraphId;
+  }
+
+  @Override
+  public int getTotalGraphCount() {
+    return graphModels.size();
   }
 
 }

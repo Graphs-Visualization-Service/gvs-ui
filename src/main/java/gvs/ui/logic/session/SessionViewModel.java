@@ -3,51 +3,95 @@ package gvs.ui.logic.session;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gvs.interfaces.ISessionController;
+import gvs.ui.application.model.ApplicationModel;
+import gvs.ui.view.session.SessionView;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
- * Represents the currently loaded session.
- * @author muriele
+ * The ViewModel class for the current session. Corresponds to the classical
+ * ViewModel of the MVVM Pattern. It observes the ApplicationModel and handles
+ * the GUI session logic.
+ * 
+ * @author mtrentini
  *
  */
-public class SessionViewModel implements Observer{
-  private ISessionController sessionController;
+public class SessionViewModel implements Observer {
+  private ApplicationModel appModel;
+  private ISessionController currentSession;
+  // TODO: find better names
+  private final StringProperty totalGraphCountProperty = new SimpleStringProperty();
+  private final StringProperty currentGraphModelIdProperty = new SimpleStringProperty();
   
-  /**
-   * Creates a new graph view model
-   * 
-   * @param controller
-   *          related session controller
-   */
-  public SessionViewModel(ISessionController controller) {
-    sessionController = controller;
-    
+  private static final Logger logger = LoggerFactory
+      .getLogger(SessionViewModel.class);
+
+  public SessionViewModel(ApplicationModel model) {
+    appModel = model;
+    appModel.addObserver(this);
+    currentSession = appModel.getSession();
+    updateStepProperties();
+    logger.info("Initializing SessionViewModel.");
+  }
+
+  private void updateStepProperties() {
+    totalGraphCountProperty.set(currentSession.getTotalGraphCount() + "");
+    currentGraphModelIdProperty.set(totalGraphCountProperty.get());
   }
 
   public void changeCurrentGraphToNext() {
-    // TODO Auto-generated method stub
-    
+    currentSession.changeCurrentGraphToNext();
+    currentGraphModelIdProperty.set(currentSession.getCurrentGraphId() + "");
+    logger.info("Changing the displayed graph model...");
   }
 
   public void changeCurrentGraphToPrevious() {
-    // TODO Auto-generated method stub
-    
+    currentSession.changeCurrentGraphToPrev();
+    currentGraphModelIdProperty.set(currentSession.getCurrentGraphId() + "");
+    logger.info("Changing the displayed graph model...");
   }
 
   public void changeCurrentGraphToFirst() {
-    // TODO Auto-generated method stub
-    
+    currentSession.changeCurrentGraphToFirst();
+    currentGraphModelIdProperty.set(currentSession.getCurrentGraphId() + "");
+    logger.info("Changing the displayed graph model...");
   }
 
   public void changeCurrentGraphToLast() {
-    // TODO Auto-generated method stub
-    
+    currentSession.changeCurrentGraphToLast();
+    currentGraphModelIdProperty.set(currentSession.getCurrentGraphId() + "");
+    logger.info("Changing the displayed graph model...");
   }
 
+  /**
+   * This method is invoked whenever a new current session is set in the
+   * ApplicationModel.
+   */
   @Override
   public void update(Observable o, Object arg) {
-    // TODO Auto-generated method stub
-    
+    currentSession = appModel.getSession();
+    updateStepProperties();
+    logger.info("Updating SessionViewModel because current session changed.");
   }
 
+  public void replayGraph(double d) {
+   logger.info("Starting replay with speed " + d) ;
+  }
+
+  public void autoLayout() {
+    logger.info("Auto-layouting the current graph model...") ;
+
+  }
+
+  public StringProperty totalGraphCountProperty() {
+    return totalGraphCountProperty;
+  }
+
+  public StringProperty currentGraphModelIdProperty() {
+    return currentGraphModelIdProperty;
+  }
 }

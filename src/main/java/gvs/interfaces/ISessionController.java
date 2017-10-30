@@ -2,7 +2,7 @@ package gvs.interfaces;
 
 import gvs.ui.application.view.ControlPanel;
 
-public interface ISessionController {
+public interface ISessionController{
 
   ControlPanel getControlPanel();
 
@@ -12,12 +12,16 @@ public interface ISessionController {
 
   void setVisualModel();
 
+  // TODO: remove here and in subclasses
   void getFirstModel();
 
+  // TODO: remove here and in subclasses
   void getPreviousModel();
 
+  // TODO: remove here and in subclasses
   void getNextModel();
 
+  // TODO: remove here and in subclasses
   void getLastModel();
 
   void replay();
@@ -27,7 +31,19 @@ public interface ISessionController {
   void autoLayout();
 
   boolean validateNavigation(long requestedModelId);
-  
+
   void saveSession();
+
+  void changeCurrentGraphToNext();
+
+  void changeCurrentGraphToFirst();
+
+  void changeCurrentGraphToPrev();
+
+  void changeCurrentGraphToLast();
+  
+  int getCurrentGraphId();
+  
+  int getTotalGraphCount();
 
 }

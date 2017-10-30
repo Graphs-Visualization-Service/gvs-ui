@@ -4,6 +4,8 @@ import java.io.File;
 
 import ch.qos.logback.classic.joran.action.RootLoggerAction;
 import gvs.ui.logic.app.AppViewModel;
+import gvs.util.FontAwesome;
+import gvs.util.FontAwesome.Glyph;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -35,16 +37,13 @@ public class AppView {
   private MenuItem quitMenuItem;
 
   @FXML
-  private Menu fileMenu;
-
-  @FXML
-  private MenuItem exportMenuItem;
-
-  @FXML
   private MenuItem importMenuItem;
 
   @FXML
   private Button deleteSessionBtn;
+  
+  @FXML
+  private Button saveSessionBtn;
 
   @FXML
   private ComboBox<String> chooseSessionBox;
@@ -54,10 +53,13 @@ public class AppView {
 
 
   private AppViewModel model;
+  private FileChooser fileChooser;
 
   @FXML
   private void initialize() {
     setLogoAsBackground();
+    initButtonlabels();
+    initFileChooser();
   }
 
   /**
@@ -79,19 +81,32 @@ public class AppView {
         BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
     rootPane.setBackground(new Background(myBI));
   }
+  
+  private void initFileChooser() {
+    fileChooser = new FileChooser();
+    FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("GVS files (*.gvs)", "*.gvs");
+    fileChooser.getExtensionFilters().add(extensionFilter);
+  }
+  
+  private void initButtonlabels() {
+    saveSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.SAVE));
+    deleteSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.REMOVE));
+  }
 
   @FXML
   private void loadSession() {
     Stage stage = (Stage) rootPane.getScene().getWindow();
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Open Session File");
+    fileChooser.setTitle("Load Session File");
     File file = fileChooser.showOpenDialog(stage);
     model.loadSession(file);
   }
 
   @FXML
   private void saveSession() {
-    model.saveSession();
+    Stage stage = (Stage) rootPane.getScene().getWindow();
+    fileChooser.setTitle("Save Session File");
+    File file = fileChooser.showSaveDialog(stage);
+    model.saveSession(file);
   }
 
   @FXML
@@ -114,5 +129,4 @@ public class AppView {
     model = viewModel;
     fillDropDown();
   }
-
 }

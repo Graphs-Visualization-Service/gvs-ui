@@ -6,6 +6,9 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import gvs.business.logic.graph.GraphSessionController;
 import gvs.business.logic.tree.TreeSessionController;
 import gvs.business.model.ApplicationModel;
@@ -22,10 +25,10 @@ import gvs.interfaces.ITreeSessionController;
  * @author aegli
  *
  */
+@Singleton
 public class ApplicationController {
   private Logger appContLogger = null;
   private Vector<ISessionController> sessionControllers = null;
-  private static ApplicationController appController = null;
   private ApplicationModel applicationModel = null;
   private boolean layoutOption = false;
 
@@ -39,37 +42,14 @@ public class ApplicationController {
    * @param am
    *          ApplicationModel
    */
-  private ApplicationController(ApplicationModel am) {
+  @Inject
+  public ApplicationController(ApplicationModel am) {
     this.applicationModel = am;
     this.sessionControllers = new Vector<ISessionController>();
     // TODO check logger replacement
     // this.appContLogger =
     // gvs.common.Logger.getInstance().getApplciationControllerLogger();
     this.appContLogger = LoggerFactory.getLogger(ApplicationController.class);
-  }
-
-  /**
-   * Get Controller for model.
-   * 
-   * @param pApplicationModel
-   *          model
-   * @return ApplicationController singleton
-   */
-  public static synchronized ApplicationController getInstance(
-      ApplicationModel pApplicationModel) {
-    if (appController == null) {
-      appController = new ApplicationController(pApplicationModel);
-    }
-    return appController;
-  }
-
-  /**
-   * Returns an instance of the application controller.
-   * 
-   * @return applicationController
-   */
-  public static synchronized ApplicationController getInstance() {
-    return appController;
   }
 
   /**
@@ -177,7 +157,7 @@ public class ApplicationController {
       // when the last session is deleted, create empty dummy controller
       // otherwise session-bindings for UI would have to be unbound etc.
       appContLogger.debug("Set empty graph session");
-      defaultGraphSession = new GraphSessionController();
+      defaultGraphSession = new GraphSessionController(this);
       applicationModel.setSession(defaultGraphSession);
     }
   }

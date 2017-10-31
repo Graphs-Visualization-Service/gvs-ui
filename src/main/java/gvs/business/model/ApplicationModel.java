@@ -2,6 +2,8 @@ package gvs.business.model;
 
 import java.util.Observable;
 
+import com.google.inject.Singleton;
+
 import gvs.interfaces.ISessionController;
 
 /**
@@ -10,17 +12,10 @@ import gvs.interfaces.ISessionController;
  * @author aegli
  *
  */
+@Singleton
 public class ApplicationModel extends Observable {
 
   private ISessionController sessionController = null;
-
-  /**
-   * Builds an instance of the application model
-   *
-   */
-  public ApplicationModel() {
-
-  }
 
   /**
    * Sets currently requested session

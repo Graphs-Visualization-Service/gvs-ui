@@ -1,22 +1,21 @@
 package gvs.ui.view.session;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Arrays;
 
-import gvs.ui.logic.app.GVSApplication;
+import com.gluonhq.ignite.guice.GuiceContext;
+import com.google.inject.Inject;
+
+import gvs.GuiceBaseModule;
+import gvs.ui.logic.session.GraphViewModel;
 import gvs.ui.logic.session.SessionViewModel;
 import gvs.ui.view.controls.StepProgressBar;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
@@ -26,6 +25,7 @@ import javafx.scene.layout.GridPane;
  * @author mtrentini
  */
 public class SessionView {
+
   @FXML
   private GridPane playGrid;
 
@@ -66,19 +66,33 @@ public class SessionView {
   private AnchorPane leftPanel;
 
   private StepProgressBar stepProgressBar;
-  private SessionViewModel sessionViewModel;
 
   private static final int DEFAULT_REPLAY_SPEED = 500;
 
+  private final GuiceContext context = new GuiceContext(this,
+      () -> Arrays.asList(new GuiceBaseModule()));
+
+  @Inject
+  private GraphViewModel graphViewModel;
+  
+  @Inject
+  private SessionViewModel sessionViewModel;
+
+  public SessionView() {
+    context.init();
+  }
+  
   /**
    * Called automatically by JavaFX Framework to initialize the view.
    */
   @FXML
   private void initialize() {
+
     initStepButtons();
     playBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
     initSlider();
     initStepIndicator();
+    bindStepIndicator();
   }
 
   private void initStepIndicator() {
@@ -129,11 +143,6 @@ public class SessionView {
   @FXML
   private void autoLayout() {
     sessionViewModel.autoLayout();
-  }
-
-  public void setViewModel(SessionViewModel viewModel) {
-    this.sessionViewModel = viewModel;
-    bindStepIndicator();
   }
 
   private void bindStepIndicator() {

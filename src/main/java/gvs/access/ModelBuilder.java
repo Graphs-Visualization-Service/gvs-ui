@@ -18,6 +18,7 @@ import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.business.logic.ApplicationController;
@@ -43,7 +44,7 @@ import gvs.interfaces.IVertex;
 public class ModelBuilder {
 
   // Visualization-Service
-  private ApplicationController appController = null;
+  private ApplicationController applicationController = null;
   private Configuration typs = null;
 
   // Generaly
@@ -87,8 +88,9 @@ public class ModelBuilder {
   /**
    * ModelBuilder.
    */
-  public ModelBuilder() {
-    appController = ApplicationController.getInstance();
+  @Inject
+  public ModelBuilder(ApplicationController appController) {
+    this.applicationController = appController;
     typs = Configuration.getInstance();
   }
 
@@ -173,7 +175,7 @@ public class ModelBuilder {
     // }
 
     serverLogger.debug("Finish build graph from XML");
-    appController.addModel(newGraph, graphId, graphLabel);
+    applicationController.addModel(newGraph, graphId, graphLabel);
   }
 
   /**
@@ -250,7 +252,7 @@ public class ModelBuilder {
     serverLogger.debug("Finish build tree from XML");
     TreeModel tm = new TreeModel(treeLabel, Integer.parseInt(maxLabelLength),
         Color.WHITE, rootNode, nodes);
-    appController.addTreeModel(tm, treeId, treeLabel);
+    applicationController.addTreeModel(tm, treeId, treeLabel);
   }
 
   /**

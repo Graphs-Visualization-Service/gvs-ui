@@ -93,7 +93,7 @@ public class ApplicationView extends JFrame implements Observer {
     am = new ApplicationModel();
     // TODO: observer is now deactivated for gvs 1.0
     // am.addObserver(this);
-    ac = ApplicationController.getInstance(am);
+    // ac = ApplicationController.getInstance(am);
 
     initCombo();
     generateHeaderPanel();

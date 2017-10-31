@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.gluonhq.ignite.guice.GuiceContext;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 import gvs.GuiceBaseModule;
 import gvs.business.logic.ApplicationController;
@@ -23,6 +24,8 @@ import gvs.interfaces.ISessionController;
 import gvs.ui.logic.session.SessionViewModel;
 import gvs.ui.view.session.SessionView;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -41,15 +44,16 @@ import javafx.scene.layout.BorderPane;
  * @author muriele
  *
  */
+@Singleton
 public class AppViewModel implements Observer {
 
   private ApplicationModel appModel;
   private ApplicationController appController;
   private IPersistor persistor;
   private AnchorPane sessionContentPane;
-  private BorderPane rootLayout;
   private boolean sessionIsInitialized = false;
 
+  private final BooleanProperty sessionVisibilityProperty = new SimpleBooleanProperty();
   private final StringProperty currentSessionName = new SimpleStringProperty();
   private final ObservableList<String> sessionNames = FXCollections
       .observableArrayList();
@@ -65,18 +69,17 @@ public class AppViewModel implements Observer {
   @Inject
   private Provider<FXMLLoader> loaderProvider;
 
-
   // TODO: do we still need the persistor here?
+  @Inject
   public AppViewModel(ApplicationModel appModel,
-      ApplicationController appController, IPersistor persistor,
-      BorderPane rootLayout) {
+      ApplicationController appController, IPersistor persistor) {
     context.init();
     this.appModel = appModel;
     this.appModel.addObserver(this);
     this.appController = appController;
     this.persistor = persistor;
     this.currentSessionName.set(PROMT_MESSAGE);
-    this.rootLayout = rootLayout;
+    
     sessionNames.addListener(this::changeSessionVisibility);
   }
 
@@ -105,8 +108,6 @@ public class AppViewModel implements Observer {
       final int anchorMargin = 0;
       setAnchors(sessionLayout, anchorMargin, anchorMargin, anchorMargin,
           anchorMargin);
-      ((SessionView) fxmlLoader.getController())
-          .setViewModel(new SessionViewModel(appModel));
       sessionIsInitialized = true;
     } catch (IOException e) {
       logger.error("Could not load session layout", e);
@@ -115,12 +116,12 @@ public class AppViewModel implements Observer {
 
   private void hideSession() {
     logger.info("Hiding session layout.");
-    rootLayout.setCenter(null);
+    sessionVisibilityProperty.set(false);
   }
 
   private void displaySession() {
     logger.info("Displaying session layout.");
-    rootLayout.setCenter(sessionContentPane);
+    sessionVisibilityProperty.set(true);
   }
 
   public ObservableList<String> getSessionNames() {
@@ -208,5 +209,9 @@ public class AppViewModel implements Observer {
     AnchorPane.setBottomAnchor(anchorChild, (double) bottom);
     AnchorPane.setLeftAnchor(anchorChild, (double) left);
     AnchorPane.setRightAnchor(anchorChild, (double) right);
+  }
+
+  public BooleanProperty getSessionVisibilityProperty() {
+    return sessionVisibilityProperty;
   }
 }

@@ -11,6 +11,8 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
+
 import gvs.access.Persistor;
 import gvs.business.logic.ApplicationController;
 import gvs.business.logic.LayoutController;
@@ -58,13 +60,16 @@ public class GraphSessionController extends Observable
   private int currentGraphId;
 
   // TODO: add inject
+  private ApplicationController applicationController;
   private IPersistor persistor = new Persistor();
 
   /**
    * Builds default session controller.
    *
    */
-  public GraphSessionController() {
+  @Inject
+  public GraphSessionController(ApplicationController appController) {
+    this.applicationController = appController;
     initializeGraphSessionController();
     graphs = new Vector<>();
 
@@ -608,9 +613,7 @@ public class GraphSessionController extends Observable
     layoutController = new LayoutController();
     layoutController.addObserver(this);
     layoutController.setElements(currentGraph.getVertices(),
-        currentGraph.getEdges(),
-        ApplicationController.getInstance().getLayoutOption());
-
+        currentGraph.getEdges(), applicationController.getLayoutOption());
   }
 
   @Override

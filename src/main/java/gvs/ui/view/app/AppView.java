@@ -1,11 +1,17 @@
 package gvs.ui.view.app;
 
 import java.io.File;
+import java.util.Arrays;
 
+import com.gluonhq.ignite.guice.GuiceContext;
+import com.google.inject.Inject;
+
+import gvs.GuiceBaseModule;
 import gvs.ui.logic.app.AppViewModel;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Menu;
@@ -39,7 +45,7 @@ public class AppView {
 
   @FXML
   private Button deleteSessionBtn;
-  
+
   @FXML
   private Button saveSessionBtn;
 
@@ -49,12 +55,26 @@ public class AppView {
   @FXML
   private BorderPane rootPane;
 
+  @FXML
+  private Parent embeddedSessionView; 
 
-  private AppViewModel model;
+  private final GuiceContext context = new GuiceContext(this,
+      () -> Arrays.asList(new GuiceBaseModule()));
+
+  @Inject
+  private AppViewModel appViewModel;
   private FileChooser fileChooser;
+
+  public AppView() {
+    context.init();
+  }
 
   @FXML
   private void initialize() {
+    embeddedSessionView.setVisible(false);
+    embeddedSessionView.visibleProperty()
+        .bind(appViewModel.getSessionVisibilityProperty());
+
     setLogoAsBackground();
     initButtonlabels();
     initFileChooser();
@@ -65,9 +85,9 @@ public class AppView {
    * current session.
    */
   private void fillDropDown() {
-    chooseSessionBox.setItems(model.getSessionNames());
+    chooseSessionBox.setItems(appViewModel.getSessionNames());
     chooseSessionBox.valueProperty()
-        .bindBidirectional(model.getCurrentSessionName());
+        .bindBidirectional(appViewModel.getCurrentSessionName());
   }
 
   private void setLogoAsBackground() {
@@ -79,13 +99,14 @@ public class AppView {
         BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
     rootPane.setBackground(new Background(myBI));
   }
-  
+
   private void initFileChooser() {
     fileChooser = new FileChooser();
-    FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("GVS files (*.gvs)", "*.gvs");
+    FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter(
+        "GVS files (*.gvs)", "*.gvs");
     fileChooser.getExtensionFilters().add(extensionFilter);
   }
-  
+
   private void initButtonlabels() {
     saveSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.SAVE));
     deleteSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.REMOVE));
@@ -96,7 +117,7 @@ public class AppView {
     Stage stage = (Stage) rootPane.getScene().getWindow();
     fileChooser.setTitle("Load Session File");
     File file = fileChooser.showOpenDialog(stage);
-    model.loadSession(file);
+    appViewModel.loadSession(file);
   }
 
   @FXML
@@ -104,27 +125,27 @@ public class AppView {
     Stage stage = (Stage) rootPane.getScene().getWindow();
     fileChooser.setTitle("Save Session File");
     File file = fileChooser.showSaveDialog(stage);
-    model.saveSession(file);
+    appViewModel.saveSession(file);
   }
 
   @FXML
   private void removeSession() {
-    model.removeCurrentSession();
+    appViewModel.removeCurrentSession();
   }
 
   @FXML
   private void changeSession() {
     String name = chooseSessionBox.getValue();
-    model.changeSession(name);
+    appViewModel.changeSession(name);
   }
 
   @FXML
   private void quitGVS() {
-    model.terminateApplication();
+    appViewModel.terminateApplication();
   }
 
   public void setAppViewModel(AppViewModel viewModel) {
-    model = viewModel;
+    appViewModel = viewModel;
     fillDropDown();
   }
 }

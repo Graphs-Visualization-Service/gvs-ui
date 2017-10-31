@@ -2,8 +2,6 @@ package gvs.ui.logic.app;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Observable;
-import java.util.Observer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +12,6 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import gvs.GuiceBaseModule;
-import gvs.access.Persistor;
-import gvs.business.logic.ApplicationController;
-import gvs.business.model.ApplicationModel;
-import gvs.ui.view.app.AppView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -33,7 +27,7 @@ import javafx.stage.Stage;
  *
  */
 @Singleton
-public class GVSApplication extends Application implements Observer {
+public class GVSApplication extends Application {
 
   private static final Logger logger = LoggerFactory
       .getLogger(GVSApplication.class);
@@ -46,7 +40,6 @@ public class GVSApplication extends Application implements Observer {
 
   private Stage primaryStage;
   private BorderPane rootLayout;
-  private AppView appView;
 
   /**
    * Set up the main frame
@@ -85,28 +78,9 @@ public class GVSApplication extends Application implements Observer {
       Scene scene = new Scene(rootLayout);
       primaryStage.setScene(scene);
       primaryStage.show();
-
-      appView = fxmlLoader.getController();
-      ApplicationModel appModel = new ApplicationModel();
-      appModel.addObserver(this);
-      appView.setAppViewModel(new AppViewModel(appModel,
-          ApplicationController.getInstance(appModel), new Persistor(),
-          rootLayout));
     } catch (IOException e) {
       logger.error("Could not initialize root layout", e);
     }
   }
 
-  /**
-   * The GVSApplication gets notified by the ApplicationModel whenever a new
-   * current session is set.
-   * 
-   * @param o
-   * @param arg
-   */
-  @Override
-  public void update(Observable o, Object arg) {
-    // TODO Auto-generated method stub
-
-  }
 }

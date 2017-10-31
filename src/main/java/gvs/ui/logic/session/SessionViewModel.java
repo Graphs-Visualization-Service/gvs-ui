@@ -6,6 +6,9 @@ import java.util.Observer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import gvs.business.model.ApplicationModel;
 import gvs.interfaces.ISessionController;
 import gvs.ui.view.session.SessionView;
@@ -21,6 +24,7 @@ import javafx.beans.property.StringProperty;
  * @author mtrentini
  *
  */
+@Singleton
 public class SessionViewModel implements Observer {
   private ApplicationModel appModel;
   private ISessionController currentSession;
@@ -31,6 +35,7 @@ public class SessionViewModel implements Observer {
   private static final Logger logger = LoggerFactory
       .getLogger(SessionViewModel.class);
 
+  @Inject
   public SessionViewModel(ApplicationModel model) {
     appModel = model;
     appModel.addObserver(this);

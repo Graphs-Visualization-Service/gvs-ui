@@ -79,7 +79,7 @@ public class AppViewModel implements Observer {
     this.appController = appController;
     this.persistor = persistor;
     this.currentSessionName.set(PROMT_MESSAGE);
-    
+
     sessionNames.addListener(this::changeSessionVisibility);
   }
 
@@ -211,7 +211,7 @@ public class AppViewModel implements Observer {
     AnchorPane.setRightAnchor(anchorChild, (double) right);
   }
 
-  public BooleanProperty getSessionVisibilityProperty() {
+  public BooleanProperty sessionVisibilityProperty() {
     return sessionVisibilityProperty;
   }
 }

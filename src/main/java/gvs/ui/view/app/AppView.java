@@ -56,7 +56,7 @@ public class AppView {
   private BorderPane rootPane;
 
   @FXML
-  private Parent sessionView; 
+  private Parent sessionView;
 
   @Inject
   private AppViewModel appViewModel;
@@ -66,11 +66,13 @@ public class AppView {
   private void initialize() {
     sessionView.setVisible(false);
     sessionView.visibleProperty()
-        .bind(appViewModel.getSessionVisibilityProperty());
-
+        .bind(appViewModel.sessionVisibilityProperty());
+    deleteSessionBtn.disableProperty()
+        .bind(appViewModel.sessionVisibilityProperty().not());
     setLogoAsBackground();
     initButtonlabels();
     initFileChooser();
+    fillDropDown();
   }
 
   /**
@@ -135,10 +137,5 @@ public class AppView {
   @FXML
   private void quitGVS() {
     appViewModel.terminateApplication();
-  }
-
-  public void setAppViewModel(AppViewModel viewModel) {
-    appViewModel = viewModel;
-    fillDropDown();
   }
 }

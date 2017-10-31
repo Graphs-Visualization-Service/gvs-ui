@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import gvs.business.model.ApplicationModel;
 import gvs.interfaces.ISessionController;
 import gvs.ui.view.session.SessionView;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -26,7 +27,7 @@ public class SessionViewModel implements Observer {
   // TODO: find better names
   private final StringProperty totalGraphCountProperty = new SimpleStringProperty();
   private final StringProperty currentGraphModelIdProperty = new SimpleStringProperty();
-  
+
   private static final Logger logger = LoggerFactory
       .getLogger(SessionViewModel.class);
 
@@ -73,17 +74,20 @@ public class SessionViewModel implements Observer {
    */
   @Override
   public void update(Observable o, Object arg) {
-    currentSession = appModel.getSession();
-    updateStepProperties();
-    logger.info("Updating SessionViewModel because current session changed.");
+    Platform.runLater(() -> {
+      currentSession = appModel.getSession();
+      updateStepProperties();
+      logger.info("Updating SessionViewModel because current session changed.");
+    });
+
   }
 
   public void replayGraph(double d) {
-   logger.info("Starting replay with speed " + d) ;
+    logger.info("Starting replay with speed " + d);
   }
 
   public void autoLayout() {
-    logger.info("Auto-layouting the current graph model...") ;
+    logger.info("Auto-layouting the current graph model...");
 
   }
 

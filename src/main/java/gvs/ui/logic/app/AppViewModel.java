@@ -132,17 +132,19 @@ public class AppViewModel implements Observer {
    */
   @Override
   public void update(Observable o, Object arg) {
-    ISessionController c = ((ApplicationModel) o).getSession();
-    String name = c.getSessionName();
-    if (name == null) {
-      currentSessionName.set(PROMT_MESSAGE);
-    } else {
-      currentSessionName.set(name);
-      controllerMap.put(name, c);
-      if (!sessionNames.contains(name)) {
-        sessionNames.add(name);
+    Platform.runLater(() -> {
+      ISessionController c = ((ApplicationModel) o).getSession();
+      String name = c.getSessionName();
+      if (name == null) {
+        currentSessionName.set(PROMT_MESSAGE);
+      } else {
+        currentSessionName.set(name);
+        controllerMap.put(name, c);
+        if (!sessionNames.contains(name)) {
+          sessionNames.add(name);
+        }
       }
-    }
+    });
   }
 
   public void removeCurrentSession() {

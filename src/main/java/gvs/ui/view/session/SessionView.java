@@ -1,11 +1,7 @@
 package gvs.ui.view.session;
 
-import java.util.Arrays;
-
-import com.gluonhq.ignite.guice.GuiceContext;
 import com.google.inject.Inject;
 
-import gvs.GuiceBaseModule;
 import gvs.ui.logic.session.GraphViewModel;
 import gvs.ui.logic.session.SessionViewModel;
 import gvs.ui.view.controls.StepProgressBar;

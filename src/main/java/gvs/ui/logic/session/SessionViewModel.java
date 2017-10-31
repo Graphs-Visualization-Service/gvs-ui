@@ -11,7 +11,6 @@ import com.google.inject.Singleton;
 
 import gvs.business.model.ApplicationModel;
 import gvs.interfaces.ISessionController;
-import gvs.ui.view.session.SessionView;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -26,8 +25,11 @@ import javafx.beans.property.StringProperty;
  */
 @Singleton
 public class SessionViewModel implements Observer {
-  private ApplicationModel appModel;
+
+  private GraphViewModel graphViewModel;
+  private ApplicationModel applicationModel;
   private ISessionController currentSession;
+
   // TODO: find better names
   private final StringProperty totalGraphCountProperty = new SimpleStringProperty();
   private final StringProperty currentGraphModelIdProperty = new SimpleStringProperty();
@@ -36,12 +38,15 @@ public class SessionViewModel implements Observer {
       .getLogger(SessionViewModel.class);
 
   @Inject
-  public SessionViewModel(ApplicationModel model) {
-    appModel = model;
-    appModel.addObserver(this);
-//    currentSession = appModel.getSession();
-//    updateStepProperties();
+  public SessionViewModel(ApplicationModel appModel,
+      GraphViewModel graphViewModel) {
+
     logger.info("Initializing SessionViewModel.");
+    this.applicationModel = appModel;
+    this.graphViewModel = graphViewModel;
+
+    applicationModel.addObserver(this);
+
     currentGraphModelIdProperty.set("0");
     totalGraphCountProperty.set("0");
   }
@@ -82,7 +87,7 @@ public class SessionViewModel implements Observer {
   @Override
   public void update(Observable o, Object arg) {
     Platform.runLater(() -> {
-      currentSession = appModel.getSession();
+      currentSession = applicationModel.getSession();
       updateStepProperties();
       logger.info("Updating SessionViewModel because current session changed.");
     });

@@ -1,11 +1,15 @@
 package gvs.ui.view.controls;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.ui.logic.app.AppViewModel;
+import com.google.inject.Inject;
+import com.gluonhq.ignite.guice.GuiceContext;
+
+import gvs.GuiceBaseModule;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,11 +39,17 @@ public class StepProgressBar extends StackPane {
   private int totalStepCount;
   private static final Logger logger = LoggerFactory
       .getLogger(StepProgressBar.class);
+  private GuiceContext context = new GuiceContext(this,
+      () -> Arrays.asList(new GuiceBaseModule()));
+  
+  @Inject
+  private FXMLLoader fxmlLoader;
 
   public StepProgressBar() {
+    context.init();
 
-    FXMLLoader fxmlLoader = new FXMLLoader(
-        getClass().getResource("/gvs/util/StepProgressBar.fxml"));
+   fxmlLoader.setLocation(
+        getClass().getResource("/gvs/ui/view/controls/StepProgressBar.fxml"));
     try {
 
       fxmlLoader.setRoot(this);

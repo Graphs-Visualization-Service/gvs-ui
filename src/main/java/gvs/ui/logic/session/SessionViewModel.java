@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import gvs.business.model.ApplicationModel;
 import gvs.interfaces.ISessionController;
 import gvs.ui.view.session.SessionView;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -73,9 +74,12 @@ public class SessionViewModel implements Observer {
    */
   @Override
   public void update(Observable o, Object arg) {
-    currentSession = appModel.getSession();
-    updateStepProperties();
-    logger.info("Updating SessionViewModel because current session changed.");
+    Platform.runLater(() -> {
+      currentSession = appModel.getSession();
+      updateStepProperties();
+      logger.info("Updating SessionViewModel because current session changed.");
+    });
+
   }
 
   public void replayGraph(double d) {

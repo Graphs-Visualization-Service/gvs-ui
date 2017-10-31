@@ -33,11 +33,10 @@ import gvs.business.model.graph.Edge;
 import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.IconVertex;
 import gvs.business.model.tree.BinaryNode;
-import gvs.business.model.tree.TreeModel;
+import gvs.business.model.tree.Tree;
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.INode;
-import gvs.interfaces.IPersistor;
 import gvs.interfaces.ISessionController;
 import gvs.interfaces.IVertex;
 
@@ -48,7 +47,7 @@ import gvs.interfaces.IVertex;
  * 
  * @author mkoller
  */
-public class Persistor implements IPersistor {
+public class Persistor {
 
   // Generally
   private static final String ROOT = "Data";
@@ -94,7 +93,6 @@ public class Persistor implements IPersistor {
     configuration = Configuration.getInstance();
   }
 
-  @Override
   public void saveToDisk(GraphSessionController session, File file) {
     Document document = DocumentHelper.createDocument();
     Element docRoot = document.addElement(ROOT);
@@ -102,7 +100,6 @@ public class Persistor implements IPersistor {
     this.writeToDisk(document, session, file);
   }
 
-  @Override
   public void saveToDisk(TreeSessionController session, File file) {
     Document document = DocumentHelper.createDocument();
     Element docRoot = document.addElement(ROOT);
@@ -110,7 +107,6 @@ public class Persistor implements IPersistor {
     this.writeToDisk(document, session, file);
   }
 
-  @Override
   public ISessionController loadFile(String pPath) {
     logger.info("Load file: " + pPath);
     File input = new File(pPath);
@@ -219,7 +215,7 @@ public class Persistor implements IPersistor {
 
   }
 
-  private void saveTreeModel(TreeModel pModel, Element pSession) {
+  private void saveTreeModel(Tree pModel, Element pSession) {
     Element eTreeModel = pSession.addElement(TREEMODEL);
     eTreeModel.addAttribute(ATTRIBUTEID, String.valueOf(pModel.getModelId()));
     Element eTreeLabel = eTreeModel.addElement(LABEL);
@@ -416,10 +412,10 @@ public class Persistor implements IPersistor {
         // Image graphImage = typs.getBackgroundImage(graphBackground);
         // if (graphImage == null) {
         // Color defaultColor = configuration.getColor(graphBackground, true);
-        //   gm = new Graph(graphLabel, defaultColor, vertizes, edges,
-        //   Integer.parseInt(maxLabelLength));
+        // gm = new Graph(graphLabel, defaultColor, vertizes, edges,
+        // Integer.parseInt(maxLabelLength));
         // } else {
-        //   gm = new Graph(graphLabel, graphImage, vertizes, edges,
+        // gm = new Graph(graphLabel, graphImage, vertizes, edges,
         // Integer.parseInt(maxLabelLength));
         // }
 
@@ -430,7 +426,7 @@ public class Persistor implements IPersistor {
   }
 
   private TreeSessionController loadTreeSession(Element pTreeSession) {
-    Vector<TreeModel> treeModels = new Vector<TreeModel>();
+    Vector<Tree> treeModels = new Vector<Tree>();
     Element eSessionName = pTreeSession.element(LABEL);
     String sessionName = eSessionName.getText();
     long sessionId = Long.parseLong(pTreeSession.attributeValue(ATTRIBUTEID));
@@ -483,7 +479,7 @@ public class Persistor implements IPersistor {
           }
         }
 
-        treeModels.add(new TreeModel(treeLabel, modelId,
+        treeModels.add(new Tree(treeLabel, modelId,
             Integer.parseInt(maxLabelLength), Color.WHITE, rootNode, nodes));
       }
     }

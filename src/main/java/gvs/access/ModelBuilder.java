@@ -28,7 +28,7 @@ import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.IconVertex;
 import gvs.business.model.tree.BinaryNode;
 import gvs.business.model.tree.DefaultNode;
-import gvs.business.model.tree.TreeModel;
+import gvs.business.model.tree.Tree;
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.INode;
@@ -250,7 +250,7 @@ public class ModelBuilder {
     }
 
     serverLogger.debug("Finish build tree from XML");
-    TreeModel tm = new TreeModel(treeLabel, Integer.parseInt(maxLabelLength),
+    Tree tm = new Tree(treeLabel, Integer.parseInt(maxLabelLength),
         Color.WHITE, rootNode, nodes);
     applicationController.addTreeModel(tm, treeId, treeLabel);
   }

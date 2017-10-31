@@ -19,10 +19,7 @@ import com.google.inject.Singleton;
 import gvs.GuiceBaseModule;
 import gvs.business.logic.ApplicationController;
 import gvs.business.model.ApplicationModel;
-import gvs.interfaces.IPersistor;
 import gvs.interfaces.ISessionController;
-import gvs.ui.logic.session.SessionViewModel;
-import gvs.ui.view.session.SessionView;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -49,7 +46,6 @@ public class AppViewModel implements Observer {
 
   private ApplicationModel appModel;
   private ApplicationController appController;
-  private IPersistor persistor;
   private AnchorPane sessionContentPane;
   private boolean sessionIsInitialized = false;
 
@@ -69,17 +65,15 @@ public class AppViewModel implements Observer {
   @Inject
   private Provider<FXMLLoader> loaderProvider;
 
-  // TODO: do we still need the persistor here?
   @Inject
   public AppViewModel(ApplicationModel appModel,
-      ApplicationController appController, IPersistor persistor) {
+      ApplicationController appController) {
     context.init();
     this.appModel = appModel;
     this.appModel.addObserver(this);
     this.appController = appController;
-    this.persistor = persistor;
     this.currentSessionName.set(PROMT_MESSAGE);
-    
+
     sessionNames.addListener(this::changeSessionVisibility);
   }
 
@@ -164,7 +158,7 @@ public class AppViewModel implements Observer {
 
   public void loadSession(File file) {
     logger.info("Loading session from file...");
-    appController.setRequestedFile(file.getPath(), persistor);
+    appController.setRequestedFile(file.getPath());
   }
 
   public void saveSession(File file) {

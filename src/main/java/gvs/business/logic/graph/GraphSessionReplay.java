@@ -2,10 +2,8 @@ package gvs.business.logic.graph;
 
 import java.util.List;
 import java.util.TimerTask;
-import java.util.Vector;
 
 import gvs.business.model.graph.Graph;
-import gvs.interfaces.IGraphSessionController;
 
 /**
  * TimerTask, responsible for showing replays with a defined timeout

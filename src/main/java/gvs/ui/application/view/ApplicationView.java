@@ -11,10 +11,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -36,7 +34,6 @@ import javax.swing.filechooser.FileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.access.Persistor;
 import gvs.business.logic.ApplicationController;
 import gvs.business.logic.cluster.ClusterSplitterGVS;
 import gvs.business.model.ApplicationModel;
@@ -66,7 +63,6 @@ public class ApplicationView extends JFrame implements Observer {
   // TODO do we need this? -> class not ported form GVS 1.0
   // private LoggerDialog logDialog = null;
   private Dimension screenSize = null;
-  private Persistor persistor = null;
   private Font font = null;
   private static JButton deleteButton = null;
   private Border border = null;
@@ -86,7 +82,6 @@ public class ApplicationView extends JFrame implements Observer {
     this.appViewLogger = LoggerFactory.getLogger(ApplicationView.class);
     appViewLogger.info("Build User-Interface, set default view");
 
-    persistor = new Persistor();
     gbl = new BorderLayout();
     font = new Font("Times", Font.ITALIC + Font.BOLD, DEFAULT_FONT_SIZE);
 
@@ -353,15 +348,17 @@ public class ApplicationView extends JFrame implements Observer {
    */
   public ISessionController[] getSessiontoSave() {
     int counter = 0;
-    Vector<ISessionController> v = ac.getSessionContollers();
 
-    ISessionController[] sessionNames = new ISessionController[v.size()];
-    Iterator<ISessionController> it = v.iterator();
-    while (it.hasNext()) {
-      sessionNames[counter] = ((ISessionController) it.next());
-      counter++;
-    }
-    return sessionNames;
+    // not used anymore (swing class) @mwieland
+    // Vector<ISessionController> v = ac.getSessionContollers();
+
+    // ISessionController[] sessionNames = new ISessionController[v.size()];
+    // Iterator<ISessionController> it = v.iterator();
+    // while (it.hasNext()) {
+    // sessionNames[counter] = ((ISessionController) it.next());
+    // counter++;
+    // }
+    return null;
   }
 
   /**
@@ -406,7 +403,7 @@ public class ApplicationView extends JFrame implements Observer {
    */
   public void saveSesssions(boolean isExitRequested) {
     appViewLogger.info("Showing Savedialog");
-    saveDialog = new SaveDialog(this, persistor, isExitRequested);
+    saveDialog = new SaveDialog(this, null, isExitRequested);
     saveDialog.setAvailableSession(getSessiontoSave());
     Dimension window = saveDialog.getSize();
 
@@ -449,7 +446,7 @@ public class ApplicationView extends JFrame implements Observer {
     int r = chooser.showOpenDialog(this);
     if (r == JFileChooser.APPROVE_OPTION) {
       String gvsname = chooser.getSelectedFile().getPath();
-      ac.setRequestedFile(gvsname, persistor);
+      ac.setRequestedFile(gvsname);
     }
   }
 
@@ -470,7 +467,7 @@ public class ApplicationView extends JFrame implements Observer {
    */
   public void layoutOption(boolean layoutOption) {
     appViewLogger.info("Set new layout option");
-    ac.setLayoutOption(layoutOption);
+    ac.setIsSoftLayoutOption(layoutOption);
   }
 
   /**

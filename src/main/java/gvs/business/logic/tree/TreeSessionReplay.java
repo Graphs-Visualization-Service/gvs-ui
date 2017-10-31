@@ -3,7 +3,7 @@ package gvs.business.logic.tree;
 import java.util.TimerTask;
 import java.util.Vector;
 
-import gvs.business.model.tree.TreeModel;
+import gvs.business.model.tree.Tree;
 
 /**
  * TimerTask, responsible for showing replays with a defined timeout
@@ -13,9 +13,9 @@ import gvs.business.model.tree.TreeModel;
  */
 public class TreeSessionReplay extends TimerTask {
   private int replayCounter = 0;
-  private Vector<TreeModel> treeSessions = null;
+  private Vector<Tree> treeSessions = null;
   private TreeSessionController treeSessionController = null;
-  private TreeModel treeModel = null;
+  private Tree treeModel = null;
 
   /**
    * Creates an instance of TimerReplaySession
@@ -23,7 +23,7 @@ public class TreeSessionReplay extends TimerTask {
    * @param pTreeSessions
    * @param pTreeSessionController
    */
-  public TreeSessionReplay(Vector<TreeModel> pTreeSessions,
+  public TreeSessionReplay(Vector<Tree> pTreeSessions,
       TreeSessionController pTreeSessionController) {
     this.treeSessions = pTreeSessions;
     this.treeSessionController = pTreeSessionController;
@@ -34,7 +34,7 @@ public class TreeSessionReplay extends TimerTask {
    */
   public void run() {
     if (replayCounter < treeSessions.size()) {
-      treeModel = (TreeModel) treeSessions.get(replayCounter);
+      treeModel = (Tree) treeSessions.get(replayCounter);
       treeSessionController.setCurrentTreeModel(treeModel);
       treeSessionController.setVisualModel();
       replayCounter++;

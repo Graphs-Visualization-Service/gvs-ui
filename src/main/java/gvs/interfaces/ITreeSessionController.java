@@ -1,13 +1,13 @@
 package gvs.interfaces;
 
-import gvs.business.model.tree.TreeModel;
+import gvs.business.model.tree.Tree;
 
 public interface ITreeSessionController extends ISessionController {
 
-  void addTreeModel(TreeModel pTreeModel);
+  void addTreeModel(Tree pTreeModel);
 
-  TreeModel getCurrentTreeModel();
+  Tree getCurrentTreeModel();
 
-  void setCurrentTreeModel(TreeModel currentTreeModel);
+  void setCurrentTreeModel(Tree currentTreeModel);
 
 }

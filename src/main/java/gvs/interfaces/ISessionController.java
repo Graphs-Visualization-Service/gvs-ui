@@ -2,11 +2,7 @@ package gvs.interfaces;
 
 import java.io.File;
 
-import gvs.ui.application.view.ControlPanel;
-
 public interface ISessionController{
-
-  ControlPanel getControlPanel();
 
   String getSessionName();
 

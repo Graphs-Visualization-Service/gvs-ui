@@ -14,7 +14,6 @@ import com.google.inject.Inject;
 import gvs.access.Persistor;
 import gvs.business.model.tree.Tree;
 import gvs.interfaces.ITreeSessionController;
-import gvs.ui.application.view.ControlPanel;
 import gvs.ui.model.tree.VisualizationTreeModel;
 import gvs.ui.view.tree.VisualizationTreePanel;
 
@@ -31,7 +30,6 @@ public class TreeSessionController extends Observable
   private VisualizationTreeModel visualModel = null;
   private VisualizationTreePanel visualPanel = null;
   private TreeLayoutController layoutController = null;
-  private ControlPanel cp = null;
   private long clientSessionId = 0;
   private int serverSessionId = 1;
   private String sessionName = null;
@@ -81,7 +79,6 @@ public class TreeSessionController extends Observable
     this.currentTreeModel = pTreeModel;
     currentTreeId = currentTreeModel.getModelId();
 
-    cp.addVisualizationPanel(visualPanel);
     currentTreeModel.setModelId(serverSessionId++);
     treeModels.add(currentTreeModel);
 
@@ -109,7 +106,6 @@ public class TreeSessionController extends Observable
     initializeTreeSessionController();
 
     logger.info("Build new tree session controller from storage");
-    cp.addVisualizationPanel(visualPanel);
     currentTreeModel = (Tree) treeModels.lastElement();
     currentTreeId = currentTreeModel.getModelId();
     setVisualModel();
@@ -121,7 +117,6 @@ public class TreeSessionController extends Observable
     // gvs.common.Logger.getInstance().getTreeControllerLogger();
     this.visualModel = new VisualizationTreeModel();
     this.visualPanel = new VisualizationTreePanel(visualModel);
-    this.cp = new ControlPanel(this);
   }
 
   /**
@@ -209,7 +204,8 @@ public class TreeSessionController extends Observable
     logger.info("Show replay of tree session");
     if (!replayMode) {
       setEmptyButtonState();
-      cp.setReplay(true);
+      // TODO replace with GVS 2.0 pendant
+      // cp.setReplay(true);
       this.setReplayMode(true);
       replayTimer = new Timer();
       ta = new TreeSessionReplay(treeModels, this);
@@ -251,13 +247,6 @@ public class TreeSessionController extends Observable
   }
 
   /**
-   * Returns control panel
-   */
-  public ControlPanel getControlPanel() {
-    return cp;
-  }
-
-  /**
    * Returns current session name
    */
   public String getSessionName() {
@@ -293,9 +282,11 @@ public class TreeSessionController extends Observable
   public void setReplayMode(boolean pFinishReplay) {
     replayMode = pFinishReplay;
     if (replayMode) {
-      cp.setReplayText("  Stop  ");
+      // TODO replace with GVS 2.0
+      // cp.setReplayText(" Stop ");
     } else {
-      cp.setReplayText("Replay");
+      // TODO replace with GVS 2.0
+      // cp.setReplayText("Replay");
     }
   }
 
@@ -317,53 +308,6 @@ public class TreeSessionController extends Observable
     setVisualModel();
   }
 
-  // Set button state
-  private void setButtonState(long pRequestedModelId) {
-    cp.setLayoutState(false);
-    cp.setLayout(false);
-    if (!replayMode) {
-      if (pRequestedModelId == treeModels.size()) {
-        cp.setNext(false);
-        cp.setLast(false);
-        if (treeModels.size() == 1) {
-          cp.setReplay(false);
-          cp.setSlider(false);
-          cp.setPrevious(false);
-          cp.setFirst(false);
-          cp.setNext(false);
-          cp.setLast(false);
-        } else {
-          cp.setReplay(true);
-          cp.setSlider(true);
-          cp.setFirst(true);
-          cp.setPrevious(true);
-          cp.setNext(false);
-          cp.setLast(false);
-        }
-      } else if (pRequestedModelId == 1) {
-        cp.setPrevious(false);
-        cp.setFirst(false);
-        if (treeModels.size() == 1) {
-          cp.setReplay(false);
-          cp.setSlider(false);
-          cp.setNext(false);
-          cp.setLast(false);
-        } else {
-          cp.setReplay(true);
-          cp.setSlider(true);
-          cp.setNext(true);
-          cp.setLast(true);
-        }
-      } else {
-        cp.setReplay(true);
-        cp.setSlider(true);
-        cp.setFirst(true);
-        cp.setPrevious(true);
-        cp.setNext(true);
-        cp.setLast(true);
-      }
-    }
-  }
 
   // Disable all button. Occurs when replay or layouting is active
   private void setEmptyButtonState() {

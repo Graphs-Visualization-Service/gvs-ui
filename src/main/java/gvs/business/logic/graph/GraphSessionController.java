@@ -20,8 +20,6 @@ import gvs.business.logic.Monitor;
 import gvs.business.model.graph.Graph;
 import gvs.interfaces.IGraphSessionController;
 import gvs.interfaces.IVertex;
-import gvs.ui.application.view.ApplicationView;
-import gvs.ui.application.view.ControlPanel;
 import gvs.ui.model.graph.VisualizationGraphModel;
 import gvs.ui.model.graph.VisualizationGraphPanel;
 
@@ -39,7 +37,6 @@ public class GraphSessionController extends Observable
   private VisualizationGraphPanel visualPanel = null;
   private LayoutController layoutController = null;
   private Graph currentGraph = null;
-  private ControlPanel controlPanel = null;
 
   // TODO: choose better structure to save models: e.g. map, doubly linked list
   private List<Graph> graphs = null;
@@ -162,7 +159,9 @@ public class GraphSessionController extends Observable
       logger.debug("Empty graph");
       validateNavigation(currentGraph.getId());
       setVisualModel();
-      controlPanel.setLayout(false);
+
+      // TODO replace with view model pendant
+      // controlPanel.setLayout(false);
       Monitor.getInstance().unlock();
     }
   }
@@ -173,8 +172,6 @@ public class GraphSessionController extends Observable
   private void initializeGraphSessionController() {
     visualModel = new VisualizationGraphModel();
     visualPanel = new VisualizationGraphPanel(visualModel);
-    controlPanel = new ControlPanel(this);
-    controlPanel.addVisualizationPanel(visualPanel);
   }
 
   /**
@@ -212,8 +209,9 @@ public class GraphSessionController extends Observable
     } else {
       validateNavigation(currentGraph.getId());
       setVisualModel();
-      controlPanel.setLayout(false);
-      ApplicationView.setButton(true);
+      // TODO replace with view model pendant
+      // controlPanel.setLayout(false);
+      // ApplicationView.setButton(true);
       Monitor.getInstance().unlock();
     }
   }
@@ -231,7 +229,8 @@ public class GraphSessionController extends Observable
     String parameter = (String) arg;
     if (parameter.equals("TRUE")) {
       logger.info("Finish layouting graph, all positions are set");
-      controlPanel.setLayoutState(false);
+      // TODO replace with view model pendant
+      // controlPanel.setLayoutState(false);
       autoLayoutingMode = false;
 
       visualModel.setLayouting(false);
@@ -251,15 +250,6 @@ public class GraphSessionController extends Observable
       // controlPanel.setLayoutState(true);
     }
 
-  }
-
-  /**
-   * Returns contol panel to view.
-   * 
-   * @return controlPanel
-   */
-  public synchronized ControlPanel getControlPanel() {
-    return controlPanel;
   }
 
   /**
@@ -374,7 +364,8 @@ public class GraphSessionController extends Observable
     if (!replayMode) {
       setEmptyButtonState();
       setReplayMode(true);
-      controlPanel.setReplay(true);
+      // TODO replace with view model pendant
+      // controlPanel.setReplay(true);
       replayTimer = new Timer();
       sessionReplay = new GraphSessionReplay(graphs, this);
       replayTimer.schedule(sessionReplay, picsPersMinute, picsPersMinute);
@@ -472,9 +463,11 @@ public class GraphSessionController extends Observable
   public void setReplayMode(boolean pFinishReplay) {
     replayMode = pFinishReplay;
     if (replayMode) {
-      controlPanel.setReplayText("  Stop  ");
+      // TODO replace with view model pendant
+      // controlPanel.setReplayText(" Stop ");
     } else {
-      controlPanel.setReplayText("Replay");
+      // TODO replace with view model pendant
+      // controlPanel.setReplayText("Replay");
     }
   }
 
@@ -536,67 +529,6 @@ public class GraphSessionController extends Observable
   }
 
   /**
-   * Set Button state in order of displayed model in queue.
-   * 
-   * @param pRequestedModelId
-   *          requestModelId
-   */
-  private void setButtonState(long pRequestedModelId) {
-    if (!replayMode && !(autoLayoutingMode)) {
-      if (pRequestedModelId == graphs.size()) {
-        controlPanel.setNext(false);
-        controlPanel.setLast(false);
-        controlPanel.setLayout(true);
-        if (graphs.size() == 1) {
-
-          controlPanel.setReplay(false);
-          controlPanel.setSlider(false);
-          controlPanel.setPrevious(false);
-          controlPanel.setFirst(false);
-          controlPanel.setNext(false);
-          controlPanel.setLast(false);
-        } else {
-
-          controlPanel.setReplay(true);
-          controlPanel.setSlider(true);
-          controlPanel.setFirst(true);
-          controlPanel.setPrevious(true);
-          controlPanel.setNext(false);
-          controlPanel.setLast(false);
-        }
-      } else if (pRequestedModelId == 1) {
-
-        controlPanel.setPrevious(false);
-        controlPanel.setFirst(false);
-        if (graphs.size() == 1) {
-          controlPanel.setReplay(false);
-          controlPanel.setSlider(false);
-          controlPanel.setNext(false);
-          controlPanel.setLast(false);
-        } else {
-          controlPanel.setLayout(false);
-          controlPanel.setReplay(true);
-          controlPanel.setSlider(true);
-          controlPanel.setNext(true);
-          controlPanel.setLast(true);
-        }
-      } else {
-        controlPanel.setLayout(false);
-        controlPanel.setReplay(true);
-        controlPanel.setSlider(true);
-        controlPanel.setFirst(true);
-        controlPanel.setPrevious(true);
-        controlPanel.setNext(true);
-        controlPanel.setLast(true);
-      }
-      if (isRelativeSession) {
-        controlPanel.setLayout(false);
-        ApplicationView.setButton(true);
-      }
-    }
-  }
-
-  /**
    * Disable all buttons.
    */
   private void setEmptyButtonState() {
@@ -617,7 +549,8 @@ public class GraphSessionController extends Observable
    */
   private void callLayouter() {
     logger.info("Layouting elements of graph");
-    controlPanel.setLayoutState(true);
+    // TODO currently deactivates all GVS 1.0 GUI functionality
+    // controlPanel.setLayoutState(true);
     setEmptyButtonState();
     layoutController = new LayoutController();
     layoutController.addObserver(this);

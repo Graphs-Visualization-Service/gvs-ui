@@ -149,8 +149,6 @@ public class SessionView implements Observer {
       double endX = e.getEndVertex().getXProperty().get();
       double endY = e.getEndVertex().getYProperty().get();
 
-      logger.info("New edge from {}/{} to {}/{}", startX, startY, endX, endY);
-
       Line line = new Line(startX, startY, endX, endY);
       line.setStrokeWidth(5);
 
@@ -158,7 +156,7 @@ public class SessionView implements Observer {
           .bindBidirectional(e.getStartVertex().getXProperty());
       line.startYProperty()
           .bindBidirectional(e.getStartVertex().getYProperty());
-      line.endXProperty().bindBidirectional(e.getStartVertex().getXProperty());
+      line.endXProperty().bindBidirectional(e.getEndVertex().getXProperty());
       line.endYProperty().bindBidirectional(e.getEndVertex().getYProperty());
 
       graphPane.getChildren().add(line);

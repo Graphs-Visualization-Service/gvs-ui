@@ -2,6 +2,7 @@ package gvs.interfaces;
 
 import java.awt.Color;
 import java.awt.Stroke;
+import java.util.Observer;
 
 public interface IEdge {
 
@@ -16,5 +17,7 @@ public interface IEdge {
   Stroke getLineStroke();
 
   IVertex getStartVertex();
+
+  void addObserver(Observer o);
 
 }

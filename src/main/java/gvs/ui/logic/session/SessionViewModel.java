@@ -107,9 +107,7 @@ public class SessionViewModel implements Observer {
         graphViewModel
             .transformGraphModel(graphSessionController.getCurrentGraph());
       } else {
-        TreeSessionController treeSessionController = (TreeSessionController) currentSession;
-        graphViewModel
-            .transformTreeModel(treeSessionController.getCurrentTreeModel());
+        // TODO implement the same for trees
       }
     }
   }

@@ -16,6 +16,7 @@ import gvs.interfaces.IEdge;
  */
 public class EdgeViewModel implements Observer {
 
+  private IEdge edge;
   private VertexViewModel startVertex;
   private VertexViewModel endVertex;
 
@@ -34,8 +35,13 @@ public class EdgeViewModel implements Observer {
    */
   public EdgeViewModel(IEdge edge, VertexViewModel startVertex,
       VertexViewModel endVertex) {
+    
+    this.edge = edge;
     this.startVertex = startVertex;
     this.endVertex = endVertex;
+    
+    // bidirectional connection
+    edge.addObserver(this);
   }
 
   @Override

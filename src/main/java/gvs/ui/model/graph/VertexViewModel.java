@@ -39,7 +39,6 @@ public class VertexViewModel implements Observer {
    *          JavaFX independent vertex representation
    */
   public VertexViewModel(IVertex vertex) {
-    this.vertex = vertex;
     this.xProperty = new SimpleDoubleProperty();
     this.yProperty = new SimpleDoubleProperty();
     this.activeProperty = new SimpleBooleanProperty();
@@ -48,6 +47,7 @@ public class VertexViewModel implements Observer {
     updatePropertyValues(vertex);
 
     // bidirectional connection
+    this.vertex = vertex;
     this.vertex.addObserver(this);
     xProperty.addListener(this::xProperyListener);
     yProperty.addListener(this::yProperyListener);

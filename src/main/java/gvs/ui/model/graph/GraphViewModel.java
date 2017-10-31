@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Singleton;
 
 import gvs.business.model.graph.Graph;
-import gvs.business.model.tree.Tree;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
 
@@ -37,10 +36,6 @@ public class GraphViewModel extends Observable {
     this.edgeViewModels = new HashSet<>();
   }
 
-  public void transformTreeModel(Tree tree) {
-
-  }
-
   /**
    * Load all graph properties.
    * 
@@ -51,6 +46,7 @@ public class GraphViewModel extends Observable {
     logger.info("Import new graph to graph view model");
     importGraph(graph);
 
+    logger.info("graph imported. notify observers");
     setChanged();
     notifyObservers();
   }
@@ -62,12 +58,12 @@ public class GraphViewModel extends Observable {
    *          business layer graph
    */
   private void importGraph(Graph graph) {
-    logger.info("Import edges to graph view model");
     importVertices(graph.getVertices());
     importEdges(graph.getEdges());
   }
 
   private void importVertices(Collection<IVertex> vertices) {
+    logger.info("Import vertices to graph view model");
     vertices.forEach(v -> {
       VertexViewModel vertexViewModel = new VertexViewModel(v);
       vertexViewModels.put(v.getId(), vertexViewModel);
@@ -75,6 +71,7 @@ public class GraphViewModel extends Observable {
   }
 
   private void importEdges(Collection<IEdge> edges) {
+    logger.info("Import edges to graph view model");
     edges.forEach(e -> {
       VertexViewModel startVertex = vertexViewModels
           .get(e.getStartVertex().getId());

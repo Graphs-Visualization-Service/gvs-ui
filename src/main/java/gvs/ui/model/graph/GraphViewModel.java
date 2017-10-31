@@ -1,14 +1,18 @@
 package gvs.ui.model.graph;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Observable;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Singleton;
+
 import gvs.business.model.graph.Graph;
 import gvs.business.model.tree.Tree;
-import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
+import gvs.ui.logic.session.SessionViewModel;
 
 /**
  * Represents one snapshot of a graph visualization.
@@ -16,14 +20,20 @@ import gvs.interfaces.IVertex;
  * @author Michi
  *
  */
-public class GraphViewModel {
+@Singleton
+public class GraphViewModel extends Observable {
 
-  private List<VertexViewModel> vertexViewModels;
-  private List<EdgeViewModel> edgeViewModels;
-  
+  private Set<VertexViewModel> vertexViewModels;
+  private Set<EdgeViewModel> edgeViewModels;
+
   private static final Logger logger = LoggerFactory
       .getLogger(GraphViewModel.class);
-  
+
+  public GraphViewModel() {
+    this.vertexViewModels = new HashSet<>();
+    this.edgeViewModels = new HashSet<>();
+  }
+
   public void transformTreeModel(Tree tree) {
 
   }
@@ -36,54 +46,44 @@ public class GraphViewModel {
    */
   public void transformGraphModel(Graph graph) {
     logger.info("Import new graph to graph view model");
-    loadVertices(graph.getVertices());
-    loadEdges(graph.getEdges());
+    importGraph(graph);
+
+    setChanged();
+    notifyObservers();
   }
 
   /**
-   * Load all vertex properties.
+   * Import vertices and edges of a graph.
    * 
-   * @param vertices
-   *          business layer vertices
+   * @param graph
+   *          business layer graph
    */
-  private void loadVertices(List<IVertex> vertices) {
-    logger.info("Import vertices to graph view model");
-    vertices.forEach(v -> {
-      VertexViewModel vertexViewModel = new VertexViewModel(v);
+  private void importGraph(Graph graph) {
+    logger.info("Import edges to graph view model");
+    graph.getEdges().forEach(e -> {
+      EdgeViewModel edgeViewModel = new EdgeViewModel(e);
+      this.edgeViewModels.add(edgeViewModel);
 
-      vertexViewModel.getXProperty().set(v.getXPosition());
-      vertexViewModel.getYProperty().set(v.getYPosition());
+      IVertex startVertex = e.getStartVertex();
+      VertexViewModel vertexViewModel = new VertexViewModel(startVertex);
+
       this.vertexViewModels.add(vertexViewModel);
     });
   }
 
-  /**
-   * Load all edge properties.
-   * 
-   * @param edges
-   *          business layer edges
-   */
-  private void loadEdges(List<IEdge> edges) {
-    logger.info("Import edges to graph view model");
-    edges.forEach(e -> {
-      EdgeViewModel edgeViewModel = new EdgeViewModel(e);
-      this.edgeViewModels.add(edgeViewModel);
-    });
-  }
-  
-  public List<VertexViewModel> getVertexViewModels() {
+  public Set<VertexViewModel> getVertexViewModels() {
     return vertexViewModels;
   }
 
-  public void setVertexViewModels(List<VertexViewModel> vertexViewModels) {
+  public void setVertexViewModels(Set<VertexViewModel> vertexViewModels) {
     this.vertexViewModels = vertexViewModels;
   }
 
-  public List<EdgeViewModel> getEdgeViewModels() {
+  public Set<EdgeViewModel> getEdgeViewModels() {
     return edgeViewModels;
   }
 
-  public void setEdgeViewModels(List<EdgeViewModel> edgeViewModels) {
+  public void setEdgeViewModels(Set<EdgeViewModel> edgeViewModels) {
     this.edgeViewModels = edgeViewModels;
   }
 

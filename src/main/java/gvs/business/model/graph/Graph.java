@@ -1,6 +1,5 @@
 package gvs.business.model.graph;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import gvs.business.model.Color;
@@ -28,13 +27,17 @@ public class Graph {
   /**
    * New graph representation
    * 
+   * @param vertices
+   *          vertices
+   * @param edges
+   *          edges
    * @param graphId
    *          model id
    */
   public Graph(int graphId, List<IVertex> vertices, List<IEdge> edges) {
     this.id = graphId;
-    this.vertices = new ArrayList<>();
-    this.edges = new ArrayList<>();
+    this.vertices = vertices;
+    this.edges = edges;
     this.snapshotDescription = null;
     this.maxLabelLength = 0;
     this.hasBackgroundImage = false;

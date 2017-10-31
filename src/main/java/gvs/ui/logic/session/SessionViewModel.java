@@ -100,6 +100,7 @@ public class SessionViewModel implements Observer {
   }
 
   public void importBusinessModel() {
+    // TODO check if this can be done more elegantly
     if (currentSession != null) {
       if (currentSession instanceof GraphSessionController) {
         GraphSessionController graphSessionController = (GraphSessionController) currentSession;
@@ -114,7 +115,7 @@ public class SessionViewModel implements Observer {
   }
 
   public void replayGraph(double d) {
-    logger.info("Starting replay with speed " + d);
+    logger.info("Starting replay with speed {}", d);
   }
 
   public void autoLayout() {

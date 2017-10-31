@@ -26,6 +26,8 @@ import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Singleton;
+
 import gvs.business.logic.graph.GraphSessionController;
 import gvs.business.logic.tree.TreeSessionController;
 import gvs.business.model.graph.DefaultVertex;
@@ -47,6 +49,7 @@ import gvs.interfaces.IVertex;
  * 
  * @author mkoller
  */
+@Singleton
 public class Persistor {
 
   // Generally
@@ -122,7 +125,7 @@ public class Persistor {
     Iterator<Element> contentIt = docRoot.elementIterator();
     while (contentIt.hasNext()) {
       Element eTag = (contentIt.next());
-      if (eTag.getName().equals(GRAPH)) {
+      if (GRAPH.equals(eTag.getName())) {
         logger.info("It's a graph");
         sessionController = loadGraphSession(eTag);
         break;
@@ -376,7 +379,7 @@ public class Persistor {
     Iterator<Element> modelIt = pGraphSession.elementIterator();
     while (modelIt.hasNext()) {
       Element eGraphModel = (Element) modelIt.next();
-      if (eGraphModel.getName() == GRAPHMODEL) {
+      if (eGraphModel.getName().equals(GRAPHMODEL)) {
         int graphId = Integer.parseInt(eGraphModel.attributeValue(ATTRIBUTEID));
         String graphLabel = eGraphModel.getText();
         Element eBackground = eGraphModel.element(BACKGROUND);
@@ -434,7 +437,7 @@ public class Persistor {
     Iterator<Element> modelIt = pTreeSession.elementIterator();
     while (modelIt.hasNext()) {
       Element eTreeModel = (Element) modelIt.next();
-      if (eTreeModel.getName() == TREEMODEL) {
+      if (TREEMODEL.equals(eTreeModel.getName())) {
         int modelId = Integer.parseInt(eTreeModel.attributeValue(ATTRIBUTEID));
         String treeLabel = eTreeModel.getText();
         Element eMaxLabelLength = eTreeModel.element(MAXLABELLENGTH);

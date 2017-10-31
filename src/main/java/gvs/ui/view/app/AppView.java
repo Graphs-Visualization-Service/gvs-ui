@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import com.gluonhq.ignite.guice.GuiceContext;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import gvs.GuiceBaseModule;
 import gvs.ui.logic.app.AppViewModel;
@@ -32,6 +33,7 @@ import javafx.stage.Stage;
  * 
  * @author mtrentini
  */
+@Singleton
 public class AppView {
 
   @FXML

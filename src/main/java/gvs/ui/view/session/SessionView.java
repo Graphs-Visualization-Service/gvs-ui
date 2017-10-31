@@ -1,9 +1,19 @@
 package gvs.ui.view.session;
 
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import gvs.ui.logic.session.SessionViewModel;
+import gvs.ui.model.graph.EdgeViewModel;
 import gvs.ui.model.graph.GraphViewModel;
+import gvs.ui.model.graph.VertexViewModel;
 import gvs.ui.view.controls.StepProgressBar;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
@@ -15,13 +25,15 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 
 /**
  * MVVM View Class.
  * 
  * @author mtrentini
  */
-public class SessionView {
+@Singleton
+public class SessionView implements Observer {
 
   @FXML
   private GridPane playGrid;
@@ -64,25 +76,28 @@ public class SessionView {
 
   private StepProgressBar stepProgressBar;
 
-  private static final int DEFAULT_REPLAY_SPEED = 500;
-
   @Inject
   private GraphViewModel graphViewModel;
-  
+
   @Inject
   private SessionViewModel sessionViewModel;
-  
+
+  private static final int DEFAULT_REPLAY_SPEED = 500;
+  private static final Logger logger = LoggerFactory
+      .getLogger(SessionView.class);
+
   /**
    * Called automatically by JavaFX Framework to initialize the view.
    */
   @FXML
   private void initialize() {
+    graphViewModel.addObserver(this);
+
     initStepButtons();
     playBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
     initSlider();
     initStepIndicator();
     bindStepIndicator();
-    drawNodes();
   }
 
   private void initStepIndicator() {
@@ -104,24 +119,50 @@ public class SessionView {
     nextBtn.setGraphic(FontAwesome.createLabel(Glyph.FORWARD));
     lastBtn.setGraphic(FontAwesome.createLabel(Glyph.STEP_FORWARD));
   }
-  
-  public void drawNodes() {
-    if (graphViewModel.getVertexViewModels() != null) {
-      graphViewModel.getVertexViewModels().forEach(v -> {
-        Circle circle = new Circle();
-        circle.setRadius(20);
-        circle.centerXProperty().bindBidirectional(v.getXProperty());
-        circle.centerYProperty().bindBidirectional(v.getYProperty());
 
-        circle.setOnMouseDragged(e -> {
-          circle.setCenterX(e.getSceneX());
-          circle.setCenterY(e.getSceneY());
-          e.consume();
-        });
-        
-        graphPane.getChildren().add(circle);
+  private void redraw(GraphViewModel graphViewModel) {
+    drawVertices(graphViewModel.getVertexViewModels());
+    drawEdges(graphViewModel.getEdgeViewModels());
+  }
+
+  private void drawVertices(Set<VertexViewModel> vertexViewModels) {
+    vertexViewModels.forEach(v -> {
+      Circle circle = new Circle();
+      circle.setRadius(20);
+      circle.centerXProperty().bindBidirectional(v.getXProperty());
+      circle.centerYProperty().bindBidirectional(v.getYProperty());
+
+      circle.setOnMouseDragged(e -> {
+        circle.setCenterX(e.getSceneX());
+        circle.setCenterY(e.getSceneY());
+        e.consume();
       });
-    }
+
+      graphPane.getChildren().add(circle);
+    });
+  }
+
+  private void drawEdges(Set<EdgeViewModel> edgeViewModels) {
+    edgeViewModels.forEach(e -> {
+      double startX = e.getStartVertex().getXProperty().get();
+      double startY = e.getStartVertex().getYProperty().get();
+      double endX = e.getEndVertex().getXProperty().get();
+      double endY = e.getEndVertex().getYProperty().get();
+
+      logger.info("New edge from {}/{} to {}/{}", startX, startY, endX, endY);
+
+      Line line = new Line(startX, startY, endX, endY);
+      line.setStrokeWidth(5);
+
+      line.startXProperty()
+          .bindBidirectional(e.getStartVertex().getXProperty());
+      line.startYProperty()
+          .bindBidirectional(e.getStartVertex().getYProperty());
+      line.endXProperty().bindBidirectional(e.getStartVertex().getXProperty());
+      line.endYProperty().bindBidirectional(e.getEndVertex().getYProperty());
+
+      graphPane.getChildren().add(line);
+    });
   }
 
   @FXML
@@ -159,5 +200,11 @@ public class SessionView {
         .bind(sessionViewModel.totalGraphCountProperty());
     stepProgressBar.currentStepProperty()
         .bind(sessionViewModel.currentGraphModelIdProperty());
+  }
+
+  @Override
+  public void update(Observable o, Object arg) {
+    GraphViewModel viewModel = (GraphViewModel) graphViewModel;
+    redraw(viewModel);
   }
 }

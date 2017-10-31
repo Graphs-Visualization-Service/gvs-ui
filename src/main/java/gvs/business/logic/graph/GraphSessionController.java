@@ -19,7 +19,6 @@ import gvs.business.logic.LayoutController;
 import gvs.business.logic.Monitor;
 import gvs.business.model.graph.Graph;
 import gvs.interfaces.IGraphSessionController;
-import gvs.interfaces.IPersistor;
 import gvs.interfaces.IVertex;
 import gvs.ui.application.view.ApplicationView;
 import gvs.ui.application.view.ControlPanel;
@@ -35,13 +34,13 @@ import gvs.ui.model.graph.VisualizationGraphPanel;
  */
 public class GraphSessionController extends Observable
     implements Observer, IGraphSessionController {
-  private static final Logger logger = LoggerFactory
-      .getLogger(GraphSessionController.class);
+
   private VisualizationGraphModel visualModel = null;
   private VisualizationGraphPanel visualPanel = null;
   private LayoutController layoutController = null;
   private Graph currentGraph = null;
   private ControlPanel controlPanel = null;
+
   // TODO: choose better structure to save models: e.g. map, doubly linked list
   private List<Graph> graphs = null;
   private Timer replayTimer = null;
@@ -59,19 +58,28 @@ public class GraphSessionController extends Observable
   private boolean isRelativeSession = false;
   private int currentGraphId;
 
-  // TODO: add inject
   private ApplicationController applicationController;
-  private IPersistor persistor = new Persistor();
+  private Persistor persistor;
+
+  private static final Logger logger = LoggerFactory
+      .getLogger(GraphSessionController.class);
 
   /**
    * Builds default session controller.
    *
+   * @param appController
+   *          injected app controller
+   * @param persistor
+   *          injected persistor
    */
   @Inject
-  public GraphSessionController(ApplicationController appController) {
+  public GraphSessionController(ApplicationController appController,
+      Persistor persistor) {
     this.applicationController = appController;
-    initializeGraphSessionController();
+    this.persistor = persistor;
     graphs = new Vector<>();
+
+    initializeGraphSessionController();
 
     logger.info("Build empty graph session");
     setEmptyButtonState();
@@ -382,6 +390,7 @@ public class GraphSessionController extends Observable
    * 
    * @return current graph model
    */
+  @Override
   public Graph getCurrentGraph() {
     return currentGraph;
   }
@@ -613,7 +622,7 @@ public class GraphSessionController extends Observable
     layoutController = new LayoutController();
     layoutController.addObserver(this);
     layoutController.setElements(currentGraph.getVertices(),
-        currentGraph.getEdges(), applicationController.getLayoutOption());
+        currentGraph.getEdges(), applicationController.isSoftLayout());
   }
 
   @Override
@@ -663,6 +672,33 @@ public class GraphSessionController extends Observable
   @Override
   public int getTotalGraphCount() {
     return graphs.size();
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result
+        + (int) (clientSessionId ^ (clientSessionId >>> 32));
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    GraphSessionController other = (GraphSessionController) obj;
+    if (clientSessionId != other.clientSessionId) {
+      return false;
+    }
+    return true;
   }
 
 }

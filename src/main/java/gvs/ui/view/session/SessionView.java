@@ -2,8 +2,8 @@ package gvs.ui.view.session;
 
 import com.google.inject.Inject;
 
-import gvs.ui.logic.session.GraphViewModel;
 import gvs.ui.logic.session.SessionViewModel;
+import gvs.ui.model.graph.GraphViewModel;
 import gvs.ui.view.controls.StepProgressBar;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
@@ -14,6 +14,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.shape.Circle;
 
 /**
  * MVVM View Class.
@@ -38,7 +39,7 @@ public class SessionView {
   private Button autoLayoutBtn;
 
   @FXML
-  private AnchorPane modelPane;
+  private AnchorPane graphPane;
 
   @FXML
   private Button firstBtn;
@@ -76,12 +77,12 @@ public class SessionView {
    */
   @FXML
   private void initialize() {
-
     initStepButtons();
     playBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
     initSlider();
     initStepIndicator();
     bindStepIndicator();
+    drawNodes();
   }
 
   private void initStepIndicator() {
@@ -102,6 +103,25 @@ public class SessionView {
     prevBtn.setGraphic(FontAwesome.createLabel(Glyph.BACKWARD));
     nextBtn.setGraphic(FontAwesome.createLabel(Glyph.FORWARD));
     lastBtn.setGraphic(FontAwesome.createLabel(Glyph.STEP_FORWARD));
+  }
+  
+  public void drawNodes() {
+    if (graphViewModel.getVertexViewModels() != null) {
+      graphViewModel.getVertexViewModels().forEach(v -> {
+        Circle circle = new Circle();
+        circle.setRadius(20);
+        circle.centerXProperty().bindBidirectional(v.getXProperty());
+        circle.centerYProperty().bindBidirectional(v.getYProperty());
+
+        circle.setOnMouseDragged(e -> {
+          circle.setCenterX(e.getSceneX());
+          circle.setCenterY(e.getSceneY());
+          e.consume();
+        });
+        
+        graphPane.getChildren().add(circle);
+      });
+    }
   }
 
   @FXML

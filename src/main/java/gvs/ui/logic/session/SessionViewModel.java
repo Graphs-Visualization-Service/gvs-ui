@@ -9,8 +9,11 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import gvs.business.logic.graph.GraphSessionController;
+import gvs.business.logic.tree.TreeSessionController;
 import gvs.business.model.ApplicationModel;
 import gvs.interfaces.ISessionController;
+import gvs.ui.model.graph.GraphViewModel;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -86,12 +89,28 @@ public class SessionViewModel implements Observer {
    */
   @Override
   public void update(Observable o, Object arg) {
+    currentSession = applicationModel.getSession();
+
     Platform.runLater(() -> {
-      currentSession = applicationModel.getSession();
       updateStepProperties();
       logger.info("Updating SessionViewModel because current session changed.");
     });
 
+    importBusinessModel();
+  }
+
+  public void importBusinessModel() {
+    if (currentSession != null) {
+      if (currentSession instanceof GraphSessionController) {
+        GraphSessionController graphSessionController = (GraphSessionController) currentSession;
+        graphViewModel
+            .transformGraphModel(graphSessionController.getCurrentGraph());
+      } else {
+        TreeSessionController treeSessionController = (TreeSessionController) currentSession;
+        graphViewModel
+            .transformTreeModel(treeSessionController.getCurrentTreeModel());
+      }
+    }
   }
 
   public void replayGraph(double d) {

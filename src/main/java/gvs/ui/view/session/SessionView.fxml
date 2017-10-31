@@ -65,6 +65,6 @@
       </BorderPane>
    </bottom>
    <center>
-      <AnchorPane fx:id="modelPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <AnchorPane fx:id="graphPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>

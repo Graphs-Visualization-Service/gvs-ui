@@ -1,13 +1,12 @@
 package gvs.ui.model.graph;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Graph;
+import gvs.business.model.tree.Tree;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
 
@@ -21,21 +20,12 @@ public class GraphViewModel {
 
   private List<VertexViewModel> vertexViewModels;
   private List<EdgeViewModel> edgeViewModels;
-
+  
   private static final Logger logger = LoggerFactory
       .getLogger(GraphViewModel.class);
+  
+  public void transformTreeModel(Tree tree) {
 
-  /**
-   * Creates a new graph view model.
-   * 
-   * @param graph
-   *          corresponding graph instance
-   */
-  public GraphViewModel(Graph graph) {
-    this.vertexViewModels = new ArrayList<>();
-    this.edgeViewModels = new ArrayList<>();
-
-    loadGraph(graph);
   }
 
   /**
@@ -44,7 +34,7 @@ public class GraphViewModel {
    * @param graph
    *          business layer graph
    */
-  private void loadGraph(Graph graph) {
+  public void transformGraphModel(Graph graph) {
     logger.info("Import new graph to graph view model");
     loadVertices(graph.getVertices());
     loadEdges(graph.getEdges());
@@ -80,4 +70,21 @@ public class GraphViewModel {
       this.edgeViewModels.add(edgeViewModel);
     });
   }
+  
+  public List<VertexViewModel> getVertexViewModels() {
+    return vertexViewModels;
+  }
+
+  public void setVertexViewModels(List<VertexViewModel> vertexViewModels) {
+    this.vertexViewModels = vertexViewModels;
+  }
+
+  public List<EdgeViewModel> getEdgeViewModels() {
+    return edgeViewModels;
+  }
+
+  public void setEdgeViewModels(List<EdgeViewModel> edgeViewModels) {
+    this.edgeViewModels = edgeViewModels;
+  }
+
 }

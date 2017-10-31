@@ -39,9 +39,11 @@ public class SessionViewModel implements Observer {
   public SessionViewModel(ApplicationModel model) {
     appModel = model;
     appModel.addObserver(this);
-    currentSession = appModel.getSession();
-    updateStepProperties();
+//    currentSession = appModel.getSession();
+//    updateStepProperties();
     logger.info("Initializing SessionViewModel.");
+    currentGraphModelIdProperty.set("0");
+    totalGraphCountProperty.set("0");
   }
 
   private void updateStepProperties() {

@@ -56,23 +56,16 @@ public class AppView {
   private BorderPane rootPane;
 
   @FXML
-  private Parent embeddedSessionView; 
-
-  private final GuiceContext context = new GuiceContext(this,
-      () -> Arrays.asList(new GuiceBaseModule()));
+  private Parent sessionView; 
 
   @Inject
   private AppViewModel appViewModel;
   private FileChooser fileChooser;
 
-  public AppView() {
-    context.init();
-  }
-
   @FXML
   private void initialize() {
-    embeddedSessionView.setVisible(false);
-    embeddedSessionView.visibleProperty()
+    sessionView.setVisible(false);
+    sessionView.visibleProperty()
         .bind(appViewModel.getSessionVisibilityProperty());
 
     setLogoAsBackground();

@@ -69,18 +69,11 @@ public class SessionView {
 
   private static final int DEFAULT_REPLAY_SPEED = 500;
 
-  private final GuiceContext context = new GuiceContext(this,
-      () -> Arrays.asList(new GuiceBaseModule()));
-
   @Inject
   private GraphViewModel graphViewModel;
   
   @Inject
   private SessionViewModel sessionViewModel;
-
-  public SessionView() {
-    context.init();
-  }
   
   /**
    * Called automatically by JavaFX Framework to initialize the view.

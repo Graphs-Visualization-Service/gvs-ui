@@ -9,8 +9,6 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Inject;
-
 import gvs.access.Persistor;
 import gvs.business.model.tree.TreeModel;
 import gvs.interfaces.IPersistor;
@@ -72,7 +70,8 @@ public class TreeSessionController extends Observable
     currentTreeModel.setModelId(serverSessionId++);
     treeModels.add(currentTreeModel);
 
-    if ((currentTreeModel.getNodes()).size() != 0) {
+    if (currentTreeModel.getNodes().size() > 0
+        && currentTreeModel.getNodes().size() != 0) {
       callLayouter();
     } else {
       setVisualModel();

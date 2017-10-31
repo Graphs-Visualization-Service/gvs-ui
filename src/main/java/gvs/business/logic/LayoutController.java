@@ -2,6 +2,7 @@ package gvs.business.logic;
 
 import java.awt.Point;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Random;
 import java.util.Timer;
@@ -44,8 +45,8 @@ public class LayoutController extends Observable implements Tickable {
   private Area area = null;
   private AreaTicker ticker = null;
   private Particle particle = null;
-  private Vector<IVertex> vertizes = null;
-  private Vector<IEdge> edges = null;
+  private List<IVertex> vertizes = null;
+  private List<IEdge> edges = null;
   private boolean doSoftLayout = false;
   private Random random = null;
 
@@ -116,7 +117,7 @@ public class LayoutController extends Observable implements Tickable {
    * @param doSoftLayout
    *          soft layout
    */
-  public void setElements(Vector<IVertex> vertices, Vector<IEdge> edges,
+  public void setElements(List<IVertex> vertices, List<IEdge> edges,
       boolean doSoftLayout) {
 
     graphContLogger.info("LayoutController has new elements detected, "

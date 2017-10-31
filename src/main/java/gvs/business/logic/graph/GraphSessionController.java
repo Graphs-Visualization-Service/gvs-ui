@@ -1,8 +1,8 @@
 package gvs.business.logic.graph;
 
 import java.io.File;
-import java.util.AbstractList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Timer;
@@ -11,14 +11,11 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Inject;
-
-import gvs.access.ConnectionMonitor;
 import gvs.access.Persistor;
 import gvs.business.logic.ApplicationController;
 import gvs.business.logic.LayoutController;
 import gvs.business.logic.Monitor;
-import gvs.business.model.graph.GraphModel;
+import gvs.business.model.graph.Graph;
 import gvs.interfaces.IGraphSessionController;
 import gvs.interfaces.IPersistor;
 import gvs.interfaces.IVertex;
@@ -41,10 +38,10 @@ public class GraphSessionController extends Observable
   private VisualizationGraphModel visualModel = null;
   private VisualizationGraphPanel visualPanel = null;
   private LayoutController layoutController = null;
-  private GraphModel currentGraphModel = null;
+  private Graph currentGraph = null;
   private ControlPanel controlPanel = null;
   // TODO: choose better structure to save models: e.g. map, doubly linked list
-  private Vector<GraphModel> graphModels = null;
+  private List<Graph> graphs = null;
   private Timer replayTimer = null;
   private GraphSessionReplay sessionReplay = null;
 
@@ -69,7 +66,7 @@ public class GraphSessionController extends Observable
    */
   public GraphSessionController() {
     initializeGraphSessionController();
-    graphModels = new Vector<>();
+    graphs = new Vector<>();
 
     logger.info("Build empty graph session");
     setEmptyButtonState();
@@ -86,16 +83,16 @@ public class GraphSessionController extends Observable
    *          graphModel
    */
   public GraphSessionController(long pSessionId, String pSessionName,
-      Vector<GraphModel> pGraphModels) {
+      Vector<Graph> pGraphModels) {
     this.clientSessionId = pSessionId;
     this.sessionName = pSessionName;
-    this.graphModels = pGraphModels;
+    this.graphs = pGraphModels;
 
     initializeGraphSessionController();
 
     logger.info("Build new graph session controller from storage");
-    currentGraphModel = (GraphModel) graphModels.lastElement();
-    currentGraphId = currentGraphModel.getModelId();
+    currentGraph = graphs.get(graphs.size() - 1);
+    currentGraphId = currentGraph.getId();
 
     isDraggable();
     setVisualModel();
@@ -108,12 +105,12 @@ public class GraphSessionController extends Observable
    *          sessionId
    * @param pSessionName
    *          sessionName
-   * @param pGraphModel
+   * @param graph
    *          graphModel
    */
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public GraphSessionController(long pSessionId, String pSessionName,
-      GraphModel pGraphModel) {
+      Graph graph) {
     try {
       Monitor.getInstance().lock();
     } catch (InterruptedException e) {
@@ -125,20 +122,20 @@ public class GraphSessionController extends Observable
 
     initializeGraphSessionController();
 
-    graphModels = new Vector();
+    graphs = new Vector();
     logger.info("Build new graph session controller");
-    currentGraphModel = pGraphModel;
-    currentGraphModel.setModelId(serverSessionId++);
-    currentGraphId = currentGraphModel.getModelId();
-    graphModels.add(currentGraphModel);
+    currentGraph = graph;
+    currentGraph.setId(serverSessionId++);
+    currentGraphId = currentGraph.getId();
+    graphs.add(currentGraph);
 
     logger.debug("Check if graph model is empty");
-    if ((currentGraphModel.getVertizes()).size() != 0) {
-      if (((IVertex) currentGraphModel.getVertizes().firstElement())
-          .isRelative()) {
+    if (currentGraph.getVertices().size() > 0) {
+
+      if (((IVertex) currentGraph.getVertices().get(0)).isRelative()) {
         logger.debug("Graph is relative");
         isRelativeSession = true;
-        validateNavigation(currentGraphModel.getModelId());
+        validateNavigation(currentGraph.getId());
         isDraggable();
         setVisualModel();
         Monitor.getInstance().unlock();
@@ -150,7 +147,7 @@ public class GraphSessionController extends Observable
     } else {
 
       logger.debug("Empty graph");
-      validateNavigation(currentGraphModel.getModelId());
+      validateNavigation(currentGraph.getId());
       setVisualModel();
       controlPanel.setLayout(false);
       Monitor.getInstance().unlock();
@@ -173,7 +170,8 @@ public class GraphSessionController extends Observable
    * @param pGraphModel
    *          graphModel
    */
-  public void addGraphModel(GraphModel pGraphModel) {
+  @Override
+  public void addGraph(Graph pGraphModel) {
     logger.info("New graph arrived");
     try {
       Monitor.getInstance().lock();
@@ -181,18 +179,17 @@ public class GraphSessionController extends Observable
       e.printStackTrace();
     }
 
-    currentGraphModel = pGraphModel;
-    currentGraphModel.setModelId(serverSessionId++);
-    graphModels.add(currentGraphModel);
+    currentGraph = pGraphModel;
+    currentGraph.setId(serverSessionId++);
+    graphs.add(currentGraph);
 
     logger.debug("Check if graph is empty");
-    if ((currentGraphModel.getVertizes()).size() != 0) {
+    if ((currentGraph.getVertices()).size() != 0) {
 
-      if (((IVertex) currentGraphModel.getVertizes().firstElement())
-          .isRelative()) {
+      if (((IVertex) currentGraph.getVertices().get(0)).isRelative()) {
         logger.debug("Graph is relative");
         isRelativeSession = true;
-        validateNavigation(currentGraphModel.getModelId());
+        validateNavigation(currentGraph.getId());
         isDraggable();
         setVisualModel();
         Monitor.getInstance().unlock();
@@ -200,7 +197,7 @@ public class GraphSessionController extends Observable
         setFormerVertexCoordinate();
       }
     } else {
-      validateNavigation(currentGraphModel.getModelId());
+      validateNavigation(currentGraph.getId());
       setVisualModel();
       controlPanel.setLayout(false);
       ApplicationView.setButton(true);
@@ -225,11 +222,11 @@ public class GraphSessionController extends Observable
       autoLayoutingMode = false;
 
       visualModel.setLayouting(false);
-      validateNavigation(currentGraphModel.getModelId());
+      validateNavigation(currentGraph.getId());
       isDraggable();
       // deactivate GVS 1.0 GUI
       // setVisualModel();
-      // setButtonState(actualGraphModel.getModelId());
+      // setButtonState(actualGraphModel.getId());
       Monitor.getInstance().unlock();
 
     } else {
@@ -258,9 +255,9 @@ public class GraphSessionController extends Observable
   public void setVisualModel() {
     // TODO: currently deactivates all GVS 1.0 GUI functionality
     // graphContLogger.debug("Display graph");
-    // controlPanel.setText(actualGraphModel.getModelId(), graphModels.size());
+    // controlPanel.setText(actualGraphModel.getId(), graphModels.size());
     // visualModel.setGraphModel(actualGraphModel);
-    // setButtonState(actualGraphModel.getModelId());
+    // setButtonState(actualGraphModel.getId());
   }
 
   /**
@@ -271,8 +268,7 @@ public class GraphSessionController extends Observable
    * @return boolean
    */
   public boolean validateNavigation(long pRequestedModelId) {
-    if ((pRequestedModelId >= 1)
-        && (pRequestedModelId <= (graphModels.size()))) {
+    if ((pRequestedModelId >= 1) && (pRequestedModelId <= (graphs.size()))) {
       // deactivate GVS 1.0 GUI
       // setButtonState(pRequestedModelId);
       return true;
@@ -286,11 +282,11 @@ public class GraphSessionController extends Observable
    *
    */
   public void isDraggable() {
-    if (currentGraphModel.getModelId() == graphModels.size()) {
+    if (currentGraph.getId() == graphs.size()) {
       visualModel.setDragging(true);
       logger.debug("Last Graph in session queue, enable dragging");
-      if (((IVertex) currentGraphModel.getVertizes().firstElement())
-          .isRelative()) {
+      if (currentGraph.getVertices().size() > 0
+          && currentGraph.getVertices().get(0).isRelative()) {
         visualModel.setDragging(false);
         logger.debug("Graph is relative, disable dragging");
       }
@@ -306,11 +302,10 @@ public class GraphSessionController extends Observable
    */
   public synchronized void getFirstModel() {
     logger.info("Show first graph of current session");
-    int requestedModelId = ((GraphModel) graphModels.firstElement())
-        .getModelId();
+    int graphId = graphs.get(0).getId();
 
-    if (validateNavigation(requestedModelId)) {
-      currentGraphModel = (GraphModel) graphModels.get(requestedModelId - 1);
+    if (validateNavigation(graphId)) {
+      currentGraph = graphs.get(graphId - 1);
       isDraggable();
       setVisualModel();
     }
@@ -321,10 +316,10 @@ public class GraphSessionController extends Observable
    */
   public void getPreviousModel() {
     logger.info("Show previous graph of current session");
-    int requestedModelId = currentGraphModel.getModelId() - 1;
+    int requestedModelId = currentGraph.getId() - 1;
 
     if (validateNavigation(requestedModelId)) {
-      currentGraphModel = (GraphModel) graphModels.get(requestedModelId - 1);
+      currentGraph = (Graph) graphs.get(requestedModelId - 1);
       isDraggable();
       setVisualModel();
     }
@@ -335,10 +330,10 @@ public class GraphSessionController extends Observable
    */
   public void getNextModel() {
     logger.info("Show next graph of current session");
-    int requestedModelId = currentGraphModel.getModelId() + 1;
+    int requestedModelId = currentGraph.getId() + 1;
 
     if (validateNavigation(requestedModelId)) {
-      currentGraphModel = (GraphModel) graphModels.get(requestedModelId - 1);
+      currentGraph = (Graph) graphs.get(requestedModelId - 1);
       isDraggable();
       setVisualModel();
     }
@@ -349,11 +344,10 @@ public class GraphSessionController extends Observable
    */
   public void getLastModel() {
     logger.info("Show last graph of current session");
-    int requestedModelId = ((GraphModel) graphModels.lastElement())
-        .getModelId();
+    int requestedModelId = graphs.get(graphs.size() - 1).getId();
 
     if (validateNavigation(requestedModelId)) {
-      currentGraphModel = (GraphModel) graphModels.get(requestedModelId - 1);
+      currentGraph = (Graph) graphs.get(requestedModelId - 1);
       isDraggable();
       setVisualModel();
     }
@@ -369,11 +363,11 @@ public class GraphSessionController extends Observable
       setReplayMode(true);
       controlPanel.setReplay(true);
       replayTimer = new Timer();
-      sessionReplay = new GraphSessionReplay(graphModels, this);
+      sessionReplay = new GraphSessionReplay(graphs, this);
       replayTimer.schedule(sessionReplay, picsPersMinute, picsPersMinute);
     } else {
       this.setReplayMode(false);
-      this.validateNavigation(currentGraphModel.getModelId());
+      this.validateNavigation(currentGraph.getId());
       replayTimer.cancel();
     }
   }
@@ -383,18 +377,18 @@ public class GraphSessionController extends Observable
    * 
    * @return current graph model
    */
-  public GraphModel getCurrentGraphModel() {
-    return currentGraphModel;
+  public Graph getCurrentGraph() {
+    return currentGraph;
   }
 
   /**
    * Sets current graph model.
    * 
-   * @param currentGraphModel
+   * @param currentGraph
    *          new graph model
    */
-  public void setCurrentGraphModel(GraphModel currentGraphModel) {
-    this.currentGraphModel = currentGraphModel;
+  public void setCurrentGraph(Graph currentGraph) {
+    this.currentGraph = currentGraph;
   }
 
   /**
@@ -423,13 +417,11 @@ public class GraphSessionController extends Observable
   public void autoLayout() {
     logger.debug("Check if graph can be layouted");
     if (!isRelativeSession) {
-      if (currentGraphModel.getModelId() == graphModels.size()) {
+      if (currentGraph.getId() == graphs.size()) {
         logger.debug("Graph is last element in Queue, call Layouter");
-        Iterator<IVertex> it = currentGraphModel.getVertizes().iterator();
-        while (it.hasNext()) {
-          ((IVertex) it.next()).setFixedPosition(false);
-        }
-
+        currentGraph.getVertices().forEach(v -> {
+          v.setFixedPosition(false);
+        });
         visualModel.setDragging(false);
         setEmptyButtonState();
         autoLayoutingMode = true;
@@ -453,8 +445,8 @@ public class GraphSessionController extends Observable
    * 
    * @return graphModels
    */
-  public AbstractList<GraphModel> getMyGraphModels() {
-    return graphModels;
+  public List<Graph> getGraphs() {
+    return graphs;
   }
 
   /**
@@ -476,10 +468,9 @@ public class GraphSessionController extends Observable
    * Copy positions of former vertizes to current model in order of no changes.
    */
   private void setFormerVertexCoordinate() {
-    GraphModel formerModel = (GraphModel) graphModels
-        .elementAt(currentGraphModel.getModelId() - 2);
-    Vector<IVertex> formerVertizes = formerModel.getVertizes();
-    Vector<IVertex> currentVertizes = currentGraphModel.getVertizes();
+    Graph formerGraph = graphs.get(currentGraph.getId() - 2);
+    List<IVertex> formerVertizes = formerGraph.getVertices();
+    List<IVertex> currentVertizes = currentGraph.getVertices();
 
     Iterator<IVertex> it1 = currentVertizes.iterator();
     boolean isFormerVertexPosAvailable = false;
@@ -508,7 +499,7 @@ public class GraphSessionController extends Observable
       callLayoutEngine = false;
     } else {
       logger.debug("All graph positions are set");
-      validateNavigation(currentGraphModel.getModelId());
+      validateNavigation(currentGraph.getId());
       isDraggable();
       setVisualModel();
       Monitor.getInstance().unlock();
@@ -538,11 +529,11 @@ public class GraphSessionController extends Observable
    */
   private void setButtonState(long pRequestedModelId) {
     if (!replayMode && !(autoLayoutingMode)) {
-      if (pRequestedModelId == graphModels.size()) {
+      if (pRequestedModelId == graphs.size()) {
         controlPanel.setNext(false);
         controlPanel.setLast(false);
         controlPanel.setLayout(true);
-        if (graphModels.size() == 1) {
+        if (graphs.size() == 1) {
 
           controlPanel.setReplay(false);
           controlPanel.setSlider(false);
@@ -563,7 +554,7 @@ public class GraphSessionController extends Observable
 
         controlPanel.setPrevious(false);
         controlPanel.setFirst(false);
-        if (graphModels.size() == 1) {
+        if (graphs.size() == 1) {
           controlPanel.setReplay(false);
           controlPanel.setSlider(false);
           controlPanel.setNext(false);
@@ -616,8 +607,8 @@ public class GraphSessionController extends Observable
     setEmptyButtonState();
     layoutController = new LayoutController();
     layoutController.addObserver(this);
-    layoutController.setElements(currentGraphModel.getVertizes(),
-        currentGraphModel.getEdges(),
+    layoutController.setElements(currentGraph.getVertices(),
+        currentGraph.getEdges(),
         ApplicationController.getInstance().getLayoutOption());
 
   }
@@ -629,9 +620,9 @@ public class GraphSessionController extends Observable
 
   @Override
   public void changeCurrentGraphToNext() {
-    int nextGraphId = currentGraphModel.getModelId() + 1;
+    int nextGraphId = currentGraph.getId() + 1;
     if (validateNavigation(nextGraphId)) {
-      currentGraphModel = graphModels.get(nextGraphId - 1);
+      currentGraph = graphs.get(nextGraphId - 1);
       currentGraphId = nextGraphId;
       notifyObservers();
     }
@@ -639,16 +630,16 @@ public class GraphSessionController extends Observable
 
   @Override
   public void changeCurrentGraphToFirst() {
-    currentGraphModel = graphModels.firstElement();
-    currentGraphId = currentGraphModel.getModelId();
+    currentGraph = graphs.get(0);
+    currentGraphId = currentGraph.getId();
     notifyObservers();
   }
 
   @Override
   public void changeCurrentGraphToPrev() {
-    int prevGraphId = currentGraphModel.getModelId() - 1;
+    int prevGraphId = currentGraph.getId() - 1;
     if (validateNavigation(prevGraphId)) {
-      currentGraphModel = (GraphModel) graphModels.get(prevGraphId - 1);
+      currentGraph = (Graph) graphs.get(prevGraphId - 1);
       currentGraphId = prevGraphId;
       notifyObservers();
     }
@@ -656,8 +647,8 @@ public class GraphSessionController extends Observable
 
   @Override
   public void changeCurrentGraphToLast() {
-    currentGraphModel = graphModels.lastElement();
-    currentGraphId = currentGraphModel.getModelId();
+    currentGraph = graphs.get(graphs.size() - 1);
+    currentGraphId = currentGraph.getId();
     notifyObservers();
   }
 
@@ -668,7 +659,7 @@ public class GraphSessionController extends Observable
 
   @Override
   public int getTotalGraphCount() {
-    return graphModels.size();
+    return graphs.size();
   }
 
 }

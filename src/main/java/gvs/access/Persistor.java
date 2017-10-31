@@ -30,7 +30,7 @@ import gvs.business.logic.graph.GraphSessionController;
 import gvs.business.logic.tree.TreeSessionController;
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
-import gvs.business.model.graph.GraphModel;
+import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.IconVertex;
 import gvs.business.model.tree.BinaryNode;
 import gvs.business.model.tree.TreeModel;
@@ -170,7 +170,7 @@ public class Persistor implements IPersistor {
       GraphSessionController sessionController) {
     Element sessionElement = element.addElement(GRAPH);
     addIdAndLabel(sessionElement, sessionController);
-    sessionController.getMyGraphModels()
+    sessionController.getGraphs()
         .forEach(model -> saveGraphModel(model, sessionElement));
   }
 
@@ -182,31 +182,32 @@ public class Persistor implements IPersistor {
         .forEach(model -> saveTreeModel(model, sessionElement));
   }
 
-  private void saveGraphModel(GraphModel pModel, Element pSession) {
+  private void saveGraphModel(Graph graph, Element pSession) {
     Element eGraphModel = pSession.addElement(GRAPHMODEL);
-    eGraphModel.addAttribute(ATTRIBUTEID, String.valueOf(pModel.getModelId()));
+    eGraphModel.addAttribute(ATTRIBUTEID, String.valueOf(graph.getId()));
     Element eGraphLabel = eGraphModel.addElement(LABEL);
-    eGraphLabel.addText(pModel.getGraphLabel());
+    eGraphLabel.addText(graph.getSnapshotDescription());
     Element eBackground = eGraphModel.addElement(BACKGROUND);
     String backgroundName = null;
 
-    if (pModel.isHasBackgroundImage()) {
-      Image tempImage = pModel.getBackgroundImage();
-      backgroundName = configuration.getBackgroundName(tempImage);
-    } else {
-      Color tempColor = pModel.getBackgroundColor();
-      backgroundName = configuration.getColorName(tempColor);
-    }
-    if (backgroundName == null || backgroundName == "") {
-      backgroundName = STANDARD;
-    }
+    // TODO check background support
+    // if (graph.isHasBackgroundImage()) {
+    // Image tempImage = graph.getBackgroundImage();
+    // backgroundName = configuration.getBackgroundName(tempImage);
+    // } else {
+    // Color tempColor = graph.getBackgroundColor();
+    // backgroundName = configuration.getColorName(tempColor);
+    // }
+    // if (backgroundName == null || backgroundName == "") {
+    // backgroundName = STANDARD;
+    // }
 
     eBackground.addText(backgroundName);
     Element eMaxLabelLength = eGraphModel.addElement(MAXLABELLENGTH);
-    eMaxLabelLength.addText(String.valueOf(pModel.getMaxLabelLength()));
+    eMaxLabelLength.addText(String.valueOf(graph.getMaxLabelLength()));
 
     Element eVertizes = eGraphModel.addElement(VERTIZES);
-    pModel.getVertizes().forEach(v -> {
+    graph.getVertices().forEach(v -> {
       if (v.getClass() == DefaultVertex.class) {
         saveDefaultVertex((DefaultVertex) v, eVertizes);
       } else if (v.getClass() == IconVertex.class) {
@@ -214,7 +215,7 @@ public class Persistor implements IPersistor {
       }
     });
     Element eEdges = eGraphModel.addElement(EDGES);
-    pModel.getEdges().forEach(e -> saveEdge(e, eEdges));
+    graph.getEdges().forEach(e -> saveEdge(e, eEdges));
 
   }
 
@@ -371,7 +372,7 @@ public class Persistor implements IPersistor {
   }
 
   private GraphSessionController loadGraphSession(Element pGraphSession) {
-    Vector<GraphModel> graphModels = new Vector<GraphModel>();
+    Vector<Graph> graphs = new Vector<>();
     Element eSessionName = pGraphSession.element(LABEL);
     String sessionName = eSessionName.getText();
     long sessionId = Long.parseLong(pGraphSession.attributeValue(ATTRIBUTEID));
@@ -380,12 +381,12 @@ public class Persistor implements IPersistor {
     while (modelIt.hasNext()) {
       Element eGraphModel = (Element) modelIt.next();
       if (eGraphModel.getName() == GRAPHMODEL) {
-        int modelId = Integer.parseInt(eGraphModel.attributeValue(ATTRIBUTEID));
+        int graphId = Integer.parseInt(eGraphModel.attributeValue(ATTRIBUTEID));
         String graphLabel = eGraphModel.getText();
         Element eBackground = eGraphModel.element(BACKGROUND);
         String graphBackground = eBackground.getText();
         Element eMaxLabelLength = eGraphModel.element(MAXLABELLENGTH);
-        String maxLabelLength = eMaxLabelLength.getText();
+        String maxLabelLengthString = eMaxLabelLength.getText();
 
         Vector<IVertex> vertizes = new Vector<IVertex>();
         Element eVertizes = eGraphModel.element(VERTIZES);
@@ -407,22 +408,25 @@ public class Persistor implements IPersistor {
           edges.add(loadEdge(eEdge, vertizes));
         }
 
-        GraphModel gm;
-        Image graphImage = configuration.getBackgroundImage(graphBackground);
-        if (graphImage == null) {
-          Color defaultColor = configuration.getColor(graphBackground, true);
-          gm = new GraphModel(graphLabel, defaultColor, vertizes, edges,
-              Integer.parseInt(maxLabelLength));
-        } else {
+        int maxLabelLength = Integer.parseInt(maxLabelLengthString);
+        Graph newGraph = new Graph(graphId, vertizes, edges);
+        newGraph.setMaxLabelLength(maxLabelLength);
 
-          gm = new GraphModel(graphLabel, graphImage, vertizes, edges,
-              Integer.parseInt(maxLabelLength));
-        }
-        gm.setModelId(modelId);
-        graphModels.add(gm);
+        // TODO background image support?
+        // Image graphImage = typs.getBackgroundImage(graphBackground);
+        // if (graphImage == null) {
+        // Color defaultColor = configuration.getColor(graphBackground, true);
+        //   gm = new Graph(graphLabel, defaultColor, vertizes, edges,
+        //   Integer.parseInt(maxLabelLength));
+        // } else {
+        //   gm = new Graph(graphLabel, graphImage, vertizes, edges,
+        // Integer.parseInt(maxLabelLength));
+        // }
+
+        graphs.add(newGraph);
       }
     }
-    return new GraphSessionController(sessionId, sessionName, graphModels);
+    return new GraphSessionController(sessionId, sessionName, graphs);
   }
 
   private TreeSessionController loadTreeSession(Element pTreeSession) {

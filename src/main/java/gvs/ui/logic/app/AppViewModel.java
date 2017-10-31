@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.gluonhq.ignite.guice.GuiceContext;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import gvs.GuiceBaseModule;
 import gvs.business.logic.ApplicationController;
@@ -48,8 +49,6 @@ public class AppViewModel implements Observer {
   private AnchorPane sessionContentPane;
   private BorderPane rootLayout;
   private boolean sessionIsInitialized = false;
-  private GuiceContext context = new GuiceContext(this,
-      () -> Arrays.asList(new GuiceBaseModule()));
 
   private final StringProperty currentSessionName = new SimpleStringProperty();
   private final ObservableList<String> sessionNames = FXCollections
@@ -60,8 +59,12 @@ public class AppViewModel implements Observer {
   private static final Logger logger = LoggerFactory
       .getLogger(AppViewModel.class);
 
+  private final GuiceContext context = new GuiceContext(this,
+      () -> Arrays.asList(new GuiceBaseModule()));
+
   @Inject
-  private FXMLLoader fxmlLoader;
+  private Provider<FXMLLoader> loaderProvider;
+
 
   // TODO: do we still need the persistor here?
   public AppViewModel(ApplicationModel appModel,
@@ -92,8 +95,10 @@ public class AppViewModel implements Observer {
   private void initSessionLayout() {
     logger.info("Initializing session layout.");
     try {
+      FXMLLoader fxmlLoader = loaderProvider.get();
       fxmlLoader.setLocation(
           getClass().getResource("/gvs/ui/view/session/SessionView.fxml"));
+
       BorderPane sessionLayout = (BorderPane) fxmlLoader.load();
       sessionContentPane = new AnchorPane();
       sessionContentPane.getChildren().add(sessionLayout);

@@ -23,7 +23,7 @@ import com.google.inject.Singleton;
 import gvs.business.logic.ApplicationController;
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
-import gvs.business.model.graph.GraphModel;
+import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.IconVertex;
 import gvs.business.model.tree.BinaryNode;
 import gvs.business.model.tree.DefaultNode;
@@ -128,10 +128,10 @@ public class ModelBuilder {
   private void buildGraph(Element pDocRoot) {
     serverLogger.debug("Build graph from XML");
     Element eGraph = pDocRoot.element(GRAPH);
-    long graphId = Long.parseLong(eGraph.attributeValue(ATTRIBUTEID));
+    int graphId = Integer.parseInt(eGraph.attributeValue(ATTRIBUTEID));
     String graphLabel = eGraph.element(LABEL).getText();
     String graphBackground = eGraph.element(BACKGROUND).getText();
-    String maxLabelLength = eGraph.element(MAXLABELLENGTH).getText();
+    String maxLabelLengthString = eGraph.element(MAXLABELLENGTH).getText();
 
     Vector<IVertex> vertizes = new Vector<IVertex>();
     Vector<IEdge> edges = new Vector<IEdge>();
@@ -156,19 +156,24 @@ public class ModelBuilder {
         edges.add(buildUndirectedEdge(eEdge, vertizes));
       }
     }
-    GraphModel gm;
-    Image graphImage = typs.getBackgroundImage(graphBackground);
-    if (graphImage == null) {
-      Color defaultColor = typs.getColor(graphBackground, true);
-      gm = new GraphModel(graphLabel, defaultColor, vertizes, edges,
-          Integer.parseInt(maxLabelLength));
-    } else {
+    
+    int maxLabelLength = Integer.parseInt(maxLabelLengthString);
+    Graph newGraph = new Graph(graphId, vertizes, edges);
+    newGraph.setMaxLabelLength(maxLabelLength);
+    
+    // TODO background image support?
+    // Image graphImage = typs.getBackgroundImage(graphBackground);
+    // if (graphImage == null) {
+    // Color defaultColor = typs.getColor(graphBackground, true);
+    // gm = new Graph(graphLabel, defaultColor, vertizes, edges,
+    // Integer.parseInt(maxLabelLength));
+    // } else {
+    // gm = new Graph(graphLabel, graphImage, vertizes, edges,
+    // Integer.parseInt(maxLabelLength));
+    // }
 
-      gm = new GraphModel(graphLabel, graphImage, vertizes, edges,
-          Integer.parseInt(maxLabelLength));
-    }
     serverLogger.debug("Finish build graph from XML");
-    appController.addModel(gm, graphId, graphLabel);
+    appController.addModel(newGraph, graphId, graphLabel);
   }
 
   /**

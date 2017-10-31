@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import gvs.business.logic.graph.GraphSessionController;
 import gvs.business.logic.tree.TreeSessionController;
 import gvs.business.model.ApplicationModel;
-import gvs.business.model.graph.GraphModel;
+import gvs.business.model.graph.Graph;
 import gvs.business.model.tree.TreeModel;
 import gvs.interfaces.IPersistor;
 import gvs.interfaces.ISessionController;
@@ -227,14 +227,14 @@ public class ApplicationController {
    * Adds a new graph model, if an associated session exists, adds model to
    * session. Otherwise, creates a new graph session
    * 
-   * @param pGraphModel
+   * @param graph
    *          graphModel
    * @param pId
    *          Id
    * @param pSessionName
    *          sessionName
    */
-  public synchronized void addModel(GraphModel pGraphModel, long pId,
+  public synchronized void addModel(Graph graph, long pId,
       String pSessionName) {
     appContLogger.info("New graph arrived");
     Iterator<ISessionController> sessionIt = sessionControllers.iterator();
@@ -243,7 +243,7 @@ public class ApplicationController {
       ISessionController sc = (ISessionController) (sessionIt.next());
       if (sc.getSessionId() == pId) {
         appContLogger.debug("Add graph to exsting session");
-        ((GraphSessionController) sc).addGraphModel(pGraphModel);
+        ((GraphSessionController) sc).addGraph(graph);
 
         isSessionExisting = true;
       }
@@ -251,7 +251,7 @@ public class ApplicationController {
     if (!isSessionExisting) {
       appContLogger.debug("Build new graph session");
       GraphSessionController newSession = new GraphSessionController(pId,
-          pSessionName, pGraphModel);
+          pSessionName, graph);
       sessionControllers.add(newSession);
       appContLogger.debug("Set session as actual model");
       applicationModel.setSession(newSession);

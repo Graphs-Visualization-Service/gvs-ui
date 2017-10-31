@@ -1,21 +1,20 @@
 package gvs.interfaces;
 
-import java.util.AbstractList;
+import java.util.List;
 import java.util.Observable;
 
-import gvs.business.model.graph.GraphModel;
+import gvs.business.model.graph.Graph;
 
 public interface IGraphSessionController extends ISessionController {
 
-  void addGraphModel(GraphModel pGraphModel);
+  void addGraph(Graph graph);
 
   void update(Observable o, Object arg);
 
-  GraphModel getCurrentGraphModel();
+  Graph getCurrentGraph();
 
-  void setCurrentGraphModel(GraphModel currentGraphModel);
+  void setCurrentGraph(Graph currentGraph);
 
-  @SuppressWarnings("rawtypes")
-  AbstractList getMyGraphModels();
+  List<Graph> getGraphs();
 
 }

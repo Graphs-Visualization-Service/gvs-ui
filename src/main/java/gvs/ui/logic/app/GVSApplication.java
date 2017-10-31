@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.gluonhq.ignite.guice.GuiceContext;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import gvs.GuiceBaseModule;
@@ -41,7 +42,7 @@ public class GVSApplication extends Application implements Observer {
       () -> Arrays.asList(new GuiceBaseModule()));
 
   @Inject
-  private FXMLLoader fxmlLoader;
+  private Provider<FXMLLoader> loaderProvider;
 
   private Stage primaryStage;
   private BorderPane rootLayout;
@@ -74,6 +75,7 @@ public class GVSApplication extends Application implements Observer {
     try {
       logger.debug("Initialize root layout");
 
+      FXMLLoader fxmlLoader = loaderProvider.get();
       fxmlLoader
           .setLocation(getClass().getResource("/gvs/ui/view/app/AppView.fxml"));
 

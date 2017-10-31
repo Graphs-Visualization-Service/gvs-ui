@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
@@ -19,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.access.Configuration;
-import gvs.business.model.graph.GraphModel;
+import gvs.business.model.graph.Graph;
 import gvs.interfaces.IDefaultVertex;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IIconVertex;
@@ -49,7 +50,7 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
   private IVertexComponent vertexBeingDragged = null;
 
   private VisualizationGraphModel visualModel = null;
-  private GraphModel graphModel = null;
+  private Graph graph = null;
   private Color backgroundColor = null;
   private Image icon = null;
   private LabelConflictCheck check = null;
@@ -90,55 +91,53 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
   /**
    * Build for each vertex an appropriate vertex component.
    * 
-   * @param pVertizes
+   * @param vertices
    *          vetices
    * @param pDimension
    *          dimension
    */
-  private void createVertexGraphComponents(Vector<IVertex> pVertizes,
+  private void createVertexGraphComponents(List<IVertex> vertices,
       Dimension pDimension) {
     graphContLogger.debug("Creating vertizes components");
-    Iterator<IVertex> verIt = pVertizes.iterator();
-    while (verIt.hasNext()) {
-      Object vertex = verIt.next();
 
-      Class<?>[] interfaces = vertex.getClass().getInterfaces();
+    vertices.forEach(v -> {
+      Class<?>[] interfaces = v.getClass().getInterfaces();
       for (int i = 0; i < interfaces.length; i++) {
         if (interfaces[i] == IDefaultVertex.class) {
           graphContLogger.debug("Creating default vertex");
           IVertexComponent nodeComponent = new DefaultVertexComponent(
-              (IDefaultVertex) vertex, pDimension, effectiveLabelLength,
+              (IDefaultVertex) v, pDimension, effectiveLabelLength,
               effectiveLabelPixel);
           nodeComponents.add(nodeComponent);
         } else {
           graphContLogger.debug("Creating icon vertex");
           IVertexComponent iconComponent = new IconVertexComponent(
-              (IIconVertex) vertex, pDimension, effectiveLabelLength,
+              (IIconVertex) v, pDimension, effectiveLabelLength,
               effectiveLabelPixel);
           nodeComponents.add(iconComponent);
         }
       }
-    }
+
+    });
   }
 
   /**
    * Create for each edge an appropriate edge component.
    * 
-   * @param pEdges
+   * @param edges
    *          edges
    * @param dimension
    *          dimension
    */
-  private void createEdgeGraphComponents(Vector<IEdge> pEdges,
+  private void createEdgeGraphComponents(List<IEdge> edges,
       Dimension dimension) {
     graphContLogger.debug("Creating edge components");
-    Iterator<IEdge> edgIt = pEdges.iterator();
-    while (edgIt.hasNext()) {
-      IEdge edge = (IEdge) edgIt.next();
-      edgeComponent = new EdgeComponent(edge, dimension, backgroundColor, check,
+
+    edges.forEach(e -> {
+      edgeComponent = new EdgeComponent(e, dimension, backgroundColor, check,
           effectiveLabelPixel);
       edgeComponents.add(edgeComponent);
-    }
+    });
   }
 
   /**
@@ -148,9 +147,9 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
    * @param pVertizes
    *          vetices
    */
-  private void checkLength(Vector<IVertex> pVertizes) {
+  private void checkLength(List<IVertex> pVertizes) {
     graphContLogger.debug("Calculate maximal vertex width");
-    Vector<IVertex> vertizes = pVertizes;
+    List<IVertex> vertizes = pVertizes;
 
     Iterator<IVertex> it = vertizes.iterator();
     while (it.hasNext()) {
@@ -224,23 +223,26 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
     if (!visualModel.isLayouting()) {
       mouseController();
       check = new LabelConflictCheck();
-      graphModel = visualModel.getGraphModel();
-      icon = graphModel.getBackgroundImage();
-      backgroundColor = graphModel.getBackgroundColor();
+      graph = visualModel.getGraph();
+
+      // TODO support background image?
+      // icon = graph.getBackgroundImage();
+      // backgroundColor = graph.getBackgroundColor();
       edgeComponents = new Vector<>();
       nodeComponents = new Vector<>();
 
       effectiveLabelLength = 0;
       effectiveLabelPixel = 0;
-      maxClientLabelLength = graphModel.getMaxLabelLength();
+      maxClientLabelLength = graph.getMaxLabelLength();
       maxLabelLength = Configuration.getInstance().getMaxLabelLength();
-      checkLength(graphModel.getVertizes());
-      createVertexGraphComponents(graphModel.getVertizes(), dimension);
-      createEdgeGraphComponents(graphModel.getEdges(), dimension);
+      checkLength(graph.getVertices());
+      createVertexGraphComponents(graph.getVertices(), dimension);
+      createEdgeGraphComponents(graph.getEdges(), dimension);
     } else {
-      graphModel = visualModel.getGraphModel();
-      icon = graphModel.getBackgroundImage();
-      backgroundColor = graphModel.getBackgroundColor();
+      graph = visualModel.getGraph();
+      // TODO support background image?
+      // icon = graph.getBackgroundImage();
+      // backgroundColor = graph.getBackgroundColor();
     }
     repaint();
   }
@@ -284,20 +286,19 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
     } else {
       double onePercentX = d.getWidth() / HUNDREDPERCENT;
       double onePercentY = d.getHeight() / HUNDREDPERCENT;
-      Iterator<IVertex> verL = graphModel.getVertizes().iterator();
-      while (verL.hasNext()) {
-        IVertex temp = ((IVertex) verL.next());
-        int x = (int) (temp.getXPosition() * onePercentX),
-            y = (int) (temp.getYPosition() * onePercentY);
+
+      graph.getVertices().forEach(v -> {
+        int x = (int) (v.getXPosition() * onePercentX),
+            y = (int) (v.getYPosition() * onePercentY);
         // TODO Why is property overwritten?
         g.setColor(Color.BLUE);
         g.fillOval(x - 14, y - 14, 28, 28);
         g.setColor(Color.RED);
         g.fillOval(x - OVAL_WIDTH / 2, y - OVAL_HEIGHT / 2, OVAL_WIDTH,
             OVAL_HEIGHT);
-      }
+      });
 
-      Iterator<IEdge> edg = graphModel.getEdges().iterator();
+      Iterator<IEdge> edg = graph.getEdges().iterator();
       while (edg.hasNext()) {
         IEdge temp = ((IEdge) edg.next());
         IVertex tempStart = temp.getStartVertex();

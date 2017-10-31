@@ -26,7 +26,7 @@ public class SessionViewModel implements Observer {
   // TODO: find better names
   private final StringProperty totalGraphCountProperty = new SimpleStringProperty();
   private final StringProperty currentGraphModelIdProperty = new SimpleStringProperty();
-  
+
   private static final Logger logger = LoggerFactory
       .getLogger(SessionViewModel.class);
 
@@ -79,11 +79,11 @@ public class SessionViewModel implements Observer {
   }
 
   public void replayGraph(double d) {
-   logger.info("Starting replay with speed " + d) ;
+    logger.info("Starting replay with speed " + d);
   }
 
   public void autoLayout() {
-    logger.info("Auto-layouting the current graph model...") ;
+    logger.info("Auto-layouting the current graph model...");
 
   }
 

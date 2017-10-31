@@ -1,6 +1,7 @@
 package gvs.business.logic.graph;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
@@ -142,7 +143,8 @@ public class GraphSessionController extends Observable
     logger.debug("Check if graph model is empty");
     if (currentGraph.getVertices().size() > 0) {
 
-      if (((IVertex) currentGraph.getVertices().get(0)).isRelative()) {
+      // TODO check if first is relative (might be wrong. mwieland)
+      if (currentGraph.getVertices().iterator().next().isRelative()) {
         logger.debug("Graph is relative");
         isRelativeSession = true;
         validateNavigation(currentGraph.getId());
@@ -196,7 +198,8 @@ public class GraphSessionController extends Observable
     logger.debug("Check if graph is empty");
     if ((currentGraph.getVertices()).size() != 0) {
 
-      if (((IVertex) currentGraph.getVertices().get(0)).isRelative()) {
+      // check if first element. might be wrong (mwieand)
+      if (currentGraph.getVertices().iterator().next().isRelative()) {
         logger.debug("Graph is relative");
         isRelativeSession = true;
         validateNavigation(currentGraph.getId());
@@ -288,8 +291,9 @@ public class GraphSessionController extends Observable
     if (currentGraph.getId() == graphs.size()) {
       visualModel.setDragging(true);
       logger.debug("Last Graph in session queue, enable dragging");
-      if (currentGraph.getVertices().size() > 0
-          && currentGraph.getVertices().get(0).isRelative()) {
+
+      // check if first element. might be wrong (mwieland)
+      if (currentGraph.getVertices().iterator().next().isRelative()) {
         visualModel.setDragging(false);
         logger.debug("Graph is relative, disable dragging");
       }
@@ -476,8 +480,8 @@ public class GraphSessionController extends Observable
    */
   private void setFormerVertexCoordinate() {
     Graph formerGraph = graphs.get(currentGraph.getId() - 2);
-    List<IVertex> formerVertizes = formerGraph.getVertices();
-    List<IVertex> currentVertizes = currentGraph.getVertices();
+    Collection<IVertex> formerVertizes = formerGraph.getVertices();
+    Collection<IVertex> currentVertizes = currentGraph.getVertices();
 
     Iterator<IVertex> it1 = currentVertizes.iterator();
     boolean isFormerVertexPosAvailable = false;

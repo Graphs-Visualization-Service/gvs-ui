@@ -1,8 +1,8 @@
 package gvs.ui.view.session;
 
+import java.util.Collection;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,7 +125,7 @@ public class SessionView implements Observer {
     drawEdges(graphViewModel.getEdgeViewModels());
   }
 
-  private void drawVertices(Set<VertexViewModel> vertexViewModels) {
+  private void drawVertices(Collection<VertexViewModel> vertexViewModels) {
     vertexViewModels.forEach(v -> {
       Circle circle = new Circle();
       circle.setRadius(20);
@@ -142,7 +142,7 @@ public class SessionView implements Observer {
     });
   }
 
-  private void drawEdges(Set<EdgeViewModel> edgeViewModels) {
+  private void drawEdges(Collection<EdgeViewModel> edgeViewModels) {
     edgeViewModels.forEach(e -> {
       double startX = e.getStartVertex().getXProperty().get();
       double startY = e.getStartVertex().getYProperty().get();

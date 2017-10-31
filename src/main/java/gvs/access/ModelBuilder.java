@@ -9,6 +9,8 @@ package gvs.access;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Image;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -135,8 +137,8 @@ public class ModelBuilder {
     String graphBackground = eGraph.element(BACKGROUND).getText();
     String maxLabelLengthString = eGraph.element(MAXLABELLENGTH).getText();
 
-    Vector<IVertex> vertizes = new Vector<IVertex>();
-    Vector<IEdge> edges = new Vector<IEdge>();
+    Collection<IVertex> vertizes = new HashSet<IVertex>();
+    Collection<IEdge> edges = new HashSet<IEdge>();
 
     Element eVertizes = pDocRoot.element(VERTIZES);
     Iterator<Element> vertizesIt = eVertizes.elementIterator();
@@ -158,11 +160,11 @@ public class ModelBuilder {
         edges.add(buildUndirectedEdge(eEdge, vertizes));
       }
     }
-    
+
     int maxLabelLength = Integer.parseInt(maxLabelLengthString);
     Graph newGraph = new Graph(graphId, vertizes, edges);
     newGraph.setMaxLabelLength(maxLabelLength);
-    
+
     // TODO background image support?
     // Image graphImage = typs.getBackgroundImage(graphBackground);
     // if (graphImage == null) {
@@ -250,8 +252,8 @@ public class ModelBuilder {
     }
 
     serverLogger.debug("Finish build tree from XML");
-    Tree tm = new Tree(treeLabel, Integer.parseInt(maxLabelLength),
-        Color.WHITE, rootNode, nodes);
+    Tree tm = new Tree(treeLabel, Integer.parseInt(maxLabelLength), Color.WHITE,
+        rootNode, nodes);
     applicationController.addTreeModel(tm, treeId, treeLabel);
   }
 
@@ -430,7 +432,8 @@ public class ModelBuilder {
    *          vertices
    * @return edge
    */
-  private IEdge buildDirectedEdge(Element pEdge, Vector<IVertex> pVertizes) {
+  private IEdge buildDirectedEdge(Element pEdge,
+      Collection<IVertex> pVertizes) {
     serverLogger.debug("Build DirectedEdge XML");
     Element eLabel = pEdge.element(LABEL);
     Element eLineColor = pEdge.element(LINECOLOR);
@@ -475,7 +478,8 @@ public class ModelBuilder {
    *          vertices
    * @return edge
    */
-  private IEdge buildUndirectedEdge(Element pEdge, Vector<IVertex> pVertizes) {
+  private IEdge buildUndirectedEdge(Element pEdge,
+      Collection<IVertex> pVertizes) {
     serverLogger.debug("Build UndirectedEdge XML");
     int arrowPos = Integer.parseInt(pEdge.attributeValue(ARROWPOS));
 

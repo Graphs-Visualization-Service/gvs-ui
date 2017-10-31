@@ -18,22 +18,24 @@ public class EdgeViewModel implements Observer {
 
   private VertexViewModel startVertex;
   private VertexViewModel endVertex;
-  
+
   private static final Logger logger = LoggerFactory
       .getLogger(EdgeViewModel.class);
-
 
   /**
    * Create a new EdgeViewModel with the corresponding vertices.
    * 
+   * @param edge
+   *          business layer edge
    * @param startVertex
    *          start vertex
    * @param endVertex
    *          end vertex
    */
-  public EdgeViewModel(IEdge edge) {
-    this.startVertex = new VertexViewModel(edge.getStartVertex());
-    this.endVertex = new VertexViewModel(edge.getEndVertex());
+  public EdgeViewModel(IEdge edge, VertexViewModel startVertex,
+      VertexViewModel endVertex) {
+    this.startVertex = startVertex;
+    this.endVertex = endVertex;
   }
 
   @Override

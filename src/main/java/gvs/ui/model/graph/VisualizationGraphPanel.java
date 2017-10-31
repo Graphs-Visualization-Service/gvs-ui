@@ -8,8 +8,8 @@ import java.awt.MediaTracker;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
@@ -96,7 +96,7 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
    * @param pDimension
    *          dimension
    */
-  private void createVertexGraphComponents(List<IVertex> vertices,
+  private void createVertexGraphComponents(Collection<IVertex> vertices,
       Dimension pDimension) {
     graphContLogger.debug("Creating vertizes components");
 
@@ -129,7 +129,7 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
    * @param dimension
    *          dimension
    */
-  private void createEdgeGraphComponents(List<IEdge> edges,
+  private void createEdgeGraphComponents(Collection<IEdge> edges,
       Dimension dimension) {
     graphContLogger.debug("Creating edge components");
 
@@ -147,9 +147,9 @@ public class VisualizationGraphPanel extends JPanel implements Observer,
    * @param pVertizes
    *          vetices
    */
-  private void checkLength(List<IVertex> pVertizes) {
+  private void checkLength(Collection<IVertex> pVertizes) {
     graphContLogger.debug("Calculate maximal vertex width");
-    List<IVertex> vertizes = pVertizes;
+    Collection<IVertex> vertizes = pVertizes;
 
     Iterator<IVertex> it = vertizes.iterator();
     while (it.hasNext()) {

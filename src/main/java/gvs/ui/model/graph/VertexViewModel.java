@@ -67,7 +67,6 @@ public class VertexViewModel implements Observer {
   private void xProperyListener(ObservableValue<? extends Number> observable,
       Number oldValue, Number newValue) {
     double newX = (double) newValue;
-    logger.info("New X coordinate detected... Vertex is dragged: {}", newX);
     vertex.setXPosition(newX);
   }
 
@@ -85,8 +84,6 @@ public class VertexViewModel implements Observer {
   private void yProperyListener(ObservableValue<? extends Number> observable,
       Number oldValue, Number newValue) {
     double newY = (double) newValue;
-    logger.info("New Y coordinate detected... Vertex is dragged: {}", newY);
-
     vertex.setYPosition(newY);
   }
 

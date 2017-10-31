@@ -1,6 +1,7 @@
 package gvs.business.model.graph;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Set;
 
 import gvs.business.model.Color;
 import gvs.interfaces.IEdge;
@@ -15,8 +16,8 @@ import gvs.interfaces.IVertex;
 public class Graph {
 
   private int id;
-  private List<IVertex> vertices;
-  private List<IEdge> edges;
+  private Collection<IVertex> vertices;
+  private Collection<IEdge> edges;
   private String snapshotDescription;
 
   // TODO Image backgroundImage
@@ -34,7 +35,8 @@ public class Graph {
    * @param graphId
    *          model id
    */
-  public Graph(int graphId, List<IVertex> vertices, List<IEdge> edges) {
+  public Graph(int graphId, Collection<IVertex> vertices,
+      Collection<IEdge> edges) {
     this.id = graphId;
     this.vertices = vertices;
     this.edges = edges;
@@ -43,11 +45,11 @@ public class Graph {
     this.hasBackgroundImage = false;
   }
 
-  public List<IVertex> getVertices() {
+  public Collection<IVertex> getVertices() {
     return this.vertices;
   }
 
-  public List<IEdge> getEdges() {
+  public Collection<IEdge> getEdges() {
     return this.edges;
   }
 
@@ -91,11 +93,11 @@ public class Graph {
     this.hasBackgroundImage = hasBackgroundImage;
   }
 
-  public void setVertices(List<IVertex> vertices) {
+  public void setVertices(Set<IVertex> vertices) {
     this.vertices = vertices;
   }
 
-  public void setEdges(List<IEdge> edges) {
+  public void setEdges(Set<IEdge> edges) {
     this.edges = edges;
   }
 

@@ -1,6 +1,9 @@
 package gvs.ui.model.graph;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
 
@@ -11,8 +14,8 @@ import com.google.inject.Singleton;
 
 import gvs.business.model.graph.Graph;
 import gvs.business.model.tree.Tree;
+import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
-import gvs.ui.logic.session.SessionViewModel;
 
 /**
  * Represents one snapshot of a graph visualization.
@@ -23,14 +26,14 @@ import gvs.ui.logic.session.SessionViewModel;
 @Singleton
 public class GraphViewModel extends Observable {
 
-  private Set<VertexViewModel> vertexViewModels;
+  private Map<Long, VertexViewModel> vertexViewModels;
   private Set<EdgeViewModel> edgeViewModels;
 
   private static final Logger logger = LoggerFactory
       .getLogger(GraphViewModel.class);
 
   public GraphViewModel() {
-    this.vertexViewModels = new HashSet<>();
+    this.vertexViewModels = new HashMap<>();
     this.edgeViewModels = new HashSet<>();
   }
 
@@ -60,31 +63,36 @@ public class GraphViewModel extends Observable {
    */
   private void importGraph(Graph graph) {
     logger.info("Import edges to graph view model");
-    graph.getEdges().forEach(e -> {
-      EdgeViewModel edgeViewModel = new EdgeViewModel(e);
-      this.edgeViewModels.add(edgeViewModel);
+    importVertices(graph.getVertices());
+    importEdges(graph.getEdges());
+  }
 
-      IVertex startVertex = e.getStartVertex();
-      VertexViewModel vertexViewModel = new VertexViewModel(startVertex);
-
-      this.vertexViewModels.add(vertexViewModel);
+  private void importVertices(Collection<IVertex> vertices) {
+    vertices.forEach(v -> {
+      VertexViewModel vertexViewModel = new VertexViewModel(v);
+      vertexViewModels.put(v.getId(), vertexViewModel);
     });
   }
 
-  public Set<VertexViewModel> getVertexViewModels() {
-    return vertexViewModels;
+  private void importEdges(Collection<IEdge> edges) {
+    edges.forEach(e -> {
+      VertexViewModel startVertex = vertexViewModels
+          .get(e.getStartVertex().getId());
+      VertexViewModel endVertex = vertexViewModels
+          .get(e.getEndVertex().getId());
+
+      EdgeViewModel edgeViewModel = new EdgeViewModel(e, startVertex,
+          endVertex);
+      edgeViewModels.add(edgeViewModel);
+    });
   }
 
-  public void setVertexViewModels(Set<VertexViewModel> vertexViewModels) {
-    this.vertexViewModels = vertexViewModels;
+  public Collection<VertexViewModel> getVertexViewModels() {
+    return this.vertexViewModels.values();
   }
 
   public Set<EdgeViewModel> getEdgeViewModels() {
-    return edgeViewModels;
-  }
-
-  public void setEdgeViewModels(Set<EdgeViewModel> edgeViewModels) {
-    this.edgeViewModels = edgeViewModels;
+    return this.edgeViewModels;
   }
 
 }

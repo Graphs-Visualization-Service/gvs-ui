@@ -63,9 +63,9 @@
       </GridPane>
    </top>
    <center>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <AnchorPane BorderPane.alignment="CENTER">
       	<children>
-      		<fx:include fx:id="sessionView" source="../session/SessionView.fxml"/>
+      		<fx:include fx:id="sessionView" source="../session/SessionView.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"/>
       	</children>
       </AnchorPane>
    </center>

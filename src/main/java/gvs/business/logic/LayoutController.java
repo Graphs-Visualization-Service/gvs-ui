@@ -11,6 +11,8 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Singleton;
+
 import gvs.access.Configuration;
 import gvs.business.logic.physics.helpers.Area;
 import gvs.business.logic.physics.helpers.AreaDimension;
@@ -28,6 +30,7 @@ import gvs.interfaces.IVertex;
  * @author aegli
  *
  */
+@Singleton
 public class LayoutController extends Observable implements Tickable {
 
   private static final int DEFAULT_RADIUS = 40/* radius */;

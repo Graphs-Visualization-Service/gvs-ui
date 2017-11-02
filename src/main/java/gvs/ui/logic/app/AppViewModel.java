@@ -18,7 +18,7 @@ import com.google.inject.Singleton;
 
 import gvs.GuiceBaseModule;
 import gvs.business.logic.ApplicationController;
-import gvs.business.model.ApplicationModel;
+import gvs.business.model.CurrentSessionHolder;
 import gvs.interfaces.ISessionController;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -44,7 +44,7 @@ import javafx.scene.layout.BorderPane;
 @Singleton
 public class AppViewModel implements Observer {
 
-  private ApplicationModel appModel;
+  private CurrentSessionHolder appModel;
   private ApplicationController appController;
   private AnchorPane sessionContentPane;
   private boolean sessionIsInitialized = false;
@@ -66,7 +66,7 @@ public class AppViewModel implements Observer {
   private Provider<FXMLLoader> loaderProvider;
 
   @Inject
-  public AppViewModel(ApplicationModel appModel,
+  public AppViewModel(CurrentSessionHolder appModel,
       ApplicationController appController) {
     context.init();
     this.appModel = appModel;
@@ -133,7 +133,7 @@ public class AppViewModel implements Observer {
   @Override
   public void update(Observable o, Object arg) {
     Platform.runLater(() -> {
-      ISessionController c = ((ApplicationModel) o).getSession();
+      ISessionController c = ((CurrentSessionHolder) o).getCurrentSession();
       String name = c.getSessionName();
       if (name == null) {
         currentSessionName.set(PROMT_MESSAGE);
@@ -149,7 +149,7 @@ public class AppViewModel implements Observer {
 
   public void removeCurrentSession() {
     logger.info("Removing current session...");
-    ISessionController currentSession = appModel.getSession();
+    ISessionController currentSession = appModel.getCurrentSession();
     String sessionName = currentSession.getSessionName();
     sessionNames.remove(sessionName);
     controllerMap.remove(sessionName);
@@ -158,12 +158,12 @@ public class AppViewModel implements Observer {
 
   public void loadSession(File file) {
     logger.info("Loading session from file...");
-    appController.setRequestedFile(file.getPath());
+    appController.loadStoredSession(file.getPath());
   }
 
   public void saveSession(File file) {
     logger.info("Saving session to file...");
-    appModel.getSession().saveSession(file);
+    appModel.getCurrentSession().saveSession(file);
   }
 
   public void changeSession(String name) {
@@ -173,7 +173,7 @@ public class AppViewModel implements Observer {
     }
 
     ISessionController c = controllerMap.get(name);
-    if (appModel.getSession().getSessionName() != name) {
+    if (appModel.getCurrentSession().getSessionName() != name) {
       appController.changeCurrentSession(c);
       logger.info(String.format("Changing current session to '%s'...", name));
     }

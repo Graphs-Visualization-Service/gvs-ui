@@ -8,8 +8,6 @@ public interface ISessionController{
 
   long getSessionId();
 
-  void setVisualModel();
-
   // TODO: remove here and in subclasses
   void getFirstModel();
 
@@ -28,8 +26,6 @@ public interface ISessionController{
 
   void autoLayout();
 
-  boolean validateNavigation(long requestedModelId);
-
   void saveSession(File file);
 
   void changeCurrentGraphToNext();
@@ -39,8 +35,6 @@ public interface ISessionController{
   void changeCurrentGraphToPrev();
 
   void changeCurrentGraphToLast();
-  
-  int getCurrentGraphId();
   
   int getTotalGraphCount();
 

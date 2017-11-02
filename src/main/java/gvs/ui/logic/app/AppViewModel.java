@@ -205,7 +205,7 @@ public class AppViewModel implements Observer {
     AnchorPane.setRightAnchor(anchorChild, (double) right);
   }
 
-  public BooleanProperty getSessionVisibilityProperty() {
+  public BooleanProperty sessionVisibilityProperty() {
     return sessionVisibilityProperty;
   }
 }

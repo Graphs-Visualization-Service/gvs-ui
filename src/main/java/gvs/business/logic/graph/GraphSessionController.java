@@ -380,29 +380,24 @@ public class GraphSessionController extends Observable
 
   @Override
   public void changeCurrentGraphToNext() {
-
     int nextGraphId = graphHolder.getCurrentGraph().getId() + 1;
     graphHolder.setCurrentGraph(graphs.get(nextGraphId - 1));
-    notifyObservers();
   }
 
   @Override
   public void changeCurrentGraphToFirst() {
     graphHolder.setCurrentGraph(graphs.get(0));
-    notifyObservers();
   }
 
   @Override
   public void changeCurrentGraphToPrev() {
     int prevGraphId = graphHolder.getCurrentGraph().getId() - 1;
     graphHolder.setCurrentGraph(graphs.get(prevGraphId - 1));
-    notifyObservers();
   }
 
   @Override
   public void changeCurrentGraphToLast() {
     graphHolder.setCurrentGraph(graphs.get(graphs.size() - 1));
-    notifyObservers();
   }
 
   @Override
@@ -463,7 +458,6 @@ public class GraphSessionController extends Observable
     }
 
     LayoutMonitor.getInstance().unlock();
-
   }
 
 }

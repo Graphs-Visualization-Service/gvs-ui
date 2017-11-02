@@ -5,13 +5,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import gvs.business.model.graph.CurrentGraphHolder;
 import gvs.business.model.graph.Graph;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
@@ -23,17 +26,29 @@ import gvs.interfaces.IVertex;
  *
  */
 @Singleton
-public class GraphViewModel extends Observable {
+public class GraphViewModel extends Observable implements Observer {
 
-  private Map<Long, VertexViewModel> vertexViewModels;
-  private Set<EdgeViewModel> edgeViewModels;
+  private final Map<Long, VertexViewModel> vertexViewModels;
+  private final Set<EdgeViewModel> edgeViewModels;
+
+  private final CurrentGraphHolder currentGraphHolder;
 
   private static final Logger logger = LoggerFactory
       .getLogger(GraphViewModel.class);
 
-  public GraphViewModel() {
+  @Inject
+  public GraphViewModel(CurrentGraphHolder currentGraphHolder) {
+    this.currentGraphHolder = currentGraphHolder;
     this.vertexViewModels = new HashMap<>();
     this.edgeViewModels = new HashSet<>();
+
+    currentGraphHolder.addObserver(this);
+  }
+
+  @Override
+  public void update(Observable o, Object arg) {
+    CurrentGraphHolder currentGraphHolder = (CurrentGraphHolder) o;
+    transformGraphModel(currentGraphHolder.getCurrentGraph());
   }
 
   /**
@@ -44,9 +59,12 @@ public class GraphViewModel extends Observable {
    */
   public void transformGraphModel(Graph graph) {
     logger.info("Import new graph to graph view model");
+    vertexViewModels.clear();
+    edgeViewModels.clear();
+    
     importGraph(graph);
 
-    logger.info("graph imported. notify observers");
+    logger.info("graph imported. notify session view");
     setChanged();
     notifyObservers();
   }

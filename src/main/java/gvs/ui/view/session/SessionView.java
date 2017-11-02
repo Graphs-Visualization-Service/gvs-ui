@@ -76,26 +76,30 @@ public class SessionView implements Observer {
 
   private StepProgressBar stepProgressBar;
 
-  @Inject
-  private GraphViewModel graphViewModel;
-
-  @Inject
-  private SessionViewModel sessionViewModel;
+  private final GraphViewModel graphViewModel;
+  private final SessionViewModel sessionViewModel;
 
   private static final int DEFAULT_REPLAY_SPEED = 500;
   private static final Logger logger = LoggerFactory
       .getLogger(SessionView.class);
+
+  @Inject
+  public SessionView(GraphViewModel graphViewModel,
+      SessionViewModel sessionViewModel) {
+    this.graphViewModel = graphViewModel;
+    this.sessionViewModel = sessionViewModel;
+    
+    graphViewModel.addObserver(this);
+  }
 
   /**
    * Called automatically by JavaFX Framework to initialize the view.
    */
   @FXML
   private void initialize() {
-    graphViewModel.addObserver(this);
-
-    initStepButtons();
-    playBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
     initSlider();
+    
+    setButtonIcons();
     initStepIndicator();
     bindStepIndicator();
   }
@@ -113,14 +117,24 @@ public class SessionView implements Observer {
     speedSlider.setValue(DEFAULT_REPLAY_SPEED);
   }
 
-  private void initStepButtons() {
+  private void setButtonIcons() {
     firstBtn.setGraphic(FontAwesome.createLabel(Glyph.STEP_BACKWARD));
     prevBtn.setGraphic(FontAwesome.createLabel(Glyph.BACKWARD));
     nextBtn.setGraphic(FontAwesome.createLabel(Glyph.FORWARD));
     lastBtn.setGraphic(FontAwesome.createLabel(Glyph.STEP_FORWARD));
+    
+    playBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
   }
+  
+  @Override
+  public void update(Observable o, Object arg) {
+    GraphViewModel viewModel = (GraphViewModel) graphViewModel;
+    redraw(viewModel);
+  } 
 
   private void redraw(GraphViewModel graphViewModel) {
+    logger.info("redraw graph pane");
+    graphPane.getChildren().clear();
     drawVertices(graphViewModel.getVertexViewModels());
     drawEdges(graphViewModel.getEdgeViewModels());
   }
@@ -198,11 +212,5 @@ public class SessionView implements Observer {
         .bind(sessionViewModel.totalGraphCountProperty());
     stepProgressBar.currentStepProperty()
         .bind(sessionViewModel.currentGraphModelIdProperty());
-  }
-
-  @Override
-  public void update(Observable o, Object arg) {
-    GraphViewModel viewModel = (GraphViewModel) graphViewModel;
-    redraw(viewModel);
   }
 }

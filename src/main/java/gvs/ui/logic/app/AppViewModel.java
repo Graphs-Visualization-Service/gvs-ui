@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import com.gluonhq.ignite.guice.GuiceContext;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import gvs.GuiceBaseModule;
@@ -44,34 +43,31 @@ import javafx.scene.layout.BorderPane;
 @Singleton
 public class AppViewModel implements Observer {
 
-  private CurrentSessionHolder appModel;
-  private ApplicationController appController;
-  private AnchorPane sessionContentPane;
-  private boolean sessionIsInitialized = false;
+  private final BooleanProperty sessionControlVisibilityProperty = new SimpleBooleanProperty();
 
-  private final BooleanProperty sessionVisibilityProperty = new SimpleBooleanProperty();
   private final StringProperty currentSessionName = new SimpleStringProperty();
   private final ObservableList<String> sessionNames = FXCollections
       .observableArrayList();
-  private final Map<String, ISessionController> controllerMap = new HashMap<>();
 
+  private final Map<String, ISessionController> controllerMap = new HashMap<>();
   private static final String PROMT_MESSAGE = "no active session";
-  private static final Logger logger = LoggerFactory
-      .getLogger(AppViewModel.class);
 
   private final GuiceContext context = new GuiceContext(this,
       () -> Arrays.asList(new GuiceBaseModule()));
+  private final CurrentSessionHolder appModel;
+  private final ApplicationController appController;
 
-  @Inject
-  private Provider<FXMLLoader> loaderProvider;
+  private static final Logger logger = LoggerFactory
+      .getLogger(AppViewModel.class);
 
   @Inject
   public AppViewModel(CurrentSessionHolder appModel,
       ApplicationController appController) {
     context.init();
     this.appModel = appModel;
-    this.appModel.addObserver(this);
     this.appController = appController;
+
+    this.appModel.addObserver(this);
     this.currentSessionName.set(PROMT_MESSAGE);
 
     sessionNames.addListener(this::changeSessionVisibility);
@@ -79,9 +75,6 @@ public class AppViewModel implements Observer {
 
   private void changeSessionVisibility(
       ListChangeListener.Change<? extends String> c) {
-    if (!sessionIsInitialized) {
-      initSessionLayout();
-    }
     if (sessionNames.size() == 1) {
       displaySession();
     } else if (sessionNames.isEmpty()) {
@@ -89,33 +82,14 @@ public class AppViewModel implements Observer {
     }
   }
 
-  private void initSessionLayout() {
-    logger.info("Initializing session layout.");
-    try {
-      FXMLLoader fxmlLoader = loaderProvider.get();
-      fxmlLoader.setLocation(
-          getClass().getResource("/gvs/ui/view/session/SessionView.fxml"));
-
-      BorderPane sessionLayout = (BorderPane) fxmlLoader.load();
-      sessionContentPane = new AnchorPane();
-      sessionContentPane.getChildren().add(sessionLayout);
-      final int anchorMargin = 0;
-      setAnchors(sessionLayout, anchorMargin, anchorMargin, anchorMargin,
-          anchorMargin);
-      sessionIsInitialized = true;
-    } catch (IOException e) {
-      logger.error("Could not load session layout", e);
-    }
-  }
-
   private void hideSession() {
     logger.info("Hiding session layout.");
-    sessionVisibilityProperty.set(false);
+    sessionControlVisibilityProperty.set(false);
   }
 
   private void displaySession() {
     logger.info("Displaying session layout.");
-    sessionVisibilityProperty.set(true);
+    sessionControlVisibilityProperty.set(true);
   }
 
   public ObservableList<String> getSessionNames() {
@@ -206,6 +180,6 @@ public class AppViewModel implements Observer {
   }
 
   public BooleanProperty sessionVisibilityProperty() {
-    return sessionVisibilityProperty;
+    return sessionControlVisibilityProperty;
   }
 }

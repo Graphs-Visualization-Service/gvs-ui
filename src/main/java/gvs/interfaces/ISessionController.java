@@ -1,8 +1,9 @@
 package gvs.interfaces;
 
 import java.io.File;
+import java.util.Observer;
 
-public interface ISessionController{
+public interface ISessionController {
 
   String getSessionName();
 
@@ -35,7 +36,9 @@ public interface ISessionController{
   void changeCurrentGraphToPrev();
 
   void changeCurrentGraphToLast();
-  
+
   int getTotalGraphCount();
+
+  void addObserver(Observer o);
 
 }

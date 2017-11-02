@@ -1,13 +1,10 @@
 package gvs.ui.view.app;
 
 import java.io.File;
-import java.util.Arrays;
 
-import com.gluonhq.ignite.guice.GuiceContext;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.GuiceBaseModule;
 import gvs.ui.logic.app.AppViewModel;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
@@ -60,9 +57,13 @@ public class AppView {
   @FXML
   private Parent sessionView;
 
-  @Inject
-  private AppViewModel appViewModel;
   private FileChooser fileChooser;
+  private final AppViewModel appViewModel;
+  
+  @Inject
+  public AppView(AppViewModel appViewModel) {
+    this.appViewModel = appViewModel;
+  }
 
   @FXML
   private void initialize() {
@@ -71,6 +72,7 @@ public class AppView {
         .bind(appViewModel.sessionVisibilityProperty());
     deleteSessionBtn.disableProperty()
         .bind(appViewModel.sessionVisibilityProperty().not());
+   
     setLogoAsBackground();
     initButtonlabels();
     initFileChooser();

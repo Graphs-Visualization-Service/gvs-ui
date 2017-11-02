@@ -31,6 +31,11 @@ public class GraphViewModel extends Observable {
   private static final Logger logger = LoggerFactory
       .getLogger(GraphViewModel.class);
 
+  public GraphViewModel() {
+    this.vertexViewModels = new HashMap<>();
+    this.edgeViewModels = new HashSet<>();
+  }
+
   /**
    * Load all graph properties.
    * 
@@ -39,8 +44,6 @@ public class GraphViewModel extends Observable {
    */
   public void transformGraphModel(Graph graph) {
     logger.info("Import new graph to graph view model");
-    this.vertexViewModels = new HashMap<>();
-    this.edgeViewModels = new HashSet<>();
     importGraph(graph);
 
     logger.info("graph imported. notify observers");

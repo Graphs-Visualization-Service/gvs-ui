@@ -26,9 +26,11 @@ import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.business.logic.graph.GraphSessionController;
+import gvs.business.logic.graph.GraphSessionControllerFactory;
 import gvs.business.logic.tree.TreeSessionController;
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
@@ -89,10 +91,13 @@ public class Persistor {
   private static final String LEFTCHILD = "Leftchild";
 
   private Configuration configuration;
+  private final GraphSessionControllerFactory graphSessionFactory;
 
   private static final Logger logger = LoggerFactory.getLogger(Persistor.class);
 
-  public Persistor() {
+  @Inject
+  public Persistor(GraphSessionControllerFactory graphSessionFactory) {
+    this.graphSessionFactory = graphSessionFactory;
     configuration = Configuration.getInstance();
   }
 
@@ -425,7 +430,7 @@ public class Persistor {
         graphs.add(newGraph);
       }
     }
-    return new GraphSessionController(sessionId, sessionName, graphs);
+    return graphSessionFactory.create(sessionId, sessionName, graphs);
   }
 
   private TreeSessionController loadTreeSession(Element pTreeSession) {

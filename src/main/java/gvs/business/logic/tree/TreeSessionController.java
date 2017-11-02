@@ -40,7 +40,6 @@ public class TreeSessionController extends Observable
 
   private boolean replayMode = false;
   private int picsPersMinute = 1000;
-  private int currentTreeId;
 
   private Persistor persistor;
 
@@ -77,7 +76,6 @@ public class TreeSessionController extends Observable
     logger.info("Build new tree session controller");
     this.treeModels = new Vector<>();
     this.currentTreeModel = pTreeModel;
-    currentTreeId = currentTreeModel.getModelId();
 
     currentTreeModel.setModelId(serverSessionId++);
     treeModels.add(currentTreeModel);
@@ -107,7 +105,6 @@ public class TreeSessionController extends Observable
 
     logger.info("Build new tree session controller from storage");
     currentTreeModel = (Tree) treeModels.lastElement();
-    currentTreeId = currentTreeModel.getModelId();
     setVisualModel();
   }
 
@@ -126,7 +123,6 @@ public class TreeSessionController extends Observable
     logger.info("New tree model arrived");
     currentTreeModel = pTreeModel;
     currentTreeModel.setModelId(serverSessionId++);
-    currentTreeId = currentTreeModel.getModelId();
     treeModels.add(currentTreeModel);
     logger.debug("Check if current tree is empty");
     if ((currentTreeModel.getNodes()).size() != 0) {
@@ -332,7 +328,6 @@ public class TreeSessionController extends Observable
     int nextTreeId = currentTreeModel.getModelId() + 1;
     if (validateNavigation(nextTreeId)) {
       currentTreeModel = treeModels.get(nextTreeId - 1);
-      currentTreeId = nextTreeId;
       notifyObservers();
     }
   }
@@ -340,7 +335,6 @@ public class TreeSessionController extends Observable
   @Override
   public void changeCurrentGraphToFirst() {
     currentTreeModel = treeModels.firstElement();
-    currentTreeId = currentTreeModel.getModelId();
     notifyObservers();
   }
 
@@ -349,7 +343,6 @@ public class TreeSessionController extends Observable
     int prevTreeId = currentTreeModel.getModelId() - 1;
     if (validateNavigation(prevTreeId)) {
       currentTreeModel = treeModels.get(prevTreeId - 1);
-      currentTreeId = prevTreeId;
       notifyObservers();
     }
   }
@@ -357,13 +350,7 @@ public class TreeSessionController extends Observable
   @Override
   public void changeCurrentGraphToLast() {
     currentTreeModel = treeModels.lastElement();
-    currentTreeId = currentTreeModel.getModelId();
     notifyObservers();
-  }
-
-  @Override
-  public int getCurrentGraphId() {
-    return currentTreeId;
   }
 
   @Override

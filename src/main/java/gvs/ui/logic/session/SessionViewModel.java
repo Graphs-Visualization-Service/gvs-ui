@@ -11,7 +11,7 @@ import com.google.inject.Singleton;
 
 import gvs.business.logic.graph.GraphSessionController;
 import gvs.business.logic.tree.TreeSessionController;
-import gvs.business.model.ApplicationModel;
+import gvs.business.model.CurrentSessionHolder;
 import gvs.interfaces.ISessionController;
 import gvs.ui.model.graph.GraphViewModel;
 import javafx.application.Platform;
@@ -29,8 +29,11 @@ import javafx.beans.property.StringProperty;
 @Singleton
 public class SessionViewModel implements Observer {
 
+  //TODO add boundary checks
+  private int currentStepNumber = 0;
+
   private GraphViewModel graphViewModel;
-  private ApplicationModel applicationModel;
+  private CurrentSessionHolder applicationModel;
   private ISessionController currentSession;
 
   // TODO: find better names
@@ -41,7 +44,7 @@ public class SessionViewModel implements Observer {
       .getLogger(SessionViewModel.class);
 
   @Inject
-  public SessionViewModel(ApplicationModel appModel,
+  public SessionViewModel(CurrentSessionHolder appModel,
       GraphViewModel graphViewModel) {
 
     logger.info("Initializing SessionViewModel.");
@@ -61,25 +64,27 @@ public class SessionViewModel implements Observer {
 
   public void changeCurrentGraphToNext() {
     currentSession.changeCurrentGraphToNext();
-    currentGraphModelIdProperty.set(currentSession.getCurrentGraphId() + "");
+    currentGraphModelIdProperty.set(++currentStepNumber + "");
     logger.info("Changing the displayed graph model...");
   }
 
   public void changeCurrentGraphToPrevious() {
     currentSession.changeCurrentGraphToPrev();
-    currentGraphModelIdProperty.set(currentSession.getCurrentGraphId() + "");
+    currentGraphModelIdProperty.set(--currentStepNumber + "");
     logger.info("Changing the displayed graph model...");
   }
 
   public void changeCurrentGraphToFirst() {
     currentSession.changeCurrentGraphToFirst();
-    currentGraphModelIdProperty.set(currentSession.getCurrentGraphId() + "");
+    currentStepNumber = 1;
+    currentGraphModelIdProperty.set(currentStepNumber + "");
     logger.info("Changing the displayed graph model...");
   }
 
   public void changeCurrentGraphToLast() {
     currentSession.changeCurrentGraphToLast();
-    currentGraphModelIdProperty.set(currentSession.getCurrentGraphId() + "");
+    currentStepNumber = Integer.parseInt(totalGraphCountProperty.get());
+    currentGraphModelIdProperty.set(currentStepNumber + "");
     logger.info("Changing the displayed graph model...");
   }
 
@@ -89,7 +94,7 @@ public class SessionViewModel implements Observer {
    */
   @Override
   public void update(Observable o, Object arg) {
-    currentSession = applicationModel.getSession();
+    currentSession = applicationModel.getCurrentSession();
 
     Platform.runLater(() -> {
       updateStepProperties();

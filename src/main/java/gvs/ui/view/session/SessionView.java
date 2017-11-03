@@ -179,6 +179,7 @@ public class SessionView implements Observer {
       circle.centerYProperty().bindBidirectional(v.getYProperty());
 
       circle.setOnMousePressed(e -> {
+        circle.setCursor(Cursor.MOVE);
         dragOriginalSceneX = e.getSceneX();
         dragOriginalSceneY = e.getSceneY();
 

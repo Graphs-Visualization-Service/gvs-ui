@@ -10,64 +10,93 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import jfxtras.labs.scene.layout.ScalableContentPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="600.0" stylesheets="@SessionView.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gvs.ui.view.session.SessionView">
-   <bottom>
-      <BorderPane prefHeight="100.0" BorderPane.alignment="CENTER">
-         <left>
-         <AnchorPane fx:id="leftPanel" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <GridPane fx:id="stepButtons" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <Button fx:id="firstBtn" mnemonicParsing="false" onMouseClicked="#stepToFirst" />
-                        <Button fx:id="prevBtn" mnemonicParsing="false" onMouseClicked="#stepBackward" GridPane.columnIndex="1" />
-                        <Button fx:id="nextBtn" mnemonicParsing="false" onMouseClicked="#stepForward" GridPane.columnIndex="2" />
-                        <Button fx:id="lastBtn" mnemonicParsing="false" onMouseClicked="#stepToLast" GridPane.columnIndex="3" />
-                     </children>
-                  </GridPane>
-               </children>
-            </AnchorPane>
-         </left>
-         <center>
-         	<AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <TextArea prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
-               </children>
-            </AnchorPane>
-         </center>
-         <right>
-         	<AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <GridPane fx:id="playGrid" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                     <children>
-                        <Button fx:id="playBtn" mnemonicParsing="false" onMouseClicked="#replayGraph" />
-                        <Button fx:id="autoLayoutBtn" mnemonicParsing="false" onMouseClicked="#autoLayout" text="AutoLayout" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
-                     </children>
-                  </GridPane>
-                   <Slider fx:id="speedSlider" majorTickUnit="500.0" max="2000.0" minorTickCount="10" prefWidth="200.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
-               </children>
-             </AnchorPane>
-         </right>
-      </BorderPane>
-   </bottom>
-   <center>
-   </center>
-   <center>
-      <ScalableContentPane fx:id="graphPane" BorderPane.alignment="CENTER" />
-   </center>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity"
+	minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0"
+	prefWidth="600.0" stylesheets="@SessionView.css" xmlns="http://javafx.com/javafx/8.0.111"
+	xmlns:fx="http://javafx.com/fxml/1" fx:controller="gvs.ui.view.session.SessionView">
+	<bottom>
+		<BorderPane prefHeight="100.0" BorderPane.alignment="CENTER">
+			<left>
+				<AnchorPane fx:id="leftPanel" prefHeight="200.0"
+					prefWidth="200.0" BorderPane.alignment="CENTER">
+					<children>
+						<GridPane fx:id="stepButtons" AnchorPane.leftAnchor="5.0"
+							AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+							<columnConstraints>
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+									prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+									prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+									prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+									prefWidth="100.0" />
+							</columnConstraints>
+							<rowConstraints>
+								<RowConstraints minHeight="10.0" prefHeight="30.0"
+									vgrow="SOMETIMES" />
+							</rowConstraints>
+							<children>
+								<Button fx:id="firstBtn" mnemonicParsing="false"
+									onMouseClicked="#stepToFirst" />
+								<Button fx:id="prevBtn" mnemonicParsing="false"
+									onMouseClicked="#stepBackward" GridPane.columnIndex="1" />
+								<Button fx:id="nextBtn" mnemonicParsing="false"
+									onMouseClicked="#stepForward" GridPane.columnIndex="2" />
+								<Button fx:id="lastBtn" mnemonicParsing="false"
+									onMouseClicked="#stepToLast" GridPane.columnIndex="3" />
+							</children>
+						</GridPane>
+					</children>
+				</AnchorPane>
+			</left>
+			<center>
+				<AnchorPane prefHeight="200.0" prefWidth="200.0"
+					BorderPane.alignment="CENTER">
+					<children>
+						<TextArea prefHeight="200.0" prefWidth="200.0"
+							AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0"
+							AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+					</children>
+				</AnchorPane>
+			</center>
+			<right>
+				<AnchorPane prefHeight="200.0" prefWidth="200.0"
+					BorderPane.alignment="CENTER">
+					<children>
+						<GridPane fx:id="playGrid" AnchorPane.leftAnchor="5.0"
+							AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+							<columnConstraints>
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+									prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+									prefWidth="100.0" />
+							</columnConstraints>
+							<rowConstraints>
+								<RowConstraints minHeight="10.0" prefHeight="30.0"
+									vgrow="SOMETIMES" />
+							</rowConstraints>
+							<children>
+								<Button fx:id="playBtn" mnemonicParsing="false"
+									onMouseClicked="#replayGraph" />
+								<Button fx:id="autoLayoutBtn" mnemonicParsing="false"
+									onMouseClicked="#autoLayout" text="AutoLayout"
+									GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+							</children>
+						</GridPane>
+						<Slider fx:id="speedSlider" majorTickUnit="500.0" max="2000.0"
+							minorTickCount="10" prefWidth="200.0" showTickLabels="true"
+							showTickMarks="true" snapToTicks="true" AnchorPane.bottomAnchor="5.0"
+							AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+					</children>
+				</AnchorPane>
+			</right>
+		</BorderPane>
+	</bottom>
+	<center>
+	</center>
+	<center>
+		<ScalableContentPane fx:id="graphPane" maxWidth="600"
+			style="-fx-background-color: rgba(0,0,0, 0.5);" BorderPane.alignment="CENTER" />
+	</center>
 </BorderPane>

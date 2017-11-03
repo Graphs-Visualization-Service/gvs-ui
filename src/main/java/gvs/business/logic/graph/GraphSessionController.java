@@ -34,7 +34,6 @@ import gvs.interfaces.IVertex;
 public class GraphSessionController extends Observable
     implements Observer, IGraphSessionController {
 
-  private Timer replayTimer = null;
   private GraphSessionReplay sessionReplay = null;
 
   private static final int DEFAULT_PICS_PER_MINUTE = 1000;
@@ -191,18 +190,17 @@ public class GraphSessionController extends Observable
    * Displays requested model.
    */
   public void replay() {
-    logger.info("Show a replay of the session");
+    logger.info("Replay current session");
+    Timer timer = new Timer();
     if (!replayMode) {
-      setEmptyButtonState();
       setReplayMode(true);
       // TODO replace with view model pendant
       // controlPanel.setReplay(true);
-      replayTimer = new Timer();
       sessionReplay = new GraphSessionReplay(graphs, this);
-      replayTimer.schedule(sessionReplay, picsPersMinute, picsPersMinute);
+      timer.schedule(sessionReplay, picsPersMinute, picsPersMinute);
     } else {
       this.setReplayMode(false);
-      replayTimer.cancel();
+      timer.cancel();
     }
   }
 
@@ -259,7 +257,6 @@ public class GraphSessionController extends Observable
           v.setFixedPosition(false);
         });
         // visualModel.setDragging(false);
-        setEmptyButtonState();
         autoLayoutingMode = true;
         layout();
       }
@@ -355,22 +352,6 @@ public class GraphSessionController extends Observable
     pCurrentVertex.setXPosition(pFormerVertex.getXPosition());
     pCurrentVertex.setYPosition(pFormerVertex.getYPosition());
     pCurrentVertex.setFixedPosition(pFormerVertex.isFixedPosition());
-  }
-
-  /**
-   * Disable all buttons.
-   */
-  private void setEmptyButtonState() {
-    // TODO: currently deactivates all GVS 1.0 GUI functionality
-    // graphContLogger.debug("Disable all User-Interface components");
-    // controlPanel.setLayout(false);
-    // controlPanel.setPrevious(false);
-    // controlPanel.setFirst(false);
-    // controlPanel.setNext(false);
-    // controlPanel.setLast(false);
-    // controlPanel.setReplay(false);
-    // controlPanel.setLayout(false);
-    // controlPanel.setSlider(false);
   }
 
   @Override

@@ -100,7 +100,7 @@ public class SessionView implements Observer {
   private void initialize() {
     initSlider();
 
-    setButtonIcons();
+    initializeButtons();
     initStepIndicator();
     bindStepIndicator();
   }
@@ -116,6 +116,27 @@ public class SessionView implements Observer {
 
   private void initSlider() {
     speedSlider.setValue(DEFAULT_REPLAY_SPEED);
+  }
+
+  private void initializeButtons() {
+    setButtonIcons();
+    bindButtonDisable();
+  }
+
+  private void bindButtonDisable() {
+    firstBtn.disableProperty()
+        .bindBidirectional(sessionViewModel.getFirstBtnDisableProperty());
+    lastBtn.disableProperty()
+        .bindBidirectional(sessionViewModel.getLastBtnDisableProperty());
+    nextBtn.disableProperty()
+        .bindBidirectional(sessionViewModel.getNextBtnDisableProperty());
+    prevBtn.disableProperty()
+        .bindBidirectional(sessionViewModel.getPrevBtnDisableProperty());
+
+    autoLayoutBtn.disableProperty()
+        .bindBidirectional(sessionViewModel.getAutoLayoutBtnDisableProperty());
+    playBtn.disableProperty()
+        .bindBidirectional(sessionViewModel.getReplayBtnDisableProperty());
   }
 
   private void setButtonIcons() {

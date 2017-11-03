@@ -12,6 +12,8 @@ import com.google.inject.Singleton;
 import gvs.business.model.CurrentSessionHolder;
 import gvs.interfaces.ISessionController;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -30,6 +32,13 @@ public class SessionViewModel implements Observer {
   private int currentStepNumber = 0;
 
   private final CurrentSessionHolder currentSessionHolder;
+
+  private final BooleanProperty replayBtnDisableProperty = new SimpleBooleanProperty();
+  private final BooleanProperty lastBtnDisableProperty = new SimpleBooleanProperty();
+  private final BooleanProperty firstBtnDisableProperty = new SimpleBooleanProperty();
+  private final BooleanProperty nextBtnDisableProperty = new SimpleBooleanProperty();
+  private final BooleanProperty prevBtnDisableProperty = new SimpleBooleanProperty();
+  private final BooleanProperty autoLayoutBtnDisableProperty = new SimpleBooleanProperty();
 
   // TODO: find better names
   private final StringProperty totalGraphCountProperty = new SimpleStringProperty();
@@ -98,20 +107,37 @@ public class SessionViewModel implements Observer {
   @Override
   public void update(Observable o, Object arg) {
     logger.info("Current session changed...");
+
     Platform.runLater(() -> {
       updateStepProperties();
-      // TODO release observer connection to old session
-      currentSessionHolder.getCurrentSession().addObserver(this);
     });
   }
 
   public void replayGraph(double d) {
     logger.info("Starting replay with speed {}", d);
+    disableAllButtons(true);
+    currentSessionHolder.getCurrentSession().replay();
+
+    // TODO view should somehow be notified by business if replay has finished
+    disableAllButtons(false);
   }
 
   public void autoLayout() {
     logger.info("Auto-layouting the current graph model...");
+    disableAllButtons(true);
     currentSessionHolder.getCurrentSession().autoLayout();
+
+    // TODO view should somehow be notified by business if layout has finished
+    disableAllButtons(false);
+  }
+
+  private void disableAllButtons(boolean disabled) {
+    firstBtnDisableProperty.set(disabled);
+    lastBtnDisableProperty.set(disabled);
+    prevBtnDisableProperty.set(disabled);
+    nextBtnDisableProperty.set(disabled);
+    autoLayoutBtnDisableProperty.set(disabled);
+    replayBtnDisableProperty.set(disabled);
   }
 
   public StringProperty totalGraphCountProperty() {
@@ -121,4 +147,29 @@ public class SessionViewModel implements Observer {
   public StringProperty currentGraphModelIdProperty() {
     return currentGraphModelIdProperty;
   }
+
+  public BooleanProperty getReplayBtnDisableProperty() {
+    return replayBtnDisableProperty;
+  }
+
+  public BooleanProperty getLastBtnDisableProperty() {
+    return lastBtnDisableProperty;
+  }
+
+  public BooleanProperty getFirstBtnDisableProperty() {
+    return firstBtnDisableProperty;
+  }
+
+  public BooleanProperty getNextBtnDisableProperty() {
+    return nextBtnDisableProperty;
+  }
+
+  public BooleanProperty getPrevBtnDisableProperty() {
+    return prevBtnDisableProperty;
+  }
+
+  public BooleanProperty getAutoLayoutBtnDisableProperty() {
+    return autoLayoutBtnDisableProperty;
+  }
+
 }

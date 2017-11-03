@@ -18,6 +18,7 @@ import gvs.ui.view.controls.StepProgressBar;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -88,7 +89,7 @@ public class SessionView implements Observer {
       SessionViewModel sessionViewModel) {
     this.graphViewModel = graphViewModel;
     this.sessionViewModel = sessionViewModel;
-    
+
     graphViewModel.addObserver(this);
   }
 
@@ -98,7 +99,7 @@ public class SessionView implements Observer {
   @FXML
   private void initialize() {
     initSlider();
-    
+
     setButtonIcons();
     initStepIndicator();
     bindStepIndicator();
@@ -122,15 +123,15 @@ public class SessionView implements Observer {
     prevBtn.setGraphic(FontAwesome.createLabel(Glyph.BACKWARD));
     nextBtn.setGraphic(FontAwesome.createLabel(Glyph.FORWARD));
     lastBtn.setGraphic(FontAwesome.createLabel(Glyph.STEP_FORWARD));
-    
+
     playBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
   }
-  
+
   @Override
   public void update(Observable o, Object arg) {
     GraphViewModel viewModel = (GraphViewModel) graphViewModel;
     redraw(viewModel);
-  } 
+  }
 
   private void redraw(GraphViewModel graphViewModel) {
     logger.info("redraw graph pane");
@@ -142,6 +143,7 @@ public class SessionView implements Observer {
   private void drawVertices(Collection<VertexViewModel> vertexViewModels) {
     vertexViewModels.forEach(v -> {
       Circle circle = new Circle();
+      circle.setCursor(Cursor.HAND);
       circle.setRadius(20);
       circle.centerXProperty().bindBidirectional(v.getXProperty());
       circle.centerYProperty().bindBidirectional(v.getYProperty());

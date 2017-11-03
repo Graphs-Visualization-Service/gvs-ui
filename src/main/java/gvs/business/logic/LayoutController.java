@@ -33,6 +33,17 @@ import gvs.interfaces.IVertex;
 @Singleton
 public class LayoutController extends Observable implements Tickable {
 
+  private boolean doSoftLayout = false;
+  private Area area = null;
+  private AreaTicker ticker = null;
+  private Particle particle = null;
+  private Random random = null;
+
+  private Collection<IVertex> vertizes = null;
+  private Collection<IEdge> edges = null;
+
+  private final int setLayoutStableAfterTime = 10000;
+
   private static final int DEFAULT_RADIUS = 40/* radius */;
   private static final int DEFAULT_MASS = 50/* masse */;
   private static final int SOFT_MULTIPLIER = 100;
@@ -43,32 +54,22 @@ public class LayoutController extends Observable implements Tickable {
   private static final int DEFAULT_AREA_X = 950;
   private static final int DEFAULT_SEED = 4000;
   private static final int DEFAULT_RATE = 40;
-  private final int setLayoutStableAfterTime = 10000;
-  private Logger graphContLogger = null;
-  private Area area = null;
-  private AreaTicker ticker = null;
-  private Particle particle = null;
-  private Collection<IVertex> vertizes = null;
-  private Collection<IEdge> edges = null;
-  private boolean doSoftLayout = false;
-  private Random random = null;
+
+  private static final Logger logger = LoggerFactory
+      .getLogger(LayoutController.class);
 
   /**
    * Starts layout engine.
    *
    */
   public LayoutController() {
-    // TODO check replacement of Logger Instance
-    // this.graphContLogger =
-    // gvs.common.Logger.getInstance().getGraphControllerLogger();
-    this.graphContLogger = LoggerFactory.getLogger(LayoutController.class);
     vertizes = new Vector<>();
     edges = new Vector<>();
     area = new Area(new AreaDimension(DEFAULT_AREA_X, DEFAULT_AREA_Y));
     ticker = new AreaTicker(this, DEFAULT_RATE);
     ticker.start();
-    graphContLogger.info("Starting graph layout controller");
-    graphContLogger.debug("Starting layout guard");
+    logger.info("Starting graph layout controller");
+    logger.debug("Starting layout guard");
     Timer guard = new Timer();
     LayoutGuard layoutGuard = new LayoutGuard(area);
     guard.schedule(layoutGuard, setLayoutStableAfterTime);
@@ -123,8 +124,8 @@ public class LayoutController extends Observable implements Tickable {
   public void setElements(Collection<IVertex> vertices, Collection<IEdge> edges,
       boolean doSoftLayout) {
 
-    graphContLogger.info("LayoutController has new elements detected, "
-        + "start layouting procedure");
+    logger.info(
+        "LayoutController has new elements detected start layouting procedure");
     this.doSoftLayout = doSoftLayout;
     this.vertizes = vertices;
     this.edges = edges;
@@ -176,7 +177,6 @@ public class LayoutController extends Observable implements Tickable {
     randomPoint.y = (int) ((double) (area.getUniverseDimension()
         .dimensionHeight()) * Math.random());
     return randomPoint;
-
   }
 
   /**
@@ -207,7 +207,6 @@ public class LayoutController extends Observable implements Tickable {
     fixedPoint.x = (int) ((double) vertex.getXPosition() * FIXED_MULTIPLIER);
     fixedPoint.y = (int) ((double) vertex.getYPosition() * FIXED_MULTIPLIER);
     return fixedPoint;
-
   }
 
   /**

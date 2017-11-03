@@ -1,9 +1,6 @@
 package gvs.business.logic.graph;
 
-import java.util.Collection;
 import java.util.List;
-
-import com.google.inject.assistedinject.Assisted;
 
 import gvs.business.model.graph.Graph;
 

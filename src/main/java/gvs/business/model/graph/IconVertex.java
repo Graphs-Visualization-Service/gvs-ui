@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.Stroke;
 import java.util.Observable;
-import java.util.Observer;
 
 import gvs.interfaces.IIconVertex;
 

@@ -269,8 +269,6 @@ public class DefaultVertexComponent extends JComponent
    */
   public void setActive(boolean pState) {
     activVertex = pState;
-    // TODO whats the difference between relative and fixed??? when are they
-    // used?
     vertex.setFixedPosition(true);
   }
 

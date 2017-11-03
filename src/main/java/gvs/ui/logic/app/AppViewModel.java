@@ -1,7 +1,6 @@
 package gvs.ui.logic.app;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,10 +26,6 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 
 /**
  * The ViewModel class for the GVS Application. Corresponds to the classical
@@ -161,22 +156,6 @@ public class AppViewModel implements Observer {
     logger.info("Quitting GVS...");
     Platform.exit();
     System.exit(0);
-  }
-
-  /**
-   * Helper function. Set anchors for a child of an AnchorPane.
-   * 
-   * @param top
-   * @param bottom
-   * @param left
-   * @param right
-   */
-  private void setAnchors(Node anchorChild, int top, int bottom, int left,
-      int right) {
-    AnchorPane.setTopAnchor(anchorChild, (double) top);
-    AnchorPane.setBottomAnchor(anchorChild, (double) bottom);
-    AnchorPane.setLeftAnchor(anchorChild, (double) left);
-    AnchorPane.setRightAnchor(anchorChild, (double) right);
   }
 
   public BooleanProperty sessionVisibilityProperty() {

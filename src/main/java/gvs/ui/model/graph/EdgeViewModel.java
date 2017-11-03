@@ -47,6 +47,7 @@ public class EdgeViewModel implements Observer {
   @Override
   public void update(Observable o, Object arg) {
     Edge updatedEdge = (Edge) o;
+    this.edge = updatedEdge;
     this.startVertex = new VertexViewModel(updatedEdge.getStartVertex());
     this.endVertex = new VertexViewModel(updatedEdge.getEndVertex());
   }

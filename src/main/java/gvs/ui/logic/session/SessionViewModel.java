@@ -9,11 +9,8 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.business.logic.graph.GraphSessionController;
-import gvs.business.logic.tree.TreeSessionController;
 import gvs.business.model.CurrentSessionHolder;
 import gvs.interfaces.ISessionController;
-import gvs.ui.model.graph.GraphViewModel;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -32,7 +29,6 @@ public class SessionViewModel implements Observer {
   // TODO add boundary checks
   private int currentStepNumber = 0;
 
-  private final GraphViewModel graphViewModel;
   private final CurrentSessionHolder currentSessionHolder;
 
   // TODO: find better names
@@ -43,12 +39,10 @@ public class SessionViewModel implements Observer {
       .getLogger(SessionViewModel.class);
 
   @Inject
-  public SessionViewModel(CurrentSessionHolder appModel,
-      GraphViewModel graphViewModel) {
+  public SessionViewModel(CurrentSessionHolder currentSessionHolder) {
 
     logger.info("Initializing SessionViewModel.");
-    this.currentSessionHolder = appModel;
-    this.graphViewModel = graphViewModel;
+    this.currentSessionHolder = currentSessionHolder;
 
     currentSessionHolder.addObserver(this);
 
@@ -117,7 +111,7 @@ public class SessionViewModel implements Observer {
 
   public void autoLayout() {
     logger.info("Auto-layouting the current graph model...");
-
+    currentSessionHolder.getCurrentSession().autoLayout();
   }
 
   public StringProperty totalGraphCountProperty() {

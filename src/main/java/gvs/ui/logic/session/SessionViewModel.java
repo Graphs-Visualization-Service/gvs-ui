@@ -13,9 +13,9 @@ import gvs.business.model.CurrentSessionHolder;
 import gvs.interfaces.ISessionController;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 /**
  * The ViewModel class for the current session. Corresponds to the classical
@@ -28,9 +28,6 @@ import javafx.beans.property.StringProperty;
 @Singleton
 public class SessionViewModel implements Observer {
 
-  // TODO add boundary checks
-  private int currentStepNumber = 0;
-
   private final CurrentSessionHolder currentSessionHolder;
 
   private final BooleanProperty replayBtnDisableProperty = new SimpleBooleanProperty();
@@ -40,9 +37,8 @@ public class SessionViewModel implements Observer {
   private final BooleanProperty prevBtnDisableProperty = new SimpleBooleanProperty();
   private final BooleanProperty autoLayoutBtnDisableProperty = new SimpleBooleanProperty();
 
-  // TODO: find better names
-  private final StringProperty totalGraphCountProperty = new SimpleStringProperty();
-  private final StringProperty currentGraphModelIdProperty = new SimpleStringProperty();
+  private final IntegerProperty currentGraphIdProperty = new SimpleIntegerProperty();
+  private final IntegerProperty totalGraphCountProperty = new SimpleIntegerProperty();
 
   private static final Logger logger = LoggerFactory
       .getLogger(SessionViewModel.class);
@@ -53,17 +49,9 @@ public class SessionViewModel implements Observer {
     logger.info("Initializing SessionViewModel.");
     this.currentSessionHolder = currentSessionHolder;
 
+    updateStepProperties();
+
     currentSessionHolder.addObserver(this);
-
-    currentGraphModelIdProperty.set("0");
-    totalGraphCountProperty.set("0");
-  }
-
-  private void updateStepProperties() {
-    ISessionController currentSession = currentSessionHolder
-        .getCurrentSession();
-    totalGraphCountProperty.set(currentSession.getTotalGraphCount() + "");
-    currentGraphModelIdProperty.set(totalGraphCountProperty.get());
   }
 
   public void changeCurrentGraphToNext() {
@@ -71,7 +59,7 @@ public class SessionViewModel implements Observer {
     ISessionController currentSession = currentSessionHolder
         .getCurrentSession();
     currentSession.changeCurrentGraphToNext();
-    currentGraphModelIdProperty.set(++currentStepNumber + "");
+    updateStepProperties();
   }
 
   public void changeCurrentGraphToPrevious() {
@@ -79,7 +67,7 @@ public class SessionViewModel implements Observer {
     ISessionController currentSession = currentSessionHolder
         .getCurrentSession();
     currentSession.changeCurrentGraphToPrev();
-    currentGraphModelIdProperty.set(--currentStepNumber + "");
+    updateStepProperties();
   }
 
   public void changeCurrentGraphToFirst() {
@@ -87,8 +75,7 @@ public class SessionViewModel implements Observer {
     ISessionController currentSession = currentSessionHolder
         .getCurrentSession();
     currentSession.changeCurrentGraphToFirst();
-    currentStepNumber = 1;
-    currentGraphModelIdProperty.set(currentStepNumber + "");
+    updateStepProperties();
   }
 
   public void changeCurrentGraphToLast() {
@@ -96,8 +83,7 @@ public class SessionViewModel implements Observer {
     ISessionController currentSession = currentSessionHolder
         .getCurrentSession();
     currentSession.changeCurrentGraphToLast();
-    currentStepNumber = Integer.parseInt(totalGraphCountProperty.get());
-    currentGraphModelIdProperty.set(currentStepNumber + "");
+    updateStepProperties();
   }
 
   /**
@@ -111,6 +97,19 @@ public class SessionViewModel implements Observer {
     Platform.runLater(() -> {
       updateStepProperties();
     });
+  }
+
+  private void updateStepProperties() {
+    ISessionController currentSession = currentSessionHolder
+        .getCurrentSession();
+
+    if (currentSession != null) {
+      totalGraphCountProperty.set(currentSession.getTotalGraphCount());
+      currentGraphIdProperty.set(currentSession.getCurrentGraph().getId());
+    } else {
+      totalGraphCountProperty.set(0);
+      currentGraphIdProperty.set(0);
+    }
   }
 
   public void replayGraph(long timeout) {
@@ -140,12 +139,12 @@ public class SessionViewModel implements Observer {
     replayBtnDisableProperty.set(disabled);
   }
 
-  public StringProperty totalGraphCountProperty() {
+  public IntegerProperty totalGraphCountProperty() {
     return totalGraphCountProperty;
   }
 
-  public StringProperty currentGraphModelIdProperty() {
-    return currentGraphModelIdProperty;
+  public IntegerProperty currentGraphIdProperty() {
+    return currentGraphIdProperty;
   }
 
   public BooleanProperty getReplayBtnDisableProperty() {

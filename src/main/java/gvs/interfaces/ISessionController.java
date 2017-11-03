@@ -3,6 +3,8 @@ package gvs.interfaces;
 import java.io.File;
 import java.util.Observer;
 
+import gvs.business.model.graph.Graph;
+
 public interface ISessionController {
 
   String getSessionName();
@@ -26,7 +28,7 @@ public interface ISessionController {
   void autoLayout();
 
   void saveSession(File file);
-
+  
   void changeCurrentGraphToNext();
 
   void changeCurrentGraphToFirst();
@@ -38,5 +40,7 @@ public interface ISessionController {
   int getTotalGraphCount();
 
   void addObserver(Observer o);
+  
+  Graph getCurrentGraph();
 
 }

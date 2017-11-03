@@ -18,6 +18,7 @@ import gvs.ui.view.controls.StepProgressBar;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -112,10 +113,12 @@ public class SessionView implements Observer {
     AnchorPane.setLeftAnchor(stepProgressBar, (double) margin);
     AnchorPane.setRightAnchor(stepProgressBar, (double) margin);
 
+    
+    
     stepProgressBar.totalStepProperty()
-        .bind(sessionViewModel.totalGraphCountProperty());
+        .bind(Bindings.convert(sessionViewModel.totalGraphCountProperty()));
     stepProgressBar.currentStepProperty()
-        .bind(sessionViewModel.currentGraphModelIdProperty());
+        .bind(Bindings.convert(sessionViewModel.currentGraphIdProperty()));
   }
 
   private void initializeReplaySlider() {

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 
 import gvs.access.Persistor;
+import gvs.business.model.graph.Graph;
 import gvs.business.model.tree.Tree;
 import gvs.interfaces.ITreeSessionController;
 import gvs.ui.model.tree.VisualizationTreeModel;
@@ -382,6 +383,11 @@ public class TreeSessionController extends Observable
       return false;
     }
     return true;
+  }
+
+  @Override
+  public Graph getCurrentGraph() {
+    return null;
   }
 
 }

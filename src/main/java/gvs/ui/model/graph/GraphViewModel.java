@@ -18,6 +18,7 @@ import gvs.business.model.graph.CurrentGraphHolder;
 import gvs.business.model.graph.Graph;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
+import gvs.ui.logic.session.SessionViewModel;
 
 /**
  * Represents one snapshot of a graph visualization.
@@ -31,14 +32,16 @@ public class GraphViewModel extends Observable implements Observer {
   private final Map<Long, VertexViewModel> vertexViewModels;
   private final Set<EdgeViewModel> edgeViewModels;
 
+  private final SessionViewModel sessionViewModel;
   private final CurrentGraphHolder currentGraphHolder;
 
   private static final Logger logger = LoggerFactory
       .getLogger(GraphViewModel.class);
 
   @Inject
-  public GraphViewModel(CurrentGraphHolder currentGraphHolder) {
+  public GraphViewModel(CurrentGraphHolder currentGraphHolder, SessionViewModel sessionViewModel) {
     this.currentGraphHolder = currentGraphHolder;
+    this.sessionViewModel = sessionViewModel;
     this.vertexViewModels = new HashMap<>();
     this.edgeViewModels = new HashSet<>();
 
@@ -49,6 +52,7 @@ public class GraphViewModel extends Observable implements Observer {
   public void update(Observable o, Object arg) {
     CurrentGraphHolder currentGraphHolder = (CurrentGraphHolder) o;
     transformGraphModel(currentGraphHolder.getCurrentGraph());
+    sessionViewModel.updateStepProperties();
   }
 
   /**

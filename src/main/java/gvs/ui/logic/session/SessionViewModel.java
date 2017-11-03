@@ -99,17 +99,19 @@ public class SessionViewModel implements Observer {
     });
   }
 
-  private void updateStepProperties() {
+  public void updateStepProperties() {
     ISessionController currentSession = currentSessionHolder
         .getCurrentSession();
 
-    if (currentSession != null) {
-      totalGraphCountProperty.set(currentSession.getTotalGraphCount());
-      currentGraphIdProperty.set(currentSession.getCurrentGraph().getId());
-    } else {
-      totalGraphCountProperty.set(0);
-      currentGraphIdProperty.set(0);
-    }
+    Platform.runLater(() -> {
+      if (currentSession != null) {
+        totalGraphCountProperty.set(currentSession.getTotalGraphCount());
+        currentGraphIdProperty.set(currentSession.getCurrentGraph().getId());
+      } else {
+        totalGraphCountProperty.set(0);
+        currentGraphIdProperty.set(0);
+      }
+    });
   }
 
   public void replayGraph(long timeout) {

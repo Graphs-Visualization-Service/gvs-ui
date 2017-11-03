@@ -11,20 +11,18 @@ import gvs.business.model.graph.Graph;
  * @author Michi
  *
  */
-public interface GraphSessionControllerFactory {
+public interface GraphSessionReplayFactory {
 
   /**
    * Construct a graph session controller with dependencies, which are not
    * automatically injectable.
    * 
-   * @param sessionId
-   *          id of the session
-   * @param sessionName
-   *          name of the session
+   * @param graphSessionController
+   *          related graph session controller
    * @param graphs
-   *          list of graphs
+   *          graphs to step through
    * @return new instance
    */
-  GraphSessionController create(long sessionId, String sessionName,
+  GraphSessionReplay create(GraphSessionController graphSessionController,
       List<Graph> graphs);
 }

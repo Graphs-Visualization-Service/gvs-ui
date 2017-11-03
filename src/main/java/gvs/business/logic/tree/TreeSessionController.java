@@ -196,7 +196,7 @@ public class TreeSessionController extends Observable
   /**
    * Shows a replay over all available models
    */
-  public void replay() {
+  public void replay(long speed) {
     logger.info("Show replay of tree session");
     if (!replayMode) {
       setEmptyButtonState();
@@ -303,7 +303,6 @@ public class TreeSessionController extends Observable
     logger.info("Finished layouting tree, all positions are set");
     setVisualModel();
   }
-
 
   // Disable all button. Occurs when replay or layouting is active
   private void setEmptyButtonState() {

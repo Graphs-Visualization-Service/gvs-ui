@@ -34,10 +34,6 @@ import gvs.interfaces.IVertex;
 public class GraphSessionController extends Observable
     implements Observer, IGraphSessionController {
 
-  private GraphSessionReplay sessionReplay = null;
-
-  private static final int DEFAULT_PICS_PER_MINUTE = 1000;
-  private int picsPersMinute = DEFAULT_PICS_PER_MINUTE;
   private boolean callLayoutEngine = false;
   private boolean replayMode = false;
   private boolean autoLayoutingMode = false;
@@ -47,6 +43,7 @@ public class GraphSessionController extends Observable
   private String sessionName;
   private List<Graph> graphs;
 
+  private final GraphSessionReplayFactory sessionReplayFactory;
   private final CurrentGraphHolder graphHolder;
   private final LayoutController layoutController;
   private final ApplicationController applicationController;
@@ -55,20 +52,14 @@ public class GraphSessionController extends Observable
   private static final Logger logger = LoggerFactory
       .getLogger(GraphSessionController.class);
 
-  /**
-   * Builds default session controller.
-   *
-   * @param appController
-   *          injected app controller
-   * @param persistor
-   *          injected persistor
-   */
   @Inject
   public GraphSessionController(ApplicationController appController,
       CurrentGraphHolder graphHolder, Persistor persistor,
-      LayoutController layoutController, @Assisted long pSessionId,
+      LayoutController layoutController,
+      GraphSessionReplayFactory replayFactory, @Assisted long pSessionId,
       @Assisted String pSessionName, @Assisted List<Graph> graphs) {
 
+    this.sessionReplayFactory = replayFactory;
     this.graphHolder = graphHolder;
     this.applicationController = appController;
     this.persistor = persistor;
@@ -189,15 +180,16 @@ public class GraphSessionController extends Observable
   /**
    * Displays requested model.
    */
-  public void replay() {
+  public void replay(long timeout) {
     logger.info("Replay current session");
     Timer timer = new Timer();
     if (!replayMode) {
       setReplayMode(true);
       // TODO replace with view model pendant
       // controlPanel.setReplay(true);
-      sessionReplay = new GraphSessionReplay(graphs, this);
-      timer.schedule(sessionReplay, picsPersMinute, picsPersMinute);
+      GraphSessionReplay sessionReplay = sessionReplayFactory.create(this,
+          graphs);
+      timer.schedule(sessionReplay, timeout, timeout);
     } else {
       this.setReplayMode(false);
       timer.cancel();
@@ -231,17 +223,6 @@ public class GraphSessionController extends Observable
    */
   public String getSessionName() {
     return sessionName;
-  }
-
-  /**
-   * Sets replay speed.
-   * 
-   * @param picsPerSecond
-   *          picsPerSecond
-   */
-  public void speed(int picsPerSecond) {
-    logger.debug("Changing replay speed");
-    picsPersMinute = picsPerSecond;
   }
 
   /**

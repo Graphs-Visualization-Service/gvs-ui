@@ -113,10 +113,10 @@ public class SessionViewModel implements Observer {
     });
   }
 
-  public void replayGraph(double d) {
-    logger.info("Starting replay with speed {}", d);
+  public void replayGraph(long timeout) {
+    logger.info("Starting replay with speed {}", timeout);
     disableAllButtons(true);
-    currentSessionHolder.getCurrentSession().replay();
+    currentSessionHolder.getCurrentSession().replay(timeout);
 
     // TODO view should somehow be notified by business if replay has finished
     disableAllButtons(false);

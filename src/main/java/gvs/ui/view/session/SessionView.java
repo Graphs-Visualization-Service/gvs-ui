@@ -17,6 +17,7 @@ import gvs.ui.model.graph.VertexViewModel;
 import gvs.ui.view.controls.StepProgressBar;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -80,7 +81,7 @@ public class SessionView implements Observer {
   private final GraphViewModel graphViewModel;
   private final SessionViewModel sessionViewModel;
 
-  private static final int DEFAULT_REPLAY_SPEED = 500;
+  private static final int DEFAULT_REPLAY_TIMEOUT = 1000;
   private static final Logger logger = LoggerFactory
       .getLogger(SessionView.class);
 
@@ -98,24 +99,27 @@ public class SessionView implements Observer {
    */
   @FXML
   private void initialize() {
-    initSlider();
-
+    initializeReplaySlider();
+    initializeStepIndicator();
     initializeButtons();
-    initStepIndicator();
-    bindStepIndicator();
   }
 
-  private void initStepIndicator() {
+  private void initializeStepIndicator() {
     stepProgressBar = new StepProgressBar();
     leftPanel.getChildren().add(stepProgressBar);
     int margin = 5;
     AnchorPane.setBottomAnchor(stepProgressBar, (double) margin);
     AnchorPane.setLeftAnchor(stepProgressBar, (double) margin);
     AnchorPane.setRightAnchor(stepProgressBar, (double) margin);
+
+    stepProgressBar.totalStepProperty()
+        .bind(sessionViewModel.totalGraphCountProperty());
+    stepProgressBar.currentStepProperty()
+        .bind(sessionViewModel.currentGraphModelIdProperty());
   }
 
-  private void initSlider() {
-    speedSlider.setValue(DEFAULT_REPLAY_SPEED);
+  private void initializeReplaySlider() {
+    speedSlider.setValue(DEFAULT_REPLAY_TIMEOUT);
   }
 
   private void initializeButtons() {
@@ -150,8 +154,8 @@ public class SessionView implements Observer {
 
   @Override
   public void update(Observable o, Object arg) {
-    GraphViewModel viewModel = (GraphViewModel) graphViewModel;
-    redraw(viewModel);
+    final GraphViewModel viewModel = (GraphViewModel) graphViewModel;
+    Platform.runLater(() -> redraw(viewModel));
   }
 
   private void redraw(GraphViewModel graphViewModel) {
@@ -222,18 +226,12 @@ public class SessionView implements Observer {
 
   @FXML
   private void replayGraph() {
-    sessionViewModel.replayGraph(speedSlider.getValue());
+    long sliderDelay = (long) speedSlider.getValue();
+    sessionViewModel.replayGraph(sliderDelay);
   }
 
   @FXML
   private void autoLayout() {
     sessionViewModel.autoLayout();
-  }
-
-  private void bindStepIndicator() {
-    stepProgressBar.totalStepProperty()
-        .bind(sessionViewModel.totalGraphCountProperty());
-    stepProgressBar.currentStepProperty()
-        .bind(sessionViewModel.currentGraphModelIdProperty());
   }
 }

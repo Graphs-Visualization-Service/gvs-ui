@@ -5,6 +5,7 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 import gvs.access.ClientConnectionFactory;
 import gvs.business.logic.graph.GraphSessionControllerFactory;
+import gvs.business.logic.graph.GraphSessionReplayFactory;
 
 /**
  * Base module for guice dependecy injection
@@ -19,6 +20,7 @@ public class GuiceBaseModule extends AbstractModule {
     install(new FactoryModuleBuilder().build(ClientConnectionFactory.class));
     install(
         new FactoryModuleBuilder().build(GraphSessionControllerFactory.class));
+    install(new FactoryModuleBuilder().build(GraphSessionReplayFactory.class));
   }
 
 }

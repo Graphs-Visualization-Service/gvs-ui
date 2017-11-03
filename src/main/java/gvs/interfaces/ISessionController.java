@@ -21,9 +21,7 @@ public interface ISessionController {
   // TODO: remove here and in subclasses
   void getLastModel();
 
-  void replay();
-
-  void speed(int picsPerSecond);
+  void replay(long timeout);
 
   void autoLayout();
 

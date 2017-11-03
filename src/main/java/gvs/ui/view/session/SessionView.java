@@ -29,6 +29,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
  * MVVM View Class.
@@ -54,7 +55,7 @@ public class SessionView implements Observer {
   private Button autoLayoutBtn;
 
   @FXML
-  private AnchorPane graphPane;
+  private ScalableContentPane graphPane;
 
   @FXML
   private Button firstBtn;
@@ -78,6 +79,9 @@ public class SessionView implements Observer {
   private AnchorPane leftPanel;
 
   private StepProgressBar stepProgressBar;
+
+  private double dragOriginalSceneX;
+  private double dragOriginalSceneY;
 
   private final GraphViewModel graphViewModel;
   private final SessionViewModel sessionViewModel;
@@ -113,8 +117,6 @@ public class SessionView implements Observer {
     AnchorPane.setLeftAnchor(stepProgressBar, (double) margin);
     AnchorPane.setRightAnchor(stepProgressBar, (double) margin);
 
-    
-    
     stepProgressBar.totalStepProperty()
         .bind(Bindings.convert(sessionViewModel.totalGraphCountProperty()));
     stepProgressBar.currentStepProperty()
@@ -163,7 +165,7 @@ public class SessionView implements Observer {
 
   private void redraw(GraphViewModel graphViewModel) {
     logger.info("redraw graph pane");
-    graphPane.getChildren().clear();
+    graphPane.getContentPane().getChildren().clear();
     drawVertices(graphViewModel.getVertexViewModels());
     drawEdges(graphViewModel.getEdgeViewModels());
   }
@@ -176,13 +178,27 @@ public class SessionView implements Observer {
       circle.centerXProperty().bindBidirectional(v.getXProperty());
       circle.centerYProperty().bindBidirectional(v.getYProperty());
 
-      circle.setOnMouseDragged(e -> {
-        circle.setCenterX(e.getSceneX());
-        circle.setCenterY(e.getSceneY());
-        e.consume();
+      circle.setOnMousePressed(e -> {
+        dragOriginalSceneX = e.getSceneX();
+        dragOriginalSceneY = e.getSceneY();
+
+        ((Circle) (e.getSource())).toFront();
       });
 
-      graphPane.getChildren().add(circle);
+      circle.setOnMouseDragged(e -> {
+        double offsetX = e.getSceneX() - dragOriginalSceneX;
+        double offsetY = e.getSceneY() - dragOriginalSceneY;
+
+        Circle c = (Circle) (e.getSource());
+
+        c.setCenterX(c.getCenterX() + offsetX);
+        c.setCenterY(c.getCenterY() + offsetY);
+
+        dragOriginalSceneX = e.getSceneX();
+        dragOriginalSceneY = e.getSceneY();
+      });
+
+      graphPane.getContentPane().getChildren().add(circle);
     });
   }
 
@@ -203,7 +219,7 @@ public class SessionView implements Observer {
       line.endXProperty().bindBidirectional(e.getEndVertex().getXProperty());
       line.endYProperty().bindBidirectional(e.getEndVertex().getYProperty());
 
-      graphPane.getChildren().add(line);
+      graphPane.getContentPane().getChildren().add(line);
     });
   }
 

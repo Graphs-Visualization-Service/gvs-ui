@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import com.gluonhq.ignite.guice.GuiceContext;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import gvs.GuiceBaseModule;
@@ -29,14 +28,18 @@ import javafx.stage.Stage;
 @Singleton
 public class GVSApplication extends Application {
 
-  private static final Logger logger = LoggerFactory
-      .getLogger(GVSApplication.class);
-
   private final GuiceContext context = new GuiceContext(this,
       () -> Arrays.asList(new GuiceBaseModule()));
 
+  private static final String APP_NAME = "GVS";
+  private static final int MIN_WIDTH = 800;
+  private static final int MIN_HEIGHT = 600;
+
+  private static final Logger logger = LoggerFactory
+      .getLogger(GVSApplication.class);
+
   @Inject
-  private Provider<FXMLLoader> loaderProvider;
+  private FXMLLoader fxmlLoader;
 
   private Stage primaryStage;
   private BorderPane rootLayout;
@@ -52,7 +55,10 @@ public class GVSApplication extends Application {
     context.init();
 
     primaryStage = mainStage;
-    primaryStage.setTitle("GVS");
+    primaryStage.setMinHeight(MIN_HEIGHT);
+    primaryStage.setMinWidth(MIN_WIDTH);
+    primaryStage.setTitle(APP_NAME);
+
     primaryStage.setOnCloseRequest(e -> {
       Platform.exit();
       System.exit(0);
@@ -67,8 +73,6 @@ public class GVSApplication extends Application {
   private void initRootLayout() {
     try {
       logger.debug("Initialize root layout");
-
-      FXMLLoader fxmlLoader = loaderProvider.get();
       fxmlLoader
           .setLocation(getClass().getResource("/gvs/ui/view/app/AppView.fxml"));
 
@@ -77,6 +81,7 @@ public class GVSApplication extends Application {
       // Show the scene containing the root layout.
       Scene scene = new Scene(rootLayout);
       primaryStage.setScene(scene);
+      primaryStage.sizeToScene();
       primaryStage.show();
     } catch (IOException e) {
       logger.error("Could not initialize root layout", e);

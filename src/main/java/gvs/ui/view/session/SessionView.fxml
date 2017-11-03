@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import jfxtras.labs.scene.layout.ScalableContentPane?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="600.0" stylesheets="@SessionView.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gvs.ui.view.session.SessionView">
    <bottom>
@@ -65,6 +66,8 @@
       </BorderPane>
    </bottom>
    <center>
-      <AnchorPane fx:id="graphPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+   <center>
+      <ScalableContentPane fx:id="graphPane" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>

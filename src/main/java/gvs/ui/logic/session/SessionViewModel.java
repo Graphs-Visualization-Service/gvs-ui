@@ -88,7 +88,7 @@ public class SessionViewModel implements Observer {
 
   /**
    * This method is invoked whenever a new current session is set in the
-   * ApplicationModel.
+   * {@link CurrentSessionHolder}.
    */
   @Override
   public void update(Observable o, Object arg) {

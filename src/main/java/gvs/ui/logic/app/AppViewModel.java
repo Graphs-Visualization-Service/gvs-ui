@@ -39,19 +39,16 @@ import javafx.collections.ObservableList;
 public class AppViewModel implements Observer {
 
   private final BooleanProperty sessionControlVisibilityProperty = new SimpleBooleanProperty();
-
   private final StringProperty currentSessionName = new SimpleStringProperty();
   private final ObservableList<String> sessionNames = FXCollections
       .observableArrayList();
-
   private final Map<String, ISessionController> controllerMap = new HashMap<>();
-  private static final String PROMT_MESSAGE = "no active session";
-
-  private final GuiceContext context = new GuiceContext(this,
-      () -> Arrays.asList(new GuiceBaseModule()));
   private final CurrentSessionHolder appModel;
   private final ApplicationController appController;
+  private final GuiceContext context = new GuiceContext(this,
+      () -> Arrays.asList(new GuiceBaseModule()));
 
+  private static final String PROMT_MESSAGE = "no active session";
   private static final Logger logger = LoggerFactory
       .getLogger(AppViewModel.class);
 

@@ -59,7 +59,7 @@ public class AppView {
 
   private FileChooser fileChooser;
   private final AppViewModel appViewModel;
-  
+
   @Inject
   public AppView(AppViewModel appViewModel) {
     this.appViewModel = appViewModel;
@@ -72,7 +72,9 @@ public class AppView {
         .bind(appViewModel.sessionVisibilityProperty());
     deleteSessionBtn.disableProperty()
         .bind(appViewModel.sessionVisibilityProperty().not());
-   
+    saveSessionBtn.disableProperty()
+        .bind(appViewModel.sessionVisibilityProperty().not());
+
     setLogoAsBackground();
     initButtonlabels();
     initFileChooser();

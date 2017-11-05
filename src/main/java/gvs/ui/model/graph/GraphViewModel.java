@@ -21,7 +21,7 @@ import gvs.interfaces.IVertex;
 import gvs.ui.logic.session.SessionViewModel;
 
 /**
- * Represents one snapshot of a graph visualization.
+ * Represents one snapshot of a graph visualization. Observes the CurrentGraphHolder.
  * 
  * @author Michi
  *

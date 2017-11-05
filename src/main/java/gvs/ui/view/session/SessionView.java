@@ -196,7 +196,8 @@ public class SessionView implements Observer {
         double newX = c.getCenterX() + offsetX;
         double newY = c.getCenterY() + offsetY;
 
-        checkBoundaries(c, newX, newY);
+        newX = checkXBoundaries(c, newX);
+        newY = checkYBoundaries(c, newY);
 
         c.setCenterX(newX);
         c.setCenterY(newY);
@@ -209,10 +210,9 @@ public class SessionView implements Observer {
     });
   }
 
-  private void checkBoundaries(Circle circle, double newX, double newY) {
-    double maximumY = graphPane.getBoundsInLocal().getHeight();
-    double maximumX = graphPane.getBoundsInLocal().getWidth();
+  private double checkXBoundaries(Circle circle, double newX) {
     double minimum = circle.getRadius();
+    double maximumX = graphPane.getBoundsInLocal().getWidth();
 
     if (newX < minimum) {
       newX = minimum;
@@ -220,12 +220,20 @@ public class SessionView implements Observer {
     if (newX > maximumX) {
       newX = maximumX;
     }
+    return newX;
+  }
+
+  private double checkYBoundaries(Circle circle, double newY) {
+    double minimum = circle.getRadius();
+    double maximumY = graphPane.getBoundsInLocal().getHeight();
+
     if (newY < minimum) {
       newY = minimum;
     }
     if (newY > maximumY) {
       newY = maximumY;
     }
+    return newY;
   }
 
   private void drawEdges(Collection<EdgeViewModel> edgeViewModels) {

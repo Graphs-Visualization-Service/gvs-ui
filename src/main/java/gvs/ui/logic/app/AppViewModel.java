@@ -126,13 +126,19 @@ public class AppViewModel implements Observer {
   }
 
   public void loadSession(File file) {
-    logger.info("Loading session from file...");
-    appController.loadStoredSession(file.getPath());
+    // clicking cancel sets file to null
+    if (file != null) {
+      logger.info("Loading session from file...");
+      appController.loadStoredSession(file.getPath());
+    }
   }
 
   public void saveSession(File file) {
-    logger.info("Saving session to file...");
-    appModel.getCurrentSession().saveSession(file);
+    // clicking cancel sets file to null
+    if (file != null) {
+      logger.info("Saving session to file...");
+      appModel.getCurrentSession().saveSession(file);
+    }
   }
 
   public void changeSession(String name) {

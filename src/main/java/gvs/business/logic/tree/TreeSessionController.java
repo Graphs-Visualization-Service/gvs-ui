@@ -15,7 +15,7 @@ import gvs.access.Persistor;
 import gvs.business.model.graph.Graph;
 import gvs.business.model.tree.Tree;
 import gvs.interfaces.ITreeSessionController;
-import gvs.interfaces.CallBackFunction;
+import gvs.interfaces.Action;
 import gvs.ui.model.tree.VisualizationTreeModel;
 import gvs.ui.view.tree.VisualizationTreePanel;
 
@@ -198,7 +198,7 @@ public class TreeSessionController extends Observable
   /**
    * Shows a replay over all available models
    */
-  public void replay(long speed, CallBackFunction c) {
+  public void replay(long speed, Action finishedCallback) {
     logger.info("Show replay of tree session");
     if (!replayMode) {
       setEmptyButtonState();

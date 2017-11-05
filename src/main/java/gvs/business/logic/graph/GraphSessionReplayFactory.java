@@ -3,7 +3,7 @@ package gvs.business.logic.graph;
 import java.util.List;
 
 import gvs.business.model.graph.Graph;
-import gvs.interfaces.CallBackFunction;
+import gvs.interfaces.Action;
 
 /**
  * Factory interface for Guice
@@ -22,9 +22,10 @@ public interface GraphSessionReplayFactory {
    *          related graph session controller
    * @param graphs
    *          graphs to step through
-   * @param c 
+   * @param callback
+   *          callback which is executed after replay has finished
    * @return new instance
    */
   GraphSessionReplay create(GraphSessionController graphSessionController,
-      List<Graph> graphs, CallBackFunction c);
+      List<Graph> graphs, Action callback);
 }

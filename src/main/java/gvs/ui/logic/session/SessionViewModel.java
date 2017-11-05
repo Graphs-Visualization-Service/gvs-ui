@@ -133,11 +133,11 @@ public class SessionViewModel implements Observer {
     disableAllButtons(true);
     isReplaying = true;
     currentSessionHolder.getCurrentSession().replay(timeout,
-        () -> finishReplay());
+        this::finishReplay);
   }
 
   public void finishReplay() {
-    //TODO: refactor disabling/enabling buttons
+    // TODO: refactor disabling/enabling buttons
     disableAllButtons(false);
     disableStepButtons(false, false, true, true);
     isReplaying = false;

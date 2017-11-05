@@ -10,7 +10,7 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 import gvs.business.model.graph.Graph;
-import gvs.interfaces.CallBackFunction;
+import gvs.interfaces.Action;
 
 /**
  * TimerTask, responsible for showing replays with a defined timeout
@@ -24,7 +24,7 @@ public class GraphSessionReplay extends TimerTask {
 
   private final List<Graph> graphs;
   private final GraphSessionController sessionController;
-  private final CallBackFunction o;
+  private final Action finishedCallback;
 
   private static final Logger logger = LoggerFactory
       .getLogger(GraphSessionReplay.class);
@@ -39,10 +39,10 @@ public class GraphSessionReplay extends TimerTask {
    */
   @Inject
   public GraphSessionReplay(@Assisted GraphSessionController sessionController,
-      @Assisted List<Graph> graphs, @Assisted CallBackFunction o) {
+      @Assisted List<Graph> graphs, @Assisted Action callback) {
     this.graphs = graphs;
     this.sessionController = sessionController;
-    this.o = o;
+    this.finishedCallback = callback;
   }
 
   /**
@@ -57,7 +57,7 @@ public class GraphSessionReplay extends TimerTask {
       sessionCounter++;
     } else {
       logger.info("Replay finished");
-      o.callBack();
+      finishedCallback.execute();
       this.cancel();
     }
   }

@@ -165,15 +165,16 @@ public class SessionView implements Observer {
   private void redraw(GraphViewModel graphViewModel) {
     logger.info("redraw graph pane");
     graphPane.getContentPane().getChildren().clear();
-    drawVertices(graphViewModel.getVertexViewModels());
+
     drawEdges(graphViewModel.getEdgeViewModels());
+    drawVertices(graphViewModel.getVertexViewModels());
   }
 
   private void drawVertices(Collection<VertexViewModel> vertexViewModels) {
     vertexViewModels.forEach(v -> {
       Circle circle = new Circle();
       circle.setCursor(Cursor.HAND);
-      circle.setRadius(20);
+      circle.setRadius(6);
       circle.centerXProperty().bindBidirectional(v.getXProperty());
       circle.centerYProperty().bindBidirectional(v.getYProperty());
 
@@ -210,7 +211,10 @@ public class SessionView implements Observer {
       double endY = e.getEndVertex().getYProperty().get();
 
       Line line = new Line(startX, startY, endX, endY);
-      line.setStrokeWidth(5);
+      line.setStrokeWidth(e.getStyle().getLineThickness());
+      line.setStroke(e.getStyle().getLineColor());
+      line.getStrokeDashArray().addAll(e.getStyle().getLineStyle());
+      
 
       line.startXProperty()
           .bindBidirectional(e.getStartVertex().getXProperty());

@@ -28,6 +28,7 @@ import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
 import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.IconVertex;
+import gvs.business.model.graph.NodeStyle;
 import gvs.business.model.tree.BinaryNode;
 import gvs.business.model.tree.DefaultNode;
 import gvs.business.model.tree.Tree;
@@ -444,10 +445,10 @@ public class ModelBuilder {
 
     String label = eLabel.getText();
     String linecolor = eLineColor.getText();
-    Color lineColor = typs.getColor(linecolor, false);
     String linestyle = eLineStyle.getText();
     String linethickness = eLineThickness.getText();
-    BasicStroke lineStroke = typs.getLineObject(linestyle, linethickness);
+
+    NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness, null);
 
     long fromVertexId = Long.parseLong(eFromVertex.getText());
     long toVertexId = Long.parseLong(eToVertex.getText());
@@ -465,7 +466,9 @@ public class ModelBuilder {
       }
     }
     serverLogger.debug("Finish build DirectedEdge XML");
-    return new Edge(label, lineColor, lineStroke, true, fromVertex, toVertex);
+    return new Edge(label,
+        new NodeStyle(linecolor, linestyle, linethickness, null), true,
+        fromVertex, toVertex);
 
   }
 
@@ -492,10 +495,9 @@ public class ModelBuilder {
 
     String label = eLabel.getText();
     String linecolor = eLineColor.getText();
-    Color lineColor = typs.getColor(linecolor, false);
     String linestyle = eLineStyle.getText();
     String linethickness = eLineThickness.getText();
-    BasicStroke lineStroke = typs.getLineObject(linestyle, linethickness);
+    NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness, null);
 
     long fromVertexId = Long.parseLong(eFromVertex.getText());
     long toVertexId = Long.parseLong(eToVertex.getText());
@@ -514,14 +516,13 @@ public class ModelBuilder {
     }
     if (arrowPos == 1) {
       serverLogger.debug("Finsih build UndirectedEdge XML with arrow pos 1");
-      return new Edge(label, lineColor, lineStroke, true, toVertex, fromVertex);
+      return new Edge(label, style, true, toVertex, fromVertex);
     } else if (arrowPos == 2) {
       serverLogger.debug("Finsih build UndirectedEdge XML with arrow pos 2");
-      return new Edge(label, lineColor, lineStroke, true, fromVertex, toVertex);
+      return new Edge(label, style, true, fromVertex, toVertex);
     } else {
       serverLogger.debug("Finsih build UndirectedEdge XML");
-      return new Edge(label, lineColor, lineStroke, false, fromVertex,
-          toVertex);
+      return new Edge(label, style, false, fromVertex, toVertex);
     }
   }
 }

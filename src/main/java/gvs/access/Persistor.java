@@ -36,6 +36,7 @@ import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
 import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.IconVertex;
+import gvs.business.model.graph.NodeStyle;
 import gvs.business.model.tree.BinaryNode;
 import gvs.business.model.tree.Tree;
 import gvs.interfaces.IBinaryNode;
@@ -323,14 +324,12 @@ public class Persistor {
     eLabel.addText(pEdge.getLabel());
 
     Element eLineColor = eEdge.addElement(LINECOLOR);
-    eLineColor.addText(configuration.getColorName(pEdge.getLineColor()));
+    eLineColor.addText(pEdge.getStyle().getLineColor().getColor());
 
-    BasicStroke stroke = (BasicStroke) pEdge.getLineStroke();
     Element eLineStyle = eEdge.addElement(LINESTYLE);
-    eLineStyle.addText(configuration.getLineStyleName(stroke.getDashArray()));
+    eLineStyle.addText(pEdge.getStyle().getLineStyle().getStyle());
     Element eLineThick = eEdge.addElement(LINETHICKNESS);
-    eLineThick.addText(
-        configuration.getLineThicknessName((int) stroke.getLineWidth()));
+    eLineThick.addText(pEdge.getStyle().getLineThickness().getThickness());
 
     Element eFromVertex = eEdge.addElement(FROMVERTEX);
     eFromVertex.addText(String.valueOf(pEdge.getStartVertex().getId()));
@@ -599,12 +598,11 @@ public class Persistor {
         toVertex = tmp;
       }
     }
-
+    NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness, null);
     if (isDirected.equals("true")) {
-      return new Edge(label, lineColor, lineStroke, true, fromVertex, toVertex);
+      return new Edge(label, style, true, fromVertex, toVertex);
     } else {
-      return new Edge(label, lineColor, lineStroke, false, fromVertex,
-          toVertex);
+      return new Edge(label, style, false, fromVertex, toVertex);
     }
 
   }

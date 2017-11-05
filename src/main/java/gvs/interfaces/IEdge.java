@@ -1,8 +1,8 @@
 package gvs.interfaces;
 
-import java.awt.Color;
-import java.awt.Stroke;
 import java.util.Observer;
+
+import gvs.business.model.graph.NodeStyle;
 
 public interface IEdge {
 
@@ -12,9 +12,7 @@ public interface IEdge {
 
   String getLabel();
 
-  Color getLineColor();
-
-  Stroke getLineStroke();
+  NodeStyle getStyle();
 
   IVertex getStartVertex();
 

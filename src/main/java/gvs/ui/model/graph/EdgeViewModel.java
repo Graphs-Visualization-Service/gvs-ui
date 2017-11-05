@@ -19,6 +19,7 @@ public class EdgeViewModel implements Observer {
   private IEdge edge;
   private VertexViewModel startVertex;
   private VertexViewModel endVertex;
+  private NodeStyleViewModel style;
 
   private static final Logger logger = LoggerFactory
       .getLogger(EdgeViewModel.class);
@@ -39,6 +40,7 @@ public class EdgeViewModel implements Observer {
     this.edge = edge;
     this.startVertex = startVertex;
     this.endVertex = endVertex;
+    this.style = new NodeStyleViewModel(edge.getStyle());
     
     // bidirectional connection
     edge.addObserver(this);
@@ -58,5 +60,13 @@ public class EdgeViewModel implements Observer {
 
   public VertexViewModel getEndVertex() {
     return this.endVertex;
+  }
+
+  public NodeStyleViewModel getStyle() {
+    return style;
+  }
+
+  public void setStyle(NodeStyleViewModel style) {
+    this.style = style;
   }
 }

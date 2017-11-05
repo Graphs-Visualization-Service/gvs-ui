@@ -772,4 +772,5 @@ public class Configuration {
       logger.warn("Load LayoutDelay failed. Set default: 1500ms");
     }
   }
+ 
 }

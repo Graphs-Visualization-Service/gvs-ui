@@ -28,12 +28,12 @@ import gvs.interfaces.IVertex;
 
 /**
  * The session contoller reacts on user input events and implements most of the
- * visualization logic.
+ * visualization logic. It observes the LayoutController.
  * 
  * @author aegli
  *
  */
-public class GraphSessionController extends Observable
+public class GraphSessionController
     implements Observer, IGraphSessionController {
 
   private boolean callLayoutEngine = false;

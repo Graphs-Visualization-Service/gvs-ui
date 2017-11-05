@@ -38,8 +38,6 @@ public interface ISessionController {
   void changeCurrentGraphToLast();
 
   int getTotalGraphCount();
-
-  void addObserver(Observer o);
   
   Graph getCurrentGraph();
 

@@ -104,7 +104,7 @@ public class AppViewModel implements Observer {
     Platform.runLater(() -> {
       ISessionController c = ((CurrentSessionHolder) o).getCurrentSession();
       String name = c.getSessionName();
-      if (name == null) {
+      if (name == null || name.isEmpty()) {
         currentSessionName.set(PROMT_MESSAGE);
       } else {
         currentSessionName.set(name);

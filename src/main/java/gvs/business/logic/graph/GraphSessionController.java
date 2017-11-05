@@ -9,6 +9,8 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Timer;
 
+import javax.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +59,7 @@ public class GraphSessionController extends Observable
       CurrentGraphHolder graphHolder, Persistor persistor,
       LayoutController layoutController,
       GraphSessionReplayFactory replayFactory, @Assisted long pSessionId,
-      @Assisted String pSessionName, @Assisted List<Graph> graphs) {
+      @Assisted String pSessionName, @Assisted @Nullable List<Graph> graphs) {
 
     this.sessionReplayFactory = replayFactory;
     this.graphHolder = graphHolder;
@@ -71,13 +73,15 @@ public class GraphSessionController extends Observable
 
     // TODO is this really required?
     int graphId = 1;
-    if (graphs.size() >= 1) {
-      for (Graph g : graphs) {
-        if (g.getId() == 0) {
-          g.setId(++graphId);
+    if (graphs != null) {
+      if (graphs.size() >= 1) {
+        for (Graph g : graphs) {
+          if (g.getId() == 0) {
+            g.setId(++graphId);
+          }
         }
+        graphHolder.setCurrentGraph(graphs.get(graphs.size() - 1));
       }
-      graphHolder.setCurrentGraph(graphs.get(graphs.size() - 1));
     } else {
       logger.info("Build empty graph session");
       this.graphs = new ArrayList<>();

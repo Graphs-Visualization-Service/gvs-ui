@@ -116,8 +116,8 @@ public class ApplicationController {
       // when the last session is deleted, create empty dummy controller
       // otherwise session-bindings for UI would have to be unbound etc.
       logger.debug("Set empty graph session");
-      currentSessionHolder
-          .setCurrentSession(sessionControllerFactory.create(-1, "", null));
+      currentSessionHolder.setCurrentSession(
+          sessionControllerFactory.create(-1, "", null));
     }
   }
 

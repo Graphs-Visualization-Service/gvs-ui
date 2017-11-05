@@ -33,14 +33,13 @@ public class GraphViewModel extends Observable implements Observer {
   private final Set<EdgeViewModel> edgeViewModels;
 
   private final SessionViewModel sessionViewModel;
-  private final CurrentGraphHolder currentGraphHolder;
 
   private static final Logger logger = LoggerFactory
       .getLogger(GraphViewModel.class);
 
   @Inject
-  public GraphViewModel(CurrentGraphHolder currentGraphHolder, SessionViewModel sessionViewModel) {
-    this.currentGraphHolder = currentGraphHolder;
+  public GraphViewModel(CurrentGraphHolder currentGraphHolder,
+      SessionViewModel sessionViewModel) {
     this.sessionViewModel = sessionViewModel;
     this.vertexViewModels = new HashMap<>();
     this.edgeViewModels = new HashSet<>();
@@ -62,13 +61,13 @@ public class GraphViewModel extends Observable implements Observer {
    *          business layer graph
    */
   public void transformGraphModel(Graph graph) {
-    logger.info("Import new graph to graph view model");
+    logger.info("Import new graph to graph view model.");
     vertexViewModels.clear();
     edgeViewModels.clear();
-    
+
     importGraph(graph);
 
-    logger.info("graph imported. notify session view");
+    logger.info("Graph imported. Notify session view.");
     setChanged();
     notifyObservers();
   }
@@ -85,7 +84,7 @@ public class GraphViewModel extends Observable implements Observer {
   }
 
   private void importVertices(Collection<IVertex> vertices) {
-    logger.info("Import vertices to graph view model");
+    logger.info("Import vertices to graph view model.");
     vertices.forEach(v -> {
       VertexViewModel vertexViewModel = new VertexViewModel(v);
       vertexViewModels.put(v.getId(), vertexViewModel);
@@ -93,7 +92,7 @@ public class GraphViewModel extends Observable implements Observer {
   }
 
   private void importEdges(Collection<IEdge> edges) {
-    logger.info("Import edges to graph view model");
+    logger.info("Import edges to graph view model.");
     edges.forEach(e -> {
       VertexViewModel startVertex = vertexViewModels
           .get(e.getStartVertex().getId());

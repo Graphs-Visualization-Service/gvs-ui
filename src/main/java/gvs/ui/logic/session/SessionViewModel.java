@@ -105,11 +105,21 @@ public class SessionViewModel implements Observer {
 
     Platform.runLater(() -> {
       if (currentSession != null) {
-        totalGraphCountProperty.set(currentSession.getTotalGraphCount());
-        currentGraphIdProperty.set(currentSession.getCurrentGraph().getId());
+        int currentPosition = currentSession.getCurrentGraph().getId();
+        int maxPosition = currentSession.getTotalGraphCount();
+        totalGraphCountProperty.set(maxPosition);
+        currentGraphIdProperty.set(currentPosition);
+        if (currentPosition <= 1) {
+          disableStepButtons(true, true, false, false);
+        } else if (currentPosition == maxPosition) {
+          disableStepButtons(false, false, true, true);
+        } else {
+          disableStepButtons(false, false, false, false);
+        }
       } else {
         totalGraphCountProperty.set(0);
         currentGraphIdProperty.set(0);
+        disableStepButtons(true, true, true, true);
       }
     });
   }
@@ -133,12 +143,17 @@ public class SessionViewModel implements Observer {
   }
 
   private void disableAllButtons(boolean disabled) {
-    firstBtnDisableProperty.set(disabled);
-    lastBtnDisableProperty.set(disabled);
-    prevBtnDisableProperty.set(disabled);
-    nextBtnDisableProperty.set(disabled);
+    disableStepButtons(disabled, disabled, disabled, disabled);
     autoLayoutBtnDisableProperty.set(disabled);
     replayBtnDisableProperty.set(disabled);
+  }
+
+  private void disableStepButtons(boolean first, boolean prev, boolean next,
+      boolean last) {
+    firstBtnDisableProperty.set(first);
+    lastBtnDisableProperty.set(last);
+    prevBtnDisableProperty.set(prev);
+    nextBtnDisableProperty.set(next);
   }
 
   public IntegerProperty totalGraphCountProperty() {

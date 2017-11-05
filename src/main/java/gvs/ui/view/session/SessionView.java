@@ -159,8 +159,7 @@ public class SessionView implements Observer {
 
   @Override
   public void update(Observable o, Object arg) {
-    final GraphViewModel viewModel = (GraphViewModel) graphViewModel;
-    Platform.runLater(() -> redraw(viewModel));
+    Platform.runLater(() -> redraw(graphViewModel));
   }
 
   private void redraw(GraphViewModel graphViewModel) {

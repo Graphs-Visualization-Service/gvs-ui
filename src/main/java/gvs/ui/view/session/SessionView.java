@@ -168,6 +168,8 @@ public class SessionView implements Observer {
 
     drawEdges(graphViewModel.getEdgeViewModels());
     drawVertices(graphViewModel.getVertexViewModels());
+
+    graphPane.requestScale();
   }
 
   private void drawVertices(Collection<VertexViewModel> vertexViewModels) {
@@ -191,9 +193,13 @@ public class SessionView implements Observer {
         double offsetY = e.getSceneY() - dragOriginalSceneY;
 
         Circle c = (Circle) (e.getSource());
+        double newX = c.getCenterX() + offsetX;
+        double newY = c.getCenterY() + offsetY;
 
-        c.setCenterX(c.getCenterX() + offsetX);
-        c.setCenterY(c.getCenterY() + offsetY);
+        checkBoundaries(c, newX, newY);
+
+        c.setCenterX(newX);
+        c.setCenterY(newY);
 
         dragOriginalSceneX = e.getSceneX();
         dragOriginalSceneY = e.getSceneY();
@@ -201,6 +207,25 @@ public class SessionView implements Observer {
 
       graphPane.getContentPane().getChildren().add(circle);
     });
+  }
+
+  private void checkBoundaries(Circle circle, double newX, double newY) {
+    double maximumY = graphPane.getBoundsInLocal().getHeight();
+    double maximumX = graphPane.getBoundsInLocal().getWidth();
+    double minimum = circle.getRadius();
+
+    if (newX < minimum) {
+      newX = minimum;
+    }
+    if (newX > maximumX) {
+      newX = maximumX;
+    }
+    if (newY < minimum) {
+      newY = minimum;
+    }
+    if (newY > maximumY) {
+      newY = maximumY;
+    }
   }
 
   private void drawEdges(Collection<EdgeViewModel> edgeViewModels) {
@@ -214,7 +239,6 @@ public class SessionView implements Observer {
       line.setStrokeWidth(e.getStyle().getLineThickness());
       line.setStroke(e.getStyle().getLineColor());
       line.getStrokeDashArray().addAll(e.getStyle().getLineStyle());
-      
 
       line.startXProperty()
           .bindBidirectional(e.getStartVertex().getXProperty());

@@ -28,6 +28,8 @@ import javafx.beans.property.SimpleIntegerProperty;
 @Singleton
 public class SessionViewModel implements Observer {
 
+  private boolean isReplaying;
+
   private final CurrentSessionHolder currentSessionHolder;
 
   private final BooleanProperty replayBtnDisableProperty = new SimpleBooleanProperty();
@@ -109,12 +111,14 @@ public class SessionViewModel implements Observer {
         int maxPosition = currentSession.getTotalGraphCount();
         totalGraphCountProperty.set(maxPosition);
         currentGraphIdProperty.set(currentPosition);
-        if (currentPosition <= 1) {
-          disableStepButtons(true, true, false, false);
-        } else if (currentPosition == maxPosition) {
-          disableStepButtons(false, false, true, true);
-        } else {
-          disableStepButtons(false, false, false, false);
+        if (!isReplaying) {
+          if (currentPosition <= 1) {
+            disableStepButtons(true, true, false, false);
+          } else if (currentPosition == maxPosition) {
+            disableStepButtons(false, false, true, true);
+          } else {
+            disableStepButtons(false, false, false, false);
+          }
         }
       } else {
         totalGraphCountProperty.set(0);
@@ -127,10 +131,16 @@ public class SessionViewModel implements Observer {
   public void replayGraph(long timeout) {
     logger.info("Starting replay with speed {}", timeout);
     disableAllButtons(true);
-    currentSessionHolder.getCurrentSession().replay(timeout);
+    isReplaying = true;
+    currentSessionHolder.getCurrentSession().replay(timeout,
+        () -> finishReplay());
+  }
 
-    // TODO view should somehow be notified by business if replay has finished
+  public void finishReplay() {
+    //TODO: refactor disabling/enabling buttons
     disableAllButtons(false);
+    disableStepButtons(false, false, true, true);
+    isReplaying = false;
   }
 
   public void autoLayout() {

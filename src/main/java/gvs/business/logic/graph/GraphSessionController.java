@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Timer;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import javax.annotation.Nullable;
 
@@ -25,6 +28,7 @@ import gvs.business.model.graph.CurrentGraphHolder;
 import gvs.business.model.graph.Graph;
 import gvs.interfaces.IGraphSessionController;
 import gvs.interfaces.IVertex;
+import gvs.interfaces.VoidOperation;
 
 /**
  * The session contoller reacts on user input events and implements most of the
@@ -184,20 +188,13 @@ public class GraphSessionController
   /**
    * Displays requested model.
    */
-  public void replay(long timeout) {
+  public void replay(long timeout, VoidOperation c) {
     logger.info("Replay current session");
     Timer timer = new Timer();
-    if (!replayMode) {
-      setReplayMode(true);
-      // TODO replace with view model pendant
-      // controlPanel.setReplay(true);
-      GraphSessionReplay sessionReplay = sessionReplayFactory.create(this,
-          graphs);
-      timer.schedule(sessionReplay, timeout, timeout);
-    } else {
-      this.setReplayMode(false);
-      timer.cancel();
-    }
+    setReplayMode(true);
+    GraphSessionReplay sessionReplay = sessionReplayFactory.create(this,
+        graphs, c);
+    timer.schedule(sessionReplay, timeout, timeout);
   }
 
   /**

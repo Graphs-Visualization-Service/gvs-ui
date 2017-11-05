@@ -2,6 +2,9 @@ package gvs.interfaces;
 
 import java.io.File;
 import java.util.Observer;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import gvs.business.model.graph.Graph;
 
@@ -23,7 +26,7 @@ public interface ISessionController {
   // TODO: remove here and in subclasses
   void getLastModel();
 
-  void replay(long timeout);
+  void replay(long timeout, VoidOperation c);
 
   void autoLayout();
 

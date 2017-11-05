@@ -26,7 +26,7 @@ public interface ISessionController {
   // TODO: remove here and in subclasses
   void getLastModel();
 
-  void replay(long timeout, VoidOperation c);
+  void replay(long timeout, CallBackFunction c);
 
   void autoLayout();
 

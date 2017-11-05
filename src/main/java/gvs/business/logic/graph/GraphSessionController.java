@@ -28,7 +28,7 @@ import gvs.business.model.graph.CurrentGraphHolder;
 import gvs.business.model.graph.Graph;
 import gvs.interfaces.IGraphSessionController;
 import gvs.interfaces.IVertex;
-import gvs.interfaces.VoidOperation;
+import gvs.interfaces.CallBackFunction;
 
 /**
  * The session contoller reacts on user input events and implements most of the
@@ -188,7 +188,7 @@ public class GraphSessionController
   /**
    * Displays requested model.
    */
-  public void replay(long timeout, VoidOperation c) {
+  public void replay(long timeout, CallBackFunction c) {
     logger.info("Replay current session");
     Timer timer = new Timer();
     setReplayMode(true);

@@ -75,6 +75,8 @@ public class GraphSessionController
     this.sessionId = pSessionId;
     this.sessionName = pSessionName;
 
+    layoutController.addObserver(this);
+
     // TODO is this really required?
     int graphId = 1;
     if (graphs != null) {
@@ -192,8 +194,8 @@ public class GraphSessionController
     logger.info("Replay current session");
     Timer timer = new Timer();
     setReplayMode(true);
-    GraphSessionReplay sessionReplay = sessionReplayFactory.create(this,
-        graphs, finishedCallback);
+    GraphSessionReplay sessionReplay = sessionReplayFactory.create(this, graphs,
+        finishedCallback);
     timer.schedule(sessionReplay, timeout, timeout);
   }
 
@@ -238,7 +240,6 @@ public class GraphSessionController
         currentGraph.getVertices().forEach(v -> {
           v.setFixedPosition(false);
         });
-        // visualModel.setDragging(false);
         autoLayoutingMode = true;
         layout();
       }
@@ -395,32 +396,18 @@ public class GraphSessionController
   }
 
   public void layout() {
-
     try {
       LayoutMonitor.getInstance().lock();
+
+      Graph currentGraph = graphHolder.getCurrentGraph();
+      layoutController.setElements(currentGraph.getVertices(),
+          currentGraph.getEdges(), applicationController.isSoftLayout());
+
     } catch (InterruptedException e) {
-      e.printStackTrace();
+      logger.warn("Unable to get layout monitor", e);
+    } finally {
+      LayoutMonitor.getInstance().unlock();
     }
-
-    Graph currentGraph = graphHolder.getCurrentGraph();
-
-    logger.debug("Check if graph model is empty");
-    if (currentGraph.getVertices().size() > 0) {
-
-      // TODO check if first is relative (might be wrong. mwieland)
-      if (currentGraph.getVertices().iterator().next().isRelative()) {
-        logger.debug("Graph is relative");
-        isRelativeSession = true;
-      } else {
-        logger.debug("Graph isn't relative. Layout graph");
-        logger.info("Layouting elements of graph");
-        layoutController.addObserver(this);
-        layoutController.setElements(currentGraph.getVertices(),
-            currentGraph.getEdges(), applicationController.isSoftLayout());
-      }
-    }
-
-    LayoutMonitor.getInstance().unlock();
   }
 
 }

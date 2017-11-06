@@ -191,9 +191,14 @@ public class SessionView implements Observer {
       Circle circle = new Circle();
       circle.setCursor(Cursor.HAND);
       circle.setRadius(6);
-      circle.centerXProperty().bindBidirectional(v.getXProperty());
-      circle.centerYProperty().bindBidirectional(v.getYProperty());
-
+      circle.centerXProperty().bindBidirectional(v.xProperty());
+      circle.centerYProperty().bindBidirectional(v.yProperty());
+      
+      Label label = new Label();
+      label.textProperty().bind(v.labelProperty());
+      bindToMiddle(circle, label);
+      labels.add(label);
+      
       circle.setOnMousePressed(e -> {
         circle.setCursor(Cursor.MOVE);
         dragOriginalSceneX = e.getSceneX();
@@ -220,7 +225,7 @@ public class SessionView implements Observer {
         dragOriginalSceneY = e.getSceneY();
       });
 
-      graphPane.getContentPane().getChildren().add(circle);
+      graphPane.getContentPane().getChildren().addAll(circle, label);
     });
   }
 
@@ -252,30 +257,30 @@ public class SessionView implements Observer {
 
   private void drawEdges(Collection<EdgeViewModel> edgeViewModels) {
     edgeViewModels.forEach(e -> {
-      double startX = e.getStartVertex().getXProperty().get();
-      double startY = e.getStartVertex().getYProperty().get();
-      double endX = e.getEndVertex().getXProperty().get();
-      double endY = e.getEndVertex().getYProperty().get();
+      double startX = e.getStartVertex().xProperty().get();
+      double startY = e.getStartVertex().yProperty().get();
+      double endX = e.getEndVertex().xProperty().get();
+      double endY = e.getEndVertex().yProperty().get();
 
       Line line = new Line(startX, startY, endX, endY);
       line.setStrokeWidth(e.getStyle().getLineThickness());
       line.setStroke(e.getStyle().getLineColor());
       line.getStrokeDashArray().addAll(e.getStyle().getLineStyle());
 
-      Label l = new Label();
-      l.textProperty().bind(e.labelProperty());
-      l.getStyleClass().add(EDGE_LABEL);
-      labels.add(l);
-      bindToMiddle(line, l);
+      Label label = new Label();
+      label.textProperty().bind(e.labelProperty());
+      label.getStyleClass().add(EDGE_LABEL);
+      labels.add(label);
+      bindToMiddle(line, label);
 
       line.startXProperty()
-          .bindBidirectional(e.getStartVertex().getXProperty());
+          .bindBidirectional(e.getStartVertex().xProperty());
       line.startYProperty()
-          .bindBidirectional(e.getStartVertex().getYProperty());
-      line.endXProperty().bindBidirectional(e.getEndVertex().getXProperty());
-      line.endYProperty().bindBidirectional(e.getEndVertex().getYProperty());
+          .bindBidirectional(e.getStartVertex().yProperty());
+      line.endXProperty().bindBidirectional(e.getEndVertex().xProperty());
+      line.endYProperty().bindBidirectional(e.getEndVertex().yProperty());
 
-      graphPane.getContentPane().getChildren().addAll(line, l);
+      graphPane.getContentPane().getChildren().addAll(line, label);
     });
   }
   
@@ -283,14 +288,20 @@ public class SessionView implements Observer {
     labels.forEach(l -> l.toFront());
   }
 
-  private void bindToMiddle(Line line, Label l) {
-    l.translateXProperty().bind(
+  private void bindToMiddle(Line line, Label label) {
+    label.translateXProperty().bind(
         ((line.startXProperty().add(line.endXProperty())).divide(2)).subtract(
-            (l.layoutXProperty().add(l.layoutYProperty()).divide(2))));
-    l.translateYProperty().bind(
+            (label.layoutXProperty().add(label.layoutYProperty()).divide(2))));
+    label.translateYProperty().bind(
         ((line.startYProperty().add(line.endYProperty())).divide(2)).subtract(
-            (l.layoutXProperty().add(l.layoutYProperty()).divide(2))));
+            (label.layoutXProperty().add(label.layoutYProperty()).divide(2))));
   }
+  
+  private void bindToMiddle(Circle circle, Label label) {
+    label.translateXProperty().bind(circle.centerXProperty());
+    label.translateYProperty().bind(circle.centerYProperty());
+  }
+
 
   @FXML
   private void stepForward() {

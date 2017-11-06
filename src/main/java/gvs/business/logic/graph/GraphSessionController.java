@@ -139,8 +139,9 @@ public class GraphSessionController
       LayoutMonitor.getInstance().unlock();
 
     } else {
-      logger.debug(
-          "Continue layouting graph, vertizes without positions detected");
+      //TODO: uncomment logger
+//      logger.debug(
+//          "Continue layouting graph, vertizes without positions detected");
       // visualModel.setLayouting(true);
       // deactivate GVS 1.0 GUI
       // setVisualModel();

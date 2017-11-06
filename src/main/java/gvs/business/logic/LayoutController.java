@@ -1,19 +1,14 @@
 package gvs.business.logic;
 
 import java.awt.Point;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Observable;
 import java.util.Random;
 import java.util.Timer;
-import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Singleton;
 
-import gvs.access.Configuration;
 import gvs.business.logic.physics.helpers.Area;
 import gvs.business.logic.physics.helpers.AreaDimension;
 import gvs.business.logic.physics.helpers.AreaPoint;
@@ -21,7 +16,7 @@ import gvs.business.logic.physics.helpers.Particle;
 import gvs.business.logic.physics.rules.Traction;
 import gvs.business.logic.physics.ticker.AreaTicker;
 import gvs.business.logic.physics.ticker.Tickable;
-import gvs.interfaces.IEdge;
+import gvs.business.model.graph.Graph;
 import gvs.interfaces.IVertex;
 
 /**
@@ -31,55 +26,54 @@ import gvs.interfaces.IVertex;
  *
  */
 @Singleton
-public class LayoutController extends Observable implements Tickable {
+public class LayoutController implements Tickable {
 
-  private boolean doSoftLayout = false;
+  private boolean generateSoftPoints = false;
   private Area area = null;
   private AreaTicker ticker = null;
   private Particle particle = null;
   private Random random = null;
 
-  private Collection<IVertex> vertizes = null;
-  private Collection<IEdge> edges = null;
+  private Graph currentGraph;
 
-  private final int setLayoutStableAfterTime = 10000;
-
-  private static final int DEFAULT_RADIUS = 40/* radius */;
-  private static final int DEFAULT_MASS = 50/* masse */;
-  private static final int SOFT_MULTIPLIER = 100;
+  private static final int DEFAULT_MASS = 40;
+  private static final int SOFT_MULTIPLIER = 10;
   private static final int FIXED_MULTIPLIER = 10;
-  private static final int DEFAULT_DISTANCE = 70;
+  private static final int DEFAULT_DISTANCE = 300;
   private static final int DEFAULT_IMPACT = 10;
-  private static final int DEFAULT_AREA_Y = 900;
-  private static final int DEFAULT_AREA_X = 950;
+
+  private static final int MAX_LAYOUT_DURATION_MS = 10000;
+  private static final int DEFAULT_TICK_RATE = 50;
+
+  private static final int DEFAULT_AREA_HEIGHT = 1300;
+  private static final int DEFAULT_AREA_WIDTH = 1600;
+
   private static final int DEFAULT_SEED = 4000;
-  private static final int DEFAULT_RATE = 40;
 
   private static final Logger logger = LoggerFactory
       .getLogger(LayoutController.class);
 
-  /**
-   * Starts layout engine.
-   *
-   */
   public LayoutController() {
-    vertizes = new Vector<>();
-    edges = new Vector<>();
-    area = new Area(new AreaDimension(DEFAULT_AREA_X, DEFAULT_AREA_Y));
-    ticker = new AreaTicker(this, DEFAULT_RATE);
-    ticker.start();
-    logger.info("Starting graph layout controller");
-    logger.debug("Starting layout guard");
-    Timer guard = new Timer();
-    LayoutGuard layoutGuard = new LayoutGuard(area);
-    guard.schedule(layoutGuard, setLayoutStableAfterTime);
-    random = new Random();
-    random.setSeed(DEFAULT_SEED);
+    this.area = new Area(
+        new AreaDimension(DEFAULT_AREA_WIDTH, DEFAULT_AREA_HEIGHT));
+    this.random = new Random(DEFAULT_SEED);
+
+    initializeLayoutGuard();
   }
 
   /**
-   * Checks if particles in area are stable. If true, stops layouting engine,
-   * waits 1500ms and displays with correct components.
+   * Initializes the guard, which protects the layouter from running Infinitely.
+   */
+  private void initializeLayoutGuard() {
+    boolean isDaemon = false;
+    Timer guard = new Timer(isDaemon);
+    LayoutGuard layoutGuard = new LayoutGuard(area);
+    guard.schedule(layoutGuard, MAX_LAYOUT_DURATION_MS);
+  }
+
+  /**
+   * Checks if particles in area are stable. If true, stop layouting engine,
+   * wait 1500ms and displays with correct components.
    * 
    * @param rate
    *          rate
@@ -94,73 +88,89 @@ public class LayoutController extends Observable implements Tickable {
    */
   public void tick(double rate, double rateRatio, boolean drop, long iteration,
       long time) {
-    if (area.getAreaState()) {
+
+    logger.info("Layout engine iteration completed.");
+
+    if (area.isStable()) {
+      logger.info("Layouting completed. Graph is stable. Stop layout engine.");
       ticker.shutdown();
-      try {
-        Thread.sleep(Configuration.getInstance().getLayoutDelay());
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-      setChanged();
-      notifyObservers("TRUE");
     } else {
-      setChanged();
-      notifyObservers("FALSE");
+      logger.info("Continue layouting. Vertizes without positions detected");
       area.updateAll();
     }
-
   }
 
   /**
    * Receives vertices which have to be layouted.
    * 
-   * @param vertices
-   *          vertices
-   * @param edges
-   *          vector of edges
-   * @param doSoftLayout
-   *          soft layout
+   * @param graph
+   *          graph with vertices and edges
+   * @param useSoftPoints
+   *          use soft layout
    */
-  public void setElements(Collection<IVertex> vertices, Collection<IEdge> edges,
-      boolean doSoftLayout) {
+  public void setGraphToLayout(Graph graph, boolean useSoftPoints) {
+    logger.info("New data to layout detected.");
 
-    logger.info(
-        "LayoutController has new elements detected start layouting procedure");
-    this.doSoftLayout = doSoftLayout;
-    this.vertizes = vertices;
-    this.edges = edges;
-    ticker.startTicking();
+    this.currentGraph = graph;
+    this.generateSoftPoints = useSoftPoints;
+
+    this.area.setIsStable(false);
+    this.area.clearParticles();
+
     createVertexParticles();
     createEdgeTractions();
 
-    area.setAreaState(false);
+    logger.info("Start Area Ticker");
+    this.ticker = new AreaTicker(this, DEFAULT_TICK_RATE);
+    ticker.activateTicker();
+    ticker.start();
   }
 
   /**
    * Creates a particle for each vertex.
    *
    */
-  public void createVertexParticles() {
-    Point p = new Point();
-    Iterator<IVertex> it = vertizes.iterator();
-    while (it.hasNext()) {
-      IVertex myVertex = (IVertex) it.next();
+  private void createVertexParticles() {
+    currentGraph.getVertices().forEach(v -> {
 
-      if (!myVertex.isFixedPosition()) {
-        if (doSoftLayout) {
-          p = generateSoftPoints(myVertex);
+      Point point = new Point();
+
+      if (!v.isFixedPosition()) {
+        if (generateSoftPoints) {
+          point = generateSoftPoints(v);
         } else {
-          p = generateRandomPoints(myVertex);
+          point = generateRandomPoints(v);
         }
       } else {
-        p = generateFixedPoints(myVertex);
+        point = generateFixedPoints(v);
       }
 
-      particle = new Particle(new AreaPoint(p), myVertex.getId(), myVertex,
-          myVertex.isFixedPosition(), DEFAULT_MASS, DEFAULT_RADIUS);
-      area.addParticles(particle);
+      AreaPoint position = new AreaPoint(point);
+      long particleId = v.getId();
+      boolean isFixed = v.isFixedPosition();
+      particle = new Particle(position, particleId, v, isFixed, DEFAULT_MASS);
 
-    }
+      area.addParticles(particle);
+    });
+  }
+
+  /**
+   * Create tractions between related vertices.
+   *
+   */
+  private void createEdgeTractions() {
+    currentGraph.getEdges().forEach(e -> {
+      IVertex vertexFrom = e.getStartVertex();
+      IVertex vertexTo = e.getEndVertex();
+
+      Particle fromParticle = area.getParticleWithID(vertexFrom.getId());
+      Particle toParticle = area.getParticleWithID(vertexTo.getId());
+
+      Traction t = new Traction(fromParticle, toParticle, DEFAULT_IMPACT,
+          DEFAULT_DISTANCE);
+
+      area.addTraction(t);
+    });
   }
 
   /**
@@ -190,7 +200,6 @@ public class LayoutController extends Observable implements Tickable {
     Point softPoint = new Point();
     softPoint.x = (int) (random.nextDouble() * SOFT_MULTIPLIER);
     softPoint.y = (int) (random.nextDouble() * SOFT_MULTIPLIER);
-    System.err.println(softPoint.y);
 
     return softPoint;
   }
@@ -207,33 +216,5 @@ public class LayoutController extends Observable implements Tickable {
     fixedPoint.x = (int) ((double) vertex.getXPosition() * FIXED_MULTIPLIER);
     fixedPoint.y = (int) ((double) vertex.getYPosition() * FIXED_MULTIPLIER);
     return fixedPoint;
-  }
-
-  /**
-   * Creates tractions between related vertices.
-   *
-   */
-  public void createEdgeTractions() {
-    Iterator<IEdge> it1 = edges.iterator();
-    while (it1.hasNext()) {
-      IEdge edge = (IEdge) it1.next();
-      IVertex vertexFrom = edge.getStartVertex();
-      IVertex vertexTo = edge.getEndVertex();
-
-      Traction t = new Traction(area.getParticleWithID(vertexFrom.getId()),
-          area.getParticleWithID(vertexTo.getId()), DEFAULT_IMPACT,
-          DEFAULT_DISTANCE);
-
-      area.addTraction(t);
-    }
-  }
-
-  /**
-   * Returns layoutig area.
-   * 
-   * @return area
-   */
-  public Area getUniverse() {
-    return area;
   }
 }

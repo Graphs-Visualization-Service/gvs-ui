@@ -1,8 +1,10 @@
 package gvs.ui.view.session;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,14 +21,22 @@ import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.NumberBinding;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import jfxtras.labs.scene.layout.ScalableContentPane;
@@ -83,10 +93,12 @@ public class SessionView implements Observer {
   private double dragOriginalSceneX;
   private double dragOriginalSceneY;
 
+  private Set<Label> labels;
   private final GraphViewModel graphViewModel;
   private final SessionViewModel sessionViewModel;
 
   private static final int DEFAULT_REPLAY_TIMEOUT = 1000;
+  private static final String EDGE_LABEL = "edge-label" ;
   private static final Logger logger = LoggerFactory
       .getLogger(SessionView.class);
 
@@ -165,9 +177,11 @@ public class SessionView implements Observer {
   private void redraw(GraphViewModel graphViewModel) {
     logger.info("redraw graph pane");
     graphPane.getContentPane().getChildren().clear();
-
+    
+    labels = new HashSet<>();
     drawEdges(graphViewModel.getEdgeViewModels());
     drawVertices(graphViewModel.getVertexViewModels());
+    bringLabelsToFront();
 
     graphPane.requestScale();
   }
@@ -248,6 +262,12 @@ public class SessionView implements Observer {
       line.setStroke(e.getStyle().getLineColor());
       line.getStrokeDashArray().addAll(e.getStyle().getLineStyle());
 
+      Label l = new Label();
+      l.textProperty().bind(e.labelProperty());
+      l.getStyleClass().add(EDGE_LABEL);
+      labels.add(l);
+      bindToMiddle(line, l);
+
       line.startXProperty()
           .bindBidirectional(e.getStartVertex().getXProperty());
       line.startYProperty()
@@ -255,8 +275,21 @@ public class SessionView implements Observer {
       line.endXProperty().bindBidirectional(e.getEndVertex().getXProperty());
       line.endYProperty().bindBidirectional(e.getEndVertex().getYProperty());
 
-      graphPane.getContentPane().getChildren().add(line);
+      graphPane.getContentPane().getChildren().addAll(line, l);
     });
+  }
+  
+  private void bringLabelsToFront() {
+    labels.forEach(l -> l.toFront());
+  }
+
+  private void bindToMiddle(Line line, Label l) {
+    l.translateXProperty().bind(
+        ((line.startXProperty().add(line.endXProperty())).divide(2)).subtract(
+            (l.layoutXProperty().add(l.layoutYProperty()).divide(2))));
+    l.translateYProperty().bind(
+        ((line.startYProperty().add(line.endYProperty())).divide(2)).subtract(
+            (l.layoutXProperty().add(l.layoutYProperty()).divide(2))));
   }
 
   @FXML

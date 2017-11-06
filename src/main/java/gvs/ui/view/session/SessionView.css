@@ -1,0 +1,11 @@
+Label.edge-label {
+	-fx-font: 5 arial;
+	-fx-background-color: white;
+	-fx-background-insets: 1;
+}
+
+Circle {
+	-fx-fill: white;
+	-fx-stroke: black;
+	-fx-stroke-width: 2;
+}

@@ -16,6 +16,4 @@ public interface IEdge {
 
   IVertex getStartVertex();
 
-  void addObserver(Observer o);
-
 }

@@ -13,7 +13,7 @@ import gvs.interfaces.IVertex;
  * @author aegli
  *
  */
-public class Edge extends Observable implements IEdge {
+public class Edge implements IEdge {
 
   private NodeStyle style;
   private String label;

@@ -14,8 +14,8 @@ import com.google.inject.Inject;
 import gvs.access.Persistor;
 import gvs.business.model.graph.Graph;
 import gvs.business.model.tree.Tree;
-import gvs.interfaces.ITreeSessionController;
 import gvs.interfaces.Action;
+import gvs.interfaces.ITreeSessionController;
 import gvs.ui.model.tree.VisualizationTreeModel;
 import gvs.ui.view.tree.VisualizationTreePanel;
 

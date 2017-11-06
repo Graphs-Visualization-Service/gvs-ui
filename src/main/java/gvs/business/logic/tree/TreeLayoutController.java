@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.business.model.tree.BinaryNode;
-import gvs.business.model.tree.TreeModel;
+import gvs.business.model.tree.Tree;
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.INode;
 
@@ -22,7 +22,7 @@ public class TreeLayoutController {
   private Vector<INode> sortedNodes = null;
   private Logger treeContLogger = null;
   private BinaryNode rootNode = null;
-  private TreeModel myModel = null;
+  private Tree myModel = null;
 
   private double maxHeight = 0;
   private final double maxDimensionHeight = 90;
@@ -60,7 +60,7 @@ public class TreeLayoutController {
    * 
    * @param pModel
    */
-  public void setElements(TreeModel pModel) {
+  public void setElements(Tree pModel) {
     treeContLogger.info("Tree LayoutController has new elements detected, "
         + "start layouting procedure");
     myModel = pModel;

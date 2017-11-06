@@ -3,6 +3,9 @@ package gvs.ui.model.graph;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gvs.business.model.graph.DefaultVertex;
 import gvs.interfaces.IVertex;
 import javafx.beans.property.BooleanProperty;
@@ -26,10 +29,8 @@ public class VertexViewModel implements Observer {
   private final BooleanProperty activeProperty;
   private final StringProperty labelProperty;
 
-  // TODO move to the place, where circle is created
-  private static final int DEFAULT_HEIGHT = 40;
-  private static final int BOUNDARY_OFFSET_X = 30;
-  private static final int BOUNDARY_OFFSET_Y = 25;
+  private static final Logger logger = LoggerFactory
+      .getLogger(VertexViewModel.class);
 
   /**
    * Create a new DefaultVertexViewModel with the corresponding Vertex
@@ -38,14 +39,16 @@ public class VertexViewModel implements Observer {
    *          JavaFX independent vertex representation
    */
   public VertexViewModel(IVertex vertex) {
-    this.vertex = vertex;
     this.xProperty = new SimpleDoubleProperty();
     this.yProperty = new SimpleDoubleProperty();
     this.activeProperty = new SimpleBooleanProperty();
     this.labelProperty = new SimpleStringProperty();
 
-    this.vertex.addObserver(this);
+    updatePropertyValues(vertex);
 
+    // bidirectional connection
+    this.vertex = vertex;
+    this.vertex.addObserver(this);
     xProperty.addListener(this::xProperyListener);
     yProperty.addListener(this::yProperyListener);
   }
@@ -98,9 +101,13 @@ public class VertexViewModel implements Observer {
    */
   @Override
   public void update(Observable o, Object arg) {
-    DefaultVertex updatedVertex = (DefaultVertex) o;
-    this.xProperty.set(updatedVertex.getXPosition());
-    this.yProperty.set(updatedVertex.getYPosition());
+    IVertex updatedVertex = (IVertex) o;
+    updatePropertyValues(updatedVertex);
+  }
+
+  private void updatePropertyValues(IVertex updatedBusinessVertex) {
+    this.xProperty.set(updatedBusinessVertex.getXPosition());
+    this.yProperty.set(updatedBusinessVertex.getYPosition());
   }
 
   public DoubleProperty getXProperty() {
@@ -109,10 +116,6 @@ public class VertexViewModel implements Observer {
 
   public DoubleProperty getYProperty() {
     return yProperty;
-  }
-
-  public void setActive(boolean state) {
-    this.activeProperty.set(state);
   }
 
 }

@@ -2,8 +2,6 @@ package gvs.ui.logic.app;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Observable;
-import java.util.Observer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +11,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.GuiceBaseModule;
-import gvs.access.Persistor;
-import gvs.business.logic.ApplicationController;
-import gvs.business.model.ApplicationModel;
-import gvs.ui.view.app.AppView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -32,20 +26,23 @@ import javafx.stage.Stage;
  *
  */
 @Singleton
-public class GVSApplication extends Application implements Observer {
-
-  private static final Logger logger = LoggerFactory
-      .getLogger(GVSApplication.class);
+public class GVSApplication extends Application {
 
   private final GuiceContext context = new GuiceContext(this,
       () -> Arrays.asList(new GuiceBaseModule()));
+
+  private static final String APP_NAME = "GVS";
+  private static final int MIN_WIDTH = 800;
+  private static final int MIN_HEIGHT = 600;
+
+  private static final Logger logger = LoggerFactory
+      .getLogger(GVSApplication.class);
 
   @Inject
   private FXMLLoader fxmlLoader;
 
   private Stage primaryStage;
   private BorderPane rootLayout;
-  private AppView appView;
 
   /**
    * Set up the main frame
@@ -58,7 +55,10 @@ public class GVSApplication extends Application implements Observer {
     context.init();
 
     primaryStage = mainStage;
-    primaryStage.setTitle("GVS");
+    primaryStage.setMinHeight(MIN_HEIGHT);
+    primaryStage.setMinWidth(MIN_WIDTH);
+    primaryStage.setTitle(APP_NAME);
+
     primaryStage.setOnCloseRequest(e -> {
       Platform.exit();
       System.exit(0);
@@ -73,7 +73,6 @@ public class GVSApplication extends Application implements Observer {
   private void initRootLayout() {
     try {
       logger.debug("Initialize root layout");
-
       fxmlLoader
           .setLocation(getClass().getResource("/gvs/ui/view/app/AppView.fxml"));
 
@@ -82,29 +81,11 @@ public class GVSApplication extends Application implements Observer {
       // Show the scene containing the root layout.
       Scene scene = new Scene(rootLayout);
       primaryStage.setScene(scene);
+      primaryStage.sizeToScene();
       primaryStage.show();
-
-      appView = fxmlLoader.getController();
-      ApplicationModel appModel = new ApplicationModel();
-      appModel.addObserver(this);
-      appView.setAppViewModel(new AppViewModel(appModel,
-          ApplicationController.getInstance(appModel), new Persistor(),
-          rootLayout));
     } catch (IOException e) {
       logger.error("Could not initialize root layout", e);
     }
   }
 
-  /**
-   * The GVSApplication gets notified by the ApplicationModel whenever a new
-   * current session is set.
-   * 
-   * @param o
-   * @param arg
-   */
-  @Override
-  public void update(Observable o, Object arg) {
-    // TODO Auto-generated method stub
-
-  }
 }

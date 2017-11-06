@@ -10,6 +10,7 @@ import com.google.inject.Singleton;
 
 import gvs.access.SocketServer;
 import gvs.ui.logic.app.GVSApplication;
+import javafx.application.Application;
 
 /**
  * Starts the Graphs-Visualization Service.
@@ -38,7 +39,7 @@ public class GVSLauncher {
     socketServer.start();
 
     logger.info("Start GVS UI 2.0...");
-    GVSApplication.launch(GVSApplication.class);
+    Application.launch(GVSApplication.class);
   }
 
   /**

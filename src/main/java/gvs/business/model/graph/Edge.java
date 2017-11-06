@@ -15,72 +15,46 @@ import gvs.interfaces.IVertex;
  */
 public class Edge extends Observable implements IEdge {
 
-  private String label = null;
-  private Color lineColor = null;
-  private Stroke lineStroke = null;
-  private boolean isDirected = false;
-  private IVertex startVertex = null;
-  private IVertex endVertex = null;
+  private NodeStyle style;
+  private String label;
+  private boolean isDirected;
+  private IVertex startVertex;
+  private IVertex endVertex;
 
   /**
    * Builds an edge instance
    * 
    * @param pLabel
-   * @param pLineColor
-   * @param pLineStroke
+   * @param style
    * @param pIsDirected
    * @param pStartVertex
    * @param pEndVertex
    */
-  public Edge(String pLabel, Color pLineColor, Stroke pLineStroke,
-      boolean pIsDirected, IVertex pStartVertex, IVertex pEndVertex) {
-
+  public Edge(String pLabel, NodeStyle style, boolean pIsDirected,
+      IVertex pStartVertex, IVertex pEndVertex) {
+    this.style = style;
     this.label = pLabel;
-    this.lineColor = pLineColor;
-    this.lineStroke = pLineStroke;
     this.isDirected = pIsDirected;
     this.startVertex = pStartVertex;
     this.endVertex = pEndVertex;
   }
 
-  /**
-   * Returns end vertex of edge
-   */
   public IVertex getEndVertex() {
     return endVertex;
   }
 
-  /**
-   * Returns whether vertex is directed
-   */
   public boolean isDirected() {
     return isDirected;
   }
 
-  /**
-   * Returns vertex label
-   */
   public String getLabel() {
     return label;
   }
 
-  /**
-   * Returns vertex color
-   */
-  public Color getLineColor() {
-    return lineColor;
+  public NodeStyle getStyle() {
+    return style;
   }
 
-  /**
-   * Returns vertex stroke
-   */
-  public Stroke getLineStroke() {
-    return lineStroke;
-  }
-
-  /**
-   * Returns start vertex of edge
-   */
   public IVertex getStartVertex() {
     return startVertex;
   }

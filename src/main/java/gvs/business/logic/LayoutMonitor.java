@@ -8,20 +8,20 @@ package gvs.business.logic;
  * @author aegli
  *
  */
-public class Monitor {
+public class LayoutMonitor {
 
   private boolean locked = false;
-  private static Monitor myMonitor = null;
+  private static LayoutMonitor myMonitor = null;
 
-  private Monitor() {
+  private LayoutMonitor() {
   }
 
   /**
    * Returns an instance of the looking monitor
    */
-  public static synchronized Monitor getInstance() {
+  public static synchronized LayoutMonitor getInstance() {
     if (getMyMonitor() == null) {
-      setMyMonitor(new Monitor());
+      setMyMonitor(new LayoutMonitor());
     }
     return getMyMonitor();
   }
@@ -46,11 +46,11 @@ public class Monitor {
     notifyAll();
   }
 
-  public static Monitor getMyMonitor() {
+  public static LayoutMonitor getMyMonitor() {
     return myMonitor;
   }
 
-  public static void setMyMonitor(Monitor myMonitor) {
-    Monitor.myMonitor = myMonitor;
+  public static void setMyMonitor(LayoutMonitor myMonitor) {
+    LayoutMonitor.myMonitor = myMonitor;
   }
 }

@@ -11,7 +11,7 @@ import gvs.interfaces.INode;
  * @author aegli
  *
  */
-public class TreeModel {
+public class Tree {
   private String treeLabel;
   private Color backgroundColor;
   private Vector<INode> nodes;
@@ -33,7 +33,7 @@ public class TreeModel {
    * @param pNodes
    *          vector of nodes
    */
-  public TreeModel(String pTreeLabel, int maxLabelLength,
+  public Tree(String pTreeLabel, int maxLabelLength,
       Color pBackgroundColor, INode pRootNode, Vector<INode> pNodes) {
     this.treeLabel = pTreeLabel;
     this.backgroundColor = pBackgroundColor;
@@ -58,7 +58,7 @@ public class TreeModel {
    * @param pNodes
    *          vector of nodes
    */
-  public TreeModel(String pTreeLabel, int pModelId, int maxLabelLength,
+  public Tree(String pTreeLabel, int pModelId, int maxLabelLength,
       Color pBackgroundColor, INode pRootNode, Vector<INode> pNodes) {
     this.treeLabel = pTreeLabel;
     this.backgroundColor = pBackgroundColor;

@@ -2,7 +2,7 @@ package gvs.ui.model.graph;
 
 import java.util.Observable;
 
-import gvs.business.model.graph.GraphModel;
+import gvs.business.model.graph.Graph;
 
 /**
  * Model which gives updates to the visualization panel
@@ -12,24 +12,17 @@ import gvs.business.model.graph.GraphModel;
  */
 public class VisualizationGraphModel extends Observable {
 
-  private GraphModel graphModel;
+  private Graph graph;
   private boolean draggable = false;
   private boolean isLayouting = false;
 
   /**
-   * Builds default visualization graph model
-   *
-   */
-  public VisualizationGraphModel() {
-  }
-
-  /**
    * Sets a graph model
    * 
-   * @param pGraphModel
+   * @param graph
    */
-  public void setGraphModel(GraphModel pGraphModel) {
-    this.graphModel = pGraphModel;
+  public void setGraph(Graph graph) {
+    this.graph = graph;
     setChanged();
     notifyObservers();
   }
@@ -39,8 +32,8 @@ public class VisualizationGraphModel extends Observable {
    * 
    * @return
    */
-  public GraphModel getGraphModel() {
-    return graphModel;
+  public Graph getGraph() {
+    return graph;
   }
 
   /**

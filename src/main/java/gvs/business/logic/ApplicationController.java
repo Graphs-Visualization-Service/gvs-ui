@@ -1,104 +1,76 @@
 package gvs.business.logic;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
+import gvs.access.Persistor;
 import gvs.business.logic.graph.GraphSessionController;
+import gvs.business.logic.graph.GraphSessionControllerFactory;
 import gvs.business.logic.tree.TreeSessionController;
-import gvs.business.model.ApplicationModel;
-import gvs.business.model.graph.GraphModel;
-import gvs.business.model.tree.TreeModel;
-import gvs.interfaces.IPersistor;
+import gvs.business.model.CurrentSessionHolder;
+import gvs.business.model.graph.Graph;
+import gvs.business.model.tree.Tree;
 import gvs.interfaces.ISessionController;
 import gvs.interfaces.ITreeSessionController;
 
 /**
- * The Application Controller reacts to events from the user or newly reveived
+ * The Application Controller reacts on events from the user or newly received
  * data. The requested operations will be executed.
  * 
  * @author aegli
  *
  */
+@Singleton
 public class ApplicationController {
-  private Logger appContLogger = null;
-  private Vector<ISessionController> sessionControllers = null;
-  private static ApplicationController appController = null;
-  private ApplicationModel applicationModel = null;
-  private boolean layoutOption = false;
 
-  private ISessionController duplicatedSessions = null;
-  private ISessionController deletingSession = null;
-  private ISessionController defaultGraphSession = null;
+  // TODO replace with enum? stable, random? check ui menu
+  private boolean isSoftLayout;
+
+  private final GraphSessionControllerFactory sessionControllerFactory;
+
+  private final Collection<ISessionController> sessionControllers;
+  private final Persistor persistor;
+  private final CurrentSessionHolder currentSessionHolder;
+
+  private static final Logger logger = LoggerFactory
+      .getLogger(ApplicationController.class);
 
   /**
    * Constructor.
    * 
-   * @param am
-   *          ApplicationModel
+   * @param sessionHolder
+   *          wrapper for the current session
+   * @param persistor
+   *          persistor
    */
-  private ApplicationController(ApplicationModel am) {
-    this.applicationModel = am;
-    this.sessionControllers = new Vector<ISessionController>();
-    // TODO check logger replacement
-    // this.appContLogger =
-    // gvs.common.Logger.getInstance().getApplciationControllerLogger();
-    this.appContLogger = LoggerFactory.getLogger(ApplicationController.class);
+  @Inject
+  public ApplicationController(CurrentSessionHolder sessionHolder,
+      Persistor persistor,
+      GraphSessionControllerFactory sessionControllerFactory) {
+    this.currentSessionHolder = sessionHolder;
+    this.persistor = persistor;
+    this.sessionControllerFactory = sessionControllerFactory;
+    this.sessionControllers = new HashSet<>();
+    this.isSoftLayout = false;
   }
 
   /**
-   * Get Controller for model.
-   * 
-   * @param pApplicationModel
-   *          model
-   * @return ApplicationController singleton
-   */
-  public static synchronized ApplicationController getInstance(
-      ApplicationModel pApplicationModel) {
-    if (appController == null) {
-      appController = new ApplicationController(pApplicationModel);
-    }
-    return appController;
-  }
-
-  /**
-   * Returns an instance of the application controller.
-   * 
-   * @return applicationController
-   */
-  public static synchronized ApplicationController getInstance() {
-    return appController;
-  }
-
-  /**
-   * Sets layout option for layout engine: hard or soft layout.
-   * 
-   * @param pLayoutOption
-   *          layoutOption
-   */
-  public void setLayoutOption(boolean pLayoutOption) {
-    this.layoutOption = pLayoutOption;
-  }
-
-  /**
-   * Returns layout option defined by user.
-   * 
-   * @return layoutOption
-   */
-  public boolean getLayoutOption() {
-    return layoutOption;
-  }
-
-  /**
-   * Sets session chosen from combobox, informs model and updates view.
+   * Sets session chosen from drop down, informs model and updates view.
    * 
    * @param pSessionController
    *          sessionController
    */
   public void changeCurrentSession(ISessionController pSessionController) {
-    applicationModel.setSession(pSessionController);
+    currentSessionHolder.setCurrentSession(pSessionController);
   }
 
   /**
@@ -106,7 +78,7 @@ public class ApplicationController {
    * 
    * @return sessionControllers
    */
-  public Vector<ISessionController> getSessionContollers() {
+  public Collection<ISessionController> getSessionContollers() {
     return sessionControllers;
   }
 
@@ -115,36 +87,13 @@ public class ApplicationController {
    * 
    * @param fileName
    *          fileName
-   * @param persistor
-   *          persistor
    */
-  public void setRequestedFile(String fileName, IPersistor persistor) {
-    appContLogger.info("Load session from directory");
-    ISessionController loadedSession = (ISessionController) persistor
-        .loadFile(fileName);
-    long loadedSessionId = loadedSession.getSessionId();
-    ISessionController tempSession = null;
+  public void loadStoredSession(String fileName) {
+    logger.info("Load session from filesystem");
+    ISessionController loadedSession = persistor.loadFile(fileName);
 
-    Iterator<ISessionController> it = sessionControllers.iterator();
-    while (it.hasNext()) {
-      tempSession = ((ISessionController) it.next());
-
-      if (tempSession.getSessionId() == loadedSessionId) {
-        duplicatedSessions = tempSession;
-
-      }
-    }
-
-    if (duplicatedSessions != null) {
-      appContLogger.warn("Duplicated session detected while loading. "
-          + "Delete duplicated session");
-      sessionControllers.remove(duplicatedSessions);
-      duplicatedSessions = null;
-    }
-
-    this.sessionControllers.add(loadedSession);
-    applicationModel
-        .setSession(((ISessionController) sessionControllers.lastElement()));
+    currentSessionHolder.setCurrentSession(loadedSession);
+    sessionControllers.add(loadedSession);
   }
 
   /**
@@ -154,31 +103,21 @@ public class ApplicationController {
    *          SessionController
    */
   public void deleteSession(ISessionController pSessionController) {
-    appContLogger.info("Deleting graph session");
-    long deleteSessionId = pSessionController.getSessionId();
-    ISessionController temp = null;
+    logger.info("Delete session");
 
-    Iterator<ISessionController> it = sessionControllers.iterator();
-    while (it.hasNext()) {
-      temp = ((ISessionController) it.next());
+    sessionControllers.remove(pSessionController);
 
-      if (temp.getSessionId() == deleteSessionId) {
-        deletingSession = temp;
-      }
-    }
-
-    sessionControllers.remove(deletingSession);
     if (sessionControllers.size() > 0) {
-      appContLogger.debug("Set former graph session");
-      applicationModel
-          .setSession(((ISessionController) sessionControllers.firstElement()));
 
+      logger.debug("Session controller deleted. Set former graph session");
+      currentSessionHolder
+          .setCurrentSession(sessionControllers.iterator().next());
     } else {
       // when the last session is deleted, create empty dummy controller
       // otherwise session-bindings for UI would have to be unbound etc.
-      appContLogger.debug("Set empty graph session");
-      defaultGraphSession = new GraphSessionController();
-      applicationModel.setSession(defaultGraphSession);
+      logger.debug("Set empty graph session");
+      currentSessionHolder.setCurrentSession(
+          sessionControllerFactory.create(-1, "", null));
     }
   }
 
@@ -193,11 +132,11 @@ public class ApplicationController {
    * @param pSessionName
    *          SessionName
    */
-  public synchronized void addTreeModel(TreeModel pTreeModel, long pId,
+  public synchronized void addTreeModel(Tree pTreeModel, long pId,
       String pSessionName) {
-    appContLogger.info("New Tree arrived");
+    logger.info("New Tree arrived");
     try {
-      Monitor.getInstance().lock();
+      LayoutMonitor.getInstance().lock();
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
@@ -207,54 +146,82 @@ public class ApplicationController {
     while (sessionIt.hasNext()) {
       ISessionController sc = (ISessionController) (sessionIt.next());
       if (sc.getSessionId() == pId) {
-        appContLogger.debug("Add tree to exsting session");
+        logger.debug("Add tree to exsting session");
         ((ITreeSessionController) sc).addTreeModel(pTreeModel);
         isSessionExisting = true;
       }
     }
     if (!isSessionExisting) {
-      appContLogger.debug("Build new tree session");
+      logger.debug("Build new tree session");
       ITreeSessionController newSession = new TreeSessionController(pId,
           pSessionName, pTreeModel);
       sessionControllers.add(newSession);
-      appContLogger.debug("Set session as actual model");
-      applicationModel.setSession(newSession);
+      logger.debug("Set session as actual model");
+      currentSessionHolder.setCurrentSession(newSession);
     }
-    Monitor.getInstance().unlock();
+    LayoutMonitor.getInstance().unlock();
   }
 
   /**
    * Adds a new graph model, if an associated session exists, adds model to
    * session. Otherwise, creates a new graph session
    * 
-   * @param pGraphModel
+   * @param graph
    *          graphModel
    * @param pId
    *          Id
    * @param pSessionName
    *          sessionName
    */
-  public synchronized void addModel(GraphModel pGraphModel, long pId,
+  public synchronized void addModel(Graph graph, long pId,
       String pSessionName) {
-    appContLogger.info("New graph arrived");
+    logger.info("New graph arrived");
     Iterator<ISessionController> sessionIt = sessionControllers.iterator();
     boolean isSessionExisting = false;
     while (sessionIt.hasNext()) {
       ISessionController sc = (ISessionController) (sessionIt.next());
       if (sc.getSessionId() == pId) {
-        appContLogger.debug("Add graph to exsting session");
-        ((GraphSessionController) sc).addGraphModel(pGraphModel);
+        logger.debug("Add graph to exsting session");
+
+        GraphSessionController graphSessionController = (GraphSessionController) sc;
+        graphSessionController.addGraph(graph);
+        graphSessionController.layout();
 
         isSessionExisting = true;
       }
     }
     if (!isSessionExisting) {
-      appContLogger.debug("Build new graph session");
-      GraphSessionController newSession = new GraphSessionController(pId,
-          pSessionName, pGraphModel);
+      logger.debug("Build new graph session");
+
+      List<Graph> singleGraph = new ArrayList<>();
+      singleGraph.add(graph);
+      GraphSessionController newSession = sessionControllerFactory.create(pId,
+          pSessionName, singleGraph);
+      newSession.layout();
+
       sessionControllers.add(newSession);
-      appContLogger.debug("Set session as actual model");
-      applicationModel.setSession(newSession);
+      logger.debug("Set session as actual model");
+      currentSessionHolder.setCurrentSession(newSession);
     }
+  }
+
+  /**
+   * Sets layout option for layout engine. <br>
+   * hard = false soft = true
+   * 
+   * @param layoutOption
+   *          layoutOption
+   */
+  public void setIsSoftLayoutOption(boolean layoutOption) {
+    this.isSoftLayout = layoutOption;
+  }
+
+  /**
+   * Returns layout option defined by user.
+   * 
+   * @return layoutOption
+   */
+  public boolean isSoftLayout() {
+    return isSoftLayout;
   }
 }

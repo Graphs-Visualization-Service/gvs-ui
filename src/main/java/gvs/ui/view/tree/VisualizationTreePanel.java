@@ -17,7 +17,7 @@ import gvs.access.Configuration;
 import gvs.business.logic.cluster.ClusterSplitter;
 import gvs.business.logic.cluster.ClusterSplitterGVS;
 import gvs.business.logic.tree.TreeLayoutController;
-import gvs.business.model.tree.TreeModel;
+import gvs.business.model.tree.Tree;
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.INode;
 import gvs.interfaces.IVisualizationTreePanel;
@@ -39,7 +39,7 @@ public class VisualizationTreePanel extends JPanel
   private static final int HUNDREDPERCENT = 100;
 
   private VisualizationTreeModel visualModel;
-  private TreeModel myTreeModel;
+  private Tree myTreeModel;
   private Vector<DefaultNodeComponent> nodeComponents;
   private Dimension dimension;
 

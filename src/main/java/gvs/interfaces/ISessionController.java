@@ -1,18 +1,18 @@
 package gvs.interfaces;
 
 import java.io.File;
+import java.util.Observer;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
-import gvs.ui.application.view.ControlPanel;
+import gvs.business.model.graph.Graph;
 
-public interface ISessionController{
-
-  ControlPanel getControlPanel();
+public interface ISessionController {
 
   String getSessionName();
 
   long getSessionId();
-
-  void setVisualModel();
 
   // TODO: remove here and in subclasses
   void getFirstModel();
@@ -26,16 +26,12 @@ public interface ISessionController{
   // TODO: remove here and in subclasses
   void getLastModel();
 
-  void replay();
-
-  void speed(int picsPerSecond);
+  void replay(long timeout, Action c);
 
   void autoLayout();
 
-  boolean validateNavigation(long requestedModelId);
-
   void saveSession(File file);
-
+  
   void changeCurrentGraphToNext();
 
   void changeCurrentGraphToFirst();
@@ -43,9 +39,9 @@ public interface ISessionController{
   void changeCurrentGraphToPrev();
 
   void changeCurrentGraphToLast();
-  
-  int getCurrentGraphId();
-  
+
   int getTotalGraphCount();
+  
+  Graph getCurrentGraph();
 
 }

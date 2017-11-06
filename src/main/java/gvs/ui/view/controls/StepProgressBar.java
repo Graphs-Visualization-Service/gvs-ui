@@ -6,8 +6,8 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Inject;
 import com.gluonhq.ignite.guice.GuiceContext;
+import com.google.inject.Inject;
 
 import gvs.GuiceBaseModule;
 import javafx.beans.property.StringProperty;
@@ -15,7 +15,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-
 import javafx.scene.layout.StackPane;
 
 /**

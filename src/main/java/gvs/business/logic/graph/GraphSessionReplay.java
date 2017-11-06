@@ -1,46 +1,63 @@
 package gvs.business.logic.graph;
 
+import java.util.List;
 import java.util.TimerTask;
-import java.util.Vector;
 
-import gvs.business.model.graph.GraphModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
+import gvs.business.model.graph.Graph;
+import gvs.interfaces.Action;
 
 /**
  * TimerTask, responsible for showing replays with a defined timeout
  * 
- * @author aegli
+ * @author mwieland
  *
  */
 public class GraphSessionReplay extends TimerTask {
+
   private int sessionCounter = 0;
-  
-  @SuppressWarnings("rawtypes")
-  private Vector sessionControllers = null;
-  private GraphSessionController sessionController = null;
-  private GraphModel graphModel = null;
+
+  private final List<Graph> graphs;
+  private final GraphSessionController sessionController;
+  private final Action finishedCallback;
+
+  private static final Logger logger = LoggerFactory
+      .getLogger(GraphSessionReplay.class);
 
   /**
    * GraphSessionReplay.
-   * @param pSessionControllers sessionController
-   * @param pSessionController sessionControlelr
+   * 
+   * @param graphs
+   *          sessionController
+   * @param sessionController
+   *          sessionControlelr
    */
-  @SuppressWarnings("rawtypes")
-  public GraphSessionReplay(Vector pSessionControllers,
-      GraphSessionController pSessionController) {
-    this.sessionControllers = pSessionControllers;
-    this.sessionController = pSessionController;
+  @Inject
+  public GraphSessionReplay(@Assisted GraphSessionController sessionController,
+      @Assisted List<Graph> graphs, @Assisted Action callback) {
+    this.graphs = graphs;
+    this.sessionController = sessionController;
+    this.finishedCallback = callback;
   }
 
+  /**
+   * Executes the timer task.
+   */
   public void run() {
-    if (sessionCounter < sessionControllers.size()) {
-      graphModel = (GraphModel) sessionControllers.get(sessionCounter);
-      sessionController.setCurrentGraphModel(graphModel);
-      sessionController.isDraggable();
-      sessionController.setVisualModel();
+    logger.info("Session replay task started...");
+    if (sessionCounter < graphs.size()) {
+      logger.info("Replay graph {}", sessionCounter);
+      Graph visualizedGraph = graphs.get(sessionCounter);
+      sessionController.setCurrentGraph(visualizedGraph);
       sessionCounter++;
     } else {
-      sessionController.setReplayMode(false);
-      sessionController.validateNavigation(graphModel.getModelId());
+      logger.info("Replay finished");
+      finishedCallback.execute();
       this.cancel();
     }
   }

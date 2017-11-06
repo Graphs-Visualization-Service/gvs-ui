@@ -9,6 +9,8 @@ package gvs.access;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Image;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -18,16 +20,18 @@ import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.business.logic.ApplicationController;
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
-import gvs.business.model.graph.GraphModel;
+import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.IconVertex;
+import gvs.business.model.graph.NodeStyle;
 import gvs.business.model.tree.BinaryNode;
 import gvs.business.model.tree.DefaultNode;
-import gvs.business.model.tree.TreeModel;
+import gvs.business.model.tree.Tree;
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.INode;
@@ -43,7 +47,7 @@ import gvs.interfaces.IVertex;
 public class ModelBuilder {
 
   // Visualization-Service
-  private ApplicationController appController = null;
+  private ApplicationController applicationController = null;
   private Configuration typs = null;
 
   // Generaly
@@ -87,8 +91,9 @@ public class ModelBuilder {
   /**
    * ModelBuilder.
    */
-  public ModelBuilder() {
-    appController = ApplicationController.getInstance();
+  @Inject
+  public ModelBuilder(ApplicationController appController) {
+    this.applicationController = appController;
     typs = Configuration.getInstance();
   }
 
@@ -128,13 +133,13 @@ public class ModelBuilder {
   private void buildGraph(Element pDocRoot) {
     serverLogger.debug("Build graph from XML");
     Element eGraph = pDocRoot.element(GRAPH);
-    long graphId = Long.parseLong(eGraph.attributeValue(ATTRIBUTEID));
+    int graphId = Integer.parseInt(eGraph.attributeValue(ATTRIBUTEID));
     String graphLabel = eGraph.element(LABEL).getText();
     String graphBackground = eGraph.element(BACKGROUND).getText();
-    String maxLabelLength = eGraph.element(MAXLABELLENGTH).getText();
+    String maxLabelLengthString = eGraph.element(MAXLABELLENGTH).getText();
 
-    Vector<IVertex> vertizes = new Vector<IVertex>();
-    Vector<IEdge> edges = new Vector<IEdge>();
+    Collection<IVertex> vertizes = new HashSet<IVertex>();
+    Collection<IEdge> edges = new HashSet<IEdge>();
 
     Element eVertizes = pDocRoot.element(VERTIZES);
     Iterator<Element> vertizesIt = eVertizes.elementIterator();
@@ -156,19 +161,24 @@ public class ModelBuilder {
         edges.add(buildUndirectedEdge(eEdge, vertizes));
       }
     }
-    GraphModel gm;
-    Image graphImage = typs.getBackgroundImage(graphBackground);
-    if (graphImage == null) {
-      Color defaultColor = typs.getColor(graphBackground, true);
-      gm = new GraphModel(graphLabel, defaultColor, vertizes, edges,
-          Integer.parseInt(maxLabelLength));
-    } else {
 
-      gm = new GraphModel(graphLabel, graphImage, vertizes, edges,
-          Integer.parseInt(maxLabelLength));
-    }
+    int maxLabelLength = Integer.parseInt(maxLabelLengthString);
+    Graph newGraph = new Graph(graphId, vertizes, edges);
+    newGraph.setMaxLabelLength(maxLabelLength);
+
+    // TODO background image support?
+    // Image graphImage = typs.getBackgroundImage(graphBackground);
+    // if (graphImage == null) {
+    // Color defaultColor = typs.getColor(graphBackground, true);
+    // gm = new Graph(graphLabel, defaultColor, vertizes, edges,
+    // Integer.parseInt(maxLabelLength));
+    // } else {
+    // gm = new Graph(graphLabel, graphImage, vertizes, edges,
+    // Integer.parseInt(maxLabelLength));
+    // }
+
     serverLogger.debug("Finish build graph from XML");
-    appController.addModel(gm, graphId, graphLabel);
+    applicationController.addModel(newGraph, graphId, graphLabel);
   }
 
   /**
@@ -243,9 +253,9 @@ public class ModelBuilder {
     }
 
     serverLogger.debug("Finish build tree from XML");
-    TreeModel tm = new TreeModel(treeLabel, Integer.parseInt(maxLabelLength),
-        Color.WHITE, rootNode, nodes);
-    appController.addTreeModel(tm, treeId, treeLabel);
+    Tree tm = new Tree(treeLabel, Integer.parseInt(maxLabelLength), Color.WHITE,
+        rootNode, nodes);
+    applicationController.addTreeModel(tm, treeId, treeLabel);
   }
 
   /**
@@ -423,7 +433,8 @@ public class ModelBuilder {
    *          vertices
    * @return edge
    */
-  private IEdge buildDirectedEdge(Element pEdge, Vector<IVertex> pVertizes) {
+  private IEdge buildDirectedEdge(Element pEdge,
+      Collection<IVertex> pVertizes) {
     serverLogger.debug("Build DirectedEdge XML");
     Element eLabel = pEdge.element(LABEL);
     Element eLineColor = pEdge.element(LINECOLOR);
@@ -434,10 +445,10 @@ public class ModelBuilder {
 
     String label = eLabel.getText();
     String linecolor = eLineColor.getText();
-    Color lineColor = typs.getColor(linecolor, false);
     String linestyle = eLineStyle.getText();
     String linethickness = eLineThickness.getText();
-    BasicStroke lineStroke = typs.getLineObject(linestyle, linethickness);
+
+    NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness, null);
 
     long fromVertexId = Long.parseLong(eFromVertex.getText());
     long toVertexId = Long.parseLong(eToVertex.getText());
@@ -455,7 +466,9 @@ public class ModelBuilder {
       }
     }
     serverLogger.debug("Finish build DirectedEdge XML");
-    return new Edge(label, lineColor, lineStroke, true, fromVertex, toVertex);
+    return new Edge(label,
+        new NodeStyle(linecolor, linestyle, linethickness, null), true,
+        fromVertex, toVertex);
 
   }
 
@@ -468,7 +481,8 @@ public class ModelBuilder {
    *          vertices
    * @return edge
    */
-  private IEdge buildUndirectedEdge(Element pEdge, Vector<IVertex> pVertizes) {
+  private IEdge buildUndirectedEdge(Element pEdge,
+      Collection<IVertex> pVertizes) {
     serverLogger.debug("Build UndirectedEdge XML");
     int arrowPos = Integer.parseInt(pEdge.attributeValue(ARROWPOS));
 
@@ -481,10 +495,9 @@ public class ModelBuilder {
 
     String label = eLabel.getText();
     String linecolor = eLineColor.getText();
-    Color lineColor = typs.getColor(linecolor, false);
     String linestyle = eLineStyle.getText();
     String linethickness = eLineThickness.getText();
-    BasicStroke lineStroke = typs.getLineObject(linestyle, linethickness);
+    NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness, null);
 
     long fromVertexId = Long.parseLong(eFromVertex.getText());
     long toVertexId = Long.parseLong(eToVertex.getText());
@@ -503,14 +516,13 @@ public class ModelBuilder {
     }
     if (arrowPos == 1) {
       serverLogger.debug("Finsih build UndirectedEdge XML with arrow pos 1");
-      return new Edge(label, lineColor, lineStroke, true, toVertex, fromVertex);
+      return new Edge(label, style, true, toVertex, fromVertex);
     } else if (arrowPos == 2) {
       serverLogger.debug("Finsih build UndirectedEdge XML with arrow pos 2");
-      return new Edge(label, lineColor, lineStroke, true, fromVertex, toVertex);
+      return new Edge(label, style, true, fromVertex, toVertex);
     } else {
       serverLogger.debug("Finsih build UndirectedEdge XML");
-      return new Edge(label, lineColor, lineStroke, false, fromVertex,
-          toVertex);
+      return new Edge(label, style, false, fromVertex, toVertex);
     }
   }
 }

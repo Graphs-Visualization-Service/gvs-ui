@@ -3,7 +3,7 @@ package gvs.ui.model.tree;
 import java.util.Observable;
 
 import gvs.business.logic.tree.TreeLayoutController;
-import gvs.business.model.tree.TreeModel;
+import gvs.business.model.tree.Tree;
 
 /**
  * Model which gives updates to the visualization panel
@@ -14,7 +14,7 @@ import gvs.business.model.tree.TreeModel;
 
 public class VisualizationTreeModel extends Observable {
 
-  private TreeModel treeModel = null;
+  private Tree treeModel = null;
 
   /**
    * Builds an instance of a VisualTreeModel
@@ -28,7 +28,7 @@ public class VisualizationTreeModel extends Observable {
    * 
    * @param pTreeModel
    */
-  public void setTreeModel(TreeModel pTreeModel,
+  public void setTreeModel(Tree pTreeModel,
       TreeLayoutController pLayoutController) {
     this.treeModel = pTreeModel;
     setChanged();
@@ -39,7 +39,7 @@ public class VisualizationTreeModel extends Observable {
    * Returns currently held tree model
    * 
    */
-  public TreeModel getTreeModel() {
+  public Tree getTreeModel() {
     return treeModel;
   }
 }

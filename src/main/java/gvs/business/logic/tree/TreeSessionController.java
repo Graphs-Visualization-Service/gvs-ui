@@ -12,10 +12,10 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 
 import gvs.access.Persistor;
-import gvs.business.model.tree.TreeModel;
-import gvs.interfaces.IPersistor;
+import gvs.business.model.graph.Graph;
+import gvs.business.model.tree.Tree;
 import gvs.interfaces.ITreeSessionController;
-import gvs.ui.application.view.ControlPanel;
+import gvs.interfaces.Action;
 import gvs.ui.model.tree.VisualizationTreeModel;
 import gvs.ui.view.tree.VisualizationTreePanel;
 
@@ -29,25 +29,37 @@ import gvs.ui.view.tree.VisualizationTreePanel;
 public class TreeSessionController extends Observable
     implements ITreeSessionController {
 
-  private Logger treeContLogger = null;
   private VisualizationTreeModel visualModel = null;
   private VisualizationTreePanel visualPanel = null;
   private TreeLayoutController layoutController = null;
-  private ControlPanel cp = null;
   private long clientSessionId = 0;
   private int serverSessionId = 1;
   private String sessionName = null;
-  private Vector<TreeModel> treeModels = null;
-  private TreeModel currentTreeModel = null;
+  private Vector<Tree> treeModels = null;
+  private Tree currentTreeModel = null;
   private TreeSessionReplay ta = null;
   private Timer replayTimer = null;
 
   private boolean replayMode = false;
   private int picsPersMinute = 1000;
-  private int currentTreeId;
 
-  // TODO: change to inject
-  private IPersistor persistor = new Persistor();
+  private Persistor persistor;
+
+  private static final Logger logger = LoggerFactory
+      .getLogger(TreeSessionController.class);
+
+  /**
+   * Builds default session controller.
+   *
+   * @param appController
+   *          injected app controller
+   * @param persistor
+   *          injected persistor
+   */
+  @Inject
+  public TreeSessionController(Persistor persistor) {
+    this.persistor = persistor;
+  }
 
   /**
    * Builds an instance of a tree session controller
@@ -57,22 +69,21 @@ public class TreeSessionController extends Observable
    * @param pTreeModel
    */
   public TreeSessionController(long pSessionId, String pSessionName,
-      TreeModel pTreeModel) {
+      Tree pTreeModel) {
     this.clientSessionId = pSessionId;
     this.sessionName = pSessionName;
 
     initializeTreeSessionController();
 
-    treeContLogger.info("Build new tree session controller");
+    logger.info("Build new tree session controller");
     this.treeModels = new Vector<>();
     this.currentTreeModel = pTreeModel;
-    currentTreeId = currentTreeModel.getModelId();
 
-    cp.addVisualizationPanel(visualPanel);
     currentTreeModel.setModelId(serverSessionId++);
     treeModels.add(currentTreeModel);
 
-    if ((currentTreeModel.getNodes()).size() != 0) {
+    if (currentTreeModel.getNodes().size() > 0
+        && currentTreeModel.getNodes().size() != 0) {
       callLayouter();
     } else {
       setVisualModel();
@@ -87,17 +98,15 @@ public class TreeSessionController extends Observable
    * @param pTreeModels
    */
   public TreeSessionController(long pSessionId, String pSessionName,
-      Vector<TreeModel> pTreeModels) {
+      Vector<Tree> pTreeModels) {
     this.clientSessionId = pSessionId;
     this.sessionName = pSessionName;
     this.treeModels = pTreeModels;
 
     initializeTreeSessionController();
 
-    treeContLogger.info("Build new tree session controller from storage");
-    cp.addVisualizationPanel(visualPanel);
-    currentTreeModel = (TreeModel) treeModels.lastElement();
-    currentTreeId = currentTreeModel.getModelId();
+    logger.info("Build new tree session controller from storage");
+    currentTreeModel = (Tree) treeModels.lastElement();
     setVisualModel();
   }
 
@@ -105,27 +114,24 @@ public class TreeSessionController extends Observable
     // TODO check logger replacement
     // this.treeContLogger =
     // gvs.common.Logger.getInstance().getTreeControllerLogger();
-    treeContLogger = LoggerFactory.getLogger(TreeSessionController.class);
     this.visualModel = new VisualizationTreeModel();
     this.visualPanel = new VisualizationTreePanel(visualModel);
-    this.cp = new ControlPanel(this);
   }
 
   /**
    * Adds a new tree model to the current session
    */
-  public void addTreeModel(TreeModel pTreeModel) {
-    treeContLogger.info("New tree model arrived");
+  public void addTreeModel(Tree pTreeModel) {
+    logger.info("New tree model arrived");
     currentTreeModel = pTreeModel;
     currentTreeModel.setModelId(serverSessionId++);
-    currentTreeId = currentTreeModel.getModelId();
     treeModels.add(currentTreeModel);
-    treeContLogger.debug("Check if current tree is empty");
+    logger.debug("Check if current tree is empty");
     if ((currentTreeModel.getNodes()).size() != 0) {
-      treeContLogger.debug("tree isn't empty");
+      logger.debug("tree isn't empty");
       callLayouter();
     } else {
-      treeContLogger.debug("tree is empty");
+      logger.debug("tree is empty");
       setVisualModel();
     }
   }
@@ -145,10 +151,10 @@ public class TreeSessionController extends Observable
    * Displays first model of session
    */
   public void getFirstModel() {
-    treeContLogger.info("Show first tree of current session");
-    int requestedModelId = ((TreeModel) treeModels.firstElement()).getModelId();
+    logger.info("Show first tree of current session");
+    int requestedModelId = ((Tree) treeModels.firstElement()).getModelId();
     if (validateNavigation(requestedModelId)) {
-      currentTreeModel = (TreeModel) treeModels.get(requestedModelId - 1);
+      currentTreeModel = (Tree) treeModels.get(requestedModelId - 1);
       setVisualModel();
     }
   }
@@ -157,10 +163,10 @@ public class TreeSessionController extends Observable
    * Displays previous model of session
    */
   public void getPreviousModel() {
-    treeContLogger.info("Show prevoius tree of current session");
+    logger.info("Show prevoius tree of current session");
     int requestedModelId = currentTreeModel.getModelId() - 1;
     if (validateNavigation(requestedModelId)) {
-      currentTreeModel = (TreeModel) treeModels.get(requestedModelId - 1);
+      currentTreeModel = (Tree) treeModels.get(requestedModelId - 1);
       setVisualModel();
     }
   }
@@ -169,10 +175,10 @@ public class TreeSessionController extends Observable
    * Displays next model of session
    */
   public synchronized void getNextModel() {
-    treeContLogger.info("Show next tree of current session");
+    logger.info("Show next tree of current session");
     int requestedModelId = currentTreeModel.getModelId() + 1;
     if (validateNavigation(requestedModelId)) {
-      currentTreeModel = (TreeModel) treeModels.get(requestedModelId - 1);
+      currentTreeModel = (Tree) treeModels.get(requestedModelId - 1);
       setVisualModel();
     }
   }
@@ -181,10 +187,10 @@ public class TreeSessionController extends Observable
    * Displays last model of session
    */
   public void getLastModel() {
-    treeContLogger.info("Show last tree of current session");
-    int requestedModelId = ((TreeModel) treeModels.lastElement()).getModelId();
+    logger.info("Show last tree of current session");
+    int requestedModelId = ((Tree) treeModels.lastElement()).getModelId();
     if (validateNavigation(requestedModelId)) {
-      currentTreeModel = (TreeModel) treeModels.get(requestedModelId - 1);
+      currentTreeModel = (Tree) treeModels.get(requestedModelId - 1);
       setVisualModel();
     }
   }
@@ -192,11 +198,12 @@ public class TreeSessionController extends Observable
   /**
    * Shows a replay over all available models
    */
-  public void replay() {
-    treeContLogger.info("Show replay of tree session");
+  public void replay(long speed, Action finishedCallback) {
+    logger.info("Show replay of tree session");
     if (!replayMode) {
       setEmptyButtonState();
-      cp.setReplay(true);
+      // TODO replace with GVS 2.0 pendant
+      // cp.setReplay(true);
       this.setReplayMode(true);
       replayTimer = new Timer();
       ta = new TreeSessionReplay(treeModels, this);
@@ -226,22 +233,15 @@ public class TreeSessionController extends Observable
   /**
    * Returns current tree model
    */
-  public TreeModel getCurrentTreeModel() {
+  public Tree getCurrentTreeModel() {
     return currentTreeModel;
   }
 
   /**
    * Marks model as currently used
    */
-  public void setCurrentTreeModel(TreeModel pACurrentTreeModel) {
+  public void setCurrentTreeModel(Tree pACurrentTreeModel) {
     this.currentTreeModel = pACurrentTreeModel;
-  }
-
-  /**
-   * Returns control panel
-   */
-  public ControlPanel getControlPanel() {
-    return cp;
   }
 
   /**
@@ -262,7 +262,7 @@ public class TreeSessionController extends Observable
    * Set replay speed
    */
   public void speed(int pPicsPerSecond) {
-    treeContLogger.debug("Changing replay speed");
+    logger.debug("Changing replay speed");
     picsPersMinute = pPicsPerSecond;
   }
 
@@ -280,9 +280,11 @@ public class TreeSessionController extends Observable
   public void setReplayMode(boolean pFinishReplay) {
     replayMode = pFinishReplay;
     if (replayMode) {
-      cp.setReplayText("  Stop  ");
+      // TODO replace with GVS 2.0
+      // cp.setReplayText(" Stop ");
     } else {
-      cp.setReplayText("Replay");
+      // TODO replace with GVS 2.0
+      // cp.setReplayText("Replay");
     }
   }
 
@@ -291,65 +293,17 @@ public class TreeSessionController extends Observable
    * 
    * @return treeModels
    */
-  public AbstractList<TreeModel> getMyGraphModels() {
+  public AbstractList<Tree> getMyGraphModels() {
     return treeModels;
   }
 
   // Call layouter for layouting current model
   private void callLayouter() {
-    treeContLogger.info("Layouting elements of tree");
+    logger.info("Layouting elements of tree");
     layoutController = new TreeLayoutController();
     layoutController.setElements(currentTreeModel);
-    treeContLogger.info("Finished layouting tree, all positions are set");
+    logger.info("Finished layouting tree, all positions are set");
     setVisualModel();
-  }
-
-  // Set button state
-  private void setButtonState(long pRequestedModelId) {
-    cp.setLayoutState(false);
-    cp.setLayout(false);
-    if (!replayMode) {
-      if (pRequestedModelId == treeModels.size()) {
-        cp.setNext(false);
-        cp.setLast(false);
-        if (treeModels.size() == 1) {
-          cp.setReplay(false);
-          cp.setSlider(false);
-          cp.setPrevious(false);
-          cp.setFirst(false);
-          cp.setNext(false);
-          cp.setLast(false);
-        } else {
-          cp.setReplay(true);
-          cp.setSlider(true);
-          cp.setFirst(true);
-          cp.setPrevious(true);
-          cp.setNext(false);
-          cp.setLast(false);
-        }
-      } else if (pRequestedModelId == 1) {
-        cp.setPrevious(false);
-        cp.setFirst(false);
-        if (treeModels.size() == 1) {
-          cp.setReplay(false);
-          cp.setSlider(false);
-          cp.setNext(false);
-          cp.setLast(false);
-        } else {
-          cp.setReplay(true);
-          cp.setSlider(true);
-          cp.setNext(true);
-          cp.setLast(true);
-        }
-      } else {
-        cp.setReplay(true);
-        cp.setSlider(true);
-        cp.setFirst(true);
-        cp.setPrevious(true);
-        cp.setNext(true);
-        cp.setLast(true);
-      }
-    }
   }
 
   // Disable all button. Occurs when replay or layouting is active
@@ -375,7 +329,6 @@ public class TreeSessionController extends Observable
     int nextTreeId = currentTreeModel.getModelId() + 1;
     if (validateNavigation(nextTreeId)) {
       currentTreeModel = treeModels.get(nextTreeId - 1);
-      currentTreeId = nextTreeId;
       notifyObservers();
     }
   }
@@ -383,7 +336,6 @@ public class TreeSessionController extends Observable
   @Override
   public void changeCurrentGraphToFirst() {
     currentTreeModel = treeModels.firstElement();
-    currentTreeId = currentTreeModel.getModelId();
     notifyObservers();
   }
 
@@ -392,7 +344,6 @@ public class TreeSessionController extends Observable
     int prevTreeId = currentTreeModel.getModelId() - 1;
     if (validateNavigation(prevTreeId)) {
       currentTreeModel = treeModels.get(prevTreeId - 1);
-      currentTreeId = prevTreeId;
       notifyObservers();
     }
   }
@@ -400,18 +351,44 @@ public class TreeSessionController extends Observable
   @Override
   public void changeCurrentGraphToLast() {
     currentTreeModel = treeModels.lastElement();
-    currentTreeId = currentTreeModel.getModelId();
     notifyObservers();
-  }
-
-  @Override
-  public int getCurrentGraphId() {
-    return currentTreeId;
   }
 
   @Override
   public int getTotalGraphCount() {
     return treeModels.size();
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result
+        + (int) (clientSessionId ^ (clientSessionId >>> 32));
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    TreeSessionController other = (TreeSessionController) obj;
+    if (clientSessionId != other.clientSessionId) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public Graph getCurrentGraph() {
+    return null;
   }
 
 }

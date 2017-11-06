@@ -1,5 +1,8 @@
 package gvs.business.logic.physics.helpers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gvs.interfaces.IVertex;
 
 /**
@@ -16,6 +19,8 @@ public class Particle {
   private double weight = 0;
   private long particleId = 0;
   private IVertex myNode = null;
+
+  private static final Logger logger = LoggerFactory.getLogger(Particle.class);
 
   /**
    * Builds an instance of a particle.
@@ -139,6 +144,7 @@ public class Particle {
    *
    */
   public void updateMyNode() {
+    logger.info("Update x/y position of vertex {}", myNode.getId());
     myNode.setXPosition(particlePosition.getX() / 10);
     myNode.setYPosition(particlePosition.getY() / 10);
   }

@@ -5,6 +5,9 @@ import java.awt.Image;
 import java.awt.Stroke;
 import java.util.Observable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gvs.interfaces.IDefaultVertex;
 
 /**
@@ -24,6 +27,9 @@ public class DefaultVertex extends Observable implements IDefaultVertex {
   private boolean isRelative = false;
   private double xPosition = 0;
   private double yPosition = 0;
+
+  private static final Logger logger = LoggerFactory
+      .getLogger(DefaultVertex.class);
 
   /**
    * Builds a default vertex without fixed positions
@@ -92,6 +98,8 @@ public class DefaultVertex extends Observable implements IDefaultVertex {
    */
   public void setXPosition(double position) {
     xPosition = position;
+    setChanged();
+    notifyObservers();
   }
 
   /**
@@ -106,6 +114,8 @@ public class DefaultVertex extends Observable implements IDefaultVertex {
    */
   public void setYPosition(double position) {
     yPosition = position;
+    setChanged();
+    notifyObservers();
   }
 
   /**

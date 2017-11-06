@@ -8,36 +8,37 @@ package gvs.business.logic.physics.ticker;
  */
 public class AreaTicker extends Thread {
 
-  private double delay = 0;
-  private long iteration = 0;
-  private Tickable tickable = null;
+  private double delay;
+  private long iteration;
+  private Tickable tickable;
   private double rate, desiredRate;
   private boolean drop = false;
 
-  private HitsPerSecond hitsPerSecond = null;
-  private boolean active = false;
-  private boolean shouldStop = false;
+  private HitsPerSecond hitsPerSecond;
+  private boolean active;
+  private boolean shouldStop;
 
   private static final String THREAD_NAME = "Area Ticker Thread";
 
   public AreaTicker(Tickable tickable, double desiredRate) {
     super(THREAD_NAME);
 
-    setDesiredRate(desiredRate);
+    setDesiredRateAndDelay(desiredRate);
+
     this.tickable = tickable;
     this.iteration = 0;
     this.hitsPerSecond = new HitsPerSecond(10);
-    drop = false;
+    this.drop = false;
+    this.active = true;
 
     setPriority(Thread.MIN_PRIORITY);
-    active = true;
   }
 
-  public void setDesiredRate(double desiredRate) {
-    desiredRate = Math.max(5.0, desiredRate);
-    desiredRate = Math.min(50, desiredRate);
-    this.desiredRate = desiredRate;
-    this.delay = (1000 / desiredRate);
+  private void setDesiredRateAndDelay(double rate) {
+    rate = Math.max(5.0, rate);
+    rate = Math.min(50, rate);
+    this.desiredRate = rate;
+    this.delay = (1000 / rate);
   }
 
   public void run() {
@@ -58,6 +59,8 @@ public class AreaTicker extends Thread {
         }
 
         long time = System.currentTimeMillis();
+
+        // call layout controller
         tickable.tick(rate, rate / desiredRate, drop, iteration, time);
         try {
           sleep((long) delay, 10000);
@@ -73,7 +76,7 @@ public class AreaTicker extends Thread {
     shouldStop = true;
   }
 
-  public void startTicking() {
+  public void activateTicker() {
     active = true;
   }
 

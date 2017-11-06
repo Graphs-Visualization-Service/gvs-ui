@@ -30,10 +30,9 @@ public class Particle {
    * @param myNode
    * @param isfixed
    * @param weight
-   * @param radius
    */
   public Particle(AreaPoint position, long particleId, IVertex myNode,
-      boolean isfixed, double weight, double radius) {
+      boolean isfixed, double weight) {
     this.particlePosition = position;
     this.particleId = particleId;
     this.myNode = myNode;

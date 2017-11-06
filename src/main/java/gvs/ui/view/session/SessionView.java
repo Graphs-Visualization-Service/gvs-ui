@@ -16,6 +16,7 @@ import gvs.ui.logic.session.SessionViewModel;
 import gvs.ui.model.graph.EdgeViewModel;
 import gvs.ui.model.graph.GraphViewModel;
 import gvs.ui.model.graph.VertexViewModel;
+import gvs.ui.model.shapes.LabeledNode;
 import gvs.ui.view.controls.StepProgressBar;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
@@ -186,8 +187,14 @@ public class SessionView implements Observer {
     graphPane.requestScale();
   }
 
-  private void drawVertices(Collection<VertexViewModel> vertexViewModels) {
+  private void drawVertices(Collection<VertexViewModel> vertexViewModels) {    
     vertexViewModels.forEach(v -> {
+//      LabeledNode node = new LabeledNode();
+//      node.setCursor(Cursor.HAND);
+//      node.labelProperty().bind(v.labelProperty());
+//      node.centerXProperty().bindBidirectional(v.xProperty());
+//      node.centerYProperty().bindBidirectional(v.yProperty());
+      
       Circle circle = new Circle();
       circle.setCursor(Cursor.HAND);
       circle.setRadius(6);
@@ -203,34 +210,32 @@ public class SessionView implements Observer {
         circle.setCursor(Cursor.MOVE);
         dragOriginalSceneX = e.getSceneX();
         dragOriginalSceneY = e.getSceneY();
-
-        ((Circle) (e.getSource())).toFront();
       });
 
       circle.setOnMouseDragged(e -> {
         double offsetX = e.getSceneX() - dragOriginalSceneX;
         double offsetY = e.getSceneY() - dragOriginalSceneY;
 
-        Circle c = (Circle) (e.getSource());
-        double newX = c.getCenterX() + offsetX;
-        double newY = c.getCenterY() + offsetY;
+        LabeledNode n = (LabeledNode) (e.getSource());
+        double newX = n.getCenterX() + offsetX;
+        double newY = n.getCenterY() + offsetY;
 
-        newX = checkXBoundaries(c, newX);
-        newY = checkYBoundaries(c, newY);
+        newX = checkXBoundaries(n, newX);
+        newY = checkYBoundaries(n, newY);
 
-        c.setCenterX(newX);
-        c.setCenterY(newY);
+        n.setCenterX(newX);
+        n.setCenterY(newY);
 
         dragOriginalSceneX = e.getSceneX();
         dragOriginalSceneY = e.getSceneY();
       });
 
-      graphPane.getContentPane().getChildren().addAll(circle, label);
+      graphPane.getContentPane().getChildren().add(circle);
     });
   }
 
-  private double checkXBoundaries(Circle circle, double newX) {
-    double minimum = circle.getRadius();
+  private double checkXBoundaries(LabeledNode node, double newX) {
+    double minimum = node.getRadiusX();
     double maximumX = graphPane.getBoundsInLocal().getWidth();
 
     if (newX < minimum) {
@@ -242,8 +247,8 @@ public class SessionView implements Observer {
     return newX;
   }
 
-  private double checkYBoundaries(Circle circle, double newY) {
-    double minimum = circle.getRadius();
+  private double checkYBoundaries(LabeledNode node, double newY) {
+    double minimum = node.getRadiusY();
     double maximumY = graphPane.getBoundsInLocal().getHeight();
 
     if (newY < minimum) {

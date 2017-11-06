@@ -24,9 +24,7 @@ public class CurrentSessionHolder extends Observable {
    */
   public void setCurrentSession(ISessionController newSession) {
     this.currentSession = newSession;
-    // TODO: this is important, so the currentGraphHolder notifies its
-    // observers. but maybe this is strange for the user??
-    this.currentSession.changeCurrentGraphToLast();
+    this.currentSession.changeCurrentGraphToFirst();
     setChanged();
     notifyObservers();
   }

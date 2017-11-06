@@ -345,23 +345,39 @@ public class GraphSessionController
   @Override
   public void changeCurrentGraphToNext() {
     int nextGraphId = graphHolder.getCurrentGraph().getId() + 1;
-    graphHolder.setCurrentGraph(graphs.get(nextGraphId - 1));
+    int newIndex = nextGraphId - 1;
+    if (validIndex(newIndex)) {
+      graphHolder.setCurrentGraph(graphs.get(newIndex));
+    }
+  }
+
+  private boolean validIndex(int i) {
+    return i >= 0 && i < graphs.size();
   }
 
   @Override
   public void changeCurrentGraphToFirst() {
-    graphHolder.setCurrentGraph(graphs.get(0));
+    if (!graphs.isEmpty()) {
+       graphHolder.setCurrentGraph(graphs.get(0));
+    }
   }
 
   @Override
   public void changeCurrentGraphToPrev() {
     int prevGraphId = graphHolder.getCurrentGraph().getId() - 1;
-    graphHolder.setCurrentGraph(graphs.get(prevGraphId - 1));
+    int newIndex = prevGraphId - 1;
+    if (validIndex(newIndex)) {
+      graphHolder.setCurrentGraph(graphs.get(newIndex));
+    }
+    
   }
 
   @Override
-  public void changeCurrentGraphToLast() {
-    graphHolder.setCurrentGraph(graphs.get(graphs.size() - 1));
+  public void changeCurrentGraphToLast() {   
+    int newIndex = graphs.size() - 1;
+    if (validIndex(newIndex)) {
+      graphHolder.setCurrentGraph(graphs.get(newIndex));
+    }
   }
 
   @Override

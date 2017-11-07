@@ -4,8 +4,12 @@ Label.edge-label {
 	-fx-background-insets: 1;
 }
 
-Circle {
+.node {
 	-fx-fill: white;
 	-fx-stroke: black;
 	-fx-stroke-width: 2;
+}
+
+.node-label{
+	-fx-fill: black;
 }

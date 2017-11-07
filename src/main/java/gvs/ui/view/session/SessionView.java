@@ -30,6 +30,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -40,6 +41,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
@@ -99,7 +102,7 @@ public class SessionView implements Observer {
   private final SessionViewModel sessionViewModel;
 
   private static final int DEFAULT_REPLAY_TIMEOUT = 1000;
-  private static final String EDGE_LABEL = "edge-label" ;
+  private static final String EDGE_LABEL = "edge-label";
   private static final Logger logger = LoggerFactory
       .getLogger(SessionView.class);
 
@@ -178,7 +181,7 @@ public class SessionView implements Observer {
   private void redraw(GraphViewModel graphViewModel) {
     logger.info("redraw graph pane");
     graphPane.getContentPane().getChildren().clear();
-    
+
     labels = new HashSet<>();
     drawEdges(graphViewModel.getEdgeViewModels());
     drawVertices(graphViewModel.getVertexViewModels());
@@ -187,32 +190,20 @@ public class SessionView implements Observer {
     graphPane.requestScale();
   }
 
-  private void drawVertices(Collection<VertexViewModel> vertexViewModels) {    
+  private void drawVertices(Collection<VertexViewModel> vertexViewModels) {
     vertexViewModels.forEach(v -> {
-//      LabeledNode node = new LabeledNode();
-//      node.setCursor(Cursor.HAND);
-//      node.labelProperty().bind(v.labelProperty());
-//      node.centerXProperty().bindBidirectional(v.xProperty());
-//      node.centerYProperty().bindBidirectional(v.yProperty());
-      
-      Circle circle = new Circle();
-      circle.setCursor(Cursor.HAND);
-      circle.setRadius(6);
-      circle.centerXProperty().bindBidirectional(v.xProperty());
-      circle.centerYProperty().bindBidirectional(v.yProperty());
-      
-      Label label = new Label();
-      label.textProperty().bind(v.labelProperty());
-      bindToMiddle(circle, label);
-      labels.add(label);
-      
-      circle.setOnMousePressed(e -> {
-        circle.setCursor(Cursor.MOVE);
+      LabeledNode node = new LabeledNode(v.labelProperty());
+      node.setCursor(Cursor.HAND);
+      node.centerXProperty().bindBidirectional(v.xProperty());
+      node.centerYProperty().bindBidirectional(v.yProperty());
+
+      node.setOnMousePressed(e -> {
+        node.setCursor(Cursor.MOVE);
         dragOriginalSceneX = e.getSceneX();
         dragOriginalSceneY = e.getSceneY();
       });
 
-      circle.setOnMouseDragged(e -> {
+      node.setOnMouseDragged(e -> {
         double offsetX = e.getSceneX() - dragOriginalSceneX;
         double offsetY = e.getSceneY() - dragOriginalSceneY;
 
@@ -230,7 +221,59 @@ public class SessionView implements Observer {
         dragOriginalSceneY = e.getSceneY();
       });
 
-      graphPane.getContentPane().getChildren().add(circle);
+      graphPane.getContentPane().getChildren().add(node);
+
+      // Circle circle = new Circle();
+      // circle.setCursor(Cursor.HAND);
+      // circle.setRadius(6);
+      // circle.centerXProperty().bindBidirectional(v.xProperty());
+      // circle.centerYProperty().bindBidirectional(v.yProperty());
+
+//      Text text = new Text();
+//      text.textProperty().bind(v.labelProperty());
+//      text.getStyleClass().add("circle");
+      // label.translateXProperty().bindBidirectional(v.xProperty());
+      // label.translateYProperty().bindBidirectional(v.yProperty());
+      //
+
+      // Font font = Font.font("Arial", 20);
+      // label.setFont(font);
+
+      //
+      //
+      // label.translateXProperty().bind(
+      // v.xProperty().subtract(label.getLayoutBounds().getWidth() / 2));
+      // label.translateYProperty()
+      // .bind(v.yProperty().add(label.getLayoutBounds().getHeight() / 2));
+
+      // bindToMiddle(circle, label);
+      // labels.add(label);
+
+      // circle.setOnMousePressed(e -> {
+      // circle.setCursor(Cursor.MOVE);
+      // dragOriginalSceneX = e.getSceneX();
+      // dragOriginalSceneY = e.getSceneY();
+      // });
+      //
+      // circle.setOnMouseDragged(e -> {
+      // double offsetX = e.getSceneX() - dragOriginalSceneX;
+      // double offsetY = e.getSceneY() - dragOriginalSceneY;
+      //
+      // LabeledNode n = (LabeledNode) (e.getSource());
+      // double newX = n.getCenterX() + offsetX;
+      // double newY = n.getCenterY() + offsetY;
+      //
+      // newX = checkXBoundaries(n, newX);
+      // newY = checkYBoundaries(n, newY);
+      //
+      // n.setCenterX(newX);
+      // n.setCenterY(newY);
+      //
+      // dragOriginalSceneX = e.getSceneX();
+      // dragOriginalSceneY = e.getSceneY();
+      // });
+      //
+      // graphPane.getContentPane().getChildren().add(circle);
     });
   }
 
@@ -278,17 +321,15 @@ public class SessionView implements Observer {
       labels.add(label);
       bindToMiddle(line, label);
 
-      line.startXProperty()
-          .bindBidirectional(e.getStartVertex().xProperty());
-      line.startYProperty()
-          .bindBidirectional(e.getStartVertex().yProperty());
+      line.startXProperty().bindBidirectional(e.getStartVertex().xProperty());
+      line.startYProperty().bindBidirectional(e.getStartVertex().yProperty());
       line.endXProperty().bindBidirectional(e.getEndVertex().xProperty());
       line.endYProperty().bindBidirectional(e.getEndVertex().yProperty());
 
       graphPane.getContentPane().getChildren().addAll(line, label);
     });
   }
-  
+
   private void bringLabelsToFront() {
     labels.forEach(l -> l.toFront());
   }
@@ -301,12 +342,11 @@ public class SessionView implements Observer {
         ((line.startYProperty().add(line.endYProperty())).divide(2)).subtract(
             (label.layoutXProperty().add(label.layoutYProperty()).divide(2))));
   }
-  
+
   private void bindToMiddle(Circle circle, Label label) {
     label.translateXProperty().bind(circle.centerXProperty());
     label.translateYProperty().bind(circle.centerYProperty());
   }
-
 
   @FXML
   private void stepForward() {

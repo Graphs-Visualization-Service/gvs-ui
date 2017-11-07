@@ -139,11 +139,17 @@ public class Particle {
   }
 
   /**
-   * When particle is fixed, sets position(percent) of the appropriate vertex
+   * Updates the X/Y positions of the business vertex with the calculated
+   * values.
+   * 
+   * The new values are propagated via observers to the view model
+   * representation.
+   * 
+   * The ViewModel representation is bound to the current Circle object and
+   * updated in real time.
    *
    */
   public void updateMyNode() {
-    logger.info("Update x/y position of vertex {}", myNode.getId());
     myNode.setXPosition(particlePosition.getX() / 10);
     myNode.setYPosition(particlePosition.getY() / 10);
   }

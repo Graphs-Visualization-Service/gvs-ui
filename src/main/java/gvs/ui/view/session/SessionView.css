@@ -12,4 +12,5 @@ Label.edge-label {
 
 .node-label{
 	-fx-fill: black;
+	-fx-font: 5 arial;
 }

@@ -47,8 +47,7 @@ public class ConnectionMonitor {
   public synchronized void releaseService(String clientAddress) {
     if (currentOwnerAddress == null) {
       logger.debug("Service already released.");
-    }
-    if (currentOwnerAddress.equals(clientAddress)) {
+    } else if (currentOwnerAddress.equals(clientAddress)) {
       currentOwnerAddress = null;
       logger.info("Serivce will be released...");
     }

@@ -150,7 +150,6 @@ public class GraphSessionController implements IGraphSessionController {
   public void replay(long timeout, Action finishedCallback) {
     logger.info("Replay current session");
     Timer timer = new Timer();
-    setReplayMode(true);
     GraphSessionReplay sessionReplay = sessionReplayFactory.create(this, graphs,
         finishedCallback);
     timer.schedule(sessionReplay, timeout, timeout);
@@ -188,7 +187,7 @@ public class GraphSessionController implements IGraphSessionController {
   /**
    * Layout current displayed graph.
    */
-  public void autoLayout() {
+  public void autoLayout(Action callbackFunction) {
     logger.debug("Check if graph can be layouted");
     if (!isRelativeSession) {
       Graph currentGraph = graphHolder.getCurrentGraph();
@@ -196,8 +195,9 @@ public class GraphSessionController implements IGraphSessionController {
       currentGraph.getVertices().forEach(v -> {
         v.setFixedPosition(false);
       });
-      
+
       layout();
+      callbackFunction.execute();
     }
   }
 
@@ -217,79 +217,6 @@ public class GraphSessionController implements IGraphSessionController {
    */
   public List<Graph> getGraphs() {
     return graphs;
-  }
-
-  /**
-   * Sets whether replay is active.
-   * 
-   * @param pFinishReplay
-   *          finishReplay
-   */
-  public void setReplayMode(boolean pFinishReplay) {
-    replayMode = pFinishReplay;
-    if (replayMode) {
-      // TODO replace with view model pendant
-      // controlPanel.setReplayText(" Stop ");
-    } else {
-      // TODO replace with view model pendant
-      // controlPanel.setReplayText("Replay");
-    }
-  }
-
-  /**
-   * Copy positions of former vertizes to current model in order of no changes.
-   */
-  private void setFormerVertexCoordinate() {
-    Graph currentGraph = graphHolder.getCurrentGraph();
-    Graph formerGraph = graphs.get(currentGraph.getId() - 2);
-
-    Collection<IVertex> formerVertizes = formerGraph.getVertices();
-    Collection<IVertex> currentVertizes = currentGraph.getVertices();
-
-    Iterator<IVertex> it1 = currentVertizes.iterator();
-    boolean isFormerVertexPosAvailable = false;
-    logger.debug("Setting former graph position to current graph");
-    while (it1.hasNext()) {
-      IVertex currentVertex = (IVertex) it1.next();
-      isFormerVertexPosAvailable = false;
-
-      Iterator<IVertex> it = formerVertizes.iterator();
-      while (it.hasNext()) {
-        IVertex formerVertex = ((IVertex) it.next());
-        if (currentVertex.getId() == formerVertex.getId()) {
-          setCurrentVertexCoordinate(currentVertex, formerVertex);
-          isFormerVertexPosAvailable = true;
-        }
-      }
-
-      if (!isFormerVertexPosAvailable) {
-        callLayoutEngine = true;
-      }
-    }
-
-    if (callLayoutEngine) {
-      logger.debug("Vertizes without positions detected, call layouter");
-      layout();
-      callLayoutEngine = false;
-    } else {
-      logger.debug("All graph positions are set");
-      LayoutMonitor.getInstance().unlock();
-    }
-  }
-
-  /**
-   * Set calculated vertex coordinates.
-   * 
-   * @param pCurrentVertex
-   *          currentVertex
-   * @param pFormerVertex
-   *          formerVetex
-   */
-  private void setCurrentVertexCoordinate(IVertex pCurrentVertex,
-      IVertex pFormerVertex) {
-    pCurrentVertex.setXPosition(pFormerVertex.getXPosition());
-    pCurrentVertex.setYPosition(pFormerVertex.getYPosition());
-    pCurrentVertex.setFixedPosition(pFormerVertex.isFixedPosition());
   }
 
   @Override

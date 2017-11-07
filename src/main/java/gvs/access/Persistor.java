@@ -385,7 +385,6 @@ public class Persistor {
       Element eGraphModel = (Element) modelIt.next();
       if (eGraphModel.getName().equals(GRAPHMODEL)) {
         int graphId = Integer.parseInt(eGraphModel.attributeValue(ATTRIBUTEID));
-        String graphLabel = eGraphModel.getText();
         Element eBackground = eGraphModel.element(BACKGROUND);
         String graphBackground = eBackground.getText();
         Element eMaxLabelLength = eGraphModel.element(MAXLABELLENGTH);
@@ -412,7 +411,7 @@ public class Persistor {
         }
 
         int maxLabelLength = Integer.parseInt(maxLabelLengthString);
-        Graph newGraph = new Graph(graphId, vertizes, edges);
+        Graph newGraph = new Graph(vertizes, edges);
         newGraph.setMaxLabelLength(maxLabelLength);
 
         // TODO background image support?

@@ -34,8 +34,6 @@ import gvs.interfaces.IVertex;
  */
 public class GraphSessionController implements IGraphSessionController {
 
-  private boolean callLayoutEngine = false;
-  private boolean replayMode = false;
   private boolean isRelativeSession = false;
 
   private long sessionId;
@@ -68,7 +66,8 @@ public class GraphSessionController implements IGraphSessionController {
     this.sessionId = pSessionId;
     this.sessionName = pSessionName;
 
-    // TODO is this really required?
+    // GraphId needs to be set and incremented as soon as they are added to a
+    // session
     int graphId = 1;
     if (graphs != null) {
       if (graphs.size() >= 1) {

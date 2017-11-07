@@ -28,13 +28,12 @@ import gvs.interfaces.IVertex;
 @Singleton
 public class LayoutController implements Tickable {
 
-  private boolean generateSoftPoints = false;
-  private Area area = null;
-  private AreaTicker ticker = null;
-  private Particle particle = null;
-  private Random random = null;
+  private Area area;
+  private AreaTicker ticker;
 
   private Graph currentGraph;
+  private Random random;
+  private boolean generateSoftPoints;
 
   private static final int DEFAULT_MASS = 40;
   private static final int SOFT_MULTIPLIER = 10;
@@ -72,35 +71,6 @@ public class LayoutController implements Tickable {
   }
 
   /**
-   * Checks if particles in area are stable. If true, stop layouting engine,
-   * wait 1500ms and displays with correct components.
-   * 
-   * @param rate
-   *          rate
-   * @param rateRatio
-   *          ratio
-   * @param drop
-   *          drop
-   * @param iteration
-   *          iteration
-   * @param time
-   *          time
-   */
-  public void tick(double rate, double rateRatio, boolean drop, long iteration,
-      long time) {
-
-    logger.info("Layout engine iteration completed.");
-
-    if (area.isStable()) {
-      logger.info("Layouting completed. Graph is stable. Stop layout engine.");
-      ticker.shutdown();
-    } else {
-      logger.info("Continue layouting. Vertizes without positions detected");
-      area.updateAll();
-    }
-  }
-
-  /**
    * Receives vertices which have to be layouted.
    * 
    * @param graph
@@ -111,6 +81,20 @@ public class LayoutController implements Tickable {
   public void setGraphToLayout(Graph graph, boolean useSoftPoints) {
     logger.info("New data to layout detected.");
 
+    if (ticker != null) {
+      try {
+        logger.info("Thread successfully stopped.");
+        ticker.join();
+      } catch (InterruptedException e) {
+        logger.error("Unable to join Area Ticker Thread", e);
+      }
+    }
+
+    this.ticker = new AreaTicker(this, DEFAULT_TICK_RATE);
+    logger.debug("Starting thread: {}", ticker.getName());
+    ticker.start();
+    logger.debug("Background process successfully started.");
+
     this.currentGraph = graph;
     this.generateSoftPoints = useSoftPoints;
 
@@ -120,10 +104,22 @@ public class LayoutController implements Tickable {
     createVertexParticles();
     createEdgeTractions();
 
-    logger.info("Start Area Ticker");
-    this.ticker = new AreaTicker(this, DEFAULT_TICK_RATE);
-    ticker.activateTicker();
-    ticker.start();
+  }
+
+  /**
+   * Check if particles in area are stable. If stable, stop ticking, otherwise
+   * update positions and continue with the next iteration.
+   */
+  public void tick() {
+    logger.info("Layout engine iteration completed.");
+
+    if (area.isStable()) {
+      logger.info("Layouting completed. Graph is stable. Stop layout engine.");
+      ticker.terminate();
+    } else {
+      logger.info("Continue layouting...");
+      area.updateAll();
+    }
   }
 
   /**
@@ -148,9 +144,9 @@ public class LayoutController implements Tickable {
       AreaPoint position = new AreaPoint(point);
       long particleId = v.getId();
       boolean isFixed = v.isFixedPosition();
-      particle = new Particle(position, particleId, v, isFixed, DEFAULT_MASS);
-
-      area.addParticles(particle);
+      Particle newParticle = new Particle(position, particleId, v, isFixed,
+          DEFAULT_MASS);
+      area.addParticles(newParticle);
     });
   }
 

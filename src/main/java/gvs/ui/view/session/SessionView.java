@@ -1,8 +1,10 @@
 package gvs.ui.view.session;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import gvs.ui.logic.session.SessionViewModel;
 import gvs.ui.model.graph.EdgeViewModel;
 import gvs.ui.model.graph.GraphViewModel;
 import gvs.ui.model.graph.VertexViewModel;
+import gvs.ui.model.shapes.LabeledNode;
 import gvs.ui.view.controls.StepProgressBar;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
@@ -28,6 +31,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 
@@ -83,10 +87,13 @@ public class SessionView implements Observer {
   private double dragOriginalSceneX;
   private double dragOriginalSceneY;
 
+  // used for correct z-order -> labels on top of nodes
+  private final Set<Label> edgeLabels;
   private final GraphViewModel graphViewModel;
   private final SessionViewModel sessionViewModel;
 
   private static final int DEFAULT_REPLAY_TIMEOUT = 1000;
+  private static final String CSS_EDGE_LABEL = "edge-label";
   private static final Logger logger = LoggerFactory
       .getLogger(SessionView.class);
 
@@ -95,6 +102,7 @@ public class SessionView implements Observer {
       SessionViewModel sessionViewModel) {
     this.graphViewModel = graphViewModel;
     this.sessionViewModel = sessionViewModel;
+    this.edgeLabels = new HashSet<>();
 
     graphViewModel.addObserver(this);
   }
@@ -164,54 +172,60 @@ public class SessionView implements Observer {
 
   private void redraw(GraphViewModel graphViewModel) {
     logger.info("redraw graph pane");
+
     graphPane.getContentPane().getChildren().clear();
+    edgeLabels.clear();
 
     drawEdges(graphViewModel.getEdgeViewModels());
     drawVertices(graphViewModel.getVertexViewModels());
+    bringLabelsToFront();
 
     graphPane.requestScale();
   }
 
   private void drawVertices(Collection<VertexViewModel> vertexViewModels) {
     vertexViewModels.forEach(v -> {
-      Circle circle = new Circle();
-      circle.setCursor(Cursor.HAND);
-      circle.setRadius(6);
-      circle.centerXProperty().bindBidirectional(v.getXProperty());
-      circle.centerYProperty().bindBidirectional(v.getYProperty());
+      LabeledNode node = new LabeledNode(v.labelProperty(),
+          graphPane.getContentScaleTransform().getX(),
+          graphPane.getContentScaleTransform().getY());
+      node.getEllipse().setCursor(Cursor.HAND);
+      node.getEllipse().centerXProperty().bindBidirectional(v.xProperty());
+      node.getEllipse().centerYProperty().bindBidirectional(v.yProperty());
 
-      circle.setOnMousePressed(e -> {
-        circle.setCursor(Cursor.MOVE);
-        dragOriginalSceneX = e.getSceneX();
-        dragOriginalSceneY = e.getSceneY();
-
-        ((Circle) (e.getSource())).toFront();
-      });
-
-      circle.setOnMouseDragged(e -> {
-        double offsetX = e.getSceneX() - dragOriginalSceneX;
-        double offsetY = e.getSceneY() - dragOriginalSceneY;
-
-        Circle c = (Circle) (e.getSource());
-        double newX = c.getCenterX() + offsetX;
-        double newY = c.getCenterY() + offsetY;
-
-        newX = checkXBoundaries(c, newX);
-        newY = checkYBoundaries(c, newY);
-
-        c.setCenterX(newX);
-        c.setCenterY(newY);
-
+      node.getEllipse().setOnMousePressed(e -> {
         dragOriginalSceneX = e.getSceneX();
         dragOriginalSceneY = e.getSceneY();
       });
 
-      graphPane.getContentPane().getChildren().add(circle);
+      node.getEllipse().setOnMouseDragged(e -> {
+        Ellipse n = (Ellipse) (e.getSource());
+        n.setCursor(Cursor.HAND);
+
+        double offsetX = (e.getSceneX() - dragOriginalSceneX)
+            / graphPane.getContentScaleTransform().getX();
+        double offsetY = (e.getSceneY() - dragOriginalSceneY)
+            / graphPane.getContentScaleTransform().getY();
+
+        double newX = n.getCenterX() + offsetX;
+        double newY = n.getCenterY() + offsetY;
+
+        newX = checkXBoundaries(n, newX);
+        newY = checkYBoundaries(n, newY);
+
+        n.setCenterX(newX);
+        n.setCenterY(newY);
+
+        dragOriginalSceneX = e.getSceneX();
+        dragOriginalSceneY = e.getSceneY();
+      });
+
+      graphPane.getContentPane().getChildren().addAll(node.getEllipse(),
+          node.getLabel());
     });
   }
 
-  private double checkXBoundaries(Circle circle, double newX) {
-    double minimum = circle.getRadius();
+  private double checkXBoundaries(Ellipse node, double newX) {
+    double minimum = node.getRadiusX();
     double maximumX = graphPane.getBoundsInLocal().getWidth();
 
     if (newX < minimum) {
@@ -223,8 +237,8 @@ public class SessionView implements Observer {
     return newX;
   }
 
-  private double checkYBoundaries(Circle circle, double newY) {
-    double minimum = circle.getRadius();
+  private double checkYBoundaries(Ellipse node, double newY) {
+    double minimum = node.getRadiusY();
     double maximumY = graphPane.getBoundsInLocal().getHeight();
 
     if (newY < minimum) {
@@ -238,25 +252,42 @@ public class SessionView implements Observer {
 
   private void drawEdges(Collection<EdgeViewModel> edgeViewModels) {
     edgeViewModels.forEach(e -> {
-      double startX = e.getStartVertex().getXProperty().get();
-      double startY = e.getStartVertex().getYProperty().get();
-      double endX = e.getEndVertex().getXProperty().get();
-      double endY = e.getEndVertex().getYProperty().get();
+      double startX = e.getStartVertex().xProperty().get();
+      double startY = e.getStartVertex().yProperty().get();
+      double endX = e.getEndVertex().xProperty().get();
+      double endY = e.getEndVertex().yProperty().get();
 
       Line line = new Line(startX, startY, endX, endY);
       line.setStrokeWidth(e.getStyle().getLineThickness());
       line.setStroke(e.getStyle().getLineColor());
       line.getStrokeDashArray().addAll(e.getStyle().getLineStyle());
 
-      line.startXProperty()
-          .bindBidirectional(e.getStartVertex().getXProperty());
-      line.startYProperty()
-          .bindBidirectional(e.getStartVertex().getYProperty());
-      line.endXProperty().bindBidirectional(e.getEndVertex().getXProperty());
-      line.endYProperty().bindBidirectional(e.getEndVertex().getYProperty());
+      Label label = new Label();
+      label.textProperty().bind(e.labelProperty());
+      label.getStyleClass().add(CSS_EDGE_LABEL);
+      edgeLabels.add(label);
+      bindToMiddle(line, label);
 
-      graphPane.getContentPane().getChildren().add(line);
+      line.startXProperty().bindBidirectional(e.getStartVertex().xProperty());
+      line.startYProperty().bindBidirectional(e.getStartVertex().yProperty());
+      line.endXProperty().bindBidirectional(e.getEndVertex().xProperty());
+      line.endYProperty().bindBidirectional(e.getEndVertex().yProperty());
+
+      graphPane.getContentPane().getChildren().addAll(line, label);
     });
+  }
+
+  private void bringLabelsToFront() {
+    edgeLabels.forEach(l -> l.toFront());
+  }
+
+  private void bindToMiddle(Line line, Label label) {
+    label.translateXProperty().bind(
+        ((line.startXProperty().add(line.endXProperty())).divide(2)).subtract(
+            (label.layoutXProperty().add(label.layoutYProperty()).divide(2))));
+    label.translateYProperty().bind(
+        ((line.startYProperty().add(line.endYProperty())).divide(2)).subtract(
+            (label.layoutXProperty().add(label.layoutYProperty()).divide(2))));
   }
 
   @FXML

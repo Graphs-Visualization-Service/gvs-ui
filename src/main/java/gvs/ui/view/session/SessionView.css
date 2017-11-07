@@ -1,0 +1,16 @@
+Label.edge-label {
+	-fx-font: 5 arial;
+	-fx-background-color: white;
+	-fx-background-insets: 1;
+}
+
+.node {
+	-fx-fill: white;
+	-fx-stroke: black;
+	-fx-stroke-width: 2;
+}
+
+.node-label{
+	-fx-fill: black;
+	-fx-font: 5 arial;
+}

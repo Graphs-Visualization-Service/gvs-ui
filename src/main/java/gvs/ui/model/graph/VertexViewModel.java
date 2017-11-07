@@ -26,7 +26,6 @@ public class VertexViewModel implements Observer {
   private final IVertex vertex;
   private final DoubleProperty xProperty;
   private final DoubleProperty yProperty;
-  private final BooleanProperty activeProperty;
   private final StringProperty labelProperty;
 
   private static final Logger logger = LoggerFactory
@@ -41,8 +40,7 @@ public class VertexViewModel implements Observer {
   public VertexViewModel(IVertex vertex) {
     this.xProperty = new SimpleDoubleProperty();
     this.yProperty = new SimpleDoubleProperty();
-    this.activeProperty = new SimpleBooleanProperty();
-    this.labelProperty = new SimpleStringProperty();
+    this.labelProperty = new SimpleStringProperty(vertex.getLabel());
 
     updatePropertyValues(vertex);
 
@@ -110,12 +108,16 @@ public class VertexViewModel implements Observer {
     this.yProperty.set(updatedBusinessVertex.getYPosition());
   }
 
-  public DoubleProperty getXProperty() {
+  public DoubleProperty xProperty() {
     return xProperty;
   }
 
-  public DoubleProperty getYProperty() {
+  public DoubleProperty yProperty() {
     return yProperty;
+  }
+
+  public StringProperty labelProperty() {
+    return labelProperty;
   }
 
 }

@@ -358,7 +358,7 @@ public class GraphSessionController
   @Override
   public void changeCurrentGraphToFirst() {
     if (!graphs.isEmpty()) {
-       graphHolder.setCurrentGraph(graphs.get(0));
+      graphHolder.setCurrentGraph(graphs.get(0));
     }
   }
 
@@ -369,11 +369,11 @@ public class GraphSessionController
     if (validIndex(newIndex)) {
       graphHolder.setCurrentGraph(graphs.get(newIndex));
     }
-    
+
   }
 
   @Override
-  public void changeCurrentGraphToLast() {   
+  public void changeCurrentGraphToLast() {
     int newIndex = graphs.size() - 1;
     if (validIndex(newIndex)) {
       graphHolder.setCurrentGraph(graphs.get(newIndex));

@@ -1,5 +1,8 @@
 package gvs.business.logic.physics.ticker;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Ticker for the layouting area
  * 
@@ -9,75 +12,62 @@ package gvs.business.logic.physics.ticker;
 public class AreaTicker extends Thread {
 
   private double delay;
-  private long iteration;
-  private Tickable tickable;
-  private double rate, desiredRate;
-  private boolean drop = false;
+  private Tickable callbackTickable;
+  private double desiredRate;
 
   private HitsPerSecond hitsPerSecond;
-  private boolean active;
-  private boolean shouldStop;
+
+  private volatile boolean stop;
 
   private static final String THREAD_NAME = "Area Ticker Thread";
+
+  private static final Logger logger = LoggerFactory
+      .getLogger(AreaTicker.class);
 
   public AreaTicker(Tickable tickable, double desiredRate) {
     super(THREAD_NAME);
 
-    setDesiredRateAndDelay(desiredRate);
+    double maxRate = Math.max(5.0, desiredRate);
+    double minRate = Math.min(50, maxRate);
 
-    this.tickable = tickable;
-    this.iteration = 0;
+    this.desiredRate = minRate;
+    this.delay = (1000 / minRate);
+    this.callbackTickable = tickable;
     this.hitsPerSecond = new HitsPerSecond(10);
-    this.drop = false;
-    this.active = true;
 
     setPriority(Thread.MIN_PRIORITY);
   }
 
-  private void setDesiredRateAndDelay(double rate) {
-    rate = Math.max(5.0, rate);
-    rate = Math.min(50, rate);
-    this.desiredRate = rate;
-    this.delay = (1000 / rate);
+  /**
+   * stop this ticker thread.
+   */
+  public void terminate() {
+    stop = true;
   }
 
+  public boolean isStopped() {
+    return this.stop;
+  }
+
+  @Override
   public void run() {
-    while (!shouldStop) {
-      rate = (hitsPerSecond.getHitsPerSecond());
-      if (rate < desiredRate) {
-        delay *= .99999;
-      } else if (rate > desiredRate) {
-        delay *= 1.00001;
-      }
-
-      hitsPerSecond.doHit();
-      if (active) {
-        if ((rate) < (desiredRate) && iteration % 5 == 0) {
-          drop = true;
-        } else {
-          drop = false;
+    while (!stop) {
+      try {
+        double rate = hitsPerSecond.getHitsPerSecond();
+        hitsPerSecond.insertCurrentTimestamp();
+        if (rate < desiredRate) {
+          delay *= .99999;
+        } else if (rate > desiredRate) {
+          delay *= 1.00001;
         }
+        sleep((long) delay, 10000);
 
-        long time = System.currentTimeMillis();
+        logger.info("Update view");
+        callbackTickable.tick();
 
-        // call layout controller
-        tickable.tick(rate, rate / desiredRate, drop, iteration, time);
-        try {
-          sleep((long) delay, 10000);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
+      } catch (InterruptedException e) {
+        stop = true;
       }
-      iteration++;
     }
   }
-
-  public void shutdown() {
-    shouldStop = true;
-  }
-
-  public void activateTicker() {
-    active = true;
-  }
-
 }

@@ -12,10 +12,10 @@ import org.slf4j.LoggerFactory;
 public class AreaTicker extends Thread {
 
   private double delay;
-  private Tickable callbackTickable;
   private double desiredRate;
 
   private HitsPerSecond hitsPerSecond;
+  private Tickable callbackTickable;
 
   private volatile boolean stop;
 
@@ -45,10 +45,6 @@ public class AreaTicker extends Thread {
     stop = true;
   }
 
-  public boolean isStopped() {
-    return this.stop;
-  }
-
   @Override
   public void run() {
     while (!stop) {
@@ -62,7 +58,7 @@ public class AreaTicker extends Thread {
         }
         sleep((long) delay, 10000);
 
-        logger.info("Update view");
+        logger.info("Tick: Update view");
         callbackTickable.tick();
 
       } catch (InterruptedException e) {

@@ -298,7 +298,7 @@ public class GraphSessionController implements IGraphSessionController {
       logger.info("Got layout monitor");
 
       Graph currentGraph = graphHolder.getCurrentGraph();
-      layoutController.setGraphToLayout(currentGraph,
+      layoutController.layoutGraph(currentGraph,
           applicationController.isSoftLayout());
 
     } catch (InterruptedException e) {

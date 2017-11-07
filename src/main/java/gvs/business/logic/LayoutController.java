@@ -1,6 +1,7 @@
 package gvs.business.logic;
 
 import java.awt.Point;
+import java.util.Collection;
 import java.util.Random;
 import java.util.Timer;
 
@@ -17,12 +18,16 @@ import gvs.business.logic.physics.rules.Traction;
 import gvs.business.logic.physics.ticker.AreaTicker;
 import gvs.business.logic.physics.ticker.Tickable;
 import gvs.business.model.graph.Graph;
+import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
 
 /**
- * Creates and prepares the elements which have to be layouted.
+ * Creates and prepares the elements which need to be layouted.
  * 
- * @author aegli
+ * Executes a separate ticker thread which calls the LayoutController in a
+ * certain interval.
+ * 
+ * @author mwieland
  *
  */
 @Singleton
@@ -30,10 +35,7 @@ public class LayoutController implements Tickable {
 
   private Area area;
   private AreaTicker ticker;
-
-  private Graph currentGraph;
   private Random random;
-  private boolean generateSoftPoints;
 
   private static final int DEFAULT_MASS = 40;
   private static final int SOFT_MULTIPLIER = 10;
@@ -78,15 +80,40 @@ public class LayoutController implements Tickable {
    * @param useSoftPoints
    *          use soft layout
    */
-  public void setGraphToLayout(Graph graph, boolean useSoftPoints) {
-    logger.info("New data to layout detected.");
+  public void layoutGraph(Graph graph, boolean useSoftPoints) {
+    logger.info("Received new data to layout");
+    handleTickerThread();
 
+    resetArea();
+    calculatLayout(graph, useSoftPoints);
+  }
+
+  private void resetArea() {
+    this.area.setIsStable(false);
+    this.area.clearParticles();
+  }
+
+  private void calculatLayout(Graph graph, boolean useSoftPoints) {
+    createVertexParticles(graph.getVertices(), useSoftPoints);
+    createEdgeTractions(graph.getEdges());
+  }
+
+  /**
+   * Only one ticker thread is allowed at a time.
+   * 
+   * If the autolayout mechanism is executed, the ticker thread executes the
+   * tick method in a defined interval.
+   * 
+   * As soon as the area is stable, the ticker thread terminates.
+   */
+  private void handleTickerThread() {
     if (ticker != null) {
       try {
-        logger.info("Thread successfully stopped.");
+        logger.debug("Wait for current AreaTicker thread to terminate.");
         ticker.join();
+        logger.debug("AreaTicker thread successfully stopped.");
       } catch (InterruptedException e) {
-        logger.error("Unable to join Area Ticker Thread", e);
+        logger.error("Unable to join Area Ticker thread", e);
       }
     }
 
@@ -94,16 +121,6 @@ public class LayoutController implements Tickable {
     logger.debug("Starting thread: {}", ticker.getName());
     ticker.start();
     logger.debug("Background process successfully started.");
-
-    this.currentGraph = graph;
-    this.generateSoftPoints = useSoftPoints;
-
-    this.area.setIsStable(false);
-    this.area.clearParticles();
-
-    createVertexParticles();
-    createEdgeTractions();
-
   }
 
   /**
@@ -126,9 +143,10 @@ public class LayoutController implements Tickable {
    * Creates a particle for each vertex.
    *
    */
-  private void createVertexParticles() {
-    currentGraph.getVertices().forEach(v -> {
+  private void createVertexParticles(Collection<IVertex> vertices,
+      boolean generateSoftPoints) {
 
+    vertices.forEach(v -> {
       Point point = new Point();
 
       if (!v.isFixedPosition()) {
@@ -146,16 +164,17 @@ public class LayoutController implements Tickable {
       boolean isFixed = v.isFixedPosition();
       Particle newParticle = new Particle(position, particleId, v, isFixed,
           DEFAULT_MASS);
+
       area.addParticles(newParticle);
     });
   }
 
   /**
-   * Create tractions between related vertices.
+   * Create edge tractions between related vertices.
    *
    */
-  private void createEdgeTractions() {
-    currentGraph.getEdges().forEach(e -> {
+  private void createEdgeTractions(Collection<IEdge> edges) {
+    edges.forEach(e -> {
       IVertex vertexFrom = e.getStartVertex();
       IVertex vertexTo = e.getEndVertex();
 
@@ -173,8 +192,8 @@ public class LayoutController implements Tickable {
    * Use random coordinates as input for engine.
    * 
    * @param vertex
-   *          vertex
-   * @return point
+   *          calculation base
+   * @return random point
    */
   private Point generateRandomPoints(IVertex vertex) {
     Point randomPoint = new Point();
@@ -189,8 +208,8 @@ public class LayoutController implements Tickable {
    * Use soft random coordinates as input for engine.
    * 
    * @param vertex
-   *          vertex
-   * @return point
+   *          calculation base
+   * @return soft point
    */
   private Point generateSoftPoints(IVertex vertex) {
     Point softPoint = new Point();
@@ -204,8 +223,8 @@ public class LayoutController implements Tickable {
    * Use existing vertex coordinates as input for engine.
    * 
    * @param vertex
-   *          vertex
-   * @return Point
+   *          calculation base
+   * @return fixed point
    */
   private Point generateFixedPoints(IVertex vertex) {
     Point fixedPoint = new Point();

@@ -29,10 +29,10 @@ public class ConnectionMonitor {
   public synchronized int reserveService(String clientAddress) {
     if (currentOwnerAddress == null) {
       currentOwnerAddress = clientAddress;
-      logger.debug("{} reserved the service.", currentOwnerAddress);
+      logger.info("{} reserved the service.", currentOwnerAddress);
       return 0;
     } else {
-      logger.debug("Service is busy");
+      logger.info("Service is busy");
       return -1;
     }
   }
@@ -45,9 +45,12 @@ public class ConnectionMonitor {
    *          client address
    */
   public synchronized void releaseService(String clientAddress) {
+    if (currentOwnerAddress == null) {
+      logger.debug("Service already released.");
+    }
     if (currentOwnerAddress.equals(clientAddress)) {
       currentOwnerAddress = null;
-      logger.debug("Serivce will be released");
+      logger.info("Serivce will be released...");
     }
   }
 }

@@ -87,12 +87,13 @@ public class SessionView implements Observer {
   private double dragOriginalSceneX;
   private double dragOriginalSceneY;
 
-  private Set<Label> labels;
+  // used for correct z-order -> labels on top of nodes
+  private final Set<Label> edgeLabels;
   private final GraphViewModel graphViewModel;
   private final SessionViewModel sessionViewModel;
 
   private static final int DEFAULT_REPLAY_TIMEOUT = 1000;
-  private static final String EDGE_LABEL = "edge-label";
+  private static final String CSS_EDGE_LABEL = "edge-label";
   private static final Logger logger = LoggerFactory
       .getLogger(SessionView.class);
 
@@ -101,6 +102,7 @@ public class SessionView implements Observer {
       SessionViewModel sessionViewModel) {
     this.graphViewModel = graphViewModel;
     this.sessionViewModel = sessionViewModel;
+    this.edgeLabels = new HashSet<>();
 
     graphViewModel.addObserver(this);
   }
@@ -170,9 +172,10 @@ public class SessionView implements Observer {
 
   private void redraw(GraphViewModel graphViewModel) {
     logger.info("redraw graph pane");
-    graphPane.getContentPane().getChildren().clear();
 
-    labels = new HashSet<>();
+    graphPane.getContentPane().getChildren().clear();
+    edgeLabels.clear();
+
     drawEdges(graphViewModel.getEdgeViewModels());
     drawVertices(graphViewModel.getVertexViewModels());
     bringLabelsToFront();
@@ -188,13 +191,6 @@ public class SessionView implements Observer {
       node.getEllipse().setCursor(Cursor.HAND);
       node.getEllipse().centerXProperty().bindBidirectional(v.xProperty());
       node.getEllipse().centerYProperty().bindBidirectional(v.yProperty());
-
-      System.out.println("ellipse x:" + node.getEllipse().getCenterX());
-      System.out.println(
-          "label width/2:" + node.getLabel().getLayoutBounds().getWidth() / 2);
-      System.out.println("label x:" + node.getLabel().getX());
-      System.out.println(node.getEllipse().getCenterX()
-          - (node.getLabel().getLayoutBounds().getWidth() / 2));
 
       node.getEllipse().setOnMousePressed(e -> {
         dragOriginalSceneX = e.getSceneX();
@@ -268,8 +264,8 @@ public class SessionView implements Observer {
 
       Label label = new Label();
       label.textProperty().bind(e.labelProperty());
-      label.getStyleClass().add(EDGE_LABEL);
-      labels.add(label);
+      label.getStyleClass().add(CSS_EDGE_LABEL);
+      edgeLabels.add(label);
       bindToMiddle(line, label);
 
       line.startXProperty().bindBidirectional(e.getStartVertex().xProperty());
@@ -282,7 +278,7 @@ public class SessionView implements Observer {
   }
 
   private void bringLabelsToFront() {
-    labels.forEach(l -> l.toFront());
+    edgeLabels.forEach(l -> l.toFront());
   }
 
   private void bindToMiddle(Line line, Label label) {

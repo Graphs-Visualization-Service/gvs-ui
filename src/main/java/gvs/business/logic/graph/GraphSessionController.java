@@ -187,7 +187,7 @@ public class GraphSessionController implements IGraphSessionController {
   /**
    * Layout current displayed graph.
    */
-  public void autoLayout(Action callbackFunction) {
+  public void autoLayout() {
     logger.debug("Check if graph can be layouted");
     if (!isRelativeSession) {
       Graph currentGraph = graphHolder.getCurrentGraph();
@@ -197,7 +197,6 @@ public class GraphSessionController implements IGraphSessionController {
       });
 
       layout();
-      callbackFunction.execute();
     }
   }
 

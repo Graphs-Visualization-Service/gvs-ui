@@ -8,6 +8,5 @@ package gvs.business.logic.physics.ticker;
  */
 public interface Tickable {
 
-  void tick(double rate, double rateRatio, boolean drop, long iteration,
-      long time);
+  void tick();
 }

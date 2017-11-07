@@ -25,7 +25,7 @@ import gvs.interfaces.IVertex;
  * Creates and prepares the elements which need to be layouted.
  * 
  * Executes a separate ticker thread which calls the LayoutController in a
- * certain interval.
+ * given interval.
  * 
  * @author mwieland
  *
@@ -63,7 +63,7 @@ public class LayoutController implements Tickable {
   }
 
   /**
-   * Initializes the guard, which protects the layouter from running Infinitely.
+   * Initializes the guard, which protects the layouter from running endlessly.
    */
   private void initializeLayoutGuard() {
     boolean isDaemon = false;

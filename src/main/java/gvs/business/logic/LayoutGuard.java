@@ -5,13 +5,13 @@ import java.util.TimerTask;
 import gvs.business.logic.physics.helpers.Area;
 
 /**
- * Guarantees that the layout is not infinitely calculated.
+ * Guarantees that the layout is not endlessly calculated.
  * 
  * Once scheduled, this LayoutGuard will set the area to stable, which will stop
  * the calculation.
  * 
- * The {@link LayoutController} schedules a instance of this class according to
- * default delay.
+ * The {@link LayoutController} schedules an instance of this class according to
+ * the default delay.
  * 
  * @author mwieland
  *

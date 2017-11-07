@@ -39,7 +39,7 @@ public class AreaTicker extends Thread {
   }
 
   /**
-   * stop this ticker thread.
+   * Stop this ticker thread.
    */
   public void terminate() {
     stop = true;

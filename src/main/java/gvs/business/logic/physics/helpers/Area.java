@@ -41,7 +41,7 @@ public class Area extends Observable {
 
   /**
    * Builds new area where particle positions are calculated. Used for
-   * overwriting the default dimension
+   * overwriting the default dimension.
    * 
    * @param dimension
    *          dimension
@@ -91,7 +91,7 @@ public class Area extends Observable {
   }
 
   /**
-   * Return the center of a area. Default: 500*500
+   * Return the center of an area. Default: 500*500
    * 
    * @return Area Point
    */
@@ -129,7 +129,7 @@ public class Area extends Observable {
 
   /**
    * Sets area as stable, if all particle positions are fixed. Layout Controller
-   * will then return positions to Session controller for drawing
+   * will then return positions to Session controller for drawing.
    * 
    * @param pState
    *          particle state
@@ -139,7 +139,7 @@ public class Area extends Observable {
   }
 
   /**
-   * Returns if all available particles in area are fixed.
+   * Return true if all available particles in area are fixed.
    * 
    * @return is area stable
    */
@@ -149,7 +149,7 @@ public class Area extends Observable {
 
   /**
    * Each time the are ticker sends a pulse, updateAll method will be called. So
-   * particles are accelerated into claimed direction until they are stable
+   * particles are accelerated into claimed direction until they are stable.
    *
    */
   public synchronized void updateAll() {
@@ -195,7 +195,7 @@ public class Area extends Observable {
   }
 
   /**
-   * Check if particles are leaving area boundarys. If true acclerate them in
+   * Check if particles are leaving area boundaries. If true accelerate them in
    * opposite direction.
    * 
    * @param p

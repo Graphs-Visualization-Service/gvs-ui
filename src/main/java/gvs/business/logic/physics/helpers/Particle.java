@@ -44,7 +44,7 @@ public class Particle {
   }
 
   /**
-   * Returns position of a particle
+   * Returns position of a particle.
    * 
    * @return
    */
@@ -53,7 +53,7 @@ public class Particle {
   }
 
   /**
-   * Accelerates a particle
+   * Accelerates a particle.
    * 
    * @param vec
    */
@@ -70,8 +70,8 @@ public class Particle {
   /**
    * Each time a ticker impuls happens, the newly calculated acceleration and
    * speed Vector are updated and the new particle position will be set
-   * accordingly If speed of a particle is lower than a given value, mark
-   * position as fixed
+   * accordingly. If the speed of a particle is lower than a given value, its
+   * position is marked as fixed.
    */
   public void update() {
     if (!positionFixed) {
@@ -85,7 +85,7 @@ public class Particle {
   }
 
   /**
-   * Returns speed of a particle
+   * Returns speed of a particle.
    * 
    * @return
    */
@@ -94,7 +94,7 @@ public class Particle {
   }
 
   /**
-   * Returns acceleration of a particle
+   * Returns acceleration of a particle.
    * 
    * @return
    */
@@ -103,7 +103,7 @@ public class Particle {
   }
 
   /**
-   * Returns mass of an particle
+   * Returns mass of a particle.
    * 
    * @return
    */
@@ -112,7 +112,7 @@ public class Particle {
   }
 
   /**
-   * Sets mass of a particle
+   * Sets mass of a particle.
    * 
    * @param weight
    */
@@ -121,7 +121,7 @@ public class Particle {
   }
 
   /**
-   * Returns particle id
+   * Returns particle id.
    * 
    * @return
    */
@@ -130,7 +130,7 @@ public class Particle {
   }
 
   /**
-   * Returns if actual particle is fixed
+   * Returns if actual particle is fixed.
    * 
    * @return
    */
@@ -145,7 +145,7 @@ public class Particle {
    * The new values are propagated via observers to the view model
    * representation.
    * 
-   * The ViewModel representation is bound to the current Circle object and
+   * The ViewModel representation is bound to the current Ellipse object and
    * updated in real time.
    *
    */

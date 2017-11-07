@@ -20,12 +20,6 @@ public class LayoutGuard extends TimerTask {
 
   private Area currentArea = null;
 
-  /**
-   * Default constructor.
-   * 
-   * @param area
-   *          area to stabilize
-   */
   public LayoutGuard(Area area) {
     currentArea = area;
   }

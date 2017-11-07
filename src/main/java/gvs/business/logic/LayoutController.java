@@ -24,8 +24,8 @@ import gvs.interfaces.IVertex;
 /**
  * Creates and prepares the elements which need to be layouted.
  * 
- * Executes a separate ticker thread which calls the LayoutController in a
- * given interval.
+ * Executes a separate ticker thread which calls the LayoutController in a given
+ * interval.
  * 
  * @author mwieland
  *
@@ -73,7 +73,7 @@ public class LayoutController implements Tickable {
   }
 
   /**
-   * Receives vertices which have to be layouted.
+   * Layout the received vertices
    * 
    * @param graph
    *          graph with vertices and edges
@@ -99,7 +99,7 @@ public class LayoutController implements Tickable {
   }
 
   /**
-   * Only one ticker thread is allowed at a time.
+   * Only one ticker thread is allowed to be active.
    * 
    * If the autolayout mechanism is executed, the ticker thread executes the
    * tick method in a defined interval.

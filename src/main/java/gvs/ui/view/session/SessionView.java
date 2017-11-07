@@ -177,6 +177,8 @@ public class SessionView implements Observer {
       Circle circle = new Circle();
       circle.setCursor(Cursor.HAND);
       circle.setRadius(6);
+
+      // binding is utterly needed for auto layout
       circle.centerXProperty().bindBidirectional(v.getXProperty());
       circle.centerYProperty().bindBidirectional(v.getYProperty());
 
@@ -248,12 +250,10 @@ public class SessionView implements Observer {
       line.setStroke(e.getStyle().getLineColor());
       line.getStrokeDashArray().addAll(e.getStyle().getLineStyle());
 
-      line.startXProperty()
-          .bindBidirectional(e.getStartVertex().getXProperty());
-      line.startYProperty()
-          .bindBidirectional(e.getStartVertex().getYProperty());
-      line.endXProperty().bindBidirectional(e.getEndVertex().getXProperty());
-      line.endYProperty().bindBidirectional(e.getEndVertex().getYProperty());
+      line.startXProperty().bind(e.getStartVertex().getXProperty());
+      line.startYProperty().bind(e.getStartVertex().getYProperty());
+      line.endXProperty().bind(e.getEndVertex().getXProperty());
+      line.endYProperty().bind(e.getEndVertex().getYProperty());
 
       graphPane.getContentPane().getChildren().add(line);
     });

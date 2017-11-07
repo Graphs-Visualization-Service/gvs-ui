@@ -30,10 +30,9 @@ public class Particle {
    * @param myNode
    * @param isfixed
    * @param weight
-   * @param radius
    */
   public Particle(AreaPoint position, long particleId, IVertex myNode,
-      boolean isfixed, double weight, double radius) {
+      boolean isfixed, double weight) {
     this.particlePosition = position;
     this.particleId = particleId;
     this.myNode = myNode;
@@ -45,7 +44,7 @@ public class Particle {
   }
 
   /**
-   * Returns position of a particle
+   * Returns position of a particle.
    * 
    * @return
    */
@@ -54,7 +53,7 @@ public class Particle {
   }
 
   /**
-   * Accelerates a particle
+   * Accelerates a particle.
    * 
    * @param vec
    */
@@ -71,8 +70,8 @@ public class Particle {
   /**
    * Each time a ticker impuls happens, the newly calculated acceleration and
    * speed Vector are updated and the new particle position will be set
-   * accordingly If speed of a particle is lower than a given value, mark
-   * position as fixed
+   * accordingly. If the speed of a particle is lower than a given value, its
+   * position is marked as fixed.
    */
   public void update() {
     if (!positionFixed) {
@@ -86,7 +85,7 @@ public class Particle {
   }
 
   /**
-   * Returns speed of a particle
+   * Returns speed of a particle.
    * 
    * @return
    */
@@ -95,7 +94,7 @@ public class Particle {
   }
 
   /**
-   * Returns acceleration of a particle
+   * Returns acceleration of a particle.
    * 
    * @return
    */
@@ -104,7 +103,7 @@ public class Particle {
   }
 
   /**
-   * Returns mass of an particle
+   * Returns mass of a particle.
    * 
    * @return
    */
@@ -113,7 +112,7 @@ public class Particle {
   }
 
   /**
-   * Sets mass of a particle
+   * Sets mass of a particle.
    * 
    * @param weight
    */
@@ -122,7 +121,7 @@ public class Particle {
   }
 
   /**
-   * Returns particle id
+   * Returns particle id.
    * 
    * @return
    */
@@ -131,7 +130,7 @@ public class Particle {
   }
 
   /**
-   * Returns if actual particle is fixed
+   * Returns if actual particle is fixed.
    * 
    * @return
    */
@@ -140,11 +139,17 @@ public class Particle {
   }
 
   /**
-   * When particle is fixed, sets position(percent) of the appropriate vertex
+   * Updates the X/Y positions of the business vertex with the calculated
+   * values.
+   * 
+   * The new values are propagated via observers to the view model
+   * representation.
+   * 
+   * The ViewModel representation is bound to the current Ellipse object and
+   * updated in real time.
    *
    */
   public void updateMyNode() {
-    logger.info("Update x/y position of vertex {}", myNode.getId());
     myNode.setXPosition(particlePosition.getX() / 10);
     myNode.setYPosition(particlePosition.getY() / 10);
   }

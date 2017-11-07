@@ -47,7 +47,7 @@ public class HitsPerSecond {
   /**
    * Insert current time in miliseconds.
    */
-  public void doHit() {
+  public void insertCurrentTimestamp() {
     insert(System.currentTimeMillis());
   }
 

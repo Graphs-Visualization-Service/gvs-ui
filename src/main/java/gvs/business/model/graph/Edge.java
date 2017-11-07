@@ -1,7 +1,5 @@
 package gvs.business.model.graph;
 
-import java.awt.Color;
-import java.awt.Stroke;
 import java.util.Observable;
 
 import gvs.interfaces.IEdge;

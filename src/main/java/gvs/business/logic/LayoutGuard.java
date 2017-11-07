@@ -5,29 +5,29 @@ import java.util.TimerTask;
 import gvs.business.logic.physics.helpers.Area;
 
 /**
- * After a defined timeout, the layout process will be stopped
+ * Guarantees that the layout is not endlessly calculated.
  * 
- * @author aegli
+ * Once scheduled, this LayoutGuard will set the area to stable, which will stop
+ * the calculation.
+ * 
+ * The {@link LayoutController} schedules an instance of this class according to
+ * the default delay.
+ * 
+ * @author mwieland
  *
  */
 public class LayoutGuard extends TimerTask {
 
-  private Area universe = null;
+  private Area currentArea = null;
 
-  /**
-   * Set area.
-   * 
-   * @param pUniverse
-   *          area
-   */
-  public LayoutGuard(Area pUniverse) {
-    universe = pUniverse;
+  public LayoutGuard(Area area) {
+    currentArea = area;
   }
 
   /**
-   * Set state on area
+   * Stabilize stored area.
    */
   public void run() {
-    universe.setAreaState(true);
+    currentArea.setIsStable(true);
   }
 }

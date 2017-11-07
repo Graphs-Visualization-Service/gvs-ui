@@ -272,7 +272,7 @@ public class SessionView implements Observer {
       line.startYProperty().bindBidirectional(e.getStartVertex().yProperty());
       line.endXProperty().bindBidirectional(e.getEndVertex().xProperty());
       line.endYProperty().bindBidirectional(e.getEndVertex().yProperty());
-
+      
       graphPane.getContentPane().getChildren().addAll(line, label);
     });
   }

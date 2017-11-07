@@ -5,12 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Timer;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 import javax.annotation.Nullable;
 
@@ -26,9 +21,9 @@ import gvs.business.logic.LayoutController;
 import gvs.business.logic.LayoutMonitor;
 import gvs.business.model.graph.CurrentGraphHolder;
 import gvs.business.model.graph.Graph;
+import gvs.interfaces.Action;
 import gvs.interfaces.IGraphSessionController;
 import gvs.interfaces.IVertex;
-import gvs.interfaces.Action;
 
 /**
  * The session contoller reacts on user input events and implements most of the
@@ -37,12 +32,10 @@ import gvs.interfaces.Action;
  * @author aegli
  *
  */
-public class GraphSessionController
-    implements Observer, IGraphSessionController {
+public class GraphSessionController implements IGraphSessionController {
 
   private boolean callLayoutEngine = false;
   private boolean replayMode = false;
-  private boolean autoLayoutingMode = false;
   private boolean isRelativeSession = false;
 
   private long sessionId;
@@ -74,8 +67,6 @@ public class GraphSessionController
     this.graphs = graphs;
     this.sessionId = pSessionId;
     this.sessionName = pSessionName;
-
-    layoutController.addObserver(this);
 
     // TODO is this really required?
     int graphId = 1;
@@ -113,40 +104,6 @@ public class GraphSessionController
 
     graphHolder.setCurrentGraph(graph);
     graphs.add(graph);
-  }
-
-  /**
-   * Updates session contoller, used by layout engine to display calculated
-   * models.
-   * 
-   * @param o
-   *          Observable
-   * @param arg
-   *          Object
-   */
-  public void update(Observable o, Object arg) {
-    String parameter = (String) arg;
-    if (parameter.equals("TRUE")) {
-      logger.info("Finish layouting graph, all positions are set");
-      // TODO replace with view model pendant
-      // controlPanel.setLayoutState(false);
-      autoLayoutingMode = false;
-
-      // visualModel.setLayouting(false);
-      // deactivate GVS 1.0 GUI
-      // setVisualModel();
-      // setButtonState(actualGraphModel.getId());
-      LayoutMonitor.getInstance().unlock();
-
-    } else {
-      logger.debug(
-          "Continue layouting graph, vertizes without positions detected");
-      // visualModel.setLayouting(true);
-      // deactivate GVS 1.0 GUI
-      // setVisualModel();
-      // controlPanel.setLayoutState(true);
-    }
-
   }
 
   /**
@@ -193,7 +150,6 @@ public class GraphSessionController
   public void replay(long timeout, Action finishedCallback) {
     logger.info("Replay current session");
     Timer timer = new Timer();
-    setReplayMode(true);
     GraphSessionReplay sessionReplay = sessionReplayFactory.create(this, graphs,
         finishedCallback);
     timer.schedule(sessionReplay, timeout, timeout);
@@ -235,14 +191,12 @@ public class GraphSessionController
     logger.debug("Check if graph can be layouted");
     if (!isRelativeSession) {
       Graph currentGraph = graphHolder.getCurrentGraph();
-      if (currentGraph.getId() == graphs.size()) {
-        logger.debug("Graph is last element in Queue, call Layouter");
-        currentGraph.getVertices().forEach(v -> {
-          v.setFixedPosition(false);
-        });
-        autoLayoutingMode = true;
-        layout();
-      }
+      logger.debug("Graph is last element in Queue, call Layouter");
+      currentGraph.getVertices().forEach(v -> {
+        v.setFixedPosition(false);
+      });
+
+      layout();
     }
   }
 
@@ -262,79 +216,6 @@ public class GraphSessionController
    */
   public List<Graph> getGraphs() {
     return graphs;
-  }
-
-  /**
-   * Sets whether replay is active.
-   * 
-   * @param pFinishReplay
-   *          finishReplay
-   */
-  public void setReplayMode(boolean pFinishReplay) {
-    replayMode = pFinishReplay;
-    if (replayMode) {
-      // TODO replace with view model pendant
-      // controlPanel.setReplayText(" Stop ");
-    } else {
-      // TODO replace with view model pendant
-      // controlPanel.setReplayText("Replay");
-    }
-  }
-
-  /**
-   * Copy positions of former vertizes to current model in order of no changes.
-   */
-  private void setFormerVertexCoordinate() {
-    Graph currentGraph = graphHolder.getCurrentGraph();
-    Graph formerGraph = graphs.get(currentGraph.getId() - 2);
-
-    Collection<IVertex> formerVertizes = formerGraph.getVertices();
-    Collection<IVertex> currentVertizes = currentGraph.getVertices();
-
-    Iterator<IVertex> it1 = currentVertizes.iterator();
-    boolean isFormerVertexPosAvailable = false;
-    logger.debug("Setting former graph position to current graph");
-    while (it1.hasNext()) {
-      IVertex currentVertex = (IVertex) it1.next();
-      isFormerVertexPosAvailable = false;
-
-      Iterator<IVertex> it = formerVertizes.iterator();
-      while (it.hasNext()) {
-        IVertex formerVertex = ((IVertex) it.next());
-        if (currentVertex.getId() == formerVertex.getId()) {
-          setCurrentVertexCoordinate(currentVertex, formerVertex);
-          isFormerVertexPosAvailable = true;
-        }
-      }
-
-      if (!isFormerVertexPosAvailable) {
-        callLayoutEngine = true;
-      }
-    }
-
-    if (callLayoutEngine) {
-      logger.debug("Vertizes without positions detected, call layouter");
-      layout();
-      callLayoutEngine = false;
-    } else {
-      logger.debug("All graph positions are set");
-      LayoutMonitor.getInstance().unlock();
-    }
-  }
-
-  /**
-   * Set calculated vertex coordinates.
-   * 
-   * @param pCurrentVertex
-   *          currentVertex
-   * @param pFormerVertex
-   *          formerVetex
-   */
-  private void setCurrentVertexCoordinate(IVertex pCurrentVertex,
-      IVertex pFormerVertex) {
-    pCurrentVertex.setXPosition(pFormerVertex.getXPosition());
-    pCurrentVertex.setYPosition(pFormerVertex.getYPosition());
-    pCurrentVertex.setFixedPosition(pFormerVertex.isFixedPosition());
   }
 
   @Override
@@ -414,10 +295,11 @@ public class GraphSessionController
   public void layout() {
     try {
       LayoutMonitor.getInstance().lock();
+      logger.info("Got layout monitor");
 
       Graph currentGraph = graphHolder.getCurrentGraph();
-      layoutController.setElements(currentGraph.getVertices(),
-          currentGraph.getEdges(), applicationController.isSoftLayout());
+      layoutController.layoutGraph(currentGraph,
+          applicationController.isSoftLayout());
 
     } catch (InterruptedException e) {
       logger.warn("Unable to get layout monitor", e);

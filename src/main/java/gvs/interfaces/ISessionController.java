@@ -1,10 +1,6 @@
 package gvs.interfaces;
 
 import java.io.File;
-import java.util.Observer;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 import gvs.business.model.graph.Graph;
 

@@ -8,18 +8,22 @@ import org.slf4j.LoggerFactory;
 
 import gvs.business.model.graph.Edge;
 import gvs.interfaces.IEdge;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  * Contains JavaFX Properties which are used for bidirectional bindings.
  * 
  * @author Michi
  */
-public class EdgeViewModel implements Observer {
+public class EdgeViewModel{
 
   private IEdge edge;
   private VertexViewModel startVertex;
   private VertexViewModel endVertex;
   private NodeStyleViewModel style;
+  
+  private final StringProperty labelProperty = new SimpleStringProperty();
 
   private static final Logger logger = LoggerFactory
       .getLogger(EdgeViewModel.class);
@@ -41,17 +45,7 @@ public class EdgeViewModel implements Observer {
     this.startVertex = startVertex;
     this.endVertex = endVertex;
     this.style = new NodeStyleViewModel(edge.getStyle());
-    
-    // bidirectional connection
-    edge.addObserver(this);
-  }
-
-  @Override
-  public void update(Observable o, Object arg) {
-    Edge updatedEdge = (Edge) o;
-    this.edge = updatedEdge;
-    this.startVertex = new VertexViewModel(updatedEdge.getStartVertex());
-    this.endVertex = new VertexViewModel(updatedEdge.getEndVertex());
+    this.labelProperty.set(edge.getLabel());
   }
 
   public VertexViewModel getStartVertex() {
@@ -68,5 +62,9 @@ public class EdgeViewModel implements Observer {
 
   public void setStyle(NodeStyleViewModel style) {
     this.style = style;
+  }
+
+  public StringProperty labelProperty() {
+    return labelProperty;
   }
 }

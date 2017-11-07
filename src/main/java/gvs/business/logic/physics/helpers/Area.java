@@ -19,18 +19,19 @@ import gvs.business.logic.physics.rules.Traction;
  */
 public class Area extends Observable {
 
-  private AreaDimension dimension = null;
-  private RepulsiveForce repulsiveForce = new RepulsiveForce();
+  private AreaDimension dimension;
+  private RepulsiveForce repulsiveForce;
 
   private double viscosity;
-  private int fixedParticles = 0;
   private boolean isStable = false;
 
   private final List<Particle> particles = new ArrayList<>();
   private final List<Traction> tractions = new ArrayList<>();
 
-  private static final int DIMENSIONS = 2;
+  // how fast accelerated particles slow down
   private static final double DEFAULT_VISCOSITY = 0.15;
+
+  private static final int DIMENSIONS = 2;
   private static final int DEFAULT_DISTANCE = 20;
   private static final int OFFSET_Y = 10;
   private static final int OFFSET_X = 30;
@@ -46,22 +47,9 @@ public class Area extends Observable {
    *          dimension
    */
   public Area(AreaDimension dimension) {
-    this(dimension, DEFAULT_VISCOSITY);
-  }
-
-  /**
-   * Builds new area where particle positions are calcluated. Used for
-   * overwriting default dimension and viscosity. Viscosity has an influence on
-   * how fast accelerated particles slow down
-   * 
-   * @param dimension
-   *          dimension
-   * @param viscosity
-   *          viscosity
-   */
-  public Area(AreaDimension dimension, double viscosity) {
     this.dimension = dimension;
-    this.viscosity = viscosity;
+    this.viscosity = DEFAULT_VISCOSITY;
+    this.repulsiveForce = new RepulsiveForce();
   }
 
   /**
@@ -94,12 +82,16 @@ public class Area extends Observable {
     particles.add(p);
   }
 
-  public void clearParticles() {
-    this.particles.clear();
+  /**
+   * Reset the calculated area
+   */
+  public void resetArea() {
+    tractions.clear();
+    particles.clear();
   }
 
   /**
-   * Returns centre of area. Default: 500*500
+   * Return the center of a area. Default: 500*500
    * 
    * @return Area Point
    */
@@ -137,7 +129,7 @@ public class Area extends Observable {
 
   /**
    * Sets area as stable, if all particle positions are fixed. Layout Controller
-   * will then return postions to Session controller for drawing
+   * will then return positions to Session controller for drawing
    * 
    * @param pState
    *          particle state
@@ -171,18 +163,13 @@ public class Area extends Observable {
       t.compute();
     });
 
-    Iterator<Particle> it3 = particles.iterator();
-    Iterator<Particle> it4;
-    while (it3.hasNext()) {
-      Particle refP = (Particle) it3.next();
-      it4 = particles.iterator();
-      while (it4.hasNext()) {
-        Particle relationP = (Particle) it4.next();
-        if (refP != relationP) {
-          repulsiveForce.compute(refP, relationP);
+    particles.forEach(p1 -> {
+      particles.forEach(p2 -> {
+        if (p1 != p2) {
+          repulsiveForce.compute(p1, p2);
         }
-      }
-    }
+      });
+    });
 
     particles.forEach(p -> {
       AreaVector vectorToCentre = new AreaVector(p.getPointPosition(),
@@ -203,15 +190,8 @@ public class Area extends Observable {
     });
 
     // set is stable
-    this.fixedParticles = 0;
-    particles.forEach(p -> {
-      if (p.positionFixed()) {
-        fixedParticles += 1;
-      }
-      if (fixedParticles == particles.size()) {
-        setIsStable(true);
-      }
-    });
+    boolean areaStable = particles.stream().allMatch(p -> p.positionFixed());
+    setIsStable(areaStable);
   }
 
   /**

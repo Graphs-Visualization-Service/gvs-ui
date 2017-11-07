@@ -90,7 +90,7 @@ public class LayoutController implements Tickable {
 
   private void resetArea() {
     this.area.setIsStable(false);
-    this.area.clearParticles();
+    this.area.resetArea();
   }
 
   private void calculatLayout(Graph graph, boolean useSoftPoints) {

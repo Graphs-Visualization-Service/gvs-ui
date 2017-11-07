@@ -14,3 +14,7 @@ Label.edge-label {
 	-fx-fill: black;
 	-fx-font: 5 arial;
 }
+
+#graphPane {
+	-fx-background-color: rgba(255,255,255,0.9);
+}

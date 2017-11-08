@@ -18,7 +18,7 @@ public class CurrentGraphHolder extends Observable {
   private static final Logger logger = LoggerFactory
       .getLogger(CurrentGraphHolder.class);
   
-  public void setCurrentGraph(Graph newGraph) {
+  public synchronized void setCurrentGraph(Graph newGraph) {
     logger.info("Setting current graph and notifying observers.");
     this.currentGraph = newGraph;
     setChanged();
@@ -30,7 +30,7 @@ public class CurrentGraphHolder extends Observable {
    * 
    * @return session controller
    */
-  public Graph getCurrentGraph() {
+  public synchronized Graph getCurrentGraph() {
     return currentGraph;
   }
   

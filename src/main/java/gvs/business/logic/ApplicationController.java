@@ -69,7 +69,7 @@ public class ApplicationController {
    * @param pSessionController
    *          sessionController
    */
-  public void changeCurrentSession(ISessionController pSessionController) {
+  public synchronized void changeCurrentSession(ISessionController pSessionController) {
     currentSessionHolder.setCurrentSession(pSessionController);
   }
 
@@ -78,7 +78,7 @@ public class ApplicationController {
    * 
    * @return sessionControllers
    */
-  public Collection<ISessionController> getSessionContollers() {
+  public synchronized Collection<ISessionController> getSessionContollers() {
     return sessionControllers;
   }
 
@@ -88,7 +88,7 @@ public class ApplicationController {
    * @param fileName
    *          fileName
    */
-  public void loadStoredSession(String fileName) {
+  public synchronized void loadStoredSession(String fileName) {
     logger.info("Load session from filesystem");
     ISessionController loadedSession = persistor.loadFile(fileName);
 
@@ -102,7 +102,7 @@ public class ApplicationController {
    * @param pSessionController
    *          SessionController
    */
-  public void deleteSession(ISessionController pSessionController) {
+  public synchronized void deleteSession(ISessionController pSessionController) {
     logger.info("Delete session");
 
     sessionControllers.remove(pSessionController);
@@ -212,7 +212,7 @@ public class ApplicationController {
    * @param layoutOption
    *          layoutOption
    */
-  public void setIsSoftLayoutOption(boolean layoutOption) {
+  public synchronized void setIsSoftLayoutOption(boolean layoutOption) {
     this.isSoftLayout = layoutOption;
   }
 
@@ -221,7 +221,7 @@ public class ApplicationController {
    * 
    * @return layoutOption
    */
-  public boolean isSoftLayout() {
+  public synchronized boolean isSoftLayout() {
     return isSoftLayout;
   }
 }

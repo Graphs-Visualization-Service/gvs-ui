@@ -65,15 +65,14 @@ public class GraphSessionController implements IGraphSessionController {
 
     // GraphId needs to be set and incremented as soon as they are added to a
     // session
-    int graphId = 1;
     if (graphs != null) {
       if (graphs.size() >= 1) {
+        int graphId = 0;
         for (Graph g : graphs) {
           if (g.getId() == 0) {
             g.setId(++graphId);
           }
         }
-        graphHolder.setCurrentGraph(graphs.get(graphs.size() - 1));
       }
     } else {
       logger.info("Build empty graph session");
@@ -223,18 +222,7 @@ public class GraphSessionController implements IGraphSessionController {
   public void changeCurrentGraphToNext() {
     int nextGraphId = graphHolder.getCurrentGraph().getId() + 1;
     if (validIndex(nextGraphId)) {
-      graphHolder.setCurrentGraph(graphs.get(nextGraphId));
-    }
-  }
-
-  private boolean validIndex(int i) {
-    return i >= 0 && i < graphs.size();
-  }
-
-  @Override
-  public void changeCurrentGraphToFirst() {
-    if (!graphs.isEmpty()) {
-      graphHolder.setCurrentGraph(graphs.get(0));
+      graphHolder.setCurrentGraph(graphs.get(nextGraphId - 1));
     }
   }
 
@@ -242,9 +230,19 @@ public class GraphSessionController implements IGraphSessionController {
   public void changeCurrentGraphToPrev() {
     int prevGraphId = graphHolder.getCurrentGraph().getId() - 1;
     if (validIndex(prevGraphId)) {
-      graphHolder.setCurrentGraph(graphs.get(prevGraphId));
+      graphHolder.setCurrentGraph(graphs.get(prevGraphId - 1));
     }
+  }
 
+  private boolean validIndex(int i) {
+    return i > 0 && i <= graphs.size();
+  }
+
+  @Override
+  public void changeCurrentGraphToFirst() {
+    if (!graphs.isEmpty()) {
+      graphHolder.setCurrentGraph(graphs.get(0));
+    }
   }
 
   @Override

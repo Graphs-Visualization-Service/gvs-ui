@@ -107,7 +107,7 @@ public class SessionViewModel implements Observer {
 
     Platform.runLater(() -> {
       if (currentSession != null) {
-        int currentPosition = currentSession.getCurrentGraph().getId() - 1;
+        int currentPosition = currentSession.getCurrentGraph().getId();
         int maxPosition = currentSession.getTotalGraphCount();
         totalGraphCountProperty.set(maxPosition);
         currentGraphIdProperty.set(currentPosition);

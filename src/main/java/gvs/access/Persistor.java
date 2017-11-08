@@ -102,14 +102,14 @@ public class Persistor {
     configuration = Configuration.getInstance();
   }
 
-  public void saveToDisk(GraphSessionController session, File file) {
+  public synchronized void saveToDisk(GraphSessionController session, File file) {
     Document document = DocumentHelper.createDocument();
     Element docRoot = document.addElement(ROOT);
     this.saveGraphSession(docRoot, session);
     this.writeToDisk(document, session, file);
   }
 
-  public void saveToDisk(TreeSessionController session, File file) {
+  public synchronized void saveToDisk(TreeSessionController session, File file) {
     Document document = DocumentHelper.createDocument();
     Element docRoot = document.addElement(ROOT);
     this.saveTreeSession(docRoot, session);

@@ -21,13 +21,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 /**
- * Starts the Graphs-Visualization Service. It loads the application
- * frame and starts the socket server.
+ * Starts the Graphs-Visualization Service. It loads the application frame and
+ * starts the socket server.
  * 
  * @author mtrentin
  */
 @Singleton
 public class GVSLauncher extends Application {
+
   @Inject
   private SocketServer socketServer;
   @Inject

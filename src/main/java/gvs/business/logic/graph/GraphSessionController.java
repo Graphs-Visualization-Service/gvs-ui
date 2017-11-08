@@ -2,8 +2,6 @@ package gvs.business.logic.graph;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 
@@ -23,7 +21,6 @@ import gvs.business.model.graph.CurrentGraphHolder;
 import gvs.business.model.graph.Graph;
 import gvs.interfaces.Action;
 import gvs.interfaces.IGraphSessionController;
-import gvs.interfaces.IVertex;
 
 /**
  * The session contoller reacts on user input events and implements most of the
@@ -225,9 +222,8 @@ public class GraphSessionController implements IGraphSessionController {
   @Override
   public void changeCurrentGraphToNext() {
     int nextGraphId = graphHolder.getCurrentGraph().getId() + 1;
-    int newIndex = nextGraphId - 1;
-    if (validIndex(newIndex)) {
-      graphHolder.setCurrentGraph(graphs.get(newIndex));
+    if (validIndex(nextGraphId)) {
+      graphHolder.setCurrentGraph(graphs.get(nextGraphId));
     }
   }
 
@@ -245,9 +241,8 @@ public class GraphSessionController implements IGraphSessionController {
   @Override
   public void changeCurrentGraphToPrev() {
     int prevGraphId = graphHolder.getCurrentGraph().getId() - 1;
-    int newIndex = prevGraphId - 1;
-    if (validIndex(newIndex)) {
-      graphHolder.setCurrentGraph(graphs.get(newIndex));
+    if (validIndex(prevGraphId)) {
+      graphHolder.setCurrentGraph(graphs.get(prevGraphId));
     }
 
   }

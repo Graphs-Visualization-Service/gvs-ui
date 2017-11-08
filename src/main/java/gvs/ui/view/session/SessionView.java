@@ -188,7 +188,6 @@ public class SessionView implements Observer {
       LabeledNode node = new LabeledNode(v.labelProperty(),
           graphPane.getContentScaleTransform().getX(),
           graphPane.getContentScaleTransform().getY());
-      node.getEllipse().setCursor(Cursor.HAND);
       node.getEllipse().centerXProperty().bindBidirectional(v.xProperty());
       node.getEllipse().centerYProperty().bindBidirectional(v.yProperty());
 

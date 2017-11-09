@@ -7,6 +7,7 @@ import gvs.access.ClientConnectionFactory;
 import gvs.access.XmlReaderFactory;
 import gvs.business.logic.graph.GraphSessionControllerFactory;
 import gvs.business.logic.graph.GraphSessionReplayFactory;
+import gvs.business.logic.physics.ticker.AreaTickerFactory;
 
 /**
  * Base module for guice dependecy injection
@@ -23,6 +24,7 @@ public class GuiceBaseModule extends AbstractModule {
         new FactoryModuleBuilder().build(GraphSessionControllerFactory.class));
     install(new FactoryModuleBuilder().build(GraphSessionReplayFactory.class));
     install(new FactoryModuleBuilder().build(XmlReaderFactory.class));
+    install(new FactoryModuleBuilder().build(AreaTickerFactory.class));
   }
 
 }

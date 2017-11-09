@@ -21,7 +21,6 @@ public class XmlReader {
 
   private final String fileName;
   private SAXReader xmlReader;
-  private ModelBuilder modelBuilder;
 
   private static final String SCHEMA = "gvs.xsd";
   private static final String VALIDATION_SCHEMA = "http://apache.org/"
@@ -31,11 +30,9 @@ public class XmlReader {
   private static final Logger logger = LoggerFactory.getLogger(XmlReader.class);
 
   @Inject
-  public XmlReader(SAXReader reader, ModelBuilder modelBuilder,
-      @Assisted String fileName) {
+  public XmlReader(SAXReader reader, @Assisted String fileName) {
 
     this.xmlReader = reader;
-    this.modelBuilder = modelBuilder;
     this.fileName = fileName;
 
     setupXMLReader();
@@ -60,13 +57,13 @@ public class XmlReader {
    * Read the input file and pass the XML document to the {@link ModelBuilder}.
    * 
    */
-  public synchronized void read() {
+  public Document read() {
     File inputFile = new File(fileName);
     try {
-      Document document = xmlReader.read(inputFile);
-      modelBuilder.buildModelFromXML(document);
+      return xmlReader.read(inputFile);
     } catch (Exception e) {
       logger.error("Cannot read file {}", inputFile.getName(), e);
+      return null;
     }
   }
 }

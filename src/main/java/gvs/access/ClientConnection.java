@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
 
+import org.dom4j.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,11 +24,12 @@ import com.google.inject.assistedinject.Assisted;
  */
 public class ClientConnection extends Thread {
 
+  private final Socket socketClient;
   private final ConnectionMonitor monitor;
+  private final ModelBuilder modelBuilder;
+
   private final XmlReader xmlReader;
   private final XmlWriter xmlWriter;
-
-  private final Socket socketClient;
 
   // protocol messages
   private static final String OK = "OK";
@@ -44,6 +46,8 @@ public class ClientConnection extends Thread {
    * 
    * @param client
    *          incoming client connection.
+   * @param modelBuilder
+   *          modelbuilder which processes the parsed xml.
    * @param monitor
    *          monitor to reserve the GVS service
    * @param xmlWriterFactory
@@ -52,12 +56,13 @@ public class ClientConnection extends Thread {
    *          xml reader used to read the created xml
    */
   @Inject
-  public ClientConnection(ConnectionMonitor monitor,
+  public ClientConnection(ConnectionMonitor monitor, ModelBuilder modelBuilder,
       XmlReaderFactory xmlReaderFactory, XmlWriterFactory xmlWriterFactory,
       @Assisted Socket client) {
 
     super(THREAD_NAME);
-    
+
+    this.modelBuilder = modelBuilder;
     this.socketClient = client;
     this.monitor = monitor;
 
@@ -75,7 +80,8 @@ public class ClientConnection extends Thread {
     try {
       processInputStream(socketClient.getInputStream());
 
-      xmlReader.read();
+      Document document = xmlReader.read();
+      modelBuilder.buildModelFromXML(document);
 
       socketClient.close();
     } catch (IOException e) {

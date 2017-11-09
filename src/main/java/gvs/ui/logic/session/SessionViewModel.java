@@ -94,9 +94,9 @@ public class SessionViewModel implements Observer {
    */
   @Override
   public void update(Observable o, Object arg) {
-    logger.info("Current session changed...");
-
+    // Hand updates over to JavaFX Thread
     Platform.runLater(() -> {
+      logger.info("Current session changed...");
       updateStepProperties();
     });
   }

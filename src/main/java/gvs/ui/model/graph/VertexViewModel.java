@@ -107,8 +107,11 @@ public class VertexViewModel implements Observer {
    */
   @Override
   public void update(Observable o, Object arg) {
-    logger.info("Updating VertexViewModel coordinates");
-    updateCoordinates();
+    // Hand updates over to JavaFX Thread
+    Platform.runLater(() -> {
+      logger.info("Updating VertexViewModel coordinates");
+      updateCoordinates();
+    });
   }
 
   private void updateCoordinates() {

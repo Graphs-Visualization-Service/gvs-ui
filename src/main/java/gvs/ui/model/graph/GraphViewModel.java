@@ -19,6 +19,7 @@ import gvs.business.model.graph.Graph;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
 import gvs.ui.logic.session.SessionViewModel;
+import javafx.application.Platform;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
@@ -55,14 +56,20 @@ public class GraphViewModel extends Observable implements Observer {
    */
   @Override
   public void update(Observable o, Object arg) {
-    logger.info("Current graph changed...");
+    //Hand updates over to JavaFX Thread
+    Platform.runLater(()-> {
+      logger.info("Current graph changed...");
     CurrentGraphHolder currentGraphHolder = (CurrentGraphHolder) o;
     // don't start drawing process, if graphPane hasn'r already been set by
     // SessionView
     if (graphPane != null) {
       draw(currentGraphHolder.getCurrentGraph());
       sessionViewModel.updateStepProperties();
+    } else {
+      logger.warn("GraphPane has not been set before drawing!");
     }
+    });
+    
   }
   
   public void draw(Graph graph) {

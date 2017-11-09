@@ -7,21 +7,24 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Singleton;
+import com.google.inject.Inject;
 
 /**
  * 
  * @author Michi
  */
-@Singleton
-public class InputXmlWriter {
+public class XmlWriter {
 
-  private static final String DEFAULT_FILE_NAME = "input.xml";
-  private static final Logger logger = LoggerFactory
-      .getLogger(InputXmlWriter.class);
+  private final String fileName;
+  private static final Logger logger = LoggerFactory.getLogger(XmlWriter.class);
+
+  @Inject
+  public XmlWriter(String fileName) {
+    this.fileName = fileName;
+  }
 
   public void write(String line) {
-    File inputXml = new File(DEFAULT_FILE_NAME);
+    File inputXml = new File(fileName);
     try (FileWriter fileWriter = new FileWriter(inputXml)) {
       fileWriter.write(line);
       fileWriter.flush();

@@ -24,8 +24,8 @@ import com.google.inject.assistedinject.Assisted;
 public class ClientConnection extends Thread {
 
   private final ConnectionMonitor monitor;
-  private final InputXmlReader inputXmlReader;
-  private final InputXmlWriter inputXmlWriter;
+  private final XmlReader xmlReader;
+  private final XmlWriter xmlWriter;
 
   private final Socket socketClient;
 
@@ -33,6 +33,7 @@ public class ClientConnection extends Thread {
   private static final String OK = "OK";
   private static final String FAILED = "FAILED";
 
+  private static final String DEFAULT_FILE_NAME = "input.xml";
   private static final String THREAD_NAME = "Client Connection Thread";
 
   private static final Logger logger = LoggerFactory
@@ -45,21 +46,23 @@ public class ClientConnection extends Thread {
    *          incoming client connection.
    * @param monitor
    *          monitor to reserve the GVS service
-   * @param inputXmlWriter
+   * @param xmlWriterFactory
    *          xml writer used to store the incoming data locally
-   * @param inputXmlReader
+   * @param xmlReaderFactory
    *          xml reader used to read the created xml
    */
   @Inject
   public ClientConnection(ConnectionMonitor monitor,
-      InputXmlReader inputXmlReader, InputXmlWriter inputXmlWriter,
+      XmlReaderFactory xmlReaderFactory, XmlWriterFactory xmlWriterFactory,
       @Assisted Socket client) {
 
     super(THREAD_NAME);
+    
     this.socketClient = client;
-    this.inputXmlReader = inputXmlReader;
     this.monitor = monitor;
-    this.inputXmlWriter = inputXmlWriter;
+
+    this.xmlReader = xmlReaderFactory.create(DEFAULT_FILE_NAME);
+    this.xmlWriter = xmlWriterFactory.create(DEFAULT_FILE_NAME);
   }
 
   /**
@@ -72,7 +75,7 @@ public class ClientConnection extends Thread {
     try {
       processInputStream(socketClient.getInputStream());
 
-      inputXmlReader.read();
+      xmlReader.read();
 
       socketClient.close();
     } catch (IOException e) {
@@ -176,7 +179,7 @@ public class ClientConnection extends Thread {
     for (int i = 0; i < line.length(); i++) {
       if ((line.charAt(i)) == ProtocolCommand.DATA_END.toString().charAt(0)) {
         String output = stringBuffer.toString().trim();
-        inputXmlWriter.write(output);
+        xmlWriter.write(output);
       } else {
         stringBuffer.append(line.charAt(i));
       }

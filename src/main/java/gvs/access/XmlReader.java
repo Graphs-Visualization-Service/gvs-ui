@@ -9,34 +9,34 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import com.google.inject.assistedinject.Assisted;
 
 /**
- * Reads input XML of a {@link InputXmlWriter} and passes the document to the
+ * Reads input XML of a {@link XmlWriter} and passes the document to the
  * {@link ModelBuilder}.
  * 
  * @author Michi
  */
-@Singleton
-public class InputXmlReader {
+public class XmlReader {
 
+  private final String fileName;
   private SAXReader xmlReader;
   private ModelBuilder modelBuilder;
-
-  private static final String DEFAULT_FILE_NAME = "input.xml";
 
   private static final String SCHEMA = "gvs.xsd";
   private static final String VALIDATION_SCHEMA = "http://apache.org/"
       + "xml/features/validation/schema";
   private static final String NO_NAMESPACE_SCHEMA_LOCATION = "http://apache.org"
       + "/xml/properties/schema/external-noNamespaceSchemaLocation";
-  private static final Logger logger = LoggerFactory
-      .getLogger(InputXmlReader.class);
+  private static final Logger logger = LoggerFactory.getLogger(XmlReader.class);
 
   @Inject
-  public InputXmlReader(SAXReader reader, ModelBuilder modelBuilder) {
+  public XmlReader(SAXReader reader, ModelBuilder modelBuilder,
+      @Assisted String fileName) {
+
     this.xmlReader = reader;
     this.modelBuilder = modelBuilder;
+    this.fileName = fileName;
 
     setupXMLReader();
   }
@@ -61,7 +61,7 @@ public class InputXmlReader {
    * 
    */
   public synchronized void read() {
-    File inputFile = new File(DEFAULT_FILE_NAME);
+    File inputFile = new File(fileName);
     try {
       Document document = xmlReader.read(inputFile);
       modelBuilder.buildModelFromXML(document);

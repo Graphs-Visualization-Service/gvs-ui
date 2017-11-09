@@ -1,9 +1,10 @@
 package gvs.interfaces;
 
-import java.awt.Image;
+
+import gvs.util.FontAwesome.Glyph;
 
 public interface IIconVertex extends IVertex {
 
-  Image getIcon();
+  Glyph getIcon();
 
 }

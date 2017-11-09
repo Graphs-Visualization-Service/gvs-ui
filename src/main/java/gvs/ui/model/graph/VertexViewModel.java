@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import gvs.business.model.graph.IconVertex;
 import gvs.interfaces.IVertex;
+import gvs.util.FontAwesome;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
@@ -44,12 +46,12 @@ public class VertexViewModel implements Observer {
     this.node = new Label();
     if (vertex instanceof IconVertex) {
       logger.info("Creating VertexViewModel with an icon");
-      // TODO: change Icon on IconVertex -> use FontAwesome
-      // label.setGraphic(vertex.getIcon());
+      node.setGraphic(FontAwesome.createLabel(vertex.getIcon()));
     }
     node.setText(vertex.getLabel());
     node.setCursor(Cursor.HAND);
-    node.setBackground(new Background(new BackgroundFill(Color.RED , CornerRadii.EMPTY, Insets.EMPTY)));
+    node.setBackground(new Background(
+        new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
 
     // bidirectional connection
     this.vertex = vertex;
@@ -109,7 +111,8 @@ public class VertexViewModel implements Observer {
   public void update(Observable o, Object arg) {
     // Hand updates over to JavaFX Thread
     Platform.runLater(() -> {
-      logger.info("Updating VertexViewModel coordinates");
+      // logger level debug, because this will happen very often when layouting
+      logger.debug("Updating VertexViewModel coordinates");
       updateCoordinates();
     });
   }
@@ -188,6 +191,5 @@ public class VertexViewModel implements Observer {
   public Label getNode() {
     return node;
   }
-
 
 }

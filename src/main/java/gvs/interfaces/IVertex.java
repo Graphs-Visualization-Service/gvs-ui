@@ -1,9 +1,10 @@
 package gvs.interfaces;
 
 import java.awt.Color;
-import java.awt.Image;
 import java.awt.Stroke;
 import java.util.Observer;
+
+import gvs.util.FontAwesome.Glyph;
 
 public interface IVertex {
 
@@ -29,7 +30,7 @@ public interface IVertex {
 
   long getId();
   
-  Image getIcon();
+  Glyph getIcon();
 
   Color getFillColor();
   

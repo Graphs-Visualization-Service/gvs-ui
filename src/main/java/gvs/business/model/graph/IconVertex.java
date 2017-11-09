@@ -6,6 +6,7 @@ import java.awt.Stroke;
 import java.util.Observable;
 
 import gvs.interfaces.IIconVertex;
+import gvs.util.FontAwesome.Glyph;
 
 /**
  * Represents a vertex with an icon as foreground
@@ -19,7 +20,7 @@ public class IconVertex extends Observable implements IIconVertex {
   private String label;
   private Color lineColor;
   private Stroke lineStroke;
-  private Image icon;
+  private Glyph icon;
   private boolean isRelative;
   private boolean isFixed;
   private double xPosition;
@@ -35,7 +36,7 @@ public class IconVertex extends Observable implements IIconVertex {
    * @param pIcon
    */
   public IconVertex(long pId, String pLabel, Color pLineColor,
-      Stroke pLineStroke, Image pIcon) {
+      Stroke pLineStroke, Glyph pIcon) {
     this.id = pId;
     this.label = pLabel;
     this.lineColor = pLineColor;
@@ -56,7 +57,7 @@ public class IconVertex extends Observable implements IIconVertex {
    * @param pYPosition
    */
   public IconVertex(long pId, String pLabel, Color pLineColor,
-      Stroke pLineStroke, Image pIcon, double pXPosition, double pYPosition) {
+      Stroke pLineStroke, Glyph pIcon, double pXPosition, double pYPosition) {
     this(pId, pLabel, pLineColor, pLineStroke, pIcon);
     this.xPosition = pXPosition;
     this.yPosition = pYPosition;
@@ -122,7 +123,7 @@ public class IconVertex extends Observable implements IIconVertex {
   /**
    * Returns background image
    */
-  public Image getIcon() {
+  public Glyph getIcon() {
     return icon;
   }
 

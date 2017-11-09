@@ -36,6 +36,7 @@ import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.INode;
 import gvs.interfaces.IVertex;
+import gvs.util.FontAwesome.Glyph;
 
 /**
  * This class builds the model which is required for the visualization. The
@@ -363,8 +364,7 @@ public class ModelBuilder {
     BasicStroke lineStroke = typs.getLineObject(linestyle, linethickness);
 
     if (eIcon != null) {
-      String icon = eIcon.getText();
-      Image theIcon = typs.getIcon(icon);
+      Glyph theIcon = Glyph.valueOf(eIcon.getText());
       serverLogger.debug("Finihs build DefaultVertex XML with icon");
       return new IconVertex(vertexId, label, lineColor, lineStroke, theIcon);
     } else if (eFillcolor != null) {
@@ -408,8 +408,7 @@ public class ModelBuilder {
     double yPos = Double.parseDouble(eYPos.getText());
 
     if (eIcon != null) {
-      String icon = eIcon.getText();
-      Image theIcon = typs.getIcon(icon);
+      Glyph theIcon = Glyph.valueOf(eIcon.getText());
       serverLogger.debug("Finish build RelativVertex XML with Icon");
       return new IconVertex(vertexId, label, lineColor, lineStroke, theIcon,
           xPos, yPos);

@@ -1,11 +1,17 @@
 package gvs.access;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 import org.dom4j.Document;
 import org.slf4j.Logger;
@@ -29,7 +35,6 @@ public class ClientConnection extends Thread {
   private final ModelBuilder modelBuilder;
 
   private final XmlReader xmlReader;
-  private final XmlWriter xmlWriter;
 
   // protocol messages
   private static final String OK = "OK";
@@ -50,15 +55,12 @@ public class ClientConnection extends Thread {
    *          modelbuilder which processes the parsed xml.
    * @param monitor
    *          monitor to reserve the GVS service
-   * @param xmlWriterFactory
-   *          xml writer used to store the incoming data locally
    * @param xmlReaderFactory
    *          xml reader used to read the created xml
    */
   @Inject
   public ClientConnection(ConnectionMonitor monitor, ModelBuilder modelBuilder,
-      XmlReaderFactory xmlReaderFactory, XmlWriterFactory xmlWriterFactory,
-      @Assisted Socket client) {
+      XmlReaderFactory xmlReaderFactory, @Assisted Socket client) {
 
     super(THREAD_NAME);
 
@@ -67,7 +69,6 @@ public class ClientConnection extends Thread {
     this.monitor = monitor;
 
     this.xmlReader = xmlReaderFactory.create(DEFAULT_FILE_NAME);
-    this.xmlWriter = xmlWriterFactory.create(DEFAULT_FILE_NAME);
   }
 
   /**
@@ -77,36 +78,47 @@ public class ClientConnection extends Thread {
    */
   @Override
   public void run() {
-    try {
-      processInputStream(socketClient.getInputStream());
 
-      Document document = xmlReader.read();
-      modelBuilder.buildModelFromXML(document);
+    clearInputFile();
+    processInputStream();
 
-      socketClient.close();
-    } catch (IOException e) {
-      logger.error("Unable to read incoming message of client {}",
-          socketClient.getInetAddress(), e);
-    } finally {
-      releaseService();
+    if (monitor.isReserved()) {
+      readAndTransformModel();
+    }
+
+    releaseService();
+  }
+
+  private void clearInputFile() {
+    File file = new File(DEFAULT_FILE_NAME);
+    if (file.exists()) {
+      file.delete();
     }
   }
 
   /**
    * Read the input line by line.
    * 
-   * @param iStream
-   *          input stream of the client connection
-   * @throws IOException
-   *           error while reading a line
    */
-  private void processInputStream(InputStream iStream) throws IOException {
-    BufferedReader inputReader = new BufferedReader(
-        new InputStreamReader(iStream));
+  private void processInputStream() {
+    try (BufferedReader inputReader = new BufferedReader(
+        new InputStreamReader(socketClient.getInputStream()))) {
 
-    String line = null;
-    while ((line = inputReader.readLine()) != null) {
-      processLine(line);
+      String line = null;
+      while ((line = inputReader.readLine()) != null) {
+
+        int endCharIndex = line.indexOf(ProtocolCommand.DATA_END.toString());
+        if (endCharIndex != -1) {
+          String finalLine = line.substring(0, endCharIndex);
+          processLine(finalLine);
+          break;
+        } else {
+          processLine(line);
+        }
+      }
+    } catch (IOException e) {
+      logger.error("Unable to read incoming message of client {}",
+          socketClient.getInetAddress(), e);
     }
   }
 
@@ -128,7 +140,7 @@ public class ClientConnection extends Thread {
       releaseService();
     } else {
       logger.info("Data detected");
-      writeXmlFile(line);
+      storeDataOnFilesystem(line);
     }
   }
 
@@ -140,11 +152,11 @@ public class ClientConnection extends Thread {
    */
   private void reserveService() throws IOException {
     String remoteHost = socketClient.getRemoteSocketAddress().toString();
-    int status = monitor.reserveService(remoteHost);
-    if (status >= 0) {
+    try {
+      monitor.reserveService(remoteHost);
       logger.info("Service reserved.");
       sendMessage(OK);
-    } else {
+    } catch (InterruptedException e) {
       logger.info("Service busy.");
       sendMessage(FAILED);
     }
@@ -156,7 +168,6 @@ public class ClientConnection extends Thread {
   private void releaseService() {
     String remoteHost = socketClient.getRemoteSocketAddress().toString();
     monitor.releaseService(remoteHost);
-    logger.info("Service released: " + remoteHost);
   }
 
   /**
@@ -179,16 +190,28 @@ public class ClientConnection extends Thread {
    * 
    * @param line
    *          data line
+   * @throws IOException
+   *           io exception
    */
-  private void writeXmlFile(String line) {
-    StringBuffer stringBuffer = new StringBuffer();
-    for (int i = 0; i < line.length(); i++) {
-      if ((line.charAt(i)) == ProtocolCommand.DATA_END.toString().charAt(0)) {
-        String output = stringBuffer.toString().trim();
-        xmlWriter.write(output);
-      } else {
-        stringBuffer.append(line.charAt(i));
-      }
+  private void storeDataOnFilesystem(String line) throws IOException {
+
+    Path path = Paths.get(DEFAULT_FILE_NAME);
+    try (BufferedWriter writer = Files.newBufferedWriter(path,
+        StandardCharsets.UTF_8, StandardOpenOption.APPEND,
+        StandardOpenOption.CREATE)) {
+
+      writer.append(line);
+      writer.flush();
     }
+  }
+
+  /**
+   * Read the just written xml file and transform to graph model.
+   */
+  private void readAndTransformModel() {
+    logger.info("Build model from parsed xml");
+    Document document = xmlReader.read();
+    logger.error("BUILD MODEL {}", getId());
+    modelBuilder.buildModelFromXML(document);
   }
 }

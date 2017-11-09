@@ -69,7 +69,8 @@ public class ApplicationController {
    * @param pSessionController
    *          sessionController
    */
-  public synchronized void changeCurrentSession(ISessionController pSessionController) {
+  public synchronized void changeCurrentSession(
+      ISessionController pSessionController) {
     currentSessionHolder.setCurrentSession(pSessionController);
   }
 
@@ -102,7 +103,8 @@ public class ApplicationController {
    * @param pSessionController
    *          SessionController
    */
-  public synchronized void deleteSession(ISessionController pSessionController) {
+  public synchronized void deleteSession(
+      ISessionController pSessionController) {
     logger.info("Delete session");
 
     sessionControllers.remove(pSessionController);
@@ -116,8 +118,8 @@ public class ApplicationController {
       // when the last session is deleted, create empty dummy controller
       // otherwise session-bindings for UI would have to be unbound etc.
       logger.debug("Set empty graph session");
-      currentSessionHolder.setCurrentSession(
-          sessionControllerFactory.create(-1, "", null));
+      currentSessionHolder
+          .setCurrentSession(sessionControllerFactory.create(-1, "", null));
     }
   }
 
@@ -135,11 +137,6 @@ public class ApplicationController {
   public synchronized void addTreeModel(Tree pTreeModel, long pId,
       String pSessionName) {
     logger.info("New Tree arrived");
-    try {
-      LayoutMonitor.getInstance().lock();
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
 
     Iterator<ISessionController> sessionIt = sessionControllers.iterator();
     boolean isSessionExisting = false;
@@ -159,7 +156,6 @@ public class ApplicationController {
       logger.debug("Set session as actual model");
       currentSessionHolder.setCurrentSession(newSession);
     }
-    LayoutMonitor.getInstance().unlock();
   }
 
   /**

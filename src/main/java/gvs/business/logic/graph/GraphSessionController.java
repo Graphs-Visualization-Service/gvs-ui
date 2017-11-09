@@ -42,6 +42,7 @@ public class GraphSessionController implements IGraphSessionController {
   private final LayoutController layoutController;
   private final ApplicationController applicationController;
   private final Persistor persistor;
+  private final LayoutMonitor layoutMonitor;
 
   private static final Logger logger = LoggerFactory
       .getLogger(GraphSessionController.class);
@@ -49,7 +50,7 @@ public class GraphSessionController implements IGraphSessionController {
   @Inject
   public GraphSessionController(ApplicationController appController,
       CurrentGraphHolder graphHolder, Persistor persistor,
-      LayoutController layoutController,
+      LayoutController layoutController, LayoutMonitor layoutMonitor,
       GraphSessionReplayFactory replayFactory, @Assisted long pSessionId,
       @Assisted String pSessionName, @Assisted @Nullable List<Graph> graphs) {
     logger.info("Instantiating new graph session.");
@@ -58,6 +59,7 @@ public class GraphSessionController implements IGraphSessionController {
     this.applicationController = appController;
     this.persistor = persistor;
     this.layoutController = layoutController;
+    this.layoutMonitor = layoutMonitor;
 
     this.graphs = graphs;
     this.sessionId = pSessionId;
@@ -289,7 +291,7 @@ public class GraphSessionController implements IGraphSessionController {
 
   public void layout() {
     try {
-      LayoutMonitor.getInstance().lock();
+      layoutMonitor.lock();
       logger.info("Got layout monitor");
 
       Graph currentGraph = graphHolder.getCurrentGraph();
@@ -299,7 +301,7 @@ public class GraphSessionController implements IGraphSessionController {
     } catch (InterruptedException e) {
       logger.warn("Unable to get layout monitor", e);
     } finally {
-      LayoutMonitor.getInstance().unlock();
+      layoutMonitor.unlock();
     }
   }
 

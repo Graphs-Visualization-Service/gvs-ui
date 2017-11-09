@@ -25,16 +25,17 @@ public class ConnectionMonitor {
    *          client address
    * @return 0 if service was reserved <br>
    *         -1 if service is busy
+   * @throws InterruptedException
    */
-  public synchronized int reserveService(String clientAddress) {
-    if (currentOwnerAddress == null) {
-      currentOwnerAddress = clientAddress;
-      logger.info("{} reserved the service.", currentOwnerAddress);
-      return 0;
-    } else {
-      logger.info("Service is busy");
-      return -1;
+  public synchronized void reserveService(String clientAddress)
+      throws InterruptedException {
+    while (currentOwnerAddress != null) {
+      wait();
     }
+
+    currentOwnerAddress = clientAddress;
+    notifyAll();
+    logger.info("{} reserved the service.", currentOwnerAddress);
   }
 
   /**
@@ -45,11 +46,13 @@ public class ConnectionMonitor {
    *          client address
    */
   public synchronized void releaseService(String clientAddress) {
-    if (currentOwnerAddress == null) {
-      logger.debug("Service already released.");
-    } else if (currentOwnerAddress.equals(clientAddress)) {
+    if (clientAddress != null && clientAddress.equals(currentOwnerAddress)) {
       currentOwnerAddress = null;
-      logger.info("Serivce will be released...");
+      logger.info("Service released: " + clientAddress);
     }
+  }
+
+  public synchronized boolean isReserved() {
+    return currentOwnerAddress != null;
   }
 }

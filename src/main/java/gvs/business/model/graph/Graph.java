@@ -3,6 +3,10 @@ package gvs.business.model.graph;
 import java.util.Collection;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import gvs.access.Persistor;
 import gvs.business.model.Color;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
@@ -10,7 +14,7 @@ import gvs.interfaces.IVertex;
 /**
  * Represents a graph
  * 
- * @author Michi
+ * @author mWieland
  *
  */
 public class Graph {
@@ -24,6 +28,8 @@ public class Graph {
   private Color backgroundColor;
   private int maxLabelLength;
   private boolean hasBackgroundImage;
+  
+  private static final Logger logger = LoggerFactory.getLogger(Graph.class);
 
   /**
    * New graph representation
@@ -37,6 +43,7 @@ public class Graph {
    */
   public Graph(Collection<IVertex> vertices,
       Collection<IEdge> edges) {
+    logger.info("Building new Graph.");
     this.vertices = vertices;
     this.edges = edges;
     this.snapshotDescription = null;

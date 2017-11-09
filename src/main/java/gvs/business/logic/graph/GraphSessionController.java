@@ -52,7 +52,7 @@ public class GraphSessionController implements IGraphSessionController {
       LayoutController layoutController,
       GraphSessionReplayFactory replayFactory, @Assisted long pSessionId,
       @Assisted String pSessionName, @Assisted @Nullable List<Graph> graphs) {
-
+    logger.info("Instantiating new graph session.");
     this.sessionReplayFactory = replayFactory;
     this.graphHolder = graphHolder;
     this.applicationController = appController;
@@ -144,7 +144,7 @@ public class GraphSessionController implements IGraphSessionController {
    * Displays requested model.
    */
   public void replay(long timeout, Action finishedCallback) {
-    logger.info("Replay current session");
+    logger.info("Replaying current session");
     Timer timer = new Timer();
     GraphSessionReplay sessionReplay = sessionReplayFactory.create(this, graphs,
         finishedCallback);
@@ -187,6 +187,8 @@ public class GraphSessionController implements IGraphSessionController {
     logger.debug("Check if graph can be layouted");
     if (!isRelativeSession) {
       Graph currentGraph = graphHolder.getCurrentGraph();
+      // TODO: logger statement makes no sense -> either remove it or add guard
+      // to test, if it's the last element
       logger.debug("Graph is last element in Queue, call Layouter");
       currentGraph.getVertices().forEach(v -> {
         v.setFixedPosition(false);

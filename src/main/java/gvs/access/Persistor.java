@@ -44,6 +44,7 @@ import gvs.interfaces.IEdge;
 import gvs.interfaces.INode;
 import gvs.interfaces.ISessionController;
 import gvs.interfaces.IVertex;
+import gvs.util.FontAwesome.Glyph;
 
 /**
  * This class loads and saves data. The color, line ... objects will be
@@ -304,7 +305,7 @@ public class Persistor {
         configuration.getLineThicknessName((int) stroke.getLineWidth()));
 
     Element eIcon = eVertex.addElement(ICON);
-    eIcon.addText(configuration.getIconName(pVertex.getIcon()));
+    eIcon.addText(pVertex.getIcon().name());
 
     Element eXPos = eVertex.addElement(XPOS);
     eXPos.addText(String.valueOf(pVertex.getXPosition()));
@@ -375,6 +376,7 @@ public class Persistor {
   }
 
   private GraphSessionController loadGraphSession(Element pGraphSession) {
+    logger.info("Parsing Graph from XML.");
     Vector<Graph> graphs = new Vector<>();
     Element eSessionName = pGraphSession.element(LABEL);
     String sessionName = eSessionName.getText();
@@ -432,6 +434,7 @@ public class Persistor {
   }
 
   private TreeSessionController loadTreeSession(Element pTreeSession) {
+    logger.info("Parsing Tree from XML.");
     Vector<Tree> treeModels = new Vector<Tree>();
     Element eSessionName = pTreeSession.element(LABEL);
     String sessionName = eSessionName.getText();
@@ -515,8 +518,7 @@ public class Persistor {
         linethickness);
 
     if (eIcon != null) {
-      String icon = eIcon.getText();
-      Image theIcon = configuration.getIcon(icon);
+      Glyph theIcon = Glyph.valueOf(eIcon.getText());
       return new IconVertex(vertexId, label, lineColor, lineStroke, theIcon,
           xpos, ypos);
     } else if (eFillcolor != null) {
@@ -551,8 +553,7 @@ public class Persistor {
     double yPos = Double.parseDouble(eYPos.getText());
 
     if (eIcon != null) {
-      String icon = eIcon.getText();
-      Image theIcon = configuration.getIcon(icon);
+      Glyph theIcon = Glyph.valueOf(eIcon.getText());
       return new IconVertex(vertexId, label, lineColor, lineStroke, theIcon,
           xPos, yPos);
     } else if (eFillcolor != null) {

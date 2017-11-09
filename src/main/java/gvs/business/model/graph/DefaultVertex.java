@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.interfaces.IDefaultVertex;
+import gvs.util.FontAwesome.Glyph;
 
 /**
  * Model of a default vertex
@@ -175,7 +176,7 @@ public class DefaultVertex extends Observable implements IDefaultVertex {
   }
 
   @Override
-  public Image getIcon() {
+  public Glyph getIcon() {
     return null;
   }
 }

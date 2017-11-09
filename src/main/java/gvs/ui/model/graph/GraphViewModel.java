@@ -19,19 +19,21 @@ import gvs.business.model.graph.Graph;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
 import gvs.ui.logic.session.SessionViewModel;
+import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
- * Represents one snapshot of a graph visualization. Observes the CurrentGraphHolder.
+ * Represents one snapshot of a graph visualization. Observes the
+ * CurrentGraphHolder.
  * 
- * @author Michi
+ * @author mtrentin
  *
  */
 @Singleton
 public class GraphViewModel extends Observable implements Observer {
+  private ScalableContentPane graphPane;
 
   private final Map<Long, VertexViewModel> vertexViewModels;
   private final Set<EdgeViewModel> edgeViewModels;
-
   private final SessionViewModel sessionViewModel;
 
   private static final Logger logger = LoggerFactory
@@ -40,6 +42,7 @@ public class GraphViewModel extends Observable implements Observer {
   @Inject
   public GraphViewModel(CurrentGraphHolder currentGraphHolder,
       SessionViewModel sessionViewModel) {
+    logger.info("Initializing GraphViewModel.");
     this.sessionViewModel = sessionViewModel;
     this.vertexViewModels = new HashMap<>();
     this.edgeViewModels = new HashSet<>();
@@ -47,52 +50,47 @@ public class GraphViewModel extends Observable implements Observer {
     currentGraphHolder.addObserver(this);
   }
 
+  /**
+   * Redraw Graph when CurrenGraphHolder changes its Graph.
+   */
   @Override
   public void update(Observable o, Object arg) {
+    logger.info("Current graph changed...");
     CurrentGraphHolder currentGraphHolder = (CurrentGraphHolder) o;
-    transformGraphModel(currentGraphHolder.getCurrentGraph());
-    sessionViewModel.updateStepProperties();
+    // don't start drawing process, if graphPane hasn'r already been set by
+    // SessionView
+    if (graphPane != null) {
+      draw(currentGraphHolder.getCurrentGraph());
+      sessionViewModel.updateStepProperties();
+    }
   }
-
-  /**
-   * Load all graph properties.
-   * 
-   * @param graph
-   *          business layer graph
-   */
-  public void transformGraphModel(Graph graph) {
-    logger.info("Import new graph to graph view model.");
+  
+  public void draw(Graph graph) {
+    logger.info("Drawing graph...");
     vertexViewModels.clear();
     edgeViewModels.clear();
-
-    importGraph(graph);
-
-    logger.info("Graph imported. Notify session view.");
-    setChanged();
-    notifyObservers();
+    graphPane.getContentPane().getChildren().clear();
+    drawVertices(graph.getVertices());
+    drawEdges(graph.getEdges());
+    correctZOrder();
+    graphPane.requestScale();
   }
 
-  /**
-   * Import vertices and edges of a graph.
-   * 
-   * @param graph
-   *          business layer graph
-   */
-  private void importGraph(Graph graph) {
-    importVertices(graph.getVertices());
-    importEdges(graph.getEdges());
+  private void correctZOrder() {
+    vertexViewModels.values().forEach(v -> v.getNode().toFront());
   }
 
-  private void importVertices(Collection<IVertex> vertices) {
-    logger.info("Import vertices to graph view model.");
+  private void drawVertices(Collection<IVertex> vertices) {
+    logger.info("Drawing vertices...");
     vertices.forEach(v -> {
       VertexViewModel vertexViewModel = new VertexViewModel(v);
+      vertexViewModel.draw(graphPane);
       vertexViewModels.put(v.getId(), vertexViewModel);
     });
   }
 
-  private void importEdges(Collection<IEdge> edges) {
-    logger.info("Import edges to graph view model.");
+  private void drawEdges(Collection<IEdge> edges) {
+    logger.info("Drawing edges...");
     edges.forEach(e -> {
       VertexViewModel startVertex = vertexViewModels
           .get(e.getStartVertex().getId());
@@ -101,6 +99,7 @@ public class GraphViewModel extends Observable implements Observer {
 
       EdgeViewModel edgeViewModel = new EdgeViewModel(e, startVertex,
           endVertex);
+      edgeViewModel.draw(graphPane);
       edgeViewModels.add(edgeViewModel);
     });
   }
@@ -111,6 +110,15 @@ public class GraphViewModel extends Observable implements Observer {
 
   public Set<EdgeViewModel> getEdgeViewModels() {
     return this.edgeViewModels;
+  }
+  
+  /**
+   * Set pane on which all graph elements are drawn.
+   * @param newGraphPane
+   *   the pane on which all graph elements are drawn.
+   */
+  public void setPane(ScalableContentPane newGraphPane) {
+    this.graphPane = newGraphPane;
   }
 
 }

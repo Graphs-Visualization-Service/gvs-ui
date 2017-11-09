@@ -15,15 +15,15 @@ import gvs.interfaces.IIconVertex;
  */
 public class IconVertex extends Observable implements IIconVertex {
 
-  private long id = 0;
-  private String label = null;
-  private Color lineColor = null;
-  private Stroke lineStroke = null;
-  private Image icon = null;
-  private boolean isRelative = false;
-  private boolean isFixed = false;
-  private double xPosition = 0;
-  private double yPosition = 0;
+  private long id;
+  private String label;
+  private Color lineColor;
+  private Stroke lineStroke;
+  private Image icon;
+  private boolean isRelative;
+  private boolean isFixed;
+  private double xPosition;
+  private double yPosition;
 
   /**
    * Builds relative icon vertex

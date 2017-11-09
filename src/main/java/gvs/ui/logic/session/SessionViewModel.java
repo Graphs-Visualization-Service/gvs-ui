@@ -16,6 +16,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
  * The ViewModel class for the current session. Corresponds to the classical
@@ -47,7 +48,6 @@ public class SessionViewModel implements Observer {
 
   @Inject
   public SessionViewModel(CurrentSessionHolder currentSessionHolder) {
-
     logger.info("Initializing SessionViewModel.");
     this.currentSessionHolder = currentSessionHolder;
 
@@ -148,7 +148,6 @@ public class SessionViewModel implements Observer {
     disableAllButtons(true);
     currentSessionHolder.getCurrentSession().autoLayout();
 
-    // TODO view should somehow be notified by business if layout has finished
     disableAllButtons(false);
   }
 

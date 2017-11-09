@@ -375,6 +375,7 @@ public class Persistor {
   }
 
   private GraphSessionController loadGraphSession(Element pGraphSession) {
+    logger.info("Parsing Graph from XML.");
     Vector<Graph> graphs = new Vector<>();
     Element eSessionName = pGraphSession.element(LABEL);
     String sessionName = eSessionName.getText();
@@ -432,6 +433,7 @@ public class Persistor {
   }
 
   private TreeSessionController loadTreeSession(Element pTreeSession) {
+    logger.info("Parsing Tree from XML.");
     Vector<Tree> treeModels = new Vector<Tree>();
     Element eSessionName = pTreeSession.element(LABEL);
     String sessionName = eSessionName.getText();

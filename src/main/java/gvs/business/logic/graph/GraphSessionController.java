@@ -52,7 +52,7 @@ public class GraphSessionController implements IGraphSessionController {
       LayoutController layoutController,
       GraphSessionReplayFactory replayFactory, @Assisted long pSessionId,
       @Assisted String pSessionName, @Assisted @Nullable List<Graph> graphs) {
-
+    logger.info("Instantiating new graph session.");
     this.sessionReplayFactory = replayFactory;
     this.graphHolder = graphHolder;
     this.applicationController = appController;

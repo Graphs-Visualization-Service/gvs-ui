@@ -211,7 +211,6 @@ public class ClientConnection extends Thread {
   private void readAndTransformModel() {
     logger.info("Build model from parsed xml");
     Document document = xmlReader.read();
-    logger.error("BUILD MODEL {}", getId());
     modelBuilder.buildModelFromXML(document);
   }
 }

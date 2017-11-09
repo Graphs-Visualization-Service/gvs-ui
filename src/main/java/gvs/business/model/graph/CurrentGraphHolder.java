@@ -7,9 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Singleton;
 
-
-import gvs.business.logic.graph.GraphSessionController;
-
 @Singleton
 public class CurrentGraphHolder extends Observable {
 

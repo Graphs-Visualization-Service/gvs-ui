@@ -8,9 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import gvs.business.model.graph.DefaultVertex;
 import gvs.interfaces.IVertex;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

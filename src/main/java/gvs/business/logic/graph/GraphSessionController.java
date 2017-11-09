@@ -73,6 +73,7 @@ public class GraphSessionController implements IGraphSessionController {
             g.setId(++graphId);
           }
         }
+        graphHolder.setCurrentGraph(graphs.get(graphs.size() - 1));
       }
     } else {
       logger.info("Build empty graph session");

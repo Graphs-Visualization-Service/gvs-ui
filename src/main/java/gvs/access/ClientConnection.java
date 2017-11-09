@@ -23,17 +23,17 @@ import com.google.inject.assistedinject.Assisted;
  */
 public class ClientConnection extends Thread {
 
-  private ConnectionMonitor monitor;
-  private InputXmlReader inputXmlReader;
-  private InputXmlWriter inputXmlWriter;
+  private final ConnectionMonitor monitor;
+  private final InputXmlReader inputXmlReader;
+  private final InputXmlWriter inputXmlWriter;
 
-  private Socket socketClient;
+  private final Socket socketClient;
 
   // protocol messages
   private static final String OK = "OK";
   private static final String FAILED = "FAILED";
 
-  private static final String THREAD_NAME = "Server Connection Thread";
+  private static final String THREAD_NAME = "Client Connection Thread";
 
   private static final Logger logger = LoggerFactory
       .getLogger(ClientConnection.class);
@@ -67,6 +67,7 @@ public class ClientConnection extends Thread {
    * monitor lock of {@link ConnectionMonitor} If successful, read the
    * transfered data and store it locally in a XML file.
    */
+  @Override
   public void run() {
     try {
       processInputStream(socketClient.getInputStream());

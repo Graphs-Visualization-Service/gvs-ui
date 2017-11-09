@@ -34,9 +34,9 @@ import com.google.inject.Inject;
  */
 public class SocketServer extends Thread {
 
-  private String hostname;
-  private Integer port;
-  private ClientConnectionFactory connectionFactory;
+  private final String hostname;
+  private final Integer port;
+  private final ClientConnectionFactory connectionFactory;
 
   private static final String THREAD_NAME = "Socket Server Thread";
   private static final String DEFAULT_PORT_FILE_NAME = "GVSComm.xml";
@@ -61,6 +61,7 @@ public class SocketServer extends Thread {
   /**
    * Starts the server. Once started, it runs endlessly.
    */
+  @Override
   public void run() {
     try (ServerSocket javaSocket = new ServerSocket(port)) {
       logger.info("Server is running on {}:{}", hostname, port);
@@ -68,11 +69,11 @@ public class SocketServer extends Thread {
       while (true) {
         Socket client = javaSocket.accept();
 
-        ClientConnection con = connectionFactory.create(client);
-        con.start();
+        ClientConnection connection = connectionFactory.create(client);
+        connection.start();
       }
     } catch (IOException e) {
-      logger.error("Cannot open Server Socket. Service may already runnings.",
+      logger.error("Cannot open Server Socket. Service may already be running.",
           e);
     }
   }

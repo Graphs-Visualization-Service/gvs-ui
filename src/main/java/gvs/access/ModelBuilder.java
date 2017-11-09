@@ -50,7 +50,7 @@ public class ModelBuilder {
   private ApplicationController applicationController = null;
   private Configuration typs = null;
 
-  // Generaly
+  // Generally
   private static final String ATTRIBUTEID = "Id";
   private static final String LABEL = "Label";
   private static final String FILLCOLOR = "Fillcolor";
@@ -133,7 +133,7 @@ public class ModelBuilder {
   private void buildGraph(Element pDocRoot) {
     serverLogger.debug("Build graph from XML");
     Element eGraph = pDocRoot.element(GRAPH);
-    int graphId = Integer.parseInt(eGraph.attributeValue(ATTRIBUTEID));
+    long sessionId = Long.parseLong(eGraph.attributeValue(ATTRIBUTEID));
     String graphLabel = eGraph.element(LABEL).getText();
     String graphBackground = eGraph.element(BACKGROUND).getText();
     String maxLabelLengthString = eGraph.element(MAXLABELLENGTH).getText();
@@ -163,7 +163,7 @@ public class ModelBuilder {
     }
 
     int maxLabelLength = Integer.parseInt(maxLabelLengthString);
-    Graph newGraph = new Graph(graphId, vertizes, edges);
+    Graph newGraph = new Graph(vertizes, edges);
     newGraph.setMaxLabelLength(maxLabelLength);
 
     // TODO background image support?
@@ -178,7 +178,7 @@ public class ModelBuilder {
     // }
 
     serverLogger.debug("Finish build graph from XML");
-    applicationController.addModel(newGraph, graphId, graphLabel);
+    applicationController.addModel(newGraph, sessionId, graphLabel);
   }
 
   /**

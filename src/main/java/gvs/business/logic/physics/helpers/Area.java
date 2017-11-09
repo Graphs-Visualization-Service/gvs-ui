@@ -57,7 +57,7 @@ public class Area extends Observable {
    * 
    * @return area dimension
    */
-  public AreaDimension getUniverseDimension() {
+  public synchronized AreaDimension getUniverseDimension() {
     return dimension;
   }
 
@@ -68,7 +68,7 @@ public class Area extends Observable {
    * @param d
    *          viscosity
    */
-  public void setViscosity(double d) {
+  public synchronized void setViscosity(double d) {
     viscosity = d;
   }
 
@@ -85,7 +85,7 @@ public class Area extends Observable {
   /**
    * Reset the calculated area
    */
-  public void resetArea() {
+  public synchronized void resetArea() {
     tractions.clear();
     particles.clear();
   }
@@ -95,7 +95,7 @@ public class Area extends Observable {
    * 
    * @return Area Point
    */
-  public AreaPoint getAreaCenter() {
+  public synchronized AreaPoint getAreaCenter() {
     return dimension.getCenter();
   }
 
@@ -116,7 +116,7 @@ public class Area extends Observable {
    *          particle id
    * @return Particle
    */
-  public Particle getParticleWithID(long id) {
+  public synchronized Particle getParticleWithID(long id) {
     Iterator<Particle> it = particles.iterator();
     while (it.hasNext()) {
       Particle p = (Particle) it.next();
@@ -134,7 +134,7 @@ public class Area extends Observable {
    * @param pState
    *          particle state
    */
-  public void setIsStable(boolean state) {
+  public synchronized void setIsStable(boolean state) {
     isStable = state;
   }
 
@@ -143,7 +143,7 @@ public class Area extends Observable {
    * 
    * @return is area stable
    */
-  public boolean isStable() {
+  public synchronized boolean isStable() {
     return isStable;
   }
 

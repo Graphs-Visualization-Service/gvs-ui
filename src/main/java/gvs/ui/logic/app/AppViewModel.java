@@ -1,7 +1,6 @@
 package gvs.ui.logic.app;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -10,11 +9,9 @@ import java.util.Observer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gluonhq.ignite.guice.GuiceContext;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.GuiceBaseModule;
 import gvs.business.logic.ApplicationController;
 import gvs.business.model.CurrentSessionHolder;
 import gvs.interfaces.ISessionController;
@@ -45,8 +42,6 @@ public class AppViewModel implements Observer {
   private final Map<String, ISessionController> controllerMap = new HashMap<>();
   private final CurrentSessionHolder appModel;
   private final ApplicationController appController;
-  private final GuiceContext context = new GuiceContext(this,
-      () -> Arrays.asList(new GuiceBaseModule()));
 
   private static final String PROMT_MESSAGE = "no active session";
   private static final Logger logger = LoggerFactory
@@ -55,7 +50,7 @@ public class AppViewModel implements Observer {
   @Inject
   public AppViewModel(CurrentSessionHolder appModel,
       ApplicationController appController) {
-    context.init();
+    // context.init();
     this.appModel = appModel;
     this.appController = appController;
 

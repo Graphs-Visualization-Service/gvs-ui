@@ -80,7 +80,7 @@ public class LayoutController implements Tickable {
    * @param useSoftPoints
    *          use soft layout
    */
-  public void layoutGraph(Graph graph, boolean useSoftPoints) {
+  public synchronized void layoutGraph(Graph graph, boolean useSoftPoints) {
     logger.info("Received new data to layout");
     handleTickerThread();
 
@@ -127,7 +127,7 @@ public class LayoutController implements Tickable {
    * Check if particles in area are stable. If stable, stop ticking, otherwise
    * update positions and continue with the next iteration.
    */
-  public void tick() {
+  public synchronized void tick() {
     logger.info("Layout engine iteration completed.");
 
     if (area.isStable()) {

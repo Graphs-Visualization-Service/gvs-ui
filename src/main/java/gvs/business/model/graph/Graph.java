@@ -35,9 +35,8 @@ public class Graph {
    * @param graphId
    *          model id
    */
-  public Graph(int graphId, Collection<IVertex> vertices,
+  public Graph(Collection<IVertex> vertices,
       Collection<IEdge> edges) {
-    this.id = graphId;
     this.vertices = vertices;
     this.edges = edges;
     this.snapshotDescription = null;

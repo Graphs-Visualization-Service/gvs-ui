@@ -1,7 +1,5 @@
 package gvs.business.model.graph;
 
-import java.util.Observable;
-
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
 

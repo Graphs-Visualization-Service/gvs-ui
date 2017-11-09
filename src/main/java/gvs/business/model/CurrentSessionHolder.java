@@ -22,7 +22,7 @@ public class CurrentSessionHolder extends Observable {
    * 
    * @param newSession
    */
-  public void setCurrentSession(ISessionController newSession) {
+  public synchronized void setCurrentSession(ISessionController newSession) {
     this.currentSession = newSession;
     this.currentSession.changeCurrentGraphToFirst();
     setChanged();
@@ -34,7 +34,7 @@ public class CurrentSessionHolder extends Observable {
    * 
    * @return session controller
    */
-  public ISessionController getCurrentSession() {
+  public synchronized ISessionController getCurrentSession() {
     return currentSession;
   }
 }

@@ -17,7 +17,7 @@ public class AreaTicker extends Thread {
   private HitsPerSecond hitsPerSecond;
   private Tickable callbackTickable;
 
-  private volatile boolean stop;
+  private boolean stop;
 
   private static final String THREAD_NAME = "Area Ticker Thread";
 
@@ -41,7 +41,7 @@ public class AreaTicker extends Thread {
   /**
    * Stop this ticker thread.
    */
-  public void terminate() {
+  public synchronized void terminate() {
     stop = true;
   }
 

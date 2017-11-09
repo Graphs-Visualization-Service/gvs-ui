@@ -2,8 +2,6 @@ package gvs.business.logic.graph;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 
@@ -23,7 +21,6 @@ import gvs.business.model.graph.CurrentGraphHolder;
 import gvs.business.model.graph.Graph;
 import gvs.interfaces.Action;
 import gvs.interfaces.IGraphSessionController;
-import gvs.interfaces.IVertex;
 
 /**
  * The session contoller reacts on user input events and implements most of the
@@ -34,8 +31,6 @@ import gvs.interfaces.IVertex;
  */
 public class GraphSessionController implements IGraphSessionController {
 
-  private boolean callLayoutEngine = false;
-  private boolean replayMode = false;
   private boolean isRelativeSession = false;
 
   private long sessionId;
@@ -68,10 +63,11 @@ public class GraphSessionController implements IGraphSessionController {
     this.sessionId = pSessionId;
     this.sessionName = pSessionName;
 
-    // TODO is this really required?
-    int graphId = 1;
+    // GraphId needs to be set and incremented as soon as they are added to a
+    // session
     if (graphs != null) {
       if (graphs.size() >= 1) {
+        int graphId = 0;
         for (Graph g : graphs) {
           if (g.getId() == 0) {
             g.setId(++graphId);
@@ -226,14 +222,21 @@ public class GraphSessionController implements IGraphSessionController {
   @Override
   public void changeCurrentGraphToNext() {
     int nextGraphId = graphHolder.getCurrentGraph().getId() + 1;
-    int newIndex = nextGraphId - 1;
-    if (validIndex(newIndex)) {
-      graphHolder.setCurrentGraph(graphs.get(newIndex));
+    if (validIndex(nextGraphId)) {
+      graphHolder.setCurrentGraph(graphs.get(nextGraphId - 1));
+    }
+  }
+
+  @Override
+  public void changeCurrentGraphToPrev() {
+    int prevGraphId = graphHolder.getCurrentGraph().getId() - 1;
+    if (validIndex(prevGraphId)) {
+      graphHolder.setCurrentGraph(graphs.get(prevGraphId - 1));
     }
   }
 
   private boolean validIndex(int i) {
-    return i >= 0 && i < graphs.size();
+    return i > 0 && i <= graphs.size();
   }
 
   @Override
@@ -241,16 +244,6 @@ public class GraphSessionController implements IGraphSessionController {
     if (!graphs.isEmpty()) {
       graphHolder.setCurrentGraph(graphs.get(0));
     }
-  }
-
-  @Override
-  public void changeCurrentGraphToPrev() {
-    int prevGraphId = graphHolder.getCurrentGraph().getId() - 1;
-    int newIndex = prevGraphId - 1;
-    if (validIndex(newIndex)) {
-      graphHolder.setCurrentGraph(graphs.get(newIndex));
-    }
-
   }
 
   @Override

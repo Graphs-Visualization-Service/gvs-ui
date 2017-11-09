@@ -20,7 +20,7 @@ import com.google.inject.assistedinject.Assisted;
 public class XmlReader {
 
   private final String fileName;
-  private SAXReader xmlReader;
+  private final SAXReader xmlReader;
 
   private static final String SCHEMA = "gvs.xsd";
   private static final String VALIDATION_SCHEMA = "http://apache.org/"
@@ -35,13 +35,13 @@ public class XmlReader {
     this.xmlReader = reader;
     this.fileName = fileName;
 
-    setupXMLReader();
+    applySchema();
   }
 
   /**
-   * Apply the custom XML scheme from classpath to the {@link SAXReader}.
+   * Apply the custom XML schema from classpath to the {@link SAXReader}.
    */
-  private void setupXMLReader() {
+  private void applySchema() {
     URL schemaURL = getClass().getClassLoader().getResource(SCHEMA);
     try {
       String schemaString = schemaURL.toURI().toString();
@@ -56,6 +56,7 @@ public class XmlReader {
   /**
    * Read the input file and pass the XML document to the {@link ModelBuilder}.
    * 
+   * @return parsed document
    */
   public Document read() {
     File inputFile = new File(fileName);

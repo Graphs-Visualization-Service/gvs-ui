@@ -5,7 +5,6 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 import gvs.access.ClientConnectionFactory;
 import gvs.access.XmlReaderFactory;
-import gvs.access.XmlWriterFactory;
 import gvs.business.logic.graph.GraphSessionControllerFactory;
 import gvs.business.logic.graph.GraphSessionReplayFactory;
 
@@ -23,7 +22,6 @@ public class GuiceBaseModule extends AbstractModule {
     install(
         new FactoryModuleBuilder().build(GraphSessionControllerFactory.class));
     install(new FactoryModuleBuilder().build(GraphSessionReplayFactory.class));
-    install(new FactoryModuleBuilder().build(XmlWriterFactory.class));
     install(new FactoryModuleBuilder().build(XmlReaderFactory.class));
   }
 

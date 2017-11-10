@@ -17,8 +17,8 @@ import gvs.access.Persistor;
 import gvs.business.logic.ApplicationController;
 import gvs.business.logic.LayoutController;
 import gvs.business.logic.LayoutMonitor;
-import gvs.business.model.graph.GraphHolder;
 import gvs.business.model.graph.Graph;
+import gvs.business.model.graph.GraphHolder;
 import gvs.interfaces.Action;
 import gvs.interfaces.IGraphSessionController;
 
@@ -47,11 +47,11 @@ public class Session implements IGraphSessionController {
   private static final Logger logger = LoggerFactory.getLogger(Session.class);
 
   @Inject
-  public Session(ApplicationController appController,
-      GraphHolder graphHolder, Persistor persistor,
-      LayoutController layoutController, LayoutMonitor layoutMonitor,
-      GraphSessionReplayFactory replayFactory, @Assisted long pSessionId,
-      @Assisted String pSessionName, @Assisted @Nullable List<Graph> graphs) {
+  public Session(ApplicationController appController, GraphHolder graphHolder,
+      Persistor persistor, LayoutController layoutController,
+      LayoutMonitor layoutMonitor, GraphSessionReplayFactory replayFactory,
+      @Assisted long pSessionId, @Assisted String pSessionName,
+      @Assisted @Nullable List<Graph> graphs) {
     logger.info("Instantiating new graph session.");
     this.sessionReplayFactory = replayFactory;
     this.graphHolder = graphHolder;

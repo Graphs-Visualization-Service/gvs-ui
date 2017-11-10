@@ -32,7 +32,7 @@ public class ApplicationController {
 
   private final GraphSessionFactory graphSessionFactory;
   private final Persistor persistor;
-  private final SessionHolder currentSessionHolder;
+  private final SessionHolder sessionHolder;
 
   private static final Logger logger = LoggerFactory
       .getLogger(ApplicationController.class);
@@ -48,10 +48,10 @@ public class ApplicationController {
    *          factory for new sessions
    */
   @Inject
-  public ApplicationController(SessionHolder sessionHolder,
-      Persistor persistor, GraphSessionFactory graphSessionFactory) {
+  public ApplicationController(SessionHolder sessionHolder, Persistor persistor,
+      GraphSessionFactory graphSessionFactory) {
 
-    this.currentSessionHolder = sessionHolder;
+    this.sessionHolder = sessionHolder;
     this.persistor = persistor;
     this.graphSessionFactory = graphSessionFactory;
   }
@@ -63,7 +63,7 @@ public class ApplicationController {
    *          sessionController
    */
   public synchronized void changeCurrentSession(ISession pSessionController) {
-    currentSessionHolder.setCurrentSession(pSessionController);
+    sessionHolder.setCurrentSession(pSessionController);
   }
 
   /**
@@ -76,8 +76,8 @@ public class ApplicationController {
     logger.info("Load session from filesystem");
     ISession loadedSession = persistor.loadFile(fileName);
 
-    currentSessionHolder.addSession(loadedSession);
-    currentSessionHolder.setCurrentSession(loadedSession);
+    sessionHolder.addSession(loadedSession);
+    sessionHolder.setCurrentSession(loadedSession);
   }
 
   /**
@@ -89,20 +89,19 @@ public class ApplicationController {
   public synchronized void deleteSession(ISession pSessionController) {
     logger.info("Delete session");
 
-    currentSessionHolder.removeSession(pSessionController);
+    sessionHolder.removeSession(pSessionController);
 
-    if (currentSessionHolder.getSessions().size() > 0) {
+    if (sessionHolder.getSessions().size() > 0) {
       logger.debug("Session controller deleted. Set former graph session");
-      currentSessionHolder.setCurrentSession(
-          currentSessionHolder.getSessions().iterator().next());
+      sessionHolder
+          .setCurrentSession(sessionHolder.getSessions().iterator().next());
 
     } else {
 
       // when the last session is deleted, create empty dummy controller
       // otherwise session-bindings for UI would have to be unbound etc.
       logger.debug("Set empty graph session");
-      currentSessionHolder
-          .setCurrentSession(graphSessionFactory.create(-1, "", null));
+      sessionHolder.setCurrentSession(graphSessionFactory.create(-1, "", null));
     }
   }
 
@@ -121,8 +120,8 @@ public class ApplicationController {
       String pSessionName) {
     logger.info("New Tree arrived");
 
-    Iterator<ISession> sessionIt = currentSessionHolder.getSessions()
-        .iterator();
+    // TODO merge with addGraphToSession
+    Iterator<ISession> sessionIt = sessionHolder.getSessions().iterator();
     boolean isSessionExisting = false;
     while (sessionIt.hasNext()) {
       ISession sc = (ISession) (sessionIt.next());
@@ -136,9 +135,9 @@ public class ApplicationController {
       logger.debug("Build new tree session");
       ITreeSessionController newSession = new TreeSessionController(pId,
           pSessionName, pTreeModel);
-      currentSessionHolder.addSession(newSession);
+      sessionHolder.addSession(newSession);
       logger.debug("Set session as actual model");
-      currentSessionHolder.setCurrentSession(newSession);
+      sessionHolder.setCurrentSession(newSession);
     }
   }
 
@@ -148,41 +147,39 @@ public class ApplicationController {
    * 
    * @param graph
    *          graphModel
-   * @param pId
+   * @param sessionId
    *          Id
-   * @param pSessionName
+   * @param sessionName
    *          sessionName
    */
-  public synchronized void addGraphToSession(Graph graph, long pId,
-      String pSessionName) {
-    logger.info("New graph arrived");
-    Iterator<ISession> sessionIt = currentSessionHolder.getSessions()
-        .iterator();
-    boolean isSessionExisting = false;
-    while (sessionIt.hasNext()) {
-      ISession sc = (ISession) (sessionIt.next());
-      if (sc.getSessionId() == pId) {
-        logger.debug("Add graph to exsting session");
+  public synchronized void addGraphToSession(Graph graph, long sessionId,
+      String sessionName) {
 
-        Session graphSessionController = (Session) sc;
-        graphSessionController.addGraph(graph);
-        graphSessionController.layout();
+    logger.info("Received new graph");
+
+    boolean isSessionExisting = false;
+    for (ISession session : sessionHolder.getSessions()) {
+      if (session.getSessionId() == sessionId) {
+        logger.info("Add graph to exsting session");
+        Session existingSession = (Session) session;
+        existingSession.addGraph(graph);
+        existingSession.layout();
 
         isSessionExisting = true;
       }
     }
-    if (!isSessionExisting) {
-      logger.debug("Build new graph session");
 
-      List<Graph> singleGraph = new ArrayList<>();
-      singleGraph.add(graph);
-      Session newSession = graphSessionFactory.create(pId, pSessionName,
-          singleGraph);
+    if (!isSessionExisting) {
+      logger.info("Create new session");
+
+      List<Graph> graphs = new ArrayList<>();
+      graphs.add(graph);
+      Session newSession = graphSessionFactory.create(sessionId, sessionName,
+          graphs);
       newSession.layout();
 
-      currentSessionHolder.addSession(newSession);
-      logger.debug("Set session as actual model");
-      currentSessionHolder.setCurrentSession(newSession);
+      sessionHolder.addSession(newSession);
+      sessionHolder.setCurrentSession(newSession);
     }
   }
 }

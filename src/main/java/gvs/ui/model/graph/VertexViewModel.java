@@ -52,8 +52,8 @@ public class VertexViewModel implements Observer {
     node.setCursor(Cursor.HAND);
     node.setBackground(new Background(
         new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
-
-    // bidirectional connection
+    
+    // bidirectional connection with business model
     this.vertex = vertex;
     this.vertex.addObserver(this);
     node.layoutXProperty().addListener(this::xProperyListener);

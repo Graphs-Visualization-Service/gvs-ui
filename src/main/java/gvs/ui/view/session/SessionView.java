@@ -29,7 +29,7 @@ import jfxtras.labs.scene.layout.ScalableContentPane;
  * @author mtrentini
  */
 @Singleton
-public class SessionView{
+public class SessionView {
 
   @FXML
   private GridPane playGrid;
@@ -96,6 +96,7 @@ public class SessionView{
     initializeStepIndicator();
     initializeButtons();
     graphViewModel.setPane(graphPane);
+    graphPane.setVisible(true);
   }
 
   private void initializeStepIndicator() {

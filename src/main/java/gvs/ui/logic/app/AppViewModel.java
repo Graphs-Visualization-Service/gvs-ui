@@ -93,7 +93,7 @@ public class AppViewModel implements Observer {
    */
   @Override
   public void update(Observable o, Object arg) {
-  //Hand updates over to JavaFX Thread
+    // Hand updates over to JavaFX Thread
     Platform.runLater(() -> {
       ISession c = ((SessionHolder) o).getCurrentSession();
       String name = c.getSessionName();

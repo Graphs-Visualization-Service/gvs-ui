@@ -58,32 +58,28 @@ public class SessionViewModel implements Observer {
 
   public void changeCurrentGraphToNext() {
     logger.info("Changing the displayed graph model...");
-    ISession currentSession = currentSessionHolder
-        .getCurrentSession();
+    ISession currentSession = currentSessionHolder.getCurrentSession();
     currentSession.changeCurrentGraphToNext();
     updateStepProperties();
   }
 
   public void changeCurrentGraphToPrevious() {
     logger.info("Changing the displayed graph model...");
-    ISession currentSession = currentSessionHolder
-        .getCurrentSession();
+    ISession currentSession = currentSessionHolder.getCurrentSession();
     currentSession.changeCurrentGraphToPrev();
     updateStepProperties();
   }
 
   public void changeCurrentGraphToFirst() {
     logger.info("Changing the displayed graph model...");
-    ISession currentSession = currentSessionHolder
-        .getCurrentSession();
+    ISession currentSession = currentSessionHolder.getCurrentSession();
     currentSession.changeCurrentGraphToFirst();
     updateStepProperties();
   }
 
   public void changeCurrentGraphToLast() {
     logger.info("Changing the displayed graph model...");
-    ISession currentSession = currentSessionHolder
-        .getCurrentSession();
+    ISession currentSession = currentSessionHolder.getCurrentSession();
     currentSession.changeCurrentGraphToLast();
     updateStepProperties();
   }
@@ -102,8 +98,7 @@ public class SessionViewModel implements Observer {
   }
 
   public void updateStepProperties() {
-    ISession currentSession = currentSessionHolder
-        .getCurrentSession();
+    ISession currentSession = currentSessionHolder.getCurrentSession();
 
     Platform.runLater(() -> {
       if (currentSession != null) {

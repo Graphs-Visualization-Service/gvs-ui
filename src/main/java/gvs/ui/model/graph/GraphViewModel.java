@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.business.model.graph.CurrentGraphHolder;
+import gvs.business.model.graph.GraphHolder;
 import gvs.business.model.graph.Graph;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
@@ -41,7 +41,7 @@ public class GraphViewModel extends Observable implements Observer {
       .getLogger(GraphViewModel.class);
 
   @Inject
-  public GraphViewModel(CurrentGraphHolder currentGraphHolder,
+  public GraphViewModel(GraphHolder currentGraphHolder,
       SessionViewModel sessionViewModel) {
     logger.info("Initializing GraphViewModel.");
     this.sessionViewModel = sessionViewModel;
@@ -59,7 +59,7 @@ public class GraphViewModel extends Observable implements Observer {
     //Hand updates over to JavaFX Thread
     Platform.runLater(()-> {
       logger.info("Current graph changed...");
-    CurrentGraphHolder currentGraphHolder = (CurrentGraphHolder) o;
+    GraphHolder currentGraphHolder = (GraphHolder) o;
     // don't start drawing process, if graphPane hasn'r already been set by
     // SessionView
     if (graphPane != null) {

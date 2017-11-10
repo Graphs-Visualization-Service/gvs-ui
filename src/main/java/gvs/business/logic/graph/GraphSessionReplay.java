@@ -23,7 +23,7 @@ public class GraphSessionReplay extends TimerTask {
   private int sessionCounter = 0;
 
   private final List<Graph> graphs;
-  private final GraphSessionController sessionController;
+  private final Session sessionController;
   private final Action finishedCallback;
 
   private static final Logger logger = LoggerFactory
@@ -38,7 +38,7 @@ public class GraphSessionReplay extends TimerTask {
    *          sessionControlelr
    */
   @Inject
-  public GraphSessionReplay(@Assisted GraphSessionController sessionController,
+  public GraphSessionReplay(@Assisted Session sessionController,
       @Assisted List<Graph> graphs, @Assisted Action callback) {
     this.graphs = graphs;
     this.sessionController = sessionController;

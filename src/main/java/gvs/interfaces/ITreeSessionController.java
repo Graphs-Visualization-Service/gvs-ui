@@ -2,7 +2,7 @@ package gvs.interfaces;
 
 import gvs.business.model.tree.Tree;
 
-public interface ITreeSessionController extends ISessionController {
+public interface ITreeSessionController extends ISession {
 
   void addTreeModel(Tree pTreeModel);
 

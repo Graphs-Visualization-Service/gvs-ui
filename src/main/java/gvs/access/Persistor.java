@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.business.logic.graph.GraphSessionController;
-import gvs.business.logic.graph.GraphSessionControllerFactory;
+import gvs.business.logic.graph.Session;
+import gvs.business.logic.graph.GraphSessionFactory;
 import gvs.business.logic.tree.TreeSessionController;
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
@@ -42,7 +42,7 @@ import gvs.business.model.tree.Tree;
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.INode;
-import gvs.interfaces.ISessionController;
+import gvs.interfaces.ISession;
 import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome.Glyph;
 
@@ -93,17 +93,17 @@ public class Persistor {
   private static final String LEFTCHILD = "Leftchild";
 
   private Configuration configuration;
-  private final GraphSessionControllerFactory graphSessionFactory;
+  private final GraphSessionFactory graphSessionFactory;
 
   private static final Logger logger = LoggerFactory.getLogger(Persistor.class);
 
   @Inject
-  public Persistor(GraphSessionControllerFactory graphSessionFactory) {
+  public Persistor(GraphSessionFactory graphSessionFactory) {
     this.graphSessionFactory = graphSessionFactory;
     configuration = Configuration.getInstance();
   }
 
-  public synchronized void saveToDisk(GraphSessionController session, File file) {
+  public synchronized void saveToDisk(Session session, File file) {
     Document document = DocumentHelper.createDocument();
     Element docRoot = document.addElement(ROOT);
     this.saveGraphSession(docRoot, session);
@@ -117,12 +117,12 @@ public class Persistor {
     this.writeToDisk(document, session, file);
   }
 
-  public ISessionController loadFile(String pPath) {
+  public ISession loadFile(String pPath) {
     logger.info("Load file: " + pPath);
     File input = new File(pPath);
     Document documentToRead = null;
     SAXReader reader = new SAXReader();
-    ISessionController sessionController = null;
+    ISession sessionController = null;
     try {
       documentToRead = reader.read(input);
     } catch (DocumentException e) {
@@ -147,7 +147,7 @@ public class Persistor {
 
   // ************************************SAVER AND
   // LOADER*************************
-  private void writeToDisk(Document pDocument, ISessionController pSession,
+  private void writeToDisk(Document pDocument, ISession pSession,
       File output) {
     try {
       OutputFormat format = OutputFormat.createPrettyPrint();
@@ -165,7 +165,7 @@ public class Persistor {
   }
 
   private void addIdAndLabel(Element sessionElement,
-      ISessionController sessionController) {
+      ISession sessionController) {
     sessionElement.addAttribute(ATTRIBUTEID,
         String.valueOf(sessionController.getSessionId()));
     Element sessionNameElement = sessionElement.addElement(LABEL);
@@ -173,7 +173,7 @@ public class Persistor {
   }
 
   private void saveGraphSession(Element element,
-      GraphSessionController sessionController) {
+      Session sessionController) {
     Element sessionElement = element.addElement(GRAPH);
     addIdAndLabel(sessionElement, sessionController);
     sessionController.getGraphs()
@@ -375,7 +375,7 @@ public class Persistor {
     }
   }
 
-  private GraphSessionController loadGraphSession(Element pGraphSession) {
+  private Session loadGraphSession(Element pGraphSession) {
     logger.info("Parsing Graph from XML.");
     Vector<Graph> graphs = new Vector<>();
     Element eSessionName = pGraphSession.element(LABEL);

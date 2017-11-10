@@ -11,5 +11,5 @@ import java.net.Socket;
  */
 public interface XmlReaderFactory {
 
-  XmlReader create(String fileName);
+  GvsXmlReader create(String fileName);
 }

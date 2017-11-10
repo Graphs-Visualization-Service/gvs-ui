@@ -179,7 +179,7 @@ public class ModelBuilder {
     // }
 
     serverLogger.debug("Finish build graph from XML");
-    applicationController.addModel(newGraph, sessionId, graphLabel);
+    applicationController.addGraphToSession(newGraph, sessionId, graphLabel);
   }
 
   /**
@@ -256,7 +256,7 @@ public class ModelBuilder {
     serverLogger.debug("Finish build tree from XML");
     Tree tm = new Tree(treeLabel, Integer.parseInt(maxLabelLength), Color.WHITE,
         rootNode, nodes);
-    applicationController.addTreeModel(tm, treeId, treeLabel);
+    applicationController.addTreeToSession(tm, treeId, treeLabel);
   }
 
   /**

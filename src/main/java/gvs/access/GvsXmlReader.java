@@ -15,9 +15,11 @@ import com.google.inject.assistedinject.Assisted;
  * Reads input XML of a {@link XmlWriter} and passes the document to the
  * {@link ModelBuilder}.
  * 
+ * Uses the GVS specific xml schema for custom tags.
+ * 
  * @author Michi
  */
-public class XmlReader {
+public class GvsXmlReader {
 
   private final String fileName;
   private final SAXReader xmlReader;
@@ -27,10 +29,11 @@ public class XmlReader {
       + "xml/features/validation/schema";
   private static final String NO_NAMESPACE_SCHEMA_LOCATION = "http://apache.org"
       + "/xml/properties/schema/external-noNamespaceSchemaLocation";
-  private static final Logger logger = LoggerFactory.getLogger(XmlReader.class);
+  private static final Logger logger = LoggerFactory
+      .getLogger(GvsXmlReader.class);
 
   @Inject
-  public XmlReader(SAXReader reader, @Assisted String fileName) {
+  public GvsXmlReader(SAXReader reader, @Assisted String fileName) {
 
     this.xmlReader = reader;
     this.fileName = fileName;

@@ -11,7 +11,7 @@ import gvs.business.model.graph.Graph;
  * @author Michi
  *
  */
-public interface GraphSessionControllerFactory {
+public interface GraphSessionFactory {
 
   /**
    * Construct a graph session controller with dependencies, which are not
@@ -25,6 +25,6 @@ public interface GraphSessionControllerFactory {
    *          list of graphs
    * @return new instance
    */
-  GraphSessionController create(long sessionId, String sessionName,
+  Session create(long sessionId, String sessionName,
       List<Graph> graphs);
 }

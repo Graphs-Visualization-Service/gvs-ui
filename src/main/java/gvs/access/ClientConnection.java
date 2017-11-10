@@ -34,7 +34,7 @@ public class ClientConnection extends Thread {
   private final ConnectionMonitor monitor;
   private final ModelBuilder modelBuilder;
 
-  private final XmlReader xmlReader;
+  private final GvsXmlReader xmlReader;
 
   // protocol messages
   private static final String OK = "OK";

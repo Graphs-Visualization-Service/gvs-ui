@@ -59,17 +59,19 @@ public class EdgeViewModel {
     Node start = startVertex.getNode();
     Node end = endVertex.getNode();
 
-    Platform.runLater(() -> {
-      line.startXProperty().bind(start.layoutXProperty()
-          .add(start.getBoundsInParent().getWidth() / 2.0));
-      line.startYProperty().bind(start.layoutYProperty()
-          .add(start.getBoundsInParent().getHeight() / 2.0));
-      line.endXProperty().bind(
-          end.layoutXProperty().add(end.getBoundsInParent().getWidth() / 2.0));
-      line.endYProperty().bind(
-          end.layoutYProperty().add(end.getBoundsInParent().getHeight() / 2.0));
-    });
+    // hack that the line start and end is bound to the center instead to the
+    // top right
+    start.applyCss();
+    end.applyCss();
 
+    line.startXProperty()
+        .bind(start.layoutXProperty().add(start.prefWidth(-1) / 2.0));
+    line.startYProperty()
+        .bind(start.layoutYProperty().add(start.prefHeight(-1) / 2.0));
+    line.endXProperty()
+        .bind(end.layoutXProperty().add(end.prefWidth(-1) / 2.0));
+    line.endYProperty()
+        .bind(end.layoutYProperty().add(end.prefHeight(-1) / 2.0));
   }
 
   private void bindLabelCoordinates() {

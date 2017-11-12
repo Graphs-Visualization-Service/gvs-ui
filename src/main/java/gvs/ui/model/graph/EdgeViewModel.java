@@ -3,6 +3,7 @@ package gvs.ui.model.graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gvs.business.model.graph.NodeStyle;
 import gvs.interfaces.IEdge;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Line;
@@ -18,7 +19,6 @@ public class EdgeViewModel {
   private IEdge edge;
   private VertexViewModel startVertex;
   private VertexViewModel endVertex;
-  private NodeStyleViewModel style;
 
   private final Label label;
   private final Line line;
@@ -42,13 +42,21 @@ public class EdgeViewModel {
     this.edge = edge;
     this.startVertex = startVertex;
     this.endVertex = endVertex;
-    this.style = new NodeStyleViewModel(edge.getStyle());
     this.label = new Label();
     this.line = new Line();
 
     this.label.setText(edge.getLabel());
     bindLineCoordinates();
     bindLabelCoordinates();
+
+    setStyles();
+  }
+
+  private void setStyles() {
+    NodeStyle style = edge.getStyle();
+    line.getStyleClass().add("line-" + style.getLineColor().getColor());
+    line.getStyleClass().add(style.getLineStyle().getStyle() + "-"
+        + style.getLineThickness().getThickness());
   }
 
   private void bindLineCoordinates() {

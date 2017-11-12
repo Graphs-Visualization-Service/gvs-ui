@@ -56,8 +56,7 @@ public class VertexViewModel implements Observer {
     }
     node.setText(vertex.getLabel());
     node.setCursor(Cursor.HAND);
-    node.setBackground(new Background(
-        new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
+    setStyles();
 
     // bidirectional connection
     this.vertex = vertex;
@@ -65,6 +64,9 @@ public class VertexViewModel implements Observer {
     node.layoutXProperty().addListener(this::xProperyListener);
     node.layoutYProperty().addListener(this::yProperyListener);
     updateCoordinates();
+  }
+
+  private void setStyles() {
   }
 
   /**

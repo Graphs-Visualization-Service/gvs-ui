@@ -26,7 +26,6 @@ import gvs.business.logic.ApplicationController;
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
 import gvs.business.model.graph.Graph;
-import gvs.business.model.graph.IconVertex;
 import gvs.business.model.graph.NodeStyle;
 import gvs.business.model.tree.BinaryNode;
 import gvs.business.model.tree.DefaultNode;
@@ -363,7 +362,10 @@ public class ModelBuilder {
     if (eIcon != null) {
       icon = Glyph.valueOf(eIcon.getText());
     }
-    String fillcolor = eFillcolor.getText();
+    String fillcolor = null;
+    if (eFillcolor != null) {
+     fillcolor = eFillcolor.getText();
+    }
     NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness,
         fillcolor);
     logger.info("Finish building DefaultVertex");
@@ -401,7 +403,10 @@ public class ModelBuilder {
     if (eIcon != null) {
       icon = Glyph.valueOf(eIcon.getText());
     }
-    String fillcolor = eFillcolor.getText();
+    String fillcolor = null;
+    if (eFillcolor != null) {
+     fillcolor = eFillcolor.getText();
+    }
     logger.debug("Finish building RelativVertex");
     NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness,
         fillcolor);

@@ -34,7 +34,6 @@ import gvs.business.logic.tree.TreeSessionController;
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
 import gvs.business.model.graph.Graph;
-import gvs.business.model.graph.IconVertex;
 import gvs.business.model.graph.NodeStyle;
 import gvs.business.model.tree.BinaryNode;
 import gvs.business.model.tree.Tree;
@@ -211,11 +210,7 @@ public class Persistor {
 
     Element eVertizes = eGraphModel.addElement(VERTIZES);
     graph.getVertices().forEach(v -> {
-      if (v.getClass() == DefaultVertex.class) {
-        saveDefaultVertex((DefaultVertex) v, eVertizes);
-      } else if (v.getClass() == IconVertex.class) {
-        saveIconVertex((IconVertex) v, eVertizes);
-      }
+      saveDefaultVertex((DefaultVertex) v, eVertizes);
     });
     Element eEdges = eGraphModel.addElement(EDGES);
     graph.getEdges().forEach(e -> saveEdge(e, eEdges));
@@ -268,41 +263,6 @@ public class Persistor {
     eFillColor.addText(pVertex.getStyle().getFillColor().getColor());
     Element eXPos = eVertex.addElement(XPOS);
     eXPos.addText(String.valueOf(pVertex.getXPosition()));
-    Element eYPos = eVertex.addElement(YPOS);
-    eYPos.addText(String.valueOf(pVertex.getYPosition()));
-  }
-
-  private void saveIconVertex(IconVertex pVertex, Element pVertizes) {
-    String vertexName = null;
-
-    if (pVertex.isRelative()) {
-      vertexName = RELATIVVERTEX;
-    } else {
-      vertexName = DEFAULTVERTEX;
-    }
-    Element eVertex = pVertizes.addElement(vertexName);
-    eVertex.addAttribute(ATTRIBUTEID, String.valueOf(pVertex.getId()));
-
-    Element eLabel = eVertex.addElement(LABEL);
-    String vertexLabel = pVertex.getLabel();
-
-    eLabel.addText(vertexLabel);
-    Element eLineColor = eVertex.addElement(LINECOLOR);
-    eLineColor.addText(configuration.getColorName(pVertex.getLineColor()));
-
-    BasicStroke stroke = (BasicStroke) pVertex.getLineStroke();
-    Element eLineStyle = eVertex.addElement(LINESTYLE);
-    eLineStyle.addText(configuration.getLineStyleName(stroke.getDashArray()));
-    Element eLineThick = eVertex.addElement(LINETHICKNESS);
-    eLineThick.addText(
-        configuration.getLineThicknessName((int) stroke.getLineWidth()));
-
-    Element eIcon = eVertex.addElement(ICON);
-    eIcon.addText(pVertex.getIcon().name());
-
-    Element eXPos = eVertex.addElement(XPOS);
-    eXPos.addText(String.valueOf(pVertex.getXPosition()));
-
     Element eYPos = eVertex.addElement(YPOS);
     eYPos.addText(String.valueOf(pVertex.getYPosition()));
   }

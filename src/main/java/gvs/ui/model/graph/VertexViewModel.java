@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.business.model.graph.DefaultVertex;
-import gvs.business.model.graph.IconVertex;
 import gvs.business.model.graph.NodeStyle;
 import gvs.interfaces.IVertex;
 import gvs.util.Dimension;
@@ -52,7 +51,7 @@ public class VertexViewModel implements Observer {
    */
   public VertexViewModel(IVertex vertex) {
     this.node = new Label();
-    if (vertex instanceof IconVertex) {
+    if (vertex.getIcon() != null) {
       logger.info("Creating VertexViewModel with an icon");
       node.setGraphic(FontAwesome.createLabel(vertex.getIcon()));
     }

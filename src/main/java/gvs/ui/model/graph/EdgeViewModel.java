@@ -4,12 +4,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.interfaces.IEdge;
+import gvs.util.Dimension;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
@@ -56,20 +62,33 @@ public class EdgeViewModel {
   }
 
   private void bindLineCoordinates() {
-    Node start = startVertex.getNode();
-    Node end = endVertex.getNode();
+    Label start = startVertex.getNode();
+    Label end = endVertex.getNode();
 
-    Platform.runLater(() -> {
-      line.startXProperty().bind(start.layoutXProperty()
-          .add(start.getBoundsInParent().getWidth() / 2.0));
-      line.startYProperty().bind(start.layoutYProperty()
-          .add(start.getBoundsInParent().getHeight() / 2.0));
-      line.endXProperty().bind(
-          end.layoutXProperty().add(end.getBoundsInParent().getWidth() / 2.0));
-      line.endYProperty().bind(
-          end.layoutYProperty().add(end.getBoundsInParent().getHeight() / 2.0));
-    });
+    Dimension startDim = reportSize(start.getText(), start.getFont());
+    Dimension endDim = reportSize(end.getText(), end.getFont());
 
+    line.startXProperty().bind(start.layoutXProperty()
+        .add(startDim.getWidth() / 2.0));
+    line.startYProperty().bind(start.layoutYProperty()
+        .add(startDim.getHeight() / 2.0));
+    line.endXProperty().bind(
+        end.layoutXProperty().add(endDim.getWidth() / 2.0));
+    line.endYProperty().bind(
+        end.layoutYProperty().add(endDim.getHeight() / 2.0));
+  }
+
+  public Dimension reportSize(String s, Font myFont) {
+    Text text = new Text(s);
+    text.setFont(myFont);
+    Bounds tb = text.getBoundsInLocal();
+    Rectangle stencil = new Rectangle(tb.getMinX(), tb.getMinY(), tb.getWidth(),
+        tb.getHeight());
+
+    Shape intersection = Shape.intersect(text, stencil);
+
+    Bounds ib = intersection.getBoundsInLocal();
+    return new Dimension(ib.getWidth(), ib.getHeight());
   }
 
   private void bindLabelCoordinates() {

@@ -60,7 +60,7 @@ public class GraphViewModel extends Observable implements Observer {
     Platform.runLater(()-> {
       logger.info("Current graph changed...");
     GraphHolder currentGraphHolder = (GraphHolder) o;
-    // don't start drawing process, if graphPane hasn'r already been set by
+    // don't start drawing process, if graphPane hasn't already been set by
     // SessionView
     if (graphPane != null) {
       draw(currentGraphHolder.getCurrentGraph());

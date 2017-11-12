@@ -4,19 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.interfaces.IEdge;
-import gvs.util.Dimension;
-import gvs.util.StringSizeCalculator;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
@@ -63,22 +52,10 @@ public class EdgeViewModel {
   }
 
   private void bindLineCoordinates() {
-    Label start = startVertex.getNode();
-    Label end = endVertex.getNode();
-
-    Dimension startDim = StringSizeCalculator.calculate(start.getText(),
-        start.getFont());
-    Dimension endDim = StringSizeCalculator.calculate(end.getText(),
-        end.getFont());
-
-    line.startXProperty()
-        .bind(start.layoutXProperty().add(startDim.getWidth() / 2.0));
-    line.startYProperty()
-        .bind(start.layoutYProperty().add(startDim.getHeight() / 2.0));
-    line.endXProperty()
-        .bind(end.layoutXProperty().add(endDim.getWidth() / 2.0));
-    line.endYProperty()
-        .bind(end.layoutYProperty().add(endDim.getHeight() / 2.0));
+    line.startXProperty().bind(startVertex.centerXProperty());
+    line.startYProperty().bind(startVertex.centerYProperty());
+    line.endXProperty().bind(endVertex.centerXProperty());
+    line.endYProperty().bind(endVertex.centerYProperty());
   }
 
   private void bindLabelCoordinates() {

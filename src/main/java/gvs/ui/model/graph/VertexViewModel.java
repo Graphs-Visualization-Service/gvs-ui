@@ -128,12 +128,16 @@ public class VertexViewModel implements Observer {
   }
 
   private void updateCoordinates() {
-//    node.setLayoutX(vertex.getXPosition());
-//    node.setLayoutY(vertex.getYPosition());
+    updateCoordinates(vertex.getXPosition(), vertex.getYPosition());
+  }
+  
+  private void updateCoordinates(double x, double y) {
     Dimension dim = StringSizeCalculator.calculate(node.getText(),
         node.getFont());
-    node.setLayoutX(vertex.getXPosition() - (dim.getWidth() / 2));
-    node.setLayoutY(vertex.getYPosition()-(dim.getHeight()/2));
+    node.setLayoutX(x - (dim.getWidth() / 2));
+    node.setLayoutY(y - (dim.getHeight() / 2));
+    centerXPropery.set(x);
+    centerYPropery.set(y);
   }
 
   public void draw(ScalableContentPane p) {
@@ -160,14 +164,15 @@ public class VertexViewModel implements Observer {
       double offsetY = (e.getSceneY() - dragOriginalSceneY)
           / p.getContentScaleTransform().getY();
 
-      double newX = l.getLayoutX() + offsetX;
-      double newY = l.getLayoutY() + offsetY;
+      double newX = centerXPropery.get() + offsetX;
+      double newY = centerYPropery.get() + offsetY;
 
       newX = checkXBoundaries(l, newX, p);
       newY = checkYBoundaries(l, newY, p);
 
-      l.setLayoutX(newX);
-      l.setLayoutY(newY);
+      updateCoordinates(newX, newY);
+//      l.setLayoutX(newX);
+//      l.setLayoutY(newY);
 
       dragOriginalSceneX = e.getSceneX();
       dragOriginalSceneY = e.getSceneY();
@@ -176,7 +181,7 @@ public class VertexViewModel implements Observer {
 
   private double checkXBoundaries(Label node, double newX,
       ScalableContentPane p) {
-    double minimum = 0;
+    double minimum = node.getWidth()/2;
     double maximumX = p.getBoundsInLocal().getWidth();
 
     if (newX < minimum) {
@@ -190,7 +195,7 @@ public class VertexViewModel implements Observer {
 
   private double checkYBoundaries(Label node, double newY,
       ScalableContentPane p) {
-    double minimum = 0;
+    double minimum = node.getHeight()/2;
     double maximumY = p.getBoundsInLocal().getHeight();
 
     if (newY < minimum) {
@@ -204,6 +209,14 @@ public class VertexViewModel implements Observer {
 
   public Label getNode() {
     return node;
+  }
+
+  public DoubleProperty centerXProperty() {
+    return centerXPropery;
+  }
+
+  public DoubleProperty centerYProperty() {
+    return centerYPropery;
   }
 
 }

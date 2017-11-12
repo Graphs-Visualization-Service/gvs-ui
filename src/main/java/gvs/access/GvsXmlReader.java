@@ -3,27 +3,28 @@ package gvs.access;
 import java.io.File;
 import java.net.URL;
 
+import javax.sql.rowset.spi.XmlWriter;
+
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import com.google.inject.assistedinject.Assisted;
 
 /**
- * Reads input XML of a {@link InputXmlWriter} and passes the document to the
+ * Reads input XML of a {@link XmlWriter} and passes the document to the
  * {@link ModelBuilder}.
+ * 
+ * Uses the GVS specific xml schema for custom tags.
  * 
  * @author Michi
  */
-@Singleton
-public class InputXmlReader {
+public class GvsXmlReader {
 
-  private SAXReader xmlReader;
-  private ModelBuilder modelBuilder;
-
-  private static final String DEFAULT_FILE_NAME = "input.xml";
+  private final String fileName;
+  private final SAXReader xmlReader;
 
   private static final String SCHEMA = "gvs.xsd";
   private static final String VALIDATION_SCHEMA = "http://apache.org/"
@@ -31,20 +32,21 @@ public class InputXmlReader {
   private static final String NO_NAMESPACE_SCHEMA_LOCATION = "http://apache.org"
       + "/xml/properties/schema/external-noNamespaceSchemaLocation";
   private static final Logger logger = LoggerFactory
-      .getLogger(InputXmlReader.class);
+      .getLogger(GvsXmlReader.class);
 
   @Inject
-  public InputXmlReader(SAXReader reader, ModelBuilder modelBuilder) {
-    this.xmlReader = reader;
-    this.modelBuilder = modelBuilder;
+  public GvsXmlReader(SAXReader reader, @Assisted String fileName) {
 
-    setupXMLReader();
+    this.xmlReader = reader;
+    this.fileName = fileName;
+
+    applySchema();
   }
 
   /**
-   * Apply the custom XML scheme from classpath to the {@link SAXReader}.
+   * Apply the custom XML schema from classpath to the {@link SAXReader}.
    */
-  private void setupXMLReader() {
+  private void applySchema() {
     URL schemaURL = getClass().getClassLoader().getResource(SCHEMA);
     try {
       String schemaString = schemaURL.toURI().toString();
@@ -59,14 +61,15 @@ public class InputXmlReader {
   /**
    * Read the input file and pass the XML document to the {@link ModelBuilder}.
    * 
+   * @return parsed document
    */
-  public synchronized void read() {
-    File inputFile = new File(DEFAULT_FILE_NAME);
+  public Document read() {
+    File inputFile = new File(fileName);
     try {
-      Document document = xmlReader.read(inputFile);
-      modelBuilder.buildModelFromXML(document);
+      return xmlReader.read(inputFile);
     } catch (Exception e) {
       logger.error("Cannot read file {}", inputFile.getName(), e);
+      return null;
     }
   }
 }

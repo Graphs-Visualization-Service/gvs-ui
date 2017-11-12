@@ -8,7 +8,6 @@ package gvs.access;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Image;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,6 +35,7 @@ import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.INode;
 import gvs.interfaces.IVertex;
+import gvs.util.FontAwesome.Glyph;
 
 /**
  * This class builds the model which is required for the visualization. The
@@ -178,7 +178,7 @@ public class ModelBuilder {
     // }
 
     serverLogger.debug("Finish build graph from XML");
-    applicationController.addModel(newGraph, sessionId, graphLabel);
+    applicationController.addGraphToSession(newGraph, sessionId, graphLabel);
   }
 
   /**
@@ -255,7 +255,7 @@ public class ModelBuilder {
     serverLogger.debug("Finish build tree from XML");
     Tree tm = new Tree(treeLabel, Integer.parseInt(maxLabelLength), Color.WHITE,
         rootNode, nodes);
-    applicationController.addTreeModel(tm, treeId, treeLabel);
+    applicationController.addTreeToSession(tm, treeId, treeLabel);
   }
 
   /**
@@ -363,8 +363,7 @@ public class ModelBuilder {
     BasicStroke lineStroke = typs.getLineObject(linestyle, linethickness);
 
     if (eIcon != null) {
-      String icon = eIcon.getText();
-      Image theIcon = typs.getIcon(icon);
+      Glyph theIcon = Glyph.valueOf(eIcon.getText());
       serverLogger.debug("Finihs build DefaultVertex XML with icon");
       return new IconVertex(vertexId, label, lineColor, lineStroke, theIcon);
     } else if (eFillcolor != null) {
@@ -408,8 +407,7 @@ public class ModelBuilder {
     double yPos = Double.parseDouble(eYPos.getText());
 
     if (eIcon != null) {
-      String icon = eIcon.getText();
-      Image theIcon = typs.getIcon(icon);
+      Glyph theIcon = Glyph.valueOf(eIcon.getText());
       serverLogger.debug("Finish build RelativVertex XML with Icon");
       return new IconVertex(vertexId, label, lineColor, lineStroke, theIcon,
           xPos, yPos);

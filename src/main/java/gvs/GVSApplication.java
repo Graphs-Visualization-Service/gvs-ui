@@ -25,10 +25,11 @@ import javafx.stage.Stage;
  * @author mtrentin
  */
 @Singleton
-public class GVSLauncher extends Application {
+public class GVSApplication extends Application {
 
   @Inject
   private SocketServer socketServer;
+
   @Inject
   private FXMLLoader fxmlLoader;
 
@@ -39,7 +40,7 @@ public class GVSLauncher extends Application {
       () -> Arrays.asList(new GuiceBaseModule()));
 
   private static final Logger logger = LoggerFactory
-      .getLogger(GVSLauncher.class);
+      .getLogger(GVSApplication.class);
 
   private static final String APP_NAME = "GVS";
   private static final int MIN_WIDTH = 800;
@@ -52,17 +53,18 @@ public class GVSLauncher extends Application {
    *          console arguments
    */
   public static void main(String[] args) {
-    Application.launch(GVSLauncher.class);
+    Application.launch(GVSApplication.class);
   }
 
   /**
    * Launch the socket server in a separate thread. <br>
    * Launch the JavaFX application within UI thread.
    */
-
   @Override
   public void start(Stage primaryStage) throws Exception {
+    logger.info("Initialize Guice injector");
     context.init();
+
     logger.info("Start Server Socket...");
     socketServer.start();
 

@@ -4,7 +4,7 @@ import java.io.File;
 
 import gvs.business.model.graph.Graph;
 
-public interface ISessionController {
+public interface ISession {
 
   String getSessionName();
 
@@ -27,7 +27,7 @@ public interface ISessionController {
   void autoLayout();
 
   void saveSession(File file);
-  
+
   void changeCurrentGraphToNext();
 
   void changeCurrentGraphToFirst();
@@ -37,7 +37,6 @@ public interface ISessionController {
   void changeCurrentGraphToLast();
 
   int getTotalGraphCount();
-  
-  Graph getCurrentGraph();
 
+  Graph getCurrentGraph();
 }

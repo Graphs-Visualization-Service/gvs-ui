@@ -3,6 +3,9 @@ package gvs.business.logic.physics.ticker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
 /**
  * Ticker for the layouting area
  * 
@@ -17,14 +20,15 @@ public class AreaTicker extends Thread {
   private HitsPerSecond hitsPerSecond;
   private Tickable callbackTickable;
 
-  private boolean stop;
+  private volatile boolean stop;
 
   private static final String THREAD_NAME = "Area Ticker Thread";
 
   private static final Logger logger = LoggerFactory
       .getLogger(AreaTicker.class);
 
-  public AreaTicker(Tickable tickable, double desiredRate) {
+  @Inject
+  public AreaTicker(@Assisted Tickable tickable, @Assisted double desiredRate) {
     super(THREAD_NAME);
 
     double maxRate = Math.max(5.0, desiredRate);
@@ -41,7 +45,7 @@ public class AreaTicker extends Thread {
   /**
    * Stop this ticker thread.
    */
-  public synchronized void terminate() {
+  public void terminate() {
     stop = true;
   }
 

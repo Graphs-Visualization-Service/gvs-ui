@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.business.model.CurrentSessionHolder;
-import gvs.interfaces.ISessionController;
+import gvs.business.model.SessionHolder;
+import gvs.interfaces.ISession;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -30,7 +30,7 @@ public class SessionViewModel implements Observer {
 
   private boolean isReplaying;
 
-  private final CurrentSessionHolder currentSessionHolder;
+  private final SessionHolder currentSessionHolder;
 
   private final BooleanProperty replayBtnDisableProperty = new SimpleBooleanProperty();
   private final BooleanProperty lastBtnDisableProperty = new SimpleBooleanProperty();
@@ -46,8 +46,7 @@ public class SessionViewModel implements Observer {
       .getLogger(SessionViewModel.class);
 
   @Inject
-  public SessionViewModel(CurrentSessionHolder currentSessionHolder) {
-
+  public SessionViewModel(SessionHolder currentSessionHolder) {
     logger.info("Initializing SessionViewModel.");
     this.currentSessionHolder = currentSessionHolder;
 
@@ -58,7 +57,7 @@ public class SessionViewModel implements Observer {
 
   public void changeCurrentGraphToNext() {
     logger.info("Changing the displayed graph model...");
-    ISessionController currentSession = currentSessionHolder
+    ISession currentSession = currentSessionHolder
         .getCurrentSession();
     currentSession.changeCurrentGraphToNext();
     updateStepProperties();
@@ -66,7 +65,7 @@ public class SessionViewModel implements Observer {
 
   public void changeCurrentGraphToPrevious() {
     logger.info("Changing the displayed graph model...");
-    ISessionController currentSession = currentSessionHolder
+    ISession currentSession = currentSessionHolder
         .getCurrentSession();
     currentSession.changeCurrentGraphToPrev();
     updateStepProperties();
@@ -74,7 +73,7 @@ public class SessionViewModel implements Observer {
 
   public void changeCurrentGraphToFirst() {
     logger.info("Changing the displayed graph model...");
-    ISessionController currentSession = currentSessionHolder
+    ISession currentSession = currentSessionHolder
         .getCurrentSession();
     currentSession.changeCurrentGraphToFirst();
     updateStepProperties();
@@ -82,7 +81,7 @@ public class SessionViewModel implements Observer {
 
   public void changeCurrentGraphToLast() {
     logger.info("Changing the displayed graph model...");
-    ISessionController currentSession = currentSessionHolder
+    ISession currentSession = currentSessionHolder
         .getCurrentSession();
     currentSession.changeCurrentGraphToLast();
     updateStepProperties();
@@ -90,19 +89,19 @@ public class SessionViewModel implements Observer {
 
   /**
    * This method is invoked whenever a new current session is set in the
-   * {@link CurrentSessionHolder}.
+   * {@link SessionHolder}.
    */
   @Override
   public void update(Observable o, Object arg) {
-    logger.info("Current session changed...");
-
+    // Hand updates over to JavaFX Thread
     Platform.runLater(() -> {
+      logger.info("Current session changed...");
       updateStepProperties();
     });
   }
 
   public void updateStepProperties() {
-    ISessionController currentSession = currentSessionHolder
+    ISession currentSession = currentSessionHolder
         .getCurrentSession();
 
     Platform.runLater(() -> {
@@ -148,7 +147,6 @@ public class SessionViewModel implements Observer {
     disableAllButtons(true);
     currentSessionHolder.getCurrentSession().autoLayout();
 
-    // TODO view should somehow be notified by business if layout has finished
     disableAllButtons(false);
   }
 

@@ -26,6 +26,6 @@ public interface GraphSessionReplayFactory {
    *          callback which is executed after replay has finished
    * @return new instance
    */
-  GraphSessionReplay create(GraphSessionController graphSessionController,
+  GraphSessionReplay create(Session graphSessionController,
       List<Graph> graphs, Action callback);
 }

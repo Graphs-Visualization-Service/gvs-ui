@@ -17,8 +17,8 @@ import gvs.access.Persistor;
 import gvs.business.logic.ApplicationController;
 import gvs.business.logic.LayoutController;
 import gvs.business.logic.LayoutMonitor;
-import gvs.business.model.graph.CurrentGraphHolder;
 import gvs.business.model.graph.Graph;
+import gvs.business.model.graph.GraphHolder;
 import gvs.interfaces.Action;
 import gvs.interfaces.IGraphSessionController;
 
@@ -29,7 +29,7 @@ import gvs.interfaces.IGraphSessionController;
  * @author aegli
  *
  */
-public class GraphSessionController implements IGraphSessionController {
+public class Session implements IGraphSessionController {
 
   private boolean isRelativeSession = false;
 
@@ -38,26 +38,27 @@ public class GraphSessionController implements IGraphSessionController {
   private List<Graph> graphs;
 
   private final GraphSessionReplayFactory sessionReplayFactory;
-  private final CurrentGraphHolder graphHolder;
+  private final GraphHolder graphHolder;
   private final LayoutController layoutController;
   private final ApplicationController applicationController;
   private final Persistor persistor;
+  private final LayoutMonitor layoutMonitor;
 
-  private static final Logger logger = LoggerFactory
-      .getLogger(GraphSessionController.class);
+  private static final Logger logger = LoggerFactory.getLogger(Session.class);
 
   @Inject
-  public GraphSessionController(ApplicationController appController,
-      CurrentGraphHolder graphHolder, Persistor persistor,
-      LayoutController layoutController,
-      GraphSessionReplayFactory replayFactory, @Assisted long pSessionId,
-      @Assisted String pSessionName, @Assisted @Nullable List<Graph> graphs) {
-
+  public Session(ApplicationController appController, GraphHolder graphHolder,
+      Persistor persistor, LayoutController layoutController,
+      LayoutMonitor layoutMonitor, GraphSessionReplayFactory replayFactory,
+      @Assisted long pSessionId, @Assisted String pSessionName,
+      @Assisted @Nullable List<Graph> graphs) {
+    logger.info("Instantiating new graph session.");
     this.sessionReplayFactory = replayFactory;
     this.graphHolder = graphHolder;
     this.applicationController = appController;
     this.persistor = persistor;
     this.layoutController = layoutController;
+    this.layoutMonitor = layoutMonitor;
 
     this.graphs = graphs;
     this.sessionId = pSessionId;
@@ -144,7 +145,7 @@ public class GraphSessionController implements IGraphSessionController {
    * Displays requested model.
    */
   public void replay(long timeout, Action finishedCallback) {
-    logger.info("Replay current session");
+    logger.info("Replaying current session");
     Timer timer = new Timer();
     GraphSessionReplay sessionReplay = sessionReplayFactory.create(this, graphs,
         finishedCallback);
@@ -187,6 +188,8 @@ public class GraphSessionController implements IGraphSessionController {
     logger.debug("Check if graph can be layouted");
     if (!isRelativeSession) {
       Graph currentGraph = graphHolder.getCurrentGraph();
+      // TODO: logger statement makes no sense -> either remove it or add guard
+      // to test, if it's the last element
       logger.debug("Graph is last element in Queue, call Layouter");
       currentGraph.getVertices().forEach(v -> {
         v.setFixedPosition(false);
@@ -278,7 +281,7 @@ public class GraphSessionController implements IGraphSessionController {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    GraphSessionController other = (GraphSessionController) obj;
+    Session other = (Session) obj;
     if (sessionId != other.sessionId) {
       return false;
     }
@@ -287,17 +290,17 @@ public class GraphSessionController implements IGraphSessionController {
 
   public void layout() {
     try {
-      LayoutMonitor.getInstance().lock();
+      layoutMonitor.lock();
       logger.info("Got layout monitor");
 
       Graph currentGraph = graphHolder.getCurrentGraph();
-      layoutController.layoutGraph(currentGraph,
-          applicationController.isSoftLayout());
+      // TODO isSoftLayout is always false -> check usage
+      layoutController.layoutGraph(currentGraph, false);
 
     } catch (InterruptedException e) {
       logger.warn("Unable to get layout monitor", e);
     } finally {
-      LayoutMonitor.getInstance().unlock();
+      layoutMonitor.unlock();
     }
   }
 

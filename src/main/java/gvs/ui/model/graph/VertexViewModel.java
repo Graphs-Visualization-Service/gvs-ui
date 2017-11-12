@@ -7,12 +7,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.business.model.graph.DefaultVertex;
+import gvs.business.model.graph.IconVertex;
 import gvs.interfaces.IVertex;
+import gvs.util.Dimension;
+import gvs.util.FontAwesome;
+import gvs.util.StringSizeCalculator;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
+import javafx.scene.Cursor;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
+import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
  * Contains JavaFX Properties which are used for bidirectional bindings.
@@ -20,11 +31,13 @@ import javafx.beans.value.ObservableValue;
  * @author Michi
  */
 public class VertexViewModel implements Observer {
+  private double dragOriginalSceneX;
+  private double dragOriginalSceneY;
 
   private final IVertex vertex;
-  private final DoubleProperty xProperty;
-  private final DoubleProperty yProperty;
-  private final StringProperty labelProperty;
+  private final Label node;
+  private final DoubleProperty centerXPropery = new SimpleDoubleProperty();
+  private final DoubleProperty centerYPropery = new SimpleDoubleProperty();
 
   private static final Logger logger = LoggerFactory
       .getLogger(VertexViewModel.class);
@@ -36,17 +49,22 @@ public class VertexViewModel implements Observer {
    *          JavaFX independent vertex representation
    */
   public VertexViewModel(IVertex vertex) {
-    this.xProperty = new SimpleDoubleProperty();
-    this.yProperty = new SimpleDoubleProperty();
-    this.labelProperty = new SimpleStringProperty(vertex.getLabel());
-
-    updatePropertyValues(vertex);
+    this.node = new Label();
+    if (vertex instanceof IconVertex) {
+      logger.info("Creating VertexViewModel with an icon");
+      node.setGraphic(FontAwesome.createLabel(vertex.getIcon()));
+    }
+    node.setText(vertex.getLabel());
+    node.setCursor(Cursor.HAND);
+    node.setBackground(new Background(
+        new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
 
     // bidirectional connection
     this.vertex = vertex;
     this.vertex.addObserver(this);
-    xProperty.addListener(this::xProperyListener);
-    yProperty.addListener(this::yProperyListener);
+    node.layoutXProperty().addListener(this::xProperyListener);
+    node.layoutYProperty().addListener(this::yProperyListener);
+    updateCoordinates();
   }
 
   /**
@@ -62,8 +80,10 @@ public class VertexViewModel implements Observer {
    */
   private void xProperyListener(ObservableValue<? extends Number> observable,
       Number oldValue, Number newValue) {
-    double newX = (double) newValue;
-    vertex.setXPosition(newX);
+    if (Math.abs((double) oldValue - (double) newValue) <= 0.000001) {
+      double newX = (double) newValue;
+      vertex.setXPosition(newX);
+    }
   }
 
   /**
@@ -79,8 +99,10 @@ public class VertexViewModel implements Observer {
    */
   private void yProperyListener(ObservableValue<? extends Number> observable,
       Number oldValue, Number newValue) {
-    double newY = (double) newValue;
-    vertex.setYPosition(newY);
+    if (Math.abs((double) oldValue - (double) newValue) <= 0.000001) {
+      double newY = (double) newValue;
+      vertex.setYPosition(newY);
+    }
   }
 
   /**
@@ -97,25 +119,104 @@ public class VertexViewModel implements Observer {
    */
   @Override
   public void update(Observable o, Object arg) {
-    IVertex updatedVertex = (IVertex) o;
-    updatePropertyValues(updatedVertex);
+    // Hand updates over to JavaFX Thread
+    Platform.runLater(() -> {
+      // logger level debug, because this will happen very often when layouting
+      logger.debug("Updating VertexViewModel coordinates");
+      updateCoordinates();
+    });
   }
 
-  private void updatePropertyValues(IVertex updatedBusinessVertex) {
-    this.xProperty.set(updatedBusinessVertex.getXPosition());
-    this.yProperty.set(updatedBusinessVertex.getYPosition());
+  private void updateCoordinates() {
+    updateCoordinates(vertex.getXPosition(), vertex.getYPosition());
+  }
+  
+  private void updateCoordinates(double x, double y) {
+    Dimension dim = StringSizeCalculator.calculate(node.getText(),
+        node.getFont());
+    node.setLayoutX(x - (dim.getWidth() / 2));
+    node.setLayoutY(y - (dim.getHeight() / 2));
+    centerXPropery.set(x);
+    centerYPropery.set(y);
   }
 
-  public DoubleProperty xProperty() {
-    return xProperty;
+  public void draw(ScalableContentPane p) {
+    logger.info("Drawing VertexViewModel.");
+    p.getContentPane().getChildren().add(node);
+    dragSupport(p);
   }
 
-  public DoubleProperty yProperty() {
-    return yProperty;
+  private void dragSupport(ScalableContentPane p) {
+    logger.info("Adding drag support on VertexViewModel.");
+    node.setOnMousePressed(e -> {
+      dragOriginalSceneX = e.getSceneX();
+      dragOriginalSceneY = e.getSceneY();
+    });
+
+    node.setOnMouseDragged(e -> {
+      // logger level debug, because this will happen very often
+      logger.debug("Mouse drag on VertexViewModel detected.");
+      Label l = (Label) (e.getSource());
+      l.setCursor(Cursor.HAND);
+
+      double offsetX = (e.getSceneX() - dragOriginalSceneX)
+          / p.getContentScaleTransform().getX();
+      double offsetY = (e.getSceneY() - dragOriginalSceneY)
+          / p.getContentScaleTransform().getY();
+
+      double newX = centerXPropery.get() + offsetX;
+      double newY = centerYPropery.get() + offsetY;
+
+      newX = checkXBoundaries(l, newX, p);
+      newY = checkYBoundaries(l, newY, p);
+
+      updateCoordinates(newX, newY);
+//      l.setLayoutX(newX);
+//      l.setLayoutY(newY);
+
+      dragOriginalSceneX = e.getSceneX();
+      dragOriginalSceneY = e.getSceneY();
+    });
   }
 
-  public StringProperty labelProperty() {
-    return labelProperty;
+  private double checkXBoundaries(Label node, double newX,
+      ScalableContentPane p) {
+    double minimum = node.getWidth()/2;
+    double maximumX = p.getBoundsInLocal().getWidth();
+
+    if (newX < minimum) {
+      newX = minimum;
+    }
+    if (newX > maximumX) {
+      newX = maximumX;
+    }
+    return newX;
+  }
+
+  private double checkYBoundaries(Label node, double newY,
+      ScalableContentPane p) {
+    double minimum = node.getHeight()/2;
+    double maximumY = p.getBoundsInLocal().getHeight();
+
+    if (newY < minimum) {
+      newY = minimum;
+    }
+    if (newY > maximumY) {
+      newY = maximumY;
+    }
+    return newY;
+  }
+
+  public Label getNode() {
+    return node;
+  }
+
+  public DoubleProperty centerXProperty() {
+    return centerXPropery;
+  }
+
+  public DoubleProperty centerYProperty() {
+    return centerYPropery;
   }
 
 }

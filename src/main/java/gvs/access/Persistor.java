@@ -8,7 +8,6 @@ package gvs.access;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Image;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,8 +28,8 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.business.logic.graph.GraphSessionController;
-import gvs.business.logic.graph.GraphSessionControllerFactory;
+import gvs.business.logic.graph.GraphSessionFactory;
+import gvs.business.logic.graph.Session;
 import gvs.business.logic.tree.TreeSessionController;
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
@@ -42,8 +41,9 @@ import gvs.business.model.tree.Tree;
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.INode;
-import gvs.interfaces.ISessionController;
+import gvs.interfaces.ISession;
 import gvs.interfaces.IVertex;
+import gvs.util.FontAwesome.Glyph;
 
 /**
  * This class loads and saves data. The color, line ... objects will be
@@ -92,36 +92,37 @@ public class Persistor {
   private static final String LEFTCHILD = "Leftchild";
 
   private Configuration configuration;
-  private final GraphSessionControllerFactory graphSessionFactory;
+  private final GraphSessionFactory graphSessionFactory;
 
   private static final Logger logger = LoggerFactory.getLogger(Persistor.class);
 
   @Inject
-  public Persistor(GraphSessionControllerFactory graphSessionFactory) {
+  public Persistor(GraphSessionFactory graphSessionFactory) {
     this.graphSessionFactory = graphSessionFactory;
     configuration = Configuration.getInstance();
   }
 
-  public synchronized void saveToDisk(GraphSessionController session, File file) {
+  public synchronized void saveToDisk(Session session, File file) {
     Document document = DocumentHelper.createDocument();
     Element docRoot = document.addElement(ROOT);
     this.saveGraphSession(docRoot, session);
     this.writeToDisk(document, session, file);
   }
 
-  public synchronized void saveToDisk(TreeSessionController session, File file) {
+  public synchronized void saveToDisk(TreeSessionController session,
+      File file) {
     Document document = DocumentHelper.createDocument();
     Element docRoot = document.addElement(ROOT);
     this.saveTreeSession(docRoot, session);
     this.writeToDisk(document, session, file);
   }
 
-  public ISessionController loadFile(String pPath) {
+  public ISession loadFile(String pPath) {
     logger.info("Load file: " + pPath);
     File input = new File(pPath);
     Document documentToRead = null;
     SAXReader reader = new SAXReader();
-    ISessionController sessionController = null;
+    ISession sessionController = null;
     try {
       documentToRead = reader.read(input);
     } catch (DocumentException e) {
@@ -146,8 +147,7 @@ public class Persistor {
 
   // ************************************SAVER AND
   // LOADER*************************
-  private void writeToDisk(Document pDocument, ISessionController pSession,
-      File output) {
+  private void writeToDisk(Document pDocument, ISession pSession, File output) {
     try {
       OutputFormat format = OutputFormat.createPrettyPrint();
 
@@ -164,15 +164,14 @@ public class Persistor {
   }
 
   private void addIdAndLabel(Element sessionElement,
-      ISessionController sessionController) {
+      ISession sessionController) {
     sessionElement.addAttribute(ATTRIBUTEID,
         String.valueOf(sessionController.getSessionId()));
     Element sessionNameElement = sessionElement.addElement(LABEL);
     sessionNameElement.addText(sessionController.getSessionName());
   }
 
-  private void saveGraphSession(Element element,
-      GraphSessionController sessionController) {
+  private void saveGraphSession(Element element, Session sessionController) {
     Element sessionElement = element.addElement(GRAPH);
     addIdAndLabel(sessionElement, sessionController);
     sessionController.getGraphs()
@@ -203,10 +202,9 @@ public class Persistor {
     // Color tempColor = graph.getBackgroundColor();
     // backgroundName = configuration.getColorName(tempColor);
     // }
-    // if (backgroundName == null || backgroundName == "") {
-    // backgroundName = STANDARD;
-    // }
-
+    if (backgroundName == null || backgroundName == "") {
+      backgroundName = STANDARD;
+    }
     eBackground.addText(backgroundName);
     Element eMaxLabelLength = eGraphModel.addElement(MAXLABELLENGTH);
     eMaxLabelLength.addText(String.valueOf(graph.getMaxLabelLength()));
@@ -304,7 +302,7 @@ public class Persistor {
         configuration.getLineThicknessName((int) stroke.getLineWidth()));
 
     Element eIcon = eVertex.addElement(ICON);
-    eIcon.addText(configuration.getIconName(pVertex.getIcon()));
+    eIcon.addText(pVertex.getIcon().name());
 
     Element eXPos = eVertex.addElement(XPOS);
     eXPos.addText(String.valueOf(pVertex.getXPosition()));
@@ -374,7 +372,8 @@ public class Persistor {
     }
   }
 
-  private GraphSessionController loadGraphSession(Element pGraphSession) {
+  private Session loadGraphSession(Element pGraphSession) {
+    logger.info("Parsing Graph from XML.");
     Vector<Graph> graphs = new Vector<>();
     Element eSessionName = pGraphSession.element(LABEL);
     String sessionName = eSessionName.getText();
@@ -432,6 +431,7 @@ public class Persistor {
   }
 
   private TreeSessionController loadTreeSession(Element pTreeSession) {
+    logger.info("Parsing Tree from XML.");
     Vector<Tree> treeModels = new Vector<Tree>();
     Element eSessionName = pTreeSession.element(LABEL);
     String sessionName = eSessionName.getText();
@@ -515,8 +515,7 @@ public class Persistor {
         linethickness);
 
     if (eIcon != null) {
-      String icon = eIcon.getText();
-      Image theIcon = configuration.getIcon(icon);
+      Glyph theIcon = Glyph.valueOf(eIcon.getText());
       return new IconVertex(vertexId, label, lineColor, lineStroke, theIcon,
           xpos, ypos);
     } else if (eFillcolor != null) {
@@ -551,8 +550,7 @@ public class Persistor {
     double yPos = Double.parseDouble(eYPos.getText());
 
     if (eIcon != null) {
-      String icon = eIcon.getText();
-      Image theIcon = configuration.getIcon(icon);
+      Glyph theIcon = Glyph.valueOf(eIcon.getText());
       return new IconVertex(vertexId, label, lineColor, lineStroke, theIcon,
           xPos, yPos);
     } else if (eFillcolor != null) {

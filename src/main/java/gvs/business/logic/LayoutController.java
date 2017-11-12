@@ -8,6 +8,7 @@ import java.util.Timer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.business.logic.physics.helpers.Area;
@@ -16,6 +17,7 @@ import gvs.business.logic.physics.helpers.AreaPoint;
 import gvs.business.logic.physics.helpers.Particle;
 import gvs.business.logic.physics.rules.Traction;
 import gvs.business.logic.physics.ticker.AreaTicker;
+import gvs.business.logic.physics.ticker.AreaTickerFactory;
 import gvs.business.logic.physics.ticker.Tickable;
 import gvs.business.model.graph.Graph;
 import gvs.interfaces.IEdge;
@@ -33,9 +35,11 @@ import gvs.interfaces.IVertex;
 @Singleton
 public class LayoutController implements Tickable {
 
-  private Area area;
-  private AreaTicker ticker;
-  private Random random;
+  private volatile AreaTicker currentTicker;
+
+  private final AreaTickerFactory tickerFactory;
+  private final Area area;
+  private final Random random;
 
   private static final int DEFAULT_MASS = 40;
   private static final int SOFT_MULTIPLIER = 10;
@@ -54,7 +58,10 @@ public class LayoutController implements Tickable {
   private static final Logger logger = LoggerFactory
       .getLogger(LayoutController.class);
 
-  public LayoutController() {
+  @Inject
+  public LayoutController(AreaTickerFactory tickerFactory) {
+
+    this.tickerFactory = tickerFactory;
     this.area = new Area(
         new AreaDimension(DEFAULT_AREA_WIDTH, DEFAULT_AREA_HEIGHT));
     this.random = new Random(DEFAULT_SEED);
@@ -66,8 +73,7 @@ public class LayoutController implements Tickable {
    * Initializes the guard, which protects the layouter from running endlessly.
    */
   private void initializeLayoutGuard() {
-    boolean isDaemon = false;
-    Timer guard = new Timer(isDaemon);
+    Timer guard = new Timer();
     LayoutGuard layoutGuard = new LayoutGuard(area);
     guard.schedule(layoutGuard, MAX_LAYOUT_DURATION_MS);
   }
@@ -80,7 +86,7 @@ public class LayoutController implements Tickable {
    * @param useSoftPoints
    *          use soft layout
    */
-  public synchronized void layoutGraph(Graph graph, boolean useSoftPoints) {
+  public void layoutGraph(Graph graph, boolean useSoftPoints) {
     logger.info("Received new data to layout");
     handleTickerThread();
 
@@ -107,19 +113,19 @@ public class LayoutController implements Tickable {
    * As soon as the area is stable, the ticker thread terminates.
    */
   private void handleTickerThread() {
-    if (ticker != null) {
+    if (currentTicker != null) {
       try {
         logger.debug("Wait for current AreaTicker thread to terminate.");
-        ticker.join();
+        currentTicker.join();
         logger.debug("AreaTicker thread successfully stopped.");
       } catch (InterruptedException e) {
         logger.error("Unable to join Area Ticker thread", e);
       }
     }
 
-    this.ticker = new AreaTicker(this, DEFAULT_TICK_RATE);
-    logger.debug("Starting thread: {}", ticker.getName());
-    ticker.start();
+    currentTicker = tickerFactory.create(this, DEFAULT_TICK_RATE);
+    logger.debug("Starting thread: {}", currentTicker.getName());
+    currentTicker.start();
     logger.debug("Background process successfully started.");
   }
 
@@ -127,12 +133,12 @@ public class LayoutController implements Tickable {
    * Check if particles in area are stable. If stable, stop ticking, otherwise
    * update positions and continue with the next iteration.
    */
-  public synchronized void tick() {
+  public void tick() {
     logger.info("Layout engine iteration completed.");
 
     if (area.isStable()) {
       logger.info("Layouting completed. Graph is stable. Stop layout engine.");
-      ticker.terminate();
+      currentTicker.terminate();
     } else {
       logger.info("Continue layouting...");
       area.updateAll();
@@ -232,4 +238,5 @@ public class LayoutController implements Tickable {
     fixedPoint.y = (int) ((double) vertex.getYPosition() * FIXED_MULTIPLIER);
     return fixedPoint;
   }
+
 }

@@ -140,9 +140,8 @@ public class Configuration {
     iconsReversal = new HashMap<Image, String>();
 
     // ******************GO!!!!!*********************
-    logger.info("Load configuration...");
-    SAXReader reader = new SAXReader();
     logger.info("Load config from classpath");
+    SAXReader reader = new SAXReader();
     InputStream config = Configuration.class.getClassLoader()
         .getResourceAsStream("config.xml");
 
@@ -772,5 +771,5 @@ public class Configuration {
       logger.warn("Load LayoutDelay failed. Set default: 1500ms");
     }
   }
- 
+
 }

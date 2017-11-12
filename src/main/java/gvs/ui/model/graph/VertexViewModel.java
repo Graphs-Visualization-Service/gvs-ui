@@ -8,8 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import gvs.business.model.graph.IconVertex;
 import gvs.interfaces.IVertex;
+import gvs.util.Dimension;
 import gvs.util.FontAwesome;
+import gvs.util.StringSizeCalculator;
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
@@ -32,6 +36,8 @@ public class VertexViewModel implements Observer {
 
   private final IVertex vertex;
   private final Label node;
+  private final DoubleProperty centerXPropery = new SimpleDoubleProperty();
+  private final DoubleProperty centerYPropery = new SimpleDoubleProperty();
 
   private static final Logger logger = LoggerFactory
       .getLogger(VertexViewModel.class);
@@ -74,8 +80,10 @@ public class VertexViewModel implements Observer {
    */
   private void xProperyListener(ObservableValue<? extends Number> observable,
       Number oldValue, Number newValue) {
-    double newX = (double) newValue;
-    vertex.setXPosition(newX);
+    if (Math.abs((double) oldValue - (double) newValue) <= 0.000001) {
+      double newX = (double) newValue;
+      vertex.setXPosition(newX);
+    }
   }
 
   /**
@@ -91,8 +99,10 @@ public class VertexViewModel implements Observer {
    */
   private void yProperyListener(ObservableValue<? extends Number> observable,
       Number oldValue, Number newValue) {
-    double newY = (double) newValue;
-    vertex.setYPosition(newY);
+    if (Math.abs((double) oldValue - (double) newValue) <= 0.000001) {
+      double newY = (double) newValue;
+      vertex.setYPosition(newY);
+    }
   }
 
   /**
@@ -118,8 +128,12 @@ public class VertexViewModel implements Observer {
   }
 
   private void updateCoordinates() {
-    node.setLayoutX(vertex.getXPosition());
-    node.setLayoutY(vertex.getYPosition());
+//    node.setLayoutX(vertex.getXPosition());
+//    node.setLayoutY(vertex.getYPosition());
+    Dimension dim = StringSizeCalculator.calculate(node.getText(),
+        node.getFont());
+    node.setLayoutX(vertex.getXPosition() - (dim.getWidth() / 2));
+    node.setLayoutY(vertex.getYPosition()-(dim.getHeight()/2));
   }
 
   public void draw(ScalableContentPane p) {

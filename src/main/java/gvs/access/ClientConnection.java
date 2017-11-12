@@ -78,15 +78,8 @@ public class ClientConnection extends Thread {
    */
   @Override
   public void run() {
-
     clearInputFile();
     processInputStream();
-
-    if (monitor.isReserved()) {
-      readAndTransformModel();
-    }
-
-    releaseService();
   }
 
   private void clearInputFile() {
@@ -103,44 +96,31 @@ public class ClientConnection extends Thread {
   private void processInputStream() {
     try (BufferedReader inputReader = new BufferedReader(
         new InputStreamReader(socketClient.getInputStream()))) {
-
-      String line = null;
+      String data = "";
+      String line;
       while ((line = inputReader.readLine()) != null) {
-
         int endCharIndex = line.indexOf(ProtocolCommand.DATA_END.toString());
-        if (endCharIndex != -1) {
-          String finalLine = line.substring(0, endCharIndex);
-          processLine(finalLine);
+        if (line.equals(ProtocolCommand.RESERVE_GVS.toString())) {
+          logger.info("Reserve command detected.");
+          reserveService();
+        } else if (line.equals(ProtocolCommand.RELEASE_GVS.toString())) {
+          logger.info("Release command detected.");
+          releaseService();
           break;
+        } else if (endCharIndex != -1) {
+          logger.info("End of data detected.");
+          data += line.substring(0, endCharIndex);
+          storeDataOnFilesystem(data);
+          data = "";
+          readAndTransformModel();
         } else {
-          processLine(line);
+          logger.info("Data detected");
+          data += line;
         }
       }
     } catch (IOException e) {
       logger.error("Unable to read incoming message of client {}",
           socketClient.getInetAddress(), e);
-    }
-  }
-
-  /**
-   * Case distinctions for the input
-   * 
-   * @param line
-   *          incoming line
-   * 
-   * @throws IOException
-   *           I/O error
-   */
-  private void processLine(String line) throws IOException {
-    if (line.equals(ProtocolCommand.RESERVE_GVS.toString())) {
-      logger.info("Reserve command detected.");
-      reserveService();
-    } else if (line.equals(ProtocolCommand.RELEASE_GVS.toString())) {
-      logger.info("Release command detected.");
-      releaseService();
-    } else {
-      logger.info("Data detected");
-      storeDataOnFilesystem(line);
     }
   }
 
@@ -197,10 +177,10 @@ public class ClientConnection extends Thread {
 
     Path path = Paths.get(DEFAULT_FILE_NAME);
     try (BufferedWriter writer = Files.newBufferedWriter(path,
-        StandardCharsets.UTF_8, StandardOpenOption.APPEND,
-        StandardOpenOption.CREATE)) {
+        StandardCharsets.UTF_8, StandardOpenOption.WRITE,
+        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
 
-      writer.append(line);
+      writer.write(line);
       writer.flush();
     }
   }
@@ -211,6 +191,11 @@ public class ClientConnection extends Thread {
   private void readAndTransformModel() {
     logger.info("Build model from parsed xml");
     Document document = xmlReader.read();
-    modelBuilder.buildModelFromXML(document);
+    if (document != null) {
+      modelBuilder.buildModelFromXML(document);
+    } else {
+      logger.warn("XmlReader could not read xml file.");
+    }
+
   }
 }

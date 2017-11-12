@@ -269,7 +269,7 @@ public class TreeSessionController extends Observable
   /**
    * NOT USED IN TREE SESSION
    */
-  public void layoutCurrentGraph() {
+  public void layoutCurrentGraph(Action c) {
   }
 
   /**

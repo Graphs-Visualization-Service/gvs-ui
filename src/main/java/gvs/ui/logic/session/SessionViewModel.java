@@ -93,6 +93,7 @@ public class SessionViewModel implements Observer {
     Platform.runLater(() -> {
       logger.info("Current session changed...");
       updateStepProperties();
+      disableAllButtons(false);
     });
   }
 
@@ -138,8 +139,11 @@ public class SessionViewModel implements Observer {
   public void autoLayout() {
     logger.info("Auto-layouting the current graph model...");
     disableAllButtons(true);
-    sessionHolder.getCurrentSession().layoutCurrentGraph();
+    sessionHolder.getCurrentSession()
+        .layoutCurrentGraph(this::finishAutolayout);
+  }
 
+  public void finishAutolayout() {
     disableAllButtons(false);
   }
 

@@ -10,9 +10,9 @@ public interface ISession {
 
   long getSessionId();
 
-  void replay(long timeout, Action c);
+  void replay(long timeout, Action completionCallback);
 
-  void layoutCurrentGraph();
+  void layoutCurrentGraph(Action completionCallback);
 
   void saveSession(File file);
 

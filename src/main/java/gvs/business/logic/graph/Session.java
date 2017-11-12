@@ -99,7 +99,7 @@ public class Session implements IGraphSessionController {
   }
 
   @Override
-  public void layoutCurrentGraph() {
+  public void layoutCurrentGraph(Action callback) {
     try {
       layoutMonitor.lock();
       logger.info("Got layout monitor");
@@ -110,7 +110,7 @@ public class Session implements IGraphSessionController {
       });
 
       // TODO isSoftLayout is always false -> check usage
-      layouter.layoutGraph(currentGraph, false);
+      layouter.layoutGraph(currentGraph, false, callback);
 
     } catch (InterruptedException e) {
       logger.warn("Unable to get layout monitor", e);

@@ -20,6 +20,7 @@ import gvs.business.logic.physics.ticker.AreaTicker;
 import gvs.business.logic.physics.ticker.AreaTickerFactory;
 import gvs.business.logic.physics.ticker.Tickable;
 import gvs.business.model.graph.Graph;
+import gvs.interfaces.Action;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
 
@@ -34,6 +35,8 @@ import gvs.interfaces.IVertex;
  */
 @Singleton
 public class Layouter implements Tickable {
+
+  private Action completionCallback;
 
   private volatile AreaTicker currentTicker;
 
@@ -85,10 +88,13 @@ public class Layouter implements Tickable {
    * @param useSoftPoints
    *          use soft layout
    */
-  public void layoutGraph(Graph graph, boolean useSoftPoints) {
+  public void layoutGraph(Graph graph, boolean useSoftPoints,
+      Action completionCallback) {
     logger.info("Received new data to layout");
 
     if (graph.doLayout()) {
+
+      this.completionCallback = completionCallback;
       handleTickerThread();
 
       resetArea();
@@ -141,6 +147,10 @@ public class Layouter implements Tickable {
     if (area.isStable()) {
       logger.info("Layouting completed. Graph is stable. Stop layout engine.");
       currentTicker.terminate();
+      
+      if (completionCallback != null) {
+        completionCallback.execute();
+      }
     } else {
       logger.info("Continue layouting...");
       area.updateAll();

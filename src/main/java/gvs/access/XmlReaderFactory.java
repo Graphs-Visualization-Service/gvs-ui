@@ -1,7 +1,5 @@
 package gvs.access;
 
-import java.net.Socket;
-
 /**
  * Factory interface for Guice
  * 

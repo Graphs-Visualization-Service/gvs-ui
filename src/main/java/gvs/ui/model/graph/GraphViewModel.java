@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.business.model.graph.GraphHolder;
 import gvs.business.model.graph.Graph;
+import gvs.business.model.graph.GraphHolder;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
 import gvs.ui.logic.session.SessionViewModel;

@@ -8,7 +8,6 @@ package gvs.access;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Image;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;

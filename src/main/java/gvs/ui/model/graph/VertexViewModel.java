@@ -6,6 +6,7 @@ import java.util.Observer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.IconVertex;
 import gvs.interfaces.IVertex;
 import gvs.util.Dimension;
@@ -22,7 +23,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Ellipse;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**

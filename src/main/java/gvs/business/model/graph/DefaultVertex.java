@@ -1,7 +1,6 @@
 package gvs.business.model.graph;
 
 import java.awt.Color;
-import java.awt.Image;
 import java.awt.Stroke;
 import java.util.Observable;
 

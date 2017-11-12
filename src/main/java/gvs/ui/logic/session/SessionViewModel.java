@@ -16,7 +16,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
  * The ViewModel class for the current session. Corresponds to the classical

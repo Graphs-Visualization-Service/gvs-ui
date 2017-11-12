@@ -1,7 +1,5 @@
 package gvs.ui.view.session;
 
-import java.util.Observable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

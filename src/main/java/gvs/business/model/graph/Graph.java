@@ -6,7 +6,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.access.Persistor;
 import gvs.business.model.Color;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;

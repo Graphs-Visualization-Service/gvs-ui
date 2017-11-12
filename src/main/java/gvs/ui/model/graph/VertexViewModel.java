@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.business.model.graph.DefaultVertex;
-import gvs.business.model.graph.IconVertex;
+import gvs.business.model.graph.NodeStyle;
 import gvs.interfaces.IVertex;
 import gvs.util.Dimension;
 import gvs.util.FontAwesome;
@@ -16,19 +16,15 @@ import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
  * Contains JavaFX Properties which are used for bidirectional bindings.
  * 
- * @author Michi
+ * @author mwieland
  */
 public class VertexViewModel implements Observer {
   private double dragOriginalSceneX;
@@ -41,31 +37,50 @@ public class VertexViewModel implements Observer {
 
   private static final Logger logger = LoggerFactory
       .getLogger(VertexViewModel.class);
+  private static final String CSS_NODE = "node";
 
   /**
-   * Create a new DefaultVertexViewModel with the corresponding Vertex
+   * Create a new DefaultVertexViewModel with the corresponding Vertex.
    * 
    * @param vertex
    *          JavaFX independent vertex representation
    */
   public VertexViewModel(IVertex vertex) {
     this.node = new Label();
-    if (vertex instanceof IconVertex) {
+    if (vertex.getIcon() != null) {
       logger.info("Creating VertexViewModel with an icon");
       node.setGraphic(FontAwesome.createLabel(vertex.getIcon()));
     }
     node.setText(vertex.getLabel());
     node.setCursor(Cursor.HAND);
-    node.setBackground(new Background(
-        new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
-
+    
     // bidirectional connection
     this.vertex = vertex;
     this.vertex.addObserver(this);
     node.layoutXProperty().addListener(this::xProperyListener);
     node.layoutYProperty().addListener(this::yProperyListener);
     updateCoordinates();
+    
+    setStyles();
   }
+
+  private void setStyles() {
+    NodeStyle style = vertex.getStyle();
+    node.getStyleClass().add(CSS_NODE);
+    node.getStyleClass().add("line-" + style.getLineColor().getColor());
+    node.getStyleClass().add(style.getLineStyle().getStyle() + "-"
+        + style.getLineThickness().getThickness());
+    node.getStyleClass().add("fill-"+style.getFillColor().getColor());
+    //TODO: find nicer method, maybe use getContrastColor()
+    if (style.getDarkColors().contains(style.getFillColor())) {
+      node.textFillProperty().set(Color.WHITE);
+    }
+  }
+  
+//  private static Color getContrastColor(Color color) {
+//    double y = (299 * color.getRed() + 587 * color.getGreen() + 114 * color.getBlue()) / 1000;
+//    return y >= 128 ? Color.BLACK : Color.WHITE;
+//  }
 
   /**
    * Inform the business logic {@link DefaultVertex} about changes, made in the

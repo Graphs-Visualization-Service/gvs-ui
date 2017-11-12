@@ -1,9 +1,8 @@
 package gvs.interfaces;
 
-import java.awt.Color;
-import java.awt.Stroke;
 import java.util.Observer;
 
+import gvs.business.model.graph.NodeStyle;
 import gvs.util.FontAwesome.Glyph;
 
 public interface IVertex {
@@ -11,10 +10,6 @@ public interface IVertex {
   boolean isRelative();
 
   String getLabel();
-
-  Color getLineColor();
-
-  Stroke getLineStroke();
 
   double getXPosition();
 
@@ -32,7 +27,7 @@ public interface IVertex {
   
   Glyph getIcon();
 
-  Color getFillColor();
+  NodeStyle getStyle();
   
   void addObserver(Observer o);
   

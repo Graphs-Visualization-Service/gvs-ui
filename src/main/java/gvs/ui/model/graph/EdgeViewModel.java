@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import gvs.interfaces.IEdge;
 import gvs.util.Dimension;
+import gvs.util.StringSizeCalculator;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -65,30 +66,19 @@ public class EdgeViewModel {
     Label start = startVertex.getNode();
     Label end = endVertex.getNode();
 
-    Dimension startDim = reportSize(start.getText(), start.getFont());
-    Dimension endDim = reportSize(end.getText(), end.getFont());
+    Dimension startDim = StringSizeCalculator.calculate(start.getText(),
+        start.getFont());
+    Dimension endDim = StringSizeCalculator.calculate(end.getText(),
+        end.getFont());
 
-    line.startXProperty().bind(start.layoutXProperty()
-        .add(startDim.getWidth() / 2.0));
-    line.startYProperty().bind(start.layoutYProperty()
-        .add(startDim.getHeight() / 2.0));
-    line.endXProperty().bind(
-        end.layoutXProperty().add(endDim.getWidth() / 2.0));
-    line.endYProperty().bind(
-        end.layoutYProperty().add(endDim.getHeight() / 2.0));
-  }
-
-  public Dimension reportSize(String s, Font myFont) {
-    Text text = new Text(s);
-    text.setFont(myFont);
-    Bounds tb = text.getBoundsInLocal();
-    Rectangle stencil = new Rectangle(tb.getMinX(), tb.getMinY(), tb.getWidth(),
-        tb.getHeight());
-
-    Shape intersection = Shape.intersect(text, stencil);
-
-    Bounds ib = intersection.getBoundsInLocal();
-    return new Dimension(ib.getWidth(), ib.getHeight());
+    line.startXProperty()
+        .bind(start.layoutXProperty().add(startDim.getWidth() / 2.0));
+    line.startYProperty()
+        .bind(start.layoutYProperty().add(startDim.getHeight() / 2.0));
+    line.endXProperty()
+        .bind(end.layoutXProperty().add(endDim.getWidth() / 2.0));
+    line.endYProperty()
+        .bind(end.layoutYProperty().add(endDim.getHeight() / 2.0));
   }
 
   private void bindLabelCoordinates() {

@@ -2,7 +2,6 @@ package gvs.access;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
@@ -78,15 +77,7 @@ public class ClientConnection extends Thread {
    */
   @Override
   public void run() {
-    clearInputFile();
     processInputStream();
-  }
-
-  private void clearInputFile() {
-    File file = new File(DEFAULT_FILE_NAME);
-    if (file.exists()) {
-      file.delete();
-    }
   }
 
   /**
@@ -94,12 +85,16 @@ public class ClientConnection extends Thread {
    * 
    */
   private void processInputStream() {
+
     try (BufferedReader inputReader = new BufferedReader(
         new InputStreamReader(socketClient.getInputStream()))) {
-      String data = "";
+
+      StringBuffer data = new StringBuffer();
       String line;
       while ((line = inputReader.readLine()) != null) {
+
         int endCharIndex = line.indexOf(ProtocolCommand.DATA_END.toString());
+
         if (line.equals(ProtocolCommand.RESERVE_GVS.toString())) {
           logger.info("Reserve command detected.");
           reserveService();
@@ -109,13 +104,13 @@ public class ClientConnection extends Thread {
           break;
         } else if (endCharIndex != -1) {
           logger.info("End of data detected.");
-          data += line.substring(0, endCharIndex);
-          storeDataOnFilesystem(data);
-          data = "";
+          data.append(line.substring(0, endCharIndex));
+          storeDataOnFilesystem(data.toString());
           readAndTransformModel();
+          data.setLength(0);
         } else {
           logger.info("Data detected");
-          data += line;
+          data.append(line);
         }
       }
     } catch (IOException e) {

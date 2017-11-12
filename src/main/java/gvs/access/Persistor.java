@@ -110,7 +110,8 @@ public class Persistor {
     this.writeToDisk(document, session, file);
   }
 
-  public synchronized void saveToDisk(TreeSessionController session, File file) {
+  public synchronized void saveToDisk(TreeSessionController session,
+      File file) {
     Document document = DocumentHelper.createDocument();
     Element docRoot = document.addElement(ROOT);
     this.saveTreeSession(docRoot, session);
@@ -147,8 +148,7 @@ public class Persistor {
 
   // ************************************SAVER AND
   // LOADER*************************
-  private void writeToDisk(Document pDocument, ISession pSession,
-      File output) {
+  private void writeToDisk(Document pDocument, ISession pSession, File output) {
     try {
       OutputFormat format = OutputFormat.createPrettyPrint();
 
@@ -172,8 +172,7 @@ public class Persistor {
     sessionNameElement.addText(sessionController.getSessionName());
   }
 
-  private void saveGraphSession(Element element,
-      Session sessionController) {
+  private void saveGraphSession(Element element, Session sessionController) {
     Element sessionElement = element.addElement(GRAPH);
     addIdAndLabel(sessionElement, sessionController);
     sessionController.getGraphs()
@@ -204,10 +203,9 @@ public class Persistor {
     // Color tempColor = graph.getBackgroundColor();
     // backgroundName = configuration.getColorName(tempColor);
     // }
-    // if (backgroundName == null || backgroundName == "") {
-    // backgroundName = STANDARD;
-    // }
-
+    if (backgroundName == null || backgroundName == "") {
+      backgroundName = STANDARD;
+    }
     eBackground.addText(backgroundName);
     Element eMaxLabelLength = eGraphModel.addElement(MAXLABELLENGTH);
     eMaxLabelLength.addText(String.valueOf(graph.getMaxLabelLength()));

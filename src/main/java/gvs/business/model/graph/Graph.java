@@ -46,7 +46,9 @@ public class Graph {
     logger.info("Building new Graph.");
     this.vertices = vertices;
     this.edges = edges;
-    this.snapshotDescription = null;
+    //TODO: maybe better change persistor behaviour
+    //initialize to empty string -> otherwise error when saving session
+    this.snapshotDescription = "";
     this.maxLabelLength = 0;
     this.hasBackgroundImage = false;
   }

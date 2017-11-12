@@ -6,7 +6,7 @@ public class NodeStyle {
         "lightGreen"), DARKGREEN("darkGreen"), BLUE(
             "blue"), DARKBLUE("darkBlue"), LIGHTBLUE("lightBlue"), RED(
                 "red"), LIGHTRED("lightRed"), BLACK(
-                    "black"), GRAY("gray"), LIGHTGRAY("lightGray");
+                    "black"), GRAY("gray"), LIGHTGRAY("lightGray"), STANDARD("standard");
 
     private String color;
 
@@ -63,12 +63,12 @@ public class NodeStyle {
     try {
       this.lineColor = GVSColor.valueOf(linecolor.toUpperCase());
     } catch (Exception e) {
-      this.lineColor = GVSColor.BLACK;
+      this.lineColor = GVSColor.STANDARD;
     }
     try {
       this.fillColor = GVSColor.valueOf(fillColor.toUpperCase());
     } catch (Exception e) {
-      this.fillColor = GVSColor.BLACK;
+      this.fillColor = GVSColor.STANDARD;
     }
     try {
       this.lineStyle = GVSLineStyle.valueOf(linestyle.toUpperCase());

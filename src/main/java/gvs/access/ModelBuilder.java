@@ -85,7 +85,7 @@ public class ModelBuilder {
   private static final String LEFTCHILD = "Leftchild";
 
   // Logger
-  private static final Logger serverLogger = LoggerFactory
+  private static final Logger logger = LoggerFactory
       .getLogger(ModelBuilder.class);
 
   /**
@@ -104,16 +104,16 @@ public class ModelBuilder {
    *          Document
    */
   public synchronized void buildModelFromXML(Document document) {
-    serverLogger.debug("Model will be built from XML");
+    logger.debug("Model will be built from XML");
     Element docRoot = document.getRootElement();
     Iterator<Element> contentIt = docRoot.elementIterator();
     while (contentIt.hasNext()) {
       Element eTag = (Element) (contentIt.next());
       if (eTag.getName().equals(GRAPH)) {
-        serverLogger.debug("It is a graph");
+        logger.debug("It is a graph");
         buildGraph(docRoot);
       } else if (eTag.getName().equals(TREE)) {
-        serverLogger.debug("It is a tree");
+        logger.debug("It is a tree");
         buildTree(docRoot);
       } else {
         break;
@@ -131,7 +131,7 @@ public class ModelBuilder {
    *          documentRoot
    */
   private void buildGraph(Element pDocRoot) {
-    serverLogger.debug("Build graph from XML");
+    logger.debug("Build graph from XML");
     Element eGraph = pDocRoot.element(GRAPH);
     long sessionId = Long.parseLong(eGraph.attributeValue(ATTRIBUTEID));
     String graphLabel = eGraph.element(LABEL).getText();
@@ -177,7 +177,7 @@ public class ModelBuilder {
     // Integer.parseInt(maxLabelLength));
     // }
 
-    serverLogger.debug("Finish build graph from XML");
+    logger.debug("Finish build graph from XML");
     applicationController.addGraphToSession(newGraph, sessionId, graphLabel);
   }
 
@@ -188,7 +188,7 @@ public class ModelBuilder {
    *          documentRoot
    */
   private void buildTree(Element pDocRoot) {
-    serverLogger.debug("Build tree from XML");
+    logger.debug("Build tree from XML");
     Element eTree = pDocRoot.element(TREE);
     Element eNodes = pDocRoot.element(NODES);
     Element eRoot = eTree.element(TREEROOTID);
@@ -252,7 +252,7 @@ public class ModelBuilder {
       }
     }
 
-    serverLogger.debug("Finish build tree from XML");
+    logger.debug("Finish build tree from XML");
     Tree tm = new Tree(treeLabel, Integer.parseInt(maxLabelLength), Color.WHITE,
         rootNode, nodes);
     applicationController.addTreeToSession(tm, treeId, treeLabel);
@@ -266,7 +266,7 @@ public class ModelBuilder {
    * @return Node
    */
   private INode buildDefaultNode(Element pNode) {
-    serverLogger.debug("Build DefaultNode XML");
+    logger.debug("Build DefaultNode XML");
     long nodeId = Long.parseLong(pNode.attributeValue(ATTRIBUTEID));
     Element eLabel = pNode.element(LABEL);
     Element eLineColor = pNode.element(LINECOLOR);
@@ -293,7 +293,7 @@ public class ModelBuilder {
       childs[counter] = childID;
       counter++;
     }
-    serverLogger.debug("Finihs build DefaultNode XML");
+    logger.debug("Finihs build DefaultNode XML");
     return new DefaultNode(nodeId, label, lineColor, lineStroke, fillColor,
         childs);
   }
@@ -306,7 +306,7 @@ public class ModelBuilder {
    * @return binaryNode
    */
   private IBinaryNode buildBinaryNode(Element pNode) {
-    serverLogger.debug("Build BinaryNode XML");
+    logger.debug("Build BinaryNode XML");
     long nodeId = Long.parseLong(pNode.attributeValue(ATTRIBUTEID));
     Element eLabel = pNode.element(LABEL);
     Element eLineColor = pNode.element(LINECOLOR);
@@ -333,7 +333,7 @@ public class ModelBuilder {
     if (eRigthChild != null) {
       rigthchildId = Long.parseLong(eRigthChild.getText());
     }
-    serverLogger.debug("Finish build BinaryNode XML");
+    logger.debug("Finish build BinaryNode XML");
     return new BinaryNode(nodeId, label, lineColor, lineStroke, fillColor,
         leftchildId, rigthchildId);
   }
@@ -346,7 +346,7 @@ public class ModelBuilder {
    * @return vertex
    */
   private IVertex buildDefaultVertex(Element pVertex) {
-    serverLogger.debug("Build DefaultVertex XML");
+    logger.debug("Build DefaultVertex XML");
     long vertexId = Long.parseLong(pVertex.attributeValue(ATTRIBUTEID));
     Element eLabel = pVertex.element(LABEL);
     Element eLineColor = pVertex.element(LINECOLOR);
@@ -357,24 +357,17 @@ public class ModelBuilder {
 
     String label = eLabel.getText();
     String linecolor = eLineColor.getText();
-    Color lineColor = typs.getColor(linecolor, false);
     String linestyle = eLineStyle.getText();
     String linethickness = eLineThickness.getText();
-    BasicStroke lineStroke = typs.getLineObject(linestyle, linethickness);
-
+    Glyph icon = null;
     if (eIcon != null) {
-      Glyph theIcon = Glyph.valueOf(eIcon.getText());
-      serverLogger.debug("Finihs build DefaultVertex XML with icon");
-      return new IconVertex(vertexId, label, lineColor, lineStroke, theIcon);
-    } else if (eFillcolor != null) {
-      String fillcolor = eFillcolor.getText();
-      Color fillColor = typs.getColor(fillcolor, false);
-      serverLogger.debug("Finihs build DefaultVertex XML with fillcolor");
-      return new DefaultVertex(vertexId, label, lineColor, lineStroke,
-          fillColor);
-    } else {
-      return null;
+      icon = Glyph.valueOf(eIcon.getText());
     }
+    String fillcolor = eFillcolor.getText();
+    NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness,
+        fillcolor);
+    logger.info("Finish building DefaultVertex");
+    return new DefaultVertex(vertexId, label, style, icon);
   }
 
   /**
@@ -385,7 +378,7 @@ public class ModelBuilder {
    * @return vertex
    */
   private IVertex buildRelativVertex(Element pVertex) {
-    serverLogger.debug("Build RelativVertex XML");
+    logger.debug("Build RelativVertex XML");
     long vertexId = Long.parseLong(pVertex.attributeValue(ATTRIBUTEID));
 
     Element eLabel = pVertex.element(LABEL);
@@ -399,27 +392,21 @@ public class ModelBuilder {
 
     String label = eLabel.getText();
     String linecolor = eLineColor.getText();
-    Color lineColor = typs.getColor(linecolor, false);
     String linestyle = eLineStyle.getText();
     String linethickness = eLineThickness.getText();
-    BasicStroke lineStroke = typs.getLineObject(linestyle, linethickness);
     double xPos = Double.parseDouble(eXPos.getText());
     double yPos = Double.parseDouble(eYPos.getText());
 
+    Glyph icon = null;
     if (eIcon != null) {
-      Glyph theIcon = Glyph.valueOf(eIcon.getText());
-      serverLogger.debug("Finish build RelativVertex XML with Icon");
-      return new IconVertex(vertexId, label, lineColor, lineStroke, theIcon,
-          xPos, yPos);
-    } else if (eFillcolor != null) {
-      String fillcolor = eFillcolor.getText();
-      Color fillColor = typs.getColor(fillcolor, false);
-      serverLogger.debug("Finish build RelativVertex XML with fillcolor");
-      return new DefaultVertex(vertexId, label, lineColor, lineStroke,
-          fillColor, xPos, yPos);
-    } else {
-      return null;
+      icon = Glyph.valueOf(eIcon.getText());
     }
+    String fillcolor = eFillcolor.getText();
+    logger.debug("Finish building RelativVertex");
+    NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness,
+        fillcolor);
+    return new DefaultVertex(vertexId, label, style, xPos, yPos, icon);
+
   }
 
   /**
@@ -433,7 +420,7 @@ public class ModelBuilder {
    */
   private IEdge buildDirectedEdge(Element pEdge,
       Collection<IVertex> pVertizes) {
-    serverLogger.debug("Build DirectedEdge XML");
+    logger.debug("Build DirectedEdge XML");
     Element eLabel = pEdge.element(LABEL);
     Element eLineColor = pEdge.element(LINECOLOR);
     Element eLineStyle = pEdge.element(LINESTYLE);
@@ -463,7 +450,7 @@ public class ModelBuilder {
         toVertex = tmp;
       }
     }
-    serverLogger.debug("Finish build DirectedEdge XML");
+    logger.debug("Finish build DirectedEdge XML");
     return new Edge(label,
         new NodeStyle(linecolor, linestyle, linethickness, null), true,
         fromVertex, toVertex);
@@ -481,7 +468,7 @@ public class ModelBuilder {
    */
   private IEdge buildUndirectedEdge(Element pEdge,
       Collection<IVertex> pVertizes) {
-    serverLogger.debug("Build UndirectedEdge XML");
+    logger.debug("Build UndirectedEdge XML");
     int arrowPos = Integer.parseInt(pEdge.attributeValue(ARROWPOS));
 
     Element eLabel = pEdge.element(LABEL);
@@ -513,13 +500,13 @@ public class ModelBuilder {
       }
     }
     if (arrowPos == 1) {
-      serverLogger.debug("Finsih build UndirectedEdge XML with arrow pos 1");
+      logger.debug("Finsih build UndirectedEdge XML with arrow pos 1");
       return new Edge(label, style, true, toVertex, fromVertex);
     } else if (arrowPos == 2) {
-      serverLogger.debug("Finsih build UndirectedEdge XML with arrow pos 2");
+      logger.debug("Finsih build UndirectedEdge XML with arrow pos 2");
       return new Edge(label, style, true, fromVertex, toVertex);
     } else {
-      serverLogger.debug("Finsih build UndirectedEdge XML");
+      logger.debug("Finsih build UndirectedEdge XML");
       return new Edge(label, style, false, fromVertex, toVertex);
     }
   }

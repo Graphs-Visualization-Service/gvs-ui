@@ -5,14 +5,8 @@ Label.edge-label {
 }
 
 .node {
-	-fx-fill: white;
-	-fx-stroke: black;
-	-fx-stroke-width: 2;
-}
-
-.node-label{
-	-fx-fill: black;
-	-fx-font: 5 arial;
+	-fx-background-radius: 10 10 10 10;
+    -fx-border-radius: 10 10 10 10;
 }
 
 #graphPane {
@@ -58,6 +52,86 @@ Label.edge-label {
 }
 .line-standard {
 	-fx-stroke: rgb(170,170,170);
+}
+/*-- FILLCOLOR --*/
+.fill-yellow {
+	-fx-background-color: rgb(255,255,0);
+}
+.fill-green {
+	-fx-background-color: rgb(0,255,0);
+}
+.fill-lightGreen {
+	-fx-background-color: rgb(155,255,155);
+}
+.fill-darkGreen {
+	-fx-background-color: rgb(0,100,0);
+}
+.fill-blue {
+	-fx-background-color: rgb(0,0,255);
+}
+.fill-darkBlue {
+	-fx-background-color: rgb(0,0,80);
+}
+.fill-lightBlue {
+	-fx-background-color: rgb(175,215,230);
+}
+.fill-red {
+	-fx-background-color: rgb(255,0,0);
+}
+.fill-lightRed {
+	-fx-background-color: rgb(255,155,155);
+}
+.fill-black {
+	-fx-background-color: rgb(0,0,0);
+}
+.fill-gray {
+	-fx-background-color: rgb(130,130,130);
+}
+.fill-lightGray {
+	-fx-background-color: rgb(215,215,215);
+}
+.fill-standard {
+	-fx-background-color: rgb(170,170,170);
+}
+/*-- BORDERCOLOR --*/
+.line-yellow {
+	-fx-border-color: rgb(255,255,0);
+}
+.line-green {
+	-fx-border-color: rgb(0,255,0);
+}
+.line-lightGreen {
+	-fx-border-color: rgb(155,255,155);
+}
+.line-darkGreen {
+	-fx-border-color: rgb(0,100,0);
+}
+.line-blue {
+	-fx-border-color: rgb(0,0,255);
+}
+.line-darkBlue {
+	-fx-border-color: rgb(0,0,80);
+}
+.line-lightBlue {
+	-fx-border-color: rgb(175,215,230);
+}
+.line-red {
+	-fx-border-color: rgb(255,0,0);
+}
+.line-lightRed {
+	-fx-border-color: rgb(255,155,155);
+}
+.line-black {
+	-fx-border-color: rgb(0,0,0);
+}
+.line-gray {
+	-fx-border-color: rgb(130,130,130);
+}
+.line-lightGray {
+	-fx-border-color: rgb(215,215,215);
+}
+.line-standard {
+	-fx-border-color: rgb(170,170,170);
 }
 
 /*-- LINESTYLES & THICKNESS--*/

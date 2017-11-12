@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.IconVertex;
+import gvs.business.model.graph.NodeStyle;
 import gvs.interfaces.IVertex;
 import gvs.util.Dimension;
 import gvs.util.FontAwesome;
@@ -41,6 +42,7 @@ public class VertexViewModel implements Observer {
 
   private static final Logger logger = LoggerFactory
       .getLogger(VertexViewModel.class);
+  private static final String CSS_NODE = "node";
 
   /**
    * Create a new DefaultVertexViewModel with the corresponding Vertex
@@ -56,17 +58,24 @@ public class VertexViewModel implements Observer {
     }
     node.setText(vertex.getLabel());
     node.setCursor(Cursor.HAND);
-    setStyles();
-
+    
     // bidirectional connection
     this.vertex = vertex;
     this.vertex.addObserver(this);
     node.layoutXProperty().addListener(this::xProperyListener);
     node.layoutYProperty().addListener(this::yProperyListener);
     updateCoordinates();
+    
+    setStyles();
   }
 
   private void setStyles() {
+    NodeStyle style = vertex.getStyle();
+    node.getStyleClass().add(CSS_NODE);
+    node.getStyleClass().add("line-" + style.getLineColor().getColor());
+    node.getStyleClass().add(style.getLineStyle().getStyle() + "-"
+        + style.getLineThickness().getThickness());
+    node.getStyleClass().add("fill-"+style.getFillColor().getColor());
   }
 
   /**

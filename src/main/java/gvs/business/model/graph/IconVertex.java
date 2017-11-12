@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Stroke;
 import java.util.Observable;
 
-import gvs.interfaces.IIconVertex;
+import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome.Glyph;
 
 /**
@@ -13,7 +13,7 @@ import gvs.util.FontAwesome.Glyph;
  * @author aegli
  *
  */
-public class IconVertex extends Observable implements IIconVertex {
+public class IconVertex extends Observable implements IVertex {
 
   private long id;
   private String label;
@@ -147,8 +147,8 @@ public class IconVertex extends Observable implements IIconVertex {
     isFixed = pIsFixed;
   }
 
-  @Override
-  public Color getFillColor() {
+  public NodeStyle getStyle() {
+    // TODO Auto-generated method stub
     return null;
   }
   

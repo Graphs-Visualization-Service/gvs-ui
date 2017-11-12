@@ -259,17 +259,13 @@ public class Persistor {
     eLabel.addText(vertexLabel);
 
     Element eLineColor = eVertex.addElement(LINECOLOR);
-    eLineColor.addText(configuration.getColorName(pVertex.getLineColor()));
+    eLineColor.addText(pVertex.getStyle().getLineColor().getColor());
     Element eLineStyle = eVertex.addElement(LINESTYLE);
-
-    BasicStroke stroke = (BasicStroke) pVertex.getLineStroke();
-    eLineStyle.addText(configuration.getLineStyleName(stroke.getDashArray()));
+    eLineStyle.addText(pVertex.getStyle().getLineStyle().getStyle());
     Element eLineThick = eVertex.addElement(LINETHICKNESS);
-    eLineThick.addText(
-        configuration.getLineThicknessName((int) stroke.getLineWidth()));
-
+    eLineThick.addText(pVertex.getStyle().getLineThickness().getThickness());
     Element eFillColor = eVertex.addElement(FILLCOLOR);
-    eFillColor.addText(configuration.getColorName(pVertex.getFillColor()));
+    eFillColor.addText(pVertex.getStyle().getFillColor().getColor());
     Element eXPos = eVertex.addElement(XPOS);
     eXPos.addText(String.valueOf(pVertex.getXPosition()));
     Element eYPos = eVertex.addElement(YPOS);
@@ -506,26 +502,18 @@ public class Persistor {
 
     String label = eLabel.getText();
     String linecolor = eLineColor.getText();
-    Color lineColor = configuration.getColor(linecolor, false);
     String linestyle = eLineStyle.getText();
     String linethickness = eLineThickness.getText();
     double xpos = Double.parseDouble(eXpos.getText());
     double ypos = Double.parseDouble(eYpos.getText());
-    BasicStroke lineStroke = configuration.getLineObject(linestyle,
-        linethickness);
-
+    String fillcolor = eFillcolor.getText();
+    Glyph icon = null;
     if (eIcon != null) {
-      Glyph theIcon = Glyph.valueOf(eIcon.getText());
-      return new IconVertex(vertexId, label, lineColor, lineStroke, theIcon,
-          xpos, ypos);
-    } else if (eFillcolor != null) {
-      String fillcolor = eFillcolor.getText();
-      Color fillColor = configuration.getColor(fillcolor, false);
-      return new DefaultVertex(vertexId, label, lineColor, lineStroke,
-          fillColor, xpos, ypos, false);
-    } else {
-      return null;
+      icon = Glyph.valueOf(eIcon.getText());
     }
+    NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness,
+        fillcolor);
+    return new DefaultVertex(vertexId, label, style, xpos, ypos, false, icon);
   }
 
   private IVertex loadRelativVertex(Element pVertex) {
@@ -541,26 +529,18 @@ public class Persistor {
 
     String label = eLabel.getText();
     String linecolor = eLineColor.getText();
-    Color lineColor = configuration.getColor(linecolor, false);
     String linestyle = eLineStyle.getText();
     String linethickness = eLineThickness.getText();
-    BasicStroke lineStroke = configuration.getLineObject(linestyle,
-        linethickness);
     double xPos = Double.parseDouble(eXPos.getText());
     double yPos = Double.parseDouble(eYPos.getText());
-
+    String fillcolor = eFillcolor.getText();
+    Glyph icon = null;
     if (eIcon != null) {
-      Glyph theIcon = Glyph.valueOf(eIcon.getText());
-      return new IconVertex(vertexId, label, lineColor, lineStroke, theIcon,
-          xPos, yPos);
-    } else if (eFillcolor != null) {
-      String fillcolor = eFillcolor.getText();
-      Color fillColor = configuration.getColor(fillcolor, false);
-      return new DefaultVertex(vertexId, label, lineColor, lineStroke,
-          fillColor, xPos, yPos);
-    } else {
-      return null;
+      icon = Glyph.valueOf(eIcon.getText());
     }
+    NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness,
+        fillcolor);
+    return new DefaultVertex(vertexId, label, style, xPos, yPos, icon);
   }
 
   private IEdge loadEdge(Element pEdge, Vector<IVertex> pVertizes) {
@@ -574,11 +554,8 @@ public class Persistor {
 
     String label = eLabel.getText();
     String linecolor = eLineColor.getText();
-    Color lineColor = configuration.getColor(linecolor, false);
     String linestyle = eLineStyle.getText();
     String linethickness = eLineThickness.getText();
-    BasicStroke lineStroke = configuration.getLineObject(linestyle,
-        linethickness);
 
     long fromVertexId = Long.parseLong(eFromVertex.getText());
     long toVertexId = Long.parseLong(eToVertex.getText());

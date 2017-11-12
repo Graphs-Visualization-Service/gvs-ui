@@ -16,19 +16,15 @@ import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
  * Contains JavaFX Properties which are used for bidirectional bindings.
  * 
- * @author Michi
+ * @author mwieland
  */
 public class VertexViewModel implements Observer {
   private double dragOriginalSceneX;
@@ -44,7 +40,7 @@ public class VertexViewModel implements Observer {
   private static final String CSS_NODE = "node";
 
   /**
-   * Create a new DefaultVertexViewModel with the corresponding Vertex
+   * Create a new DefaultVertexViewModel with the corresponding Vertex.
    * 
    * @param vertex
    *          JavaFX independent vertex representation
@@ -75,7 +71,16 @@ public class VertexViewModel implements Observer {
     node.getStyleClass().add(style.getLineStyle().getStyle() + "-"
         + style.getLineThickness().getThickness());
     node.getStyleClass().add("fill-"+style.getFillColor().getColor());
+    //TODO: find nicer method, maybe use getContrastColor()
+    if (style.getDarkColors().contains(style.getFillColor())) {
+      node.textFillProperty().set(Color.WHITE);
+    }
   }
+  
+//  private static Color getContrastColor(Color color) {
+//    double y = (299 * color.getRed() + 587 * color.getGreen() + 114 * color.getBlue()) / 1000;
+//    return y >= 128 ? Color.BLACK : Color.WHITE;
+//  }
 
   /**
    * Inform the business logic {@link DefaultVertex} about changes, made in the

@@ -1,5 +1,8 @@
 package gvs.business.model.graph;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 public class NodeStyle {
   public enum GVSColor {
     YELLOW("yellow"), GREEN("green"), LIGHTGREEN(
@@ -49,6 +52,7 @@ public class NodeStyle {
   private GVSLineStyle lineStyle;
   private GVSLineThickness lineThickness;
   private GVSColor fillColor;
+  private Collection<GVSColor> darkColors;
 
   public NodeStyle(GVSColor lineColor, GVSLineStyle lineStyle,
       GVSLineThickness lineThickness, GVSColor fillColor) {
@@ -56,6 +60,15 @@ public class NodeStyle {
     this.lineStyle = lineStyle;
     this.lineThickness = lineThickness;
     this.fillColor = fillColor;
+    fillDarkColors();
+  }
+
+  private void fillDarkColors() {
+    darkColors = new HashSet<>();
+    darkColors.add(GVSColor.BLACK);
+    darkColors.add(GVSColor.DARKBLUE);
+    darkColors.add(GVSColor.DARKGREEN);
+    darkColors.add(GVSColor.BLUE);
   }
 
   public NodeStyle(String linecolor, String linestyle, String lineThickness,
@@ -80,6 +93,7 @@ public class NodeStyle {
     } catch (Exception e) {
       this.lineThickness = GVSLineThickness.STANDARD;
     }
+    fillDarkColors();
   }
 
   public GVSColor getFillColor() {
@@ -112,5 +126,9 @@ public class NodeStyle {
 
   public void setLineThickness(GVSLineThickness lineThickness) {
     this.lineThickness = lineThickness;
+  }
+
+  public Collection<GVSColor> getDarkColors() {
+    return darkColors;
   }
 }

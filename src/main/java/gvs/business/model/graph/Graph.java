@@ -27,7 +27,7 @@ public class Graph {
   private Color backgroundColor;
   private int maxLabelLength;
   private boolean hasBackgroundImage;
-  
+
   private static final Logger logger = LoggerFactory.getLogger(Graph.class);
 
   /**
@@ -40,16 +40,19 @@ public class Graph {
    * @param graphId
    *          model id
    */
-  public Graph(Collection<IVertex> vertices,
-      Collection<IEdge> edges) {
+  public Graph(Collection<IVertex> vertices, Collection<IEdge> edges) {
     logger.info("Building new Graph.");
     this.vertices = vertices;
     this.edges = edges;
-    //TODO: maybe better change persistor behaviour
-    //initialize to empty string -> otherwise error when saving session
+    // TODO: maybe better change persistor behaviour
+    // initialize to empty string -> otherwise error when saving session
     this.snapshotDescription = "";
     this.maxLabelLength = 0;
     this.hasBackgroundImage = false;
+  }
+
+  public boolean doLayout() {
+    return getVertices().stream().noneMatch(v -> v.isRelative());
   }
 
   public Collection<IVertex> getVertices() {

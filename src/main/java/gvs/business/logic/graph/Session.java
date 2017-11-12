@@ -15,7 +15,7 @@ import com.google.inject.assistedinject.Assisted;
 
 import gvs.access.Persistor;
 import gvs.business.logic.ApplicationController;
-import gvs.business.logic.LayoutController;
+import gvs.business.logic.Layouter;
 import gvs.business.logic.LayoutMonitor;
 import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.GraphHolder;
@@ -39,25 +39,23 @@ public class Session implements IGraphSessionController {
 
   private final GraphSessionReplayFactory sessionReplayFactory;
   private final GraphHolder graphHolder;
-  private final LayoutController layoutController;
-  private final ApplicationController applicationController;
+  private final Layouter layouter;
   private final Persistor persistor;
   private final LayoutMonitor layoutMonitor;
 
   private static final Logger logger = LoggerFactory.getLogger(Session.class);
 
   @Inject
-  public Session(ApplicationController appController, GraphHolder graphHolder,
-      Persistor persistor, LayoutController layoutController,
-      LayoutMonitor layoutMonitor, GraphSessionReplayFactory replayFactory,
-      @Assisted long pSessionId, @Assisted String pSessionName,
-      @Assisted @Nullable List<Graph> graphs) {
+  public Session(GraphHolder graphHolder, Persistor persistor,
+      Layouter layouter, LayoutMonitor layoutMonitor,
+      GraphSessionReplayFactory replayFactory, @Assisted long pSessionId,
+      @Assisted String pSessionName, @Assisted @Nullable List<Graph> graphs) {
+
     logger.info("Instantiating new graph session.");
     this.sessionReplayFactory = replayFactory;
     this.graphHolder = graphHolder;
-    this.applicationController = appController;
     this.persistor = persistor;
-    this.layoutController = layoutController;
+    this.layouter = layouter;
     this.layoutMonitor = layoutMonitor;
 
     this.graphs = graphs;
@@ -295,7 +293,7 @@ public class Session implements IGraphSessionController {
 
       Graph currentGraph = graphHolder.getCurrentGraph();
       // TODO isSoftLayout is always false -> check usage
-      layoutController.layoutGraph(currentGraph, false);
+      layouter.layoutGraph(currentGraph, false);
 
     } catch (InterruptedException e) {
       logger.warn("Unable to get layout monitor", e);

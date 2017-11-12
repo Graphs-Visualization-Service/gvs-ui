@@ -33,7 +33,7 @@ import gvs.interfaces.IVertex;
  *
  */
 @Singleton
-public class LayoutController implements Tickable {
+public class Layouter implements Tickable {
 
   private volatile AreaTicker currentTicker;
 
@@ -55,11 +55,10 @@ public class LayoutController implements Tickable {
 
   private static final int DEFAULT_SEED = 4000;
 
-  private static final Logger logger = LoggerFactory
-      .getLogger(LayoutController.class);
+  private static final Logger logger = LoggerFactory.getLogger(Layouter.class);
 
   @Inject
-  public LayoutController(AreaTickerFactory tickerFactory) {
+  public Layouter(AreaTickerFactory tickerFactory) {
 
     this.tickerFactory = tickerFactory;
     this.area = new Area(
@@ -88,10 +87,13 @@ public class LayoutController implements Tickable {
    */
   public void layoutGraph(Graph graph, boolean useSoftPoints) {
     logger.info("Received new data to layout");
-    handleTickerThread();
 
-    resetArea();
-    calculatLayout(graph, useSoftPoints);
+    if (graph.doLayout()) {
+      handleTickerThread();
+
+      resetArea();
+      calculatLayout(graph, useSoftPoints);
+    }
   }
 
   private void resetArea() {

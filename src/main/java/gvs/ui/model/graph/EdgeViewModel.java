@@ -66,7 +66,7 @@ public class EdgeViewModel {
   }
 
   public void draw(ScalableContentPane graphPane) {
-    logger.info("Drawing VertexViewModel.");
+    logger.info("Drawing EdgeViewModel.");
     graphPane.getContentPane().getChildren().addAll(line, label);
   }
 }

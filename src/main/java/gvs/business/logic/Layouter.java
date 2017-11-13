@@ -46,14 +46,15 @@ public class Layouter implements Tickable {
 
   private static final int FACTOR = 3;
   
-  private static final int DEFAULT_MASS = 40;
-  private static final int SOFT_MULTIPLIER = 10;
+  private static final int PARTICLE_MASS = 50;
+  private static final int TRACTION_DISTANCE = 70 * FACTOR;
+  private static final int TRACTION_IMPACT = 10;
+  
+  private static final int SOFT_MULTIPLIER = 100;
   private static final int FIXED_MULTIPLIER = 10;
-  private static final int DEFAULT_DISTANCE = 300 * FACTOR;
-  private static final int DEFAULT_IMPACT = 10;
 
+  private static final int TICK_RATE_PER_SEC = 10;
   private static final int MAX_LAYOUT_DURATION_MS = 10_000;
-  private static final int DEFAULT_TICK_RATE = 50;
 
   private static final int DEFAULT_AREA_HEIGHT = 600 * FACTOR;
   private static final int DEFAULT_AREA_WIDTH = 800 * FACTOR;
@@ -133,7 +134,7 @@ public class Layouter implements Tickable {
       }
     }
 
-    currentTicker = tickerFactory.create(this, DEFAULT_TICK_RATE);
+    currentTicker = tickerFactory.create(this, TICK_RATE_PER_SEC);
     logger.debug("Starting thread: {}", currentTicker.getName());
     currentTicker.start();
     logger.debug("Background process successfully started.");
@@ -183,7 +184,7 @@ public class Layouter implements Tickable {
       long particleId = v.getId();
       boolean isFixed = v.isFixedPosition();
       Particle newParticle = new Particle(position, particleId, v, isFixed,
-          DEFAULT_MASS);
+          PARTICLE_MASS);
 
       area.addParticles(newParticle);
     });
@@ -201,8 +202,8 @@ public class Layouter implements Tickable {
       Particle fromParticle = area.getParticleWithID(vertexFrom.getId());
       Particle toParticle = area.getParticleWithID(vertexTo.getId());
 
-      Traction t = new Traction(fromParticle, toParticle, DEFAULT_IMPACT,
-          DEFAULT_DISTANCE);
+      Traction t = new Traction(fromParticle, toParticle, TRACTION_IMPACT,
+          TRACTION_DISTANCE);
 
       area.addTraction(t);
     });

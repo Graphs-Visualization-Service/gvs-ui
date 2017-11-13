@@ -46,7 +46,7 @@ import gvs.util.FontAwesome.Glyph;
 public class ModelBuilder {
 
   // Visualization-Service
-  private ApplicationController applicationController = null;
+  private ApplicationController applicationController;
   private Configuration typs = null;
 
   // Generally
@@ -97,31 +97,28 @@ public class ModelBuilder {
   }
 
   /**
-   * Builds a model from the recieved XML.
+   * Builds a model from the received XML.
    * 
    * @param document
    *          Document
    */
-  public synchronized void buildModelFromXML(Document document) {
+  public void buildModelFromXML(Document document) {
     logger.debug("Model will be built from XML");
-    Element docRoot = document.getRootElement();
-    Iterator<Element> contentIt = docRoot.elementIterator();
-    while (contentIt.hasNext()) {
-      Element eTag = (Element) (contentIt.next());
-      if (eTag.getName().equals(GRAPH)) {
+    Element documentRootElement = document.getRootElement();
+
+    for (Element rootElement : documentRootElement.elements()) {
+      if (rootElement.getName().equals(GRAPH)) {
         logger.debug("It is a graph");
-        buildGraph(docRoot);
-      } else if (eTag.getName().equals(TREE)) {
+        buildGraph(documentRootElement);
+      } else if (rootElement.getName().equals(TREE)) {
         logger.debug("It is a tree");
-        buildTree(docRoot);
+        buildTree(documentRootElement);
       } else {
+        logger.debug("Unknown structure detected. Import aborted.");
         break;
       }
     }
   }
-
-  // ***************************BUILDERS
-  // XML**************************************
 
   /**
    * Graph Builder.
@@ -131,53 +128,32 @@ public class ModelBuilder {
    */
   private void buildGraph(Element pDocRoot) {
     logger.debug("Build graph from XML");
-    Element eGraph = pDocRoot.element(GRAPH);
-    long sessionId = Long.parseLong(eGraph.attributeValue(ATTRIBUTEID));
-    String graphLabel = eGraph.element(LABEL).getText();
-    String graphBackground = eGraph.element(BACKGROUND).getText();
-    String maxLabelLengthString = eGraph.element(MAXLABELLENGTH).getText();
+
+    Element graphElement = pDocRoot.element(GRAPH);
 
     Collection<IVertex> vertizes = new HashSet<IVertex>();
+    Element verticesElement = pDocRoot.element(VERTIZES);
+    verticesElement.elements().forEach(vertexElement -> {
+      IVertex newVertex = buildVertex(vertexElement);
+      vertizes.add(newVertex);
+    });
+
     Collection<IEdge> edges = new HashSet<IEdge>();
-
-    Element eVertizes = pDocRoot.element(VERTIZES);
-    Iterator<Element> vertizesIt = eVertizes.elementIterator();
-    while (vertizesIt.hasNext()) {
-      Element eVertex = (Element) (vertizesIt.next());
-      if (eVertex.getName().equals(DEFAULTVERTEX)) {
-        vertizes.add(buildDefaultVertex(eVertex));
-      } else if (eVertex.getName().equals(RELATIVVERTEX)) {
-        vertizes.add(buildRelativVertex(eVertex));
+    Element edgesElement = pDocRoot.element(EDGES);
+    edgesElement.elements().forEach(edgeElement -> {
+      if (edgeElement.attributeValue(ISDIRECTED).equals("true")) {
+        edges.add(buildDirectedEdge(edgeElement, vertizes));
+      } else if (edgeElement.attributeValue(ISDIRECTED).equals("false")) {
+        edges.add(buildUndirectedEdge(edgeElement, vertizes));
       }
-    }
-    Element eEdges = pDocRoot.element(EDGES);
-    Iterator<Element> edgesIt = eEdges.elementIterator();
-    while (edgesIt.hasNext()) {
-      Element eEdge = (Element) (edgesIt.next());
-      if (eEdge.attributeValue(ISDIRECTED).equals("true")) {
-        edges.add(buildDirectedEdge(eEdge, vertizes));
-      } else if (eEdge.attributeValue(ISDIRECTED).equals("false")) {
-        edges.add(buildUndirectedEdge(eEdge, vertizes));
-      }
-    }
+    });
 
-    int maxLabelLength = Integer.parseInt(maxLabelLengthString);
     Graph newGraph = new Graph(vertizes, edges);
-    newGraph.setMaxLabelLength(maxLabelLength);
-
-    // TODO background image support?
-    // Image graphImage = typs.getBackgroundImage(graphBackground);
-    // if (graphImage == null) {
-    // Color defaultColor = typs.getColor(graphBackground, true);
-    // gm = new Graph(graphLabel, defaultColor, vertizes, edges,
-    // Integer.parseInt(maxLabelLength));
-    // } else {
-    // gm = new Graph(graphLabel, graphImage, vertizes, edges,
-    // Integer.parseInt(maxLabelLength));
-    // }
 
     logger.debug("Finish build graph from XML");
-    applicationController.addGraphToSession(newGraph, sessionId, graphLabel);
+    long sessionId = Long.parseLong(graphElement.attributeValue(ATTRIBUTEID));
+    String sessionName = graphElement.element(LABEL).getText();
+    applicationController.addGraphToSession(newGraph, sessionId, sessionName);
   }
 
   /**
@@ -340,78 +316,51 @@ public class ModelBuilder {
   /**
    * Default Vertex Builder.
    * 
-   * @param pVertex
+   * @param vertexElement
    *          vertex
    * @return vertex
    */
-  private IVertex buildDefaultVertex(Element pVertex) {
+  private IVertex buildVertex(Element vertexElement) {
     logger.debug("Build DefaultVertex XML");
-    long vertexId = Long.parseLong(pVertex.attributeValue(ATTRIBUTEID));
-    Element eLabel = pVertex.element(LABEL);
-    Element eLineColor = pVertex.element(LINECOLOR);
-    Element eLineStyle = pVertex.element(LINESTYLE);
-    Element eLineThickness = pVertex.element(LINETHICKNESS);
-    Element eFillcolor = pVertex.element(FILLCOLOR);
-    Element eIcon = pVertex.element(ICON);
 
-    String label = eLabel.getText();
-    String linecolor = eLineColor.getText();
-    String linestyle = eLineStyle.getText();
-    String linethickness = eLineThickness.getText();
+    double xPos = 0;
+    double yPos = 0;
+    if (vertexElement.getName().equals(RELATIVVERTEX)) {
+      Element xPositionElement = vertexElement.element(XPOS);
+      xPos = Double.parseDouble(xPositionElement.getText());
+      Element yPositionElement = vertexElement.element(YPOS);
+      yPos = Double.parseDouble(yPositionElement.getText());
+    }
+
+    Element labelElement = vertexElement.element(LABEL);
+    String label = labelElement.getText();
+
+    Element lineColorElement = vertexElement.element(LINECOLOR);
+    String linecolor = lineColorElement.getText();
+
+    Element lineStyleElement = vertexElement.element(LINESTYLE);
+    String lineStyle = lineStyleElement.getText();
+
+    Element lineThicknessElement = vertexElement.element(LINETHICKNESS);
+    String lineThickness = lineThicknessElement.getText();
+
+    Element iconElement = vertexElement.element(ICON);
     Glyph icon = null;
-    if (eIcon != null) {
-      icon = Glyph.valueOf(eIcon.getText());
+    if (iconElement != null) {
+      icon = Glyph.valueOf(iconElement.getText());
     }
+
+    Element fillColorElement = vertexElement.element(FILLCOLOR);
     String fillcolor = null;
-    if (eFillcolor != null) {
-     fillcolor = eFillcolor.getText();
+    if (fillColorElement != null) {
+      fillcolor = fillColorElement.getText();
     }
-    NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness,
+
+    long vertexId = Long.parseLong(vertexElement.attributeValue(ATTRIBUTEID));
+    NodeStyle style = new NodeStyle(linecolor, lineStyle, lineThickness,
         fillcolor);
     logger.info("Finish building DefaultVertex");
-    return new DefaultVertex(vertexId, label, style, icon);
-  }
-
-  /**
-   * Relative Vertex Builder.
-   * 
-   * @param pVertex
-   *          vertex
-   * @return vertex
-   */
-  private IVertex buildRelativVertex(Element pVertex) {
-    logger.debug("Build RelativVertex XML");
-    long vertexId = Long.parseLong(pVertex.attributeValue(ATTRIBUTEID));
-
-    Element eLabel = pVertex.element(LABEL);
-    Element eLineColor = pVertex.element(LINECOLOR);
-    Element eLineStyle = pVertex.element(LINESTYLE);
-    Element eLineThickness = pVertex.element(LINETHICKNESS);
-    Element eFillcolor = pVertex.element(FILLCOLOR);
-    Element eIcon = pVertex.element(ICON);
-    Element eXPos = pVertex.element(XPOS);
-    Element eYPos = pVertex.element(YPOS);
-
-    String label = eLabel.getText();
-    String linecolor = eLineColor.getText();
-    String linestyle = eLineStyle.getText();
-    String linethickness = eLineThickness.getText();
-    double xPos = Double.parseDouble(eXPos.getText());
-    double yPos = Double.parseDouble(eYPos.getText());
-
-    Glyph icon = null;
-    if (eIcon != null) {
-      icon = Glyph.valueOf(eIcon.getText());
-    }
-    String fillcolor = null;
-    if (eFillcolor != null) {
-     fillcolor = eFillcolor.getText();
-    }
-    logger.debug("Finish building RelativVertex");
-    NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness,
-        fillcolor);
     return new DefaultVertex(vertexId, label, style, xPos, yPos, icon);
-
   }
 
   /**

@@ -112,16 +112,14 @@ public class Area extends Observable {
   /**
    * Returns particle with requested id.
    * 
-   * @param id
-   *          particle id
+   * @param vertexId
+   *          vertex id
    * @return Particle
    */
-  public synchronized Particle getParticleWithID(long id) {
-    Iterator<Particle> it = particles.iterator();
-    while (it.hasNext()) {
-      Particle p = (Particle) it.next();
-      if (id == p.getParticleId()) {
-        return p;
+  public synchronized Particle getParticleByVertexId(long vertexId) {
+    for (Particle particle : particles) {
+      if (vertexId == particle.getRelatedVertex().getId()) {
+        return particle;
       }
     }
     return null;
@@ -190,7 +188,7 @@ public class Area extends Observable {
     });
 
     // set is stable
-    boolean areaStable = particles.stream().allMatch(p -> p.positionFixed());
+    boolean areaStable = particles.stream().allMatch(p -> p.getRelatedVertex().isLayouted());
     setIsStable(areaStable);
   }
 

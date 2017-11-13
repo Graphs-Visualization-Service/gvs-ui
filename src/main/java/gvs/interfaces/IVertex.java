@@ -7,7 +7,7 @@ import gvs.util.FontAwesome.Glyph;
 
 public interface IVertex {
 
-  boolean isRelative();
+  boolean isFixedPositioned();
 
   String getLabel();
 
@@ -15,13 +15,13 @@ public interface IVertex {
 
   double getYPosition();
 
-  boolean isFixedPosition();
+  boolean isLayouted();
 
   void setXPosition(double position);
 
   void setYPosition(double position);
 
-  void setFixedPosition(boolean isFixed);
+  void setIsLayouted(boolean isFixed);
 
   long getId();
   

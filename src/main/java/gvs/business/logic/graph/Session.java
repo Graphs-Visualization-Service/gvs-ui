@@ -1,6 +1,7 @@
 package gvs.business.logic.graph;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
@@ -30,6 +31,7 @@ public class Session implements IGraphSessionController {
   private final long id;
   private final String sessionName;
   private final GraphHolder graphHolder;
+  private final List<Graph> graphs;
 
   private final GraphSessionReplayFactory sessionReplayFactory;
   private final Layouter layouter;
@@ -53,6 +55,7 @@ public class Session implements IGraphSessionController {
     this.id = sessionId;
     this.sessionName = sessionName;
     this.graphHolder = graphHolder;
+    this.graphs = new ArrayList<>();
   }
 
   /**
@@ -73,7 +76,7 @@ public class Session implements IGraphSessionController {
     }
 
     graphHolder.setCurrentGraph(graph);
-    graphHolder.addGraph(graph);
+    graphs.add(graph);
     logger.info("Added new graph with id {} to session {}", graph.getId(),
         getId());
   }
@@ -112,24 +115,9 @@ public class Session implements IGraphSessionController {
     timer.schedule(sessionReplay, timeout, timeout);
   }
 
-  /**
-   * Returns current graph model.
-   * 
-   * @return current graph model
-   */
   @Override
-  public Graph getCurrentGraph() {
-    return graphHolder.getCurrentGraph();
-  }
-
-  /**
-   * Sets current graph model.
-   * 
-   * @param currentGraph
-   *          new graph model
-   */
-  public void setCurrentGraph(Graph currentGraph) {
-    this.graphHolder.setCurrentGraph(currentGraph);
+  public GraphHolder getGraphHolder() {
+    return graphHolder;
   }
 
   /**
@@ -159,7 +147,7 @@ public class Session implements IGraphSessionController {
    */
   @Override
   public List<Graph> getGraphs() {
-    return graphHolder.getGraphs();
+    return graphs;
   }
 
   @Override

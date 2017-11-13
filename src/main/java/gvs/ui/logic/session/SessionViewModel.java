@@ -96,8 +96,8 @@ public class SessionViewModel implements Observer {
 
       // reset buttons
       disableAllButtons(false);
-      boolean isLayoutable = sessionHolder.getCurrentSession().getCurrentGraph()
-          .isLayoutable();
+      boolean isLayoutable = sessionHolder.getCurrentSession().getGraphHolder()
+          .getCurrentGraph().isLayoutable();
       autoLayoutBtnDisableProperty.set(!isLayoutable);
     });
   }
@@ -107,7 +107,8 @@ public class SessionViewModel implements Observer {
 
     Platform.runLater(() -> {
       if (currentSession != null) {
-        int currentPosition = currentSession.getCurrentGraph().getId();
+        int currentPosition = currentSession.getGraphHolder().getCurrentGraph()
+            .getId();
         int maxPosition = currentSession.getTotalGraphCount();
         totalGraphCountProperty.set(maxPosition);
         currentGraphIdProperty.set(currentPosition);

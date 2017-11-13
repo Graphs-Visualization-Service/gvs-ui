@@ -2,7 +2,7 @@ package gvs.interfaces;
 
 import java.io.File;
 
-import gvs.business.model.graph.Graph;
+import gvs.business.model.graph.GraphHolder;
 
 public interface ISession {
 
@@ -26,5 +26,5 @@ public interface ISession {
 
   int getTotalGraphCount();
 
-  Graph getCurrentGraph();
+  GraphHolder getGraphHolder();
 }

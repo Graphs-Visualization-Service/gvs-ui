@@ -170,7 +170,7 @@ public class Layouter implements Tickable {
     vertices.forEach(vertex -> {
       Point point = new Point();
 
-      if (!vertex.isLayouted()) {
+      if (!vertex.isStable()) {
         if (generateSoftPoints) {
           point = generateSoftPoints(vertex);
         } else {

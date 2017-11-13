@@ -21,7 +21,7 @@ public class DefaultVertex extends Observable implements IVertex {
   private NodeStyle style;
   private double xPosition;
   private double yPosition;
-  private boolean isLayouted;
+  private boolean isStable;
   private boolean isFixedPositioned;
 
   private final Glyph icon;
@@ -36,13 +36,13 @@ public class DefaultVertex extends Observable implements IVertex {
     this.label = label;
     this.xPosition = xPosition;
     this.yPosition = yPosition;
-    this.isLayouted = false;
+    this.isStable = false;
     this.icon = icon;
     this.style = style;
 
     if (xPosition > 0 && yPosition > 0) {
       this.isFixedPositioned = true;
-      this.isLayouted = true;
+      this.isStable = true;
     }
   }
 
@@ -69,12 +69,12 @@ public class DefaultVertex extends Observable implements IVertex {
     yPosition = position;
   }
 
-  public boolean isLayouted() {
-    return isLayouted;
+  public boolean isStable() {
+    return isStable;
   }
 
-  public void setIsLayouted(boolean isLayouted) {
-    this.isLayouted = isLayouted;
+  public void setIsStable(boolean isStable) {
+    this.isStable = isStable;
   }
 
   public boolean isFixedPositioned() {

@@ -188,7 +188,7 @@ public class Area extends Observable {
     });
 
     // set is stable
-    boolean areaStable = particles.stream().allMatch(p -> p.getRelatedVertex().isLayouted());
+    boolean areaStable = particles.stream().allMatch(p -> p.getRelatedVertex().isStable());
     setIsStable(areaStable);
   }
 

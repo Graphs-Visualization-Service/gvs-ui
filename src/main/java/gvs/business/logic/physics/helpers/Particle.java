@@ -52,7 +52,7 @@ public class Particle {
    *          acceleration vector
    */
   public void accelerate(AreaVector vector) {
-    if (!relatedVertex.isLayouted()) {
+    if (!relatedVertex.isStable()) {
       double scale = 1;
       if (weight >= 0) {
         scale = 1.0 / weight;
@@ -65,14 +65,14 @@ public class Particle {
    * Each time a ticker impuls happens, the newly calculated acceleration and
    * speed Vector are updated and the new particle position will be set
    * accordingly. If the speed of a particle is lower than a given value, its
-   * position is marked as is layouted.
+   * position is marked as is stable.
    */
   public void update() {
-    if (!relatedVertex.isLayouted()) {
+    if (!relatedVertex.isStable()) {
       speed.add(acceleration);
       particlePosition.addVector(speed);
       if (Math.abs(speed.getSpeedSummary()) < 0.2) {
-        relatedVertex.setIsLayouted(true);
+        relatedVertex.setIsStable(true);
       }
     }
     updateRelatedVertex();

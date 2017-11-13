@@ -8,7 +8,7 @@ public interface ISession {
 
   String getSessionName();
 
-  long getSessionId();
+  long getId();
 
   void replay(long timeout, Action completionCallback);
 

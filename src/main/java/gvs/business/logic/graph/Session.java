@@ -1,11 +1,8 @@
 package gvs.business.logic.graph;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
-
-import javax.annotation.Nullable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +19,7 @@ import gvs.interfaces.Action;
 import gvs.interfaces.IGraphSessionController;
 
 /**
- * The session contoller reacts on user input events and implements most of the
+ * The session controller reacts on user input events and implements most of the
  * visualization logic. It observes the LayoutController.
  * 
  * @author aegli
@@ -30,12 +27,11 @@ import gvs.interfaces.IGraphSessionController;
  */
 public class Session implements IGraphSessionController {
 
-  private long sessionId;
-  private String sessionName;
-  private List<Graph> graphs;
+  private final long id;
+  private final String sessionName;
+  private final GraphHolder graphHolder;
 
   private final GraphSessionReplayFactory sessionReplayFactory;
-  private final GraphHolder graphHolder;
   private final Layouter layouter;
   private final Persistor persistor;
   private final LayoutMonitor layoutMonitor;
@@ -45,36 +41,18 @@ public class Session implements IGraphSessionController {
   @Inject
   public Session(GraphHolder graphHolder, Persistor persistor,
       Layouter layouter, LayoutMonitor layoutMonitor,
-      GraphSessionReplayFactory replayFactory, @Assisted long pSessionId,
-      @Assisted String pSessionName, @Assisted @Nullable List<Graph> graphs) {
+      GraphSessionReplayFactory replayFactory, @Assisted long sessionId,
+      @Assisted String sessionName) {
 
     logger.info("Instantiating new graph session.");
     this.sessionReplayFactory = replayFactory;
-    this.graphHolder = graphHolder;
     this.persistor = persistor;
     this.layouter = layouter;
     this.layoutMonitor = layoutMonitor;
 
-    this.graphs = graphs;
-    this.sessionId = pSessionId;
-    this.sessionName = pSessionName;
-
-    // GraphId needs to be set and incremented as soon as they are added to a
-    // session
-    if (graphs != null) {
-      if (graphs.size() >= 1) {
-        int graphId = 0;
-        for (Graph g : graphs) {
-          if (g.getId() == 0) {
-            g.setId(++graphId);
-          }
-        }
-        graphHolder.setCurrentGraph(graphs.get(graphs.size() - 1));
-      }
-    } else {
-      logger.info("Build empty graph session");
-      this.graphs = new ArrayList<>();
-    }
+    this.id = sessionId;
+    this.sessionName = sessionName;
+    this.graphHolder = graphHolder;
   }
 
   /**
@@ -85,17 +63,19 @@ public class Session implements IGraphSessionController {
    */
   @Override
   public void addGraph(Graph graph) {
-    logger.info("New graph arrived");
 
-    if (graphs.size() == 0) {
+    int numberOfGraphs = getGraphs().size();
+    if (numberOfGraphs == 0) {
       graph.setId(1);
     } else {
-      Graph previousGraph = graphs.get(graphs.size() - 1);
+      Graph previousGraph = getGraphs().get(numberOfGraphs - 1);
       graph.setId(previousGraph.getId() + 1);
     }
 
     graphHolder.setCurrentGraph(graph);
-    graphs.add(graph);
+    graphHolder.addGraph(graph);
+    logger.info("Added new graph with id {} to session {}", graph.getId(),
+        getId());
   }
 
   @Override
@@ -106,7 +86,7 @@ public class Session implements IGraphSessionController {
 
       Graph currentGraph = graphHolder.getCurrentGraph();
       currentGraph.getVertices().forEach(v -> {
-        v.setFixedPosition(false);
+        v.setIsLayouted(false);
       });
 
       // TODO isSoftLayout is always false -> check usage
@@ -125,9 +105,10 @@ public class Session implements IGraphSessionController {
   @Override
   public void replay(long timeout, Action finishedCallback) {
     logger.info("Replaying current session");
-    Timer timer = new Timer();
-    GraphSessionReplay sessionReplay = sessionReplayFactory.create(this, graphs,
+    SessionReplay sessionReplay = sessionReplayFactory.create(this,
         finishedCallback);
+
+    Timer timer = new Timer();
     timer.schedule(sessionReplay, timeout, timeout);
   }
 
@@ -164,11 +145,11 @@ public class Session implements IGraphSessionController {
   /**
    * Returns session id.
    * 
-   * @return clientSessionId
+   * @return session id
    */
   @Override
-  public long getSessionId() {
-    return this.sessionId;
+  public long getId() {
+    return this.id;
   }
 
   /**
@@ -178,7 +159,7 @@ public class Session implements IGraphSessionController {
    */
   @Override
   public List<Graph> getGraphs() {
-    return graphs;
+    return graphHolder.getGraphs();
   }
 
   @Override
@@ -190,7 +171,7 @@ public class Session implements IGraphSessionController {
   public void changeCurrentGraphToNext() {
     int nextGraphId = graphHolder.getCurrentGraph().getId() + 1;
     if (validIndex(nextGraphId)) {
-      graphHolder.setCurrentGraph(graphs.get(nextGraphId - 1));
+      graphHolder.setCurrentGraph(getGraphs().get(nextGraphId - 1));
     }
   }
 
@@ -198,39 +179,39 @@ public class Session implements IGraphSessionController {
   public void changeCurrentGraphToPrev() {
     int prevGraphId = graphHolder.getCurrentGraph().getId() - 1;
     if (validIndex(prevGraphId)) {
-      graphHolder.setCurrentGraph(graphs.get(prevGraphId - 1));
+      graphHolder.setCurrentGraph(getGraphs().get(prevGraphId - 1));
     }
   }
 
   private boolean validIndex(int i) {
-    return i > 0 && i <= graphs.size();
+    return i > 0 && i <= getGraphs().size();
   }
 
   @Override
   public void changeCurrentGraphToFirst() {
-    if (!graphs.isEmpty()) {
-      graphHolder.setCurrentGraph(graphs.get(0));
+    if (!getGraphs().isEmpty()) {
+      graphHolder.setCurrentGraph(getGraphs().get(0));
     }
   }
 
   @Override
   public void changeCurrentGraphToLast() {
-    int newIndex = graphs.size() - 1;
+    int newIndex = getGraphs().size() - 1;
     if (validIndex(newIndex)) {
-      graphHolder.setCurrentGraph(graphs.get(newIndex));
+      graphHolder.setCurrentGraph(getGraphs().get(newIndex));
     }
   }
 
   @Override
   public int getTotalGraphCount() {
-    return graphs.size();
+    return getGraphs().size();
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + (int) (sessionId ^ (sessionId >>> 32));
+    result = prime * result + (int) (id ^ (id >>> 32));
     return result;
   }
 
@@ -246,7 +227,7 @@ public class Session implements IGraphSessionController {
       return false;
     }
     Session other = (Session) obj;
-    if (sessionId != other.sessionId) {
+    if (id != other.id) {
       return false;
     }
     return true;

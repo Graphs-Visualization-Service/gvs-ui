@@ -254,7 +254,8 @@ public class TreeSessionController extends Observable
   /**
    * Returns actaul session id
    */
-  public long getSessionId() {
+  @Override
+  public long getId() {
     return clientSessionId;
   }
 

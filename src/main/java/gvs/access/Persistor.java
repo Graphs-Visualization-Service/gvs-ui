@@ -12,7 +12,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import org.dom4j.Document;
@@ -28,8 +30,8 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.business.logic.graph.GraphSessionFactory;
 import gvs.business.logic.graph.Session;
+import gvs.business.logic.graph.SessionFactory;
 import gvs.business.logic.tree.TreeSessionController;
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
@@ -90,13 +92,13 @@ public class Persistor {
   private static final String RIGTHCHILD = "Rigthchild";
   private static final String LEFTCHILD = "Leftchild";
 
-  private Configuration configuration;
-  private final GraphSessionFactory graphSessionFactory;
+  private final Configuration configuration;
+  private final SessionFactory graphSessionFactory;
 
   private static final Logger logger = LoggerFactory.getLogger(Persistor.class);
 
   @Inject
-  public Persistor(GraphSessionFactory graphSessionFactory) {
+  public Persistor(SessionFactory graphSessionFactory) {
     this.graphSessionFactory = graphSessionFactory;
     configuration = Configuration.getInstance();
   }
@@ -165,7 +167,7 @@ public class Persistor {
   private void addIdAndLabel(Element sessionElement,
       ISession sessionController) {
     sessionElement.addAttribute(ATTRIBUTEID,
-        String.valueOf(sessionController.getSessionId()));
+        String.valueOf(sessionController.getId()));
     Element sessionNameElement = sessionElement.addElement(LABEL);
     sessionNameElement.addText(sessionController.getSessionName());
   }
@@ -186,35 +188,17 @@ public class Persistor {
   }
 
   private void saveGraphModel(Graph graph, Element pSession) {
-    Element eGraphModel = pSession.addElement(GRAPHMODEL);
-    eGraphModel.addAttribute(ATTRIBUTEID, String.valueOf(graph.getId()));
-    Element eGraphLabel = eGraphModel.addElement(LABEL);
-    eGraphLabel.addText(graph.getSnapshotDescription());
-    Element eBackground = eGraphModel.addElement(BACKGROUND);
-    String backgroundName = null;
+    Element graphElement = pSession.addElement(GRAPHMODEL);
+    graphElement.addAttribute(ATTRIBUTEID, String.valueOf(graph.getId()));
+    Element graphLabelElement = graphElement.addElement(LABEL);
+    graphLabelElement.addText(graph.getSnapshotDescription());
 
-    // TODO check background support
-    // if (graph.isHasBackgroundImage()) {
-    // Image tempImage = graph.getBackgroundImage();
-    // backgroundName = configuration.getBackgroundName(tempImage);
-    // } else {
-    // Color tempColor = graph.getBackgroundColor();
-    // backgroundName = configuration.getColorName(tempColor);
-    // }
-    if (backgroundName == null || backgroundName == "") {
-      backgroundName = STANDARD;
-    }
-    eBackground.addText(backgroundName);
-    Element eMaxLabelLength = eGraphModel.addElement(MAXLABELLENGTH);
-    eMaxLabelLength.addText(String.valueOf(graph.getMaxLabelLength()));
-
-    Element eVertizes = eGraphModel.addElement(VERTIZES);
+    Element vertexElements = graphElement.addElement(VERTIZES);
     graph.getVertices().forEach(v -> {
-      saveDefaultVertex((DefaultVertex) v, eVertizes);
+      saveDefaultVertex((DefaultVertex) v, vertexElements);
     });
-    Element eEdges = eGraphModel.addElement(EDGES);
-    graph.getEdges().forEach(e -> saveEdge(e, eEdges));
-
+    Element edgeElements = graphElement.addElement(EDGES);
+    graph.getEdges().forEach(edge -> saveEdge(edge, edgeElements));
   }
 
   private void saveTreeModel(Tree pModel, Element pSession) {
@@ -240,7 +224,7 @@ public class Persistor {
   private void saveDefaultVertex(DefaultVertex pVertex, Element pVertizes) {
     String vertexName = null;
 
-    if (pVertex.isRelative()) {
+    if (pVertex.isFixedPositioned()) {
       vertexName = RELATIVVERTEX;
     } else {
       vertexName = DEFAULTVERTEX;
@@ -270,24 +254,24 @@ public class Persistor {
   /*
    * Creates the Edge element
    */
-  private void saveEdge(IEdge pEdge, Element pEdges) {
-    Element eEdge = pEdges.addElement(EDGE);
-    eEdge.addAttribute(ISDIRECTED, String.valueOf(pEdge.isDirected()));
+  private void saveEdge(IEdge pEdge, Element edgesElement) {
+    Element edgeElement = edgesElement.addElement(EDGE);
+    edgeElement.addAttribute(ISDIRECTED, String.valueOf(pEdge.isDirected()));
 
-    Element eLabel = eEdge.addElement(LABEL);
+    Element eLabel = edgeElement.addElement(LABEL);
     eLabel.addText(pEdge.getLabel());
 
-    Element eLineColor = eEdge.addElement(LINECOLOR);
+    Element eLineColor = edgeElement.addElement(LINECOLOR);
     eLineColor.addText(pEdge.getStyle().getLineColor().getColor());
 
-    Element eLineStyle = eEdge.addElement(LINESTYLE);
+    Element eLineStyle = edgeElement.addElement(LINESTYLE);
     eLineStyle.addText(pEdge.getStyle().getLineStyle().getStyle());
-    Element eLineThick = eEdge.addElement(LINETHICKNESS);
+    Element eLineThick = edgeElement.addElement(LINETHICKNESS);
     eLineThick.addText(pEdge.getStyle().getLineThickness().getThickness());
 
-    Element eFromVertex = eEdge.addElement(FROMVERTEX);
+    Element eFromVertex = edgeElement.addElement(FROMVERTEX);
     eFromVertex.addText(String.valueOf(pEdge.getStartVertex().getId()));
-    Element eToVertex = eEdge.addElement(TOVERTEX);
+    Element eToVertex = edgeElement.addElement(TOVERTEX);
     eToVertex.addText(String.valueOf(pEdge.getEndVertex().getId()));
   }
 
@@ -328,62 +312,42 @@ public class Persistor {
     }
   }
 
-  private Session loadGraphSession(Element pGraphSession) {
+  private Session loadGraphSession(Element graphElements) {
     logger.info("Parsing Graph from XML.");
-    Vector<Graph> graphs = new Vector<>();
-    Element eSessionName = pGraphSession.element(LABEL);
-    String sessionName = eSessionName.getText();
-    long sessionId = Long.parseLong(pGraphSession.attributeValue(ATTRIBUTEID));
 
-    Iterator<Element> modelIt = pGraphSession.elementIterator();
-    while (modelIt.hasNext()) {
-      Element eGraphModel = (Element) modelIt.next();
-      if (eGraphModel.getName().equals(GRAPHMODEL)) {
-        int graphId = Integer.parseInt(eGraphModel.attributeValue(ATTRIBUTEID));
-        Element eBackground = eGraphModel.element(BACKGROUND);
-        String graphBackground = eBackground.getText();
-        Element eMaxLabelLength = eGraphModel.element(MAXLABELLENGTH);
-        String maxLabelLengthString = eMaxLabelLength.getText();
+    long sessionId = Long.parseLong(graphElements.attributeValue(ATTRIBUTEID));
+    String sessionName = graphElements.element(LABEL).getText();
+    Session session = graphSessionFactory.create(sessionId, sessionName);
 
-        Vector<IVertex> vertizes = new Vector<IVertex>();
-        Element eVertizes = eGraphModel.element(VERTIZES);
-        Iterator<Element> vertizesIt = eVertizes.elementIterator();
-        while (vertizesIt.hasNext()) {
-          Element eVertex = (vertizesIt.next());
-          if (eVertex.getName().equals(DEFAULTVERTEX)) {
-            vertizes.add(loadDefaultVertex(eVertex));
-          } else if (eVertex.getName().equals(RELATIVVERTEX)) {
-            vertizes.add(loadRelativVertex(eVertex));
+    graphElements.elements().forEach(graphElement -> {
+
+      if (graphElement.getName().equals(GRAPHMODEL)) {
+
+        List<IVertex> vertizes = new ArrayList<>();
+        Element vertexElements = graphElement.element(VERTIZES);
+        vertexElements.elements().forEach(vertexElement -> {
+          if (vertexElement.getName().equals(DEFAULTVERTEX)) {
+            vertizes.add(loadDefaultVertex(vertexElement));
+          } else if (vertexElement.getName().equals(RELATIVVERTEX)) {
+            vertizes.add(loadRelativVertex(vertexElement));
           }
-        }
+        });
 
-        Vector<IEdge> edges = new Vector<IEdge>();
-        Element eEdges = eGraphModel.element(EDGES);
-        Iterator<Element> edgesIt = eEdges.elementIterator();
-        while (edgesIt.hasNext()) {
-          Element eEdge = (edgesIt.next());
-          edges.add(loadEdge(eEdge, vertizes));
-        }
+        List<IEdge> edges = new ArrayList<>();
+        Element edgeElements = graphElement.element(EDGES);
+        edgeElements.elements().forEach(edgeElement -> {
+          edges.add(loadEdge(edgeElement, vertizes));
+        });
 
-        int maxLabelLength = Integer.parseInt(maxLabelLengthString);
+        int graphId = Integer
+            .parseInt(graphElement.attributeValue(ATTRIBUTEID));
         Graph newGraph = new Graph(vertizes, edges);
-        newGraph.setMaxLabelLength(maxLabelLength);
 
-        // TODO background image support?
-        // Image graphImage = typs.getBackgroundImage(graphBackground);
-        // if (graphImage == null) {
-        // Color defaultColor = configuration.getColor(graphBackground, true);
-        // gm = new Graph(graphLabel, defaultColor, vertizes, edges,
-        // Integer.parseInt(maxLabelLength));
-        // } else {
-        // gm = new Graph(graphLabel, graphImage, vertizes, edges,
-        // Integer.parseInt(maxLabelLength));
-        // }
-
-        graphs.add(newGraph);
+        session.addGraph(newGraph);
       }
-    }
-    return graphSessionFactory.create(sessionId, sessionName, graphs);
+    });
+
+    return session;
   }
 
   private TreeSessionController loadTreeSession(Element pTreeSession) {
@@ -449,31 +413,45 @@ public class Persistor {
     return new TreeSessionController(sessionId, sessionName, treeModels);
   }
 
-  private IVertex loadDefaultVertex(Element pVertex) {
-    long vertexId = Long.parseLong(pVertex.attributeValue(ATTRIBUTEID));
-    Element eLabel = pVertex.element(LABEL);
-    Element eLineColor = pVertex.element(LINECOLOR);
-    Element eLineStyle = pVertex.element(LINESTYLE);
-    Element eLineThickness = pVertex.element(LINETHICKNESS);
-    Element eFillcolor = pVertex.element(FILLCOLOR);
-    Element eIcon = pVertex.element(ICON);
-    Element eXpos = pVertex.element(XPOS);
-    Element eYpos = pVertex.element(YPOS);
-
-    String label = eLabel.getText();
-    String linecolor = eLineColor.getText();
-    String linestyle = eLineStyle.getText();
-    String linethickness = eLineThickness.getText();
-    double xpos = Double.parseDouble(eXpos.getText());
-    double ypos = Double.parseDouble(eYpos.getText());
-    String fillcolor = eFillcolor.getText();
-    Glyph icon = null;
-    if (eIcon != null) {
-      icon = Glyph.valueOf(eIcon.getText());
+  private IVertex loadDefaultVertex(Element vertexElement) {
+    double xPos = 0;
+    double yPos = 0;
+    if (vertexElement.getName().equals(RELATIVVERTEX)) {
+      Element xPositionElement = vertexElement.element(XPOS);
+      xPos = Double.parseDouble(xPositionElement.getText());
+      Element yPositionElement = vertexElement.element(YPOS);
+      yPos = Double.parseDouble(yPositionElement.getText());
     }
-    NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness,
+
+    Element labelElement = vertexElement.element(LABEL);
+    String label = labelElement.getText();
+
+    Element lineColorElement = vertexElement.element(LINECOLOR);
+    String linecolor = lineColorElement.getText();
+
+    Element lineStyleElement = vertexElement.element(LINESTYLE);
+    String lineStyle = lineStyleElement.getText();
+
+    Element lineThicknessElement = vertexElement.element(LINETHICKNESS);
+    String lineThickness = lineThicknessElement.getText();
+
+    Element iconElement = vertexElement.element(ICON);
+    Glyph icon = null;
+    if (iconElement != null) {
+      icon = Glyph.valueOf(iconElement.getText());
+    }
+
+    Element fillColorElement = vertexElement.element(FILLCOLOR);
+    String fillcolor = null;
+    if (fillColorElement != null) {
+      fillcolor = fillColorElement.getText();
+    }
+
+    long vertexId = Long.parseLong(vertexElement.attributeValue(ATTRIBUTEID));
+    NodeStyle style = new NodeStyle(linecolor, lineStyle, lineThickness,
         fillcolor);
-    return new DefaultVertex(vertexId, label, style, xpos, ypos, false, icon);
+    logger.info("Finish building DefaultVertex");
+    return new DefaultVertex(vertexId, label, style, xPos, yPos, icon);
   }
 
   private IVertex loadRelativVertex(Element pVertex) {
@@ -503,14 +481,14 @@ public class Persistor {
     return new DefaultVertex(vertexId, label, style, xPos, yPos, icon);
   }
 
-  private IEdge loadEdge(Element pEdge, Vector<IVertex> pVertizes) {
-    String isDirected = pEdge.attributeValue(ISDIRECTED);
-    Element eLabel = pEdge.element(LABEL);
-    Element eLineColor = pEdge.element(LINECOLOR);
-    Element eLineStyle = pEdge.element(LINESTYLE);
-    Element eLineThickness = pEdge.element(LINETHICKNESS);
-    Element eFromVertex = pEdge.element(FROMVERTEX);
-    Element eToVertex = pEdge.element(TOVERTEX);
+  private IEdge loadEdge(Element edgeElement, List<IVertex> vertices) {
+    String isDirected = edgeElement.attributeValue(ISDIRECTED);
+    Element eLabel = edgeElement.element(LABEL);
+    Element eLineColor = edgeElement.element(LINECOLOR);
+    Element eLineStyle = edgeElement.element(LINESTYLE);
+    Element eLineThickness = edgeElement.element(LINETHICKNESS);
+    Element eFromVertex = edgeElement.element(FROMVERTEX);
+    Element eToVertex = edgeElement.element(TOVERTEX);
 
     String label = eLabel.getText();
     String linecolor = eLineColor.getText();
@@ -522,7 +500,7 @@ public class Persistor {
     IVertex fromVertex = null;
     IVertex toVertex = null;
 
-    Iterator<IVertex> searchVertex = pVertizes.iterator();
+    Iterator<IVertex> searchVertex = vertices.iterator();
     while (searchVertex.hasNext()) {
       IVertex tmp = (searchVertex.next());
       if (tmp.getId() == fromVertexId) {

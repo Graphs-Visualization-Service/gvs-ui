@@ -11,8 +11,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.access.Persistor;
-import gvs.business.logic.graph.GraphSessionFactory;
 import gvs.business.logic.graph.Session;
+import gvs.business.logic.graph.SessionFactory;
 import gvs.business.logic.tree.TreeSessionController;
 import gvs.business.model.SessionHolder;
 import gvs.business.model.graph.Graph;
@@ -30,7 +30,7 @@ import gvs.interfaces.ITreeSessionController;
 @Singleton
 public class ApplicationController {
 
-  private final GraphSessionFactory graphSessionFactory;
+  private final SessionFactory sessionFactory;
   private final Persistor persistor;
   private final SessionHolder sessionHolder;
 
@@ -49,11 +49,11 @@ public class ApplicationController {
    */
   @Inject
   public ApplicationController(SessionHolder sessionHolder, Persistor persistor,
-      GraphSessionFactory graphSessionFactory) {
+      SessionFactory graphSessionFactory) {
 
     this.sessionHolder = sessionHolder;
     this.persistor = persistor;
-    this.graphSessionFactory = graphSessionFactory;
+    this.sessionFactory = graphSessionFactory;
   }
 
   /**
@@ -101,7 +101,7 @@ public class ApplicationController {
       // when the last session is deleted, create empty dummy controller
       // otherwise session-bindings for UI would have to be unbound etc.
       logger.debug("Set empty graph session");
-      sessionHolder.setCurrentSession(graphSessionFactory.create(-1, "", null));
+      sessionHolder.setCurrentSession(sessionFactory.create(-1, ""));
     }
   }
 
@@ -125,7 +125,7 @@ public class ApplicationController {
     boolean isSessionExisting = false;
     while (sessionIt.hasNext()) {
       ISession sc = (ISession) (sessionIt.next());
-      if (sc.getSessionId() == pId) {
+      if (sc.getId() == pId) {
         logger.debug("Add tree to exsting session");
         ((ITreeSessionController) sc).addTreeModel(pTreeModel);
         isSessionExisting = true;
@@ -159,7 +159,7 @@ public class ApplicationController {
 
     boolean isSessionExisting = false;
     for (ISession session : sessionHolder.getSessions()) {
-      if (session.getSessionId() == sessionId) {
+      if (session.getId() == sessionId) {
 
         logger.info("Add graph to exsting session");
         Session existingSession = (Session) session;
@@ -173,10 +173,8 @@ public class ApplicationController {
     if (!isSessionExisting) {
       logger.info("Create new session");
 
-      List<Graph> graphs = new ArrayList<>();
-      graphs.add(graph);
-      Session newSession = graphSessionFactory.create(sessionId, sessionName,
-          graphs);
+      Session newSession = sessionFactory.create(sessionId, sessionName);
+      newSession.addGraph(graph);
       newSession.layoutCurrentGraph(null);
 
       sessionHolder.addSession(newSession);

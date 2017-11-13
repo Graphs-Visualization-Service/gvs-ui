@@ -123,11 +123,11 @@ public class Persistor {
     File input = new File(pPath);
     Document documentToRead = null;
     SAXReader reader = new SAXReader();
-    ISession sessionController = null;
+    ISession session = null;
     try {
       documentToRead = reader.read(input);
     } catch (DocumentException e) {
-      e.printStackTrace();
+      logger.error("Unable to read file {}", pPath);
     }
     Element docRoot = documentToRead.getRootElement();
     Iterator<Element> contentIt = docRoot.elementIterator();
@@ -135,15 +135,15 @@ public class Persistor {
       Element eTag = (contentIt.next());
       if (GRAPH.equals(eTag.getName())) {
         logger.info("It's a graph");
-        sessionController = loadGraphSession(eTag);
+        session = loadGraphSession(eTag);
         break;
       } else if (eTag.getName().equals(TREE)) {
         logger.info("It's a tree");
-        sessionController = loadTreeSession(eTag);
+        session = loadTreeSession(eTag);
         break;
       }
     }
-    return sessionController;
+    return session;
   }
 
   // ************************************SAVER AND

@@ -93,7 +93,12 @@ public class SessionViewModel implements Observer {
     Platform.runLater(() -> {
       logger.info("Current session changed...");
       updateStepProperties();
+
+      // reset buttons
       disableAllButtons(false);
+      boolean isLayoutable = sessionHolder.getCurrentSession().getCurrentGraph()
+          .isLayoutable();
+      autoLayoutBtnDisableProperty.set(!isLayoutable);
     });
   }
 

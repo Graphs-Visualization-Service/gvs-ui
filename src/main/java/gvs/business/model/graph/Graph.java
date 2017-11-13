@@ -13,7 +13,7 @@ import gvs.interfaces.IVertex;
 /**
  * Represents a graph
  * 
- * @author mWieland
+ * @author mwieland
  *
  */
 public class Graph {
@@ -27,6 +27,8 @@ public class Graph {
   private Color backgroundColor;
   private int maxLabelLength;
   private boolean hasBackgroundImage;
+
+  private final boolean isLayoutable;
 
   private static final Logger logger = LoggerFactory.getLogger(Graph.class);
 
@@ -49,10 +51,12 @@ public class Graph {
     this.snapshotDescription = "";
     this.maxLabelLength = 0;
     this.hasBackgroundImage = false;
+
+    this.isLayoutable = getVertices().stream().noneMatch(v -> v.isRelative());
   }
 
-  public boolean doLayout() {
-    return getVertices().stream().noneMatch(v -> v.isRelative());
+  public boolean isLayoutable() {
+    return isLayoutable;
   }
 
   public Collection<IVertex> getVertices() {

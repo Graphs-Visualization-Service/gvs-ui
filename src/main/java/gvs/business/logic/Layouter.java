@@ -70,17 +70,6 @@ public class Layouter implements Tickable {
     this.area = new Area(
         new AreaDimension(DEFAULT_AREA_WIDTH, DEFAULT_AREA_HEIGHT));
     this.random = new Random(DEFAULT_SEED);
-
-    initializeLayoutGuard();
-  }
-
-  /**
-   * Initializes the guard, which protects the layouter from running endlessly.
-   */
-  private void initializeLayoutGuard() {
-    Timer guard = new Timer();
-    LayoutGuard layoutGuard = new LayoutGuard(area);
-    guard.schedule(layoutGuard, MAX_LAYOUT_DURATION_MS);
   }
 
   /**
@@ -98,11 +87,22 @@ public class Layouter implements Tickable {
     if (graph.isLayoutable()) {
 
       this.completionCallback = completionCallback;
+
+      initializeLayoutGuard();
       handleTickerThread();
 
       resetArea();
       calculatLayout(graph, useSoftPoints);
     }
+  }
+
+  /**
+   * Initializes the guard, which protects the layouter from running endlessly.
+   */
+  private void initializeLayoutGuard() {
+    Timer guard = new Timer();
+    LayoutGuard layoutGuard = new LayoutGuard(area);
+    guard.schedule(layoutGuard, MAX_LAYOUT_DURATION_MS);
   }
 
   private void resetArea() {

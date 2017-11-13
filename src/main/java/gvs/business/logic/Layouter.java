@@ -44,17 +44,19 @@ public class Layouter implements Tickable {
   private final Area area;
   private final Random random;
 
+  private static final int FACTOR = 3;
+  
   private static final int DEFAULT_MASS = 40;
   private static final int SOFT_MULTIPLIER = 10;
   private static final int FIXED_MULTIPLIER = 10;
-  private static final int DEFAULT_DISTANCE = 300;
+  private static final int DEFAULT_DISTANCE = 300 * FACTOR;
   private static final int DEFAULT_IMPACT = 10;
 
-  private static final int MAX_LAYOUT_DURATION_MS = 10000;
+  private static final int MAX_LAYOUT_DURATION_MS = 10_000;
   private static final int DEFAULT_TICK_RATE = 50;
 
-  private static final int DEFAULT_AREA_HEIGHT = 1300;
-  private static final int DEFAULT_AREA_WIDTH = 1600;
+  private static final int DEFAULT_AREA_HEIGHT = 600 * FACTOR;
+  private static final int DEFAULT_AREA_WIDTH = 800 * FACTOR;
 
   private static final int DEFAULT_SEED = 4000;
 
@@ -92,7 +94,7 @@ public class Layouter implements Tickable {
       Action completionCallback) {
     logger.info("Received new data to layout");
 
-    if (graph.doLayout()) {
+    if (graph.isLayoutable()) {
 
       this.completionCallback = completionCallback;
       handleTickerThread();

@@ -53,14 +53,15 @@ public class VertexViewModel implements Observer {
     }
     node.setText(vertex.getLabel());
     node.setCursor(Cursor.HAND);
-    
+
+    updateCoordinates(vertex.getXPosition(), vertex.getYPosition());
+
     // bidirectional connection
     this.vertex = vertex;
     this.vertex.addObserver(this);
     node.layoutXProperty().addListener(this::xProperyListener);
     node.layoutYProperty().addListener(this::yProperyListener);
-    updateCoordinates();
-    
+
     setStyles();
   }
 
@@ -70,17 +71,18 @@ public class VertexViewModel implements Observer {
     node.getStyleClass().add("line-" + style.getLineColor().getColor());
     node.getStyleClass().add(style.getLineStyle().getStyle() + "-"
         + style.getLineThickness().getThickness());
-    node.getStyleClass().add("fill-"+style.getFillColor().getColor());
-    //TODO: find nicer method, maybe use getContrastColor()
+    node.getStyleClass().add("fill-" + style.getFillColor().getColor());
+    // TODO: find nicer method, maybe use getContrastColor()
     if (style.getDarkColors().contains(style.getFillColor())) {
       node.textFillProperty().set(Color.WHITE);
     }
   }
-  
-//  private static Color getContrastColor(Color color) {
-//    double y = (299 * color.getRed() + 587 * color.getGreen() + 114 * color.getBlue()) / 1000;
-//    return y >= 128 ? Color.BLACK : Color.WHITE;
-//  }
+
+  // private static Color getContrastColor(Color color) {
+  // double y = (299 * color.getRed() + 587 * color.getGreen() + 114 *
+  // color.getBlue()) / 1000;
+  // return y >= 128 ? Color.BLACK : Color.WHITE;
+  // }
 
   /**
    * Inform the business logic {@link DefaultVertex} about changes, made in the
@@ -137,15 +139,10 @@ public class VertexViewModel implements Observer {
     // Hand updates over to JavaFX Thread
     Platform.runLater(() -> {
       // logger level debug, because this will happen very often when layouting
-      logger.debug("Updating VertexViewModel coordinates");
-      updateCoordinates();
+      updateCoordinates(vertex.getXPosition(), vertex.getYPosition());
     });
   }
 
-  private void updateCoordinates() {
-    updateCoordinates(vertex.getXPosition(), vertex.getYPosition());
-  }
-  
   private void updateCoordinates(double x, double y) {
     Dimension dim = StringSizeCalculator.calculate(node.getText(),
         node.getFont());
@@ -186,8 +183,8 @@ public class VertexViewModel implements Observer {
       newY = checkYBoundaries(l, newY, p);
 
       updateCoordinates(newX, newY);
-//      l.setLayoutX(newX);
-//      l.setLayoutY(newY);
+      // l.setLayoutX(newX);
+      // l.setLayoutY(newY);
 
       dragOriginalSceneX = e.getSceneX();
       dragOriginalSceneY = e.getSceneY();
@@ -196,7 +193,7 @@ public class VertexViewModel implements Observer {
 
   private double checkXBoundaries(Label node, double newX,
       ScalableContentPane p) {
-    double minimum = node.getWidth()/2;
+    double minimum = node.getWidth() / 2;
     double maximumX = p.getBoundsInLocal().getWidth();
 
     if (newX < minimum) {
@@ -210,7 +207,7 @@ public class VertexViewModel implements Observer {
 
   private double checkYBoundaries(Label node, double newY,
       ScalableContentPane p) {
-    double minimum = node.getHeight()/2;
+    double minimum = node.getHeight() / 2;
     double maximumY = p.getBoundsInLocal().getHeight();
 
     if (newY < minimum) {

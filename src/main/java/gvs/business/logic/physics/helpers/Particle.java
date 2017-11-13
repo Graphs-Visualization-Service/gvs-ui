@@ -111,8 +111,9 @@ public class Particle {
    *
    */
   public void updateRelatedVertex() {
-    relatedVertex.setXPosition(particlePosition.getX() / 10);
-    relatedVertex.setYPosition(particlePosition.getY() / 10);
+    double newX = particlePosition.getX() / 10;
+    double newY = particlePosition.getY() / 10;
+    relatedVertex.updateCoordinates(newX, newY);
   }
 
 }

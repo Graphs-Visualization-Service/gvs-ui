@@ -15,6 +15,8 @@ public interface IVertex {
 
   double getYPosition();
 
+  void updateCoordinates(double xPos, double yPos);
+
   boolean isLayouted();
 
   void setXPosition(double position);
@@ -24,11 +26,11 @@ public interface IVertex {
   void setIsLayouted(boolean isFixed);
 
   long getId();
-  
+
   Glyph getIcon();
 
   NodeStyle getStyle();
-  
+
   void addObserver(Observer o);
-  
+
 }

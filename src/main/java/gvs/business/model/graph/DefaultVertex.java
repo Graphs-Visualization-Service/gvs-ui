@@ -50,10 +50,15 @@ public class DefaultVertex extends Observable implements IVertex {
     return xPosition;
   }
 
-  public void setXPosition(double position) {
-    xPosition = position;
+  public void updateCoordinates(double xPos, double yPos) {
+    xPosition = xPos;
+    yPosition = yPos;
     setChanged();
     notifyObservers();
+  }
+
+  public void setXPosition(double position) {
+    xPosition = position;
   }
 
   public double getYPosition() {
@@ -62,8 +67,6 @@ public class DefaultVertex extends Observable implements IVertex {
 
   public void setYPosition(double position) {
     yPosition = position;
-    setChanged();
-    notifyObservers();
   }
 
   public boolean isLayouted() {

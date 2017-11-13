@@ -15,29 +15,20 @@ import com.google.inject.assistedinject.Assisted;
 public class AreaTicker extends Thread {
 
   private double delay;
-  private double desiredRate;
-
-  private HitsPerSecond hitsPerSecond;
   private Tickable callbackTickable;
 
   private volatile boolean stop;
 
-  private static final String THREAD_NAME = "Area Ticker Thread";
+  private static final String THREAD_NAME = "Area Ticker Thread ";
 
   private static final Logger logger = LoggerFactory
       .getLogger(AreaTicker.class);
 
   @Inject
-  public AreaTicker(@Assisted Tickable tickable, @Assisted double desiredRate) {
-    super(THREAD_NAME);
-
-    double maxRate = Math.max(5.0, desiredRate);
-    double minRate = Math.min(50, maxRate);
-
-    this.desiredRate = minRate;
-    this.delay = (1000 / minRate);
+  public AreaTicker(@Assisted Tickable tickable, @Assisted double tickRate) {
+    int oneSecond = 1000;
+    this.delay = (oneSecond / tickRate);
     this.callbackTickable = tickable;
-    this.hitsPerSecond = new HitsPerSecond(10);
 
     setPriority(Thread.MIN_PRIORITY);
   }
@@ -51,16 +42,11 @@ public class AreaTicker extends Thread {
 
   @Override
   public void run() {
+    setName(THREAD_NAME + getId());
+
     while (!stop) {
       try {
-        double rate = hitsPerSecond.getHitsPerSecond();
-        hitsPerSecond.insertCurrentTimestamp();
-        if (rate < desiredRate) {
-          delay *= .99999;
-        } else if (rate > desiredRate) {
-          delay *= 1.00001;
-        }
-        sleep((long) delay, 10000);
+        sleep((long) delay, 10_000);
 
         logger.info("Tick: Update view");
         callbackTickable.tick();

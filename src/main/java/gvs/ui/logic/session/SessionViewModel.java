@@ -30,7 +30,7 @@ public class SessionViewModel implements Observer {
 
   private boolean isReplaying;
 
-  private final SessionHolder currentSessionHolder;
+  private final SessionHolder sessionHolder;
 
   private final BooleanProperty replayBtnDisableProperty = new SimpleBooleanProperty();
   private final BooleanProperty lastBtnDisableProperty = new SimpleBooleanProperty();
@@ -48,7 +48,7 @@ public class SessionViewModel implements Observer {
   @Inject
   public SessionViewModel(SessionHolder currentSessionHolder) {
     logger.info("Initializing SessionViewModel.");
-    this.currentSessionHolder = currentSessionHolder;
+    this.sessionHolder = currentSessionHolder;
 
     updateStepProperties();
 
@@ -57,32 +57,28 @@ public class SessionViewModel implements Observer {
 
   public void changeCurrentGraphToNext() {
     logger.info("Changing the displayed graph model...");
-    ISession currentSession = currentSessionHolder
-        .getCurrentSession();
+    ISession currentSession = sessionHolder.getCurrentSession();
     currentSession.changeCurrentGraphToNext();
     updateStepProperties();
   }
 
   public void changeCurrentGraphToPrevious() {
     logger.info("Changing the displayed graph model...");
-    ISession currentSession = currentSessionHolder
-        .getCurrentSession();
+    ISession currentSession = sessionHolder.getCurrentSession();
     currentSession.changeCurrentGraphToPrev();
     updateStepProperties();
   }
 
   public void changeCurrentGraphToFirst() {
     logger.info("Changing the displayed graph model...");
-    ISession currentSession = currentSessionHolder
-        .getCurrentSession();
+    ISession currentSession = sessionHolder.getCurrentSession();
     currentSession.changeCurrentGraphToFirst();
     updateStepProperties();
   }
 
   public void changeCurrentGraphToLast() {
     logger.info("Changing the displayed graph model...");
-    ISession currentSession = currentSessionHolder
-        .getCurrentSession();
+    ISession currentSession = sessionHolder.getCurrentSession();
     currentSession.changeCurrentGraphToLast();
     updateStepProperties();
   }
@@ -97,12 +93,17 @@ public class SessionViewModel implements Observer {
     Platform.runLater(() -> {
       logger.info("Current session changed...");
       updateStepProperties();
+
+      // reset buttons
+      disableAllButtons(false);
+      boolean isLayoutable = sessionHolder.getCurrentSession().getCurrentGraph()
+          .isLayoutable();
+      autoLayoutBtnDisableProperty.set(!isLayoutable);
     });
   }
 
   public void updateStepProperties() {
-    ISession currentSession = currentSessionHolder
-        .getCurrentSession();
+    ISession currentSession = sessionHolder.getCurrentSession();
 
     Platform.runLater(() -> {
       if (currentSession != null) {
@@ -131,12 +132,10 @@ public class SessionViewModel implements Observer {
     logger.info("Starting replay with speed {}", timeout);
     disableAllButtons(true);
     isReplaying = true;
-    currentSessionHolder.getCurrentSession().replay(timeout,
-        this::finishReplay);
+    sessionHolder.getCurrentSession().replay(timeout, this::finishReplay);
   }
 
   public void finishReplay() {
-    // TODO: refactor disabling/enabling buttons
     disableAllButtons(false);
     disableStepButtons(false, false, true, true);
     isReplaying = false;
@@ -145,8 +144,11 @@ public class SessionViewModel implements Observer {
   public void autoLayout() {
     logger.info("Auto-layouting the current graph model...");
     disableAllButtons(true);
-    currentSessionHolder.getCurrentSession().autoLayout();
+    sessionHolder.getCurrentSession()
+        .layoutCurrentGraph(this::finishAutolayout);
+  }
 
+  public void finishAutolayout() {
     disableAllButtons(false);
   }
 

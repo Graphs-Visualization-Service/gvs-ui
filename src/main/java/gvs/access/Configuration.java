@@ -613,8 +613,8 @@ public class Configuration {
       commFilePath = ePortFile.getText();
     } else {
       commFilePath = "GVSComm.xml";
-      logger.warn("Load Communicationfilepath failed");
-      logger.warn("Write Communicationfile to current directory");
+      logger.warn("Load communication file from path failed");
+      logger.info("Write Communication file to current directory");
     }
   }
 

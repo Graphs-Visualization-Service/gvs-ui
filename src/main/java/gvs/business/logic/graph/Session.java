@@ -14,9 +14,8 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 import gvs.access.Persistor;
-import gvs.business.logic.ApplicationController;
-import gvs.business.logic.LayoutController;
 import gvs.business.logic.LayoutMonitor;
+import gvs.business.logic.Layouter;
 import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.GraphHolder;
 import gvs.interfaces.Action;
@@ -31,33 +30,29 @@ import gvs.interfaces.IGraphSessionController;
  */
 public class Session implements IGraphSessionController {
 
-  private boolean isRelativeSession = false;
-
   private long sessionId;
   private String sessionName;
   private List<Graph> graphs;
 
   private final GraphSessionReplayFactory sessionReplayFactory;
   private final GraphHolder graphHolder;
-  private final LayoutController layoutController;
-  private final ApplicationController applicationController;
+  private final Layouter layouter;
   private final Persistor persistor;
   private final LayoutMonitor layoutMonitor;
 
   private static final Logger logger = LoggerFactory.getLogger(Session.class);
 
   @Inject
-  public Session(ApplicationController appController, GraphHolder graphHolder,
-      Persistor persistor, LayoutController layoutController,
-      LayoutMonitor layoutMonitor, GraphSessionReplayFactory replayFactory,
-      @Assisted long pSessionId, @Assisted String pSessionName,
-      @Assisted @Nullable List<Graph> graphs) {
+  public Session(GraphHolder graphHolder, Persistor persistor,
+      Layouter layouter, LayoutMonitor layoutMonitor,
+      GraphSessionReplayFactory replayFactory, @Assisted long pSessionId,
+      @Assisted String pSessionName, @Assisted @Nullable List<Graph> graphs) {
+
     logger.info("Instantiating new graph session.");
     this.sessionReplayFactory = replayFactory;
     this.graphHolder = graphHolder;
-    this.applicationController = appController;
     this.persistor = persistor;
-    this.layoutController = layoutController;
+    this.layouter = layouter;
     this.layoutMonitor = layoutMonitor;
 
     this.graphs = graphs;
@@ -103,47 +98,31 @@ public class Session implements IGraphSessionController {
     graphs.add(graph);
   }
 
-  /**
-   * Displays requested model.
-   */
-  public synchronized void getFirstModel() {
-    logger.info("Show first graph of current session");
-    int graphId = graphs.get(0).getId();
+  @Override
+  public void layoutCurrentGraph(Action callback) {
+    try {
+      layoutMonitor.lock();
+      logger.info("Got layout monitor");
 
-    graphHolder.setCurrentGraph(graphs.get(graphId - 1));
+      Graph currentGraph = graphHolder.getCurrentGraph();
+      currentGraph.getVertices().forEach(v -> {
+        v.setFixedPosition(false);
+      });
+
+      // TODO isSoftLayout is always false -> check usage
+      layouter.layoutGraph(currentGraph, false, callback);
+
+    } catch (InterruptedException e) {
+      logger.warn("Unable to get layout monitor", e);
+    } finally {
+      layoutMonitor.unlock();
+    }
   }
 
   /**
    * Displays requested model.
    */
-  public void getPreviousModel() {
-    logger.info("Show previous graph of current session");
-    int requestedModelId = graphHolder.getCurrentGraph().getId() - 1;
-
-    graphHolder.setCurrentGraph(graphs.get(requestedModelId - 1));
-  }
-
-  /**
-   * Displays requested model.
-   */
-  public void getNextModel() {
-    logger.info("Show next graph of current session");
-    int requestedModelId = graphHolder.getCurrentGraph().getId() + 1;
-    graphHolder.setCurrentGraph(graphs.get(requestedModelId - 1));
-  }
-
-  /**
-   * Displays requested model.
-   */
-  public void getLastModel() {
-    logger.info("Show last graph of current session");
-    int requestedModelId = graphs.get(graphs.size() - 1).getId();
-    graphHolder.setCurrentGraph(graphs.get(requestedModelId - 1));
-  }
-
-  /**
-   * Displays requested model.
-   */
+  @Override
   public void replay(long timeout, Action finishedCallback) {
     logger.info("Replaying current session");
     Timer timer = new Timer();
@@ -177,26 +156,9 @@ public class Session implements IGraphSessionController {
    * 
    * @return sessionName
    */
+  @Override
   public String getSessionName() {
     return sessionName;
-  }
-
-  /**
-   * Layout current displayed graph.
-   */
-  public void autoLayout() {
-    logger.debug("Check if graph can be layouted");
-    if (!isRelativeSession) {
-      Graph currentGraph = graphHolder.getCurrentGraph();
-      // TODO: logger statement makes no sense -> either remove it or add guard
-      // to test, if it's the last element
-      logger.debug("Graph is last element in Queue, call Layouter");
-      currentGraph.getVertices().forEach(v -> {
-        v.setFixedPosition(false);
-      });
-
-      layout();
-    }
   }
 
   /**
@@ -204,6 +166,7 @@ public class Session implements IGraphSessionController {
    * 
    * @return clientSessionId
    */
+  @Override
   public long getSessionId() {
     return this.sessionId;
   }
@@ -213,6 +176,7 @@ public class Session implements IGraphSessionController {
    * 
    * @return graphModels
    */
+  @Override
   public List<Graph> getGraphs() {
     return graphs;
   }
@@ -287,21 +251,4 @@ public class Session implements IGraphSessionController {
     }
     return true;
   }
-
-  public void layout() {
-    try {
-      layoutMonitor.lock();
-      logger.info("Got layout monitor");
-
-      Graph currentGraph = graphHolder.getCurrentGraph();
-      // TODO isSoftLayout is always false -> check usage
-      layoutController.layoutGraph(currentGraph, false);
-
-    } catch (InterruptedException e) {
-      logger.warn("Unable to get layout monitor", e);
-    } finally {
-      layoutMonitor.unlock();
-    }
-  }
-
 }

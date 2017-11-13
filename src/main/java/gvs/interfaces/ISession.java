@@ -10,21 +10,9 @@ public interface ISession {
 
   long getSessionId();
 
-  // TODO: remove here and in subclasses
-  void getFirstModel();
+  void replay(long timeout, Action completionCallback);
 
-  // TODO: remove here and in subclasses
-  void getPreviousModel();
-
-  // TODO: remove here and in subclasses
-  void getNextModel();
-
-  // TODO: remove here and in subclasses
-  void getLastModel();
-
-  void replay(long timeout, Action c);
-
-  void autoLayout();
+  void layoutCurrentGraph(Action completionCallback);
 
   void saveSession(File file);
 

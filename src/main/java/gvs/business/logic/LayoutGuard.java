@@ -10,7 +10,7 @@ import gvs.business.logic.physics.helpers.Area;
  * Once scheduled, this LayoutGuard will set the area to stable, which will stop
  * the calculation.
  * 
- * The {@link LayoutController} schedules an instance of this class according to
+ * The {@link Layouter} schedules an instance of this class according to
  * the default delay.
  * 
  * @author mwieland

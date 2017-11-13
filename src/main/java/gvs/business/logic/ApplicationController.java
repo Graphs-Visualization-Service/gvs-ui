@@ -160,10 +160,11 @@ public class ApplicationController {
     boolean isSessionExisting = false;
     for (ISession session : sessionHolder.getSessions()) {
       if (session.getSessionId() == sessionId) {
+
         logger.info("Add graph to exsting session");
         Session existingSession = (Session) session;
         existingSession.addGraph(graph);
-        existingSession.layout();
+        existingSession.layoutCurrentGraph(null);
 
         isSessionExisting = true;
       }
@@ -176,7 +177,7 @@ public class ApplicationController {
       graphs.add(graph);
       Session newSession = graphSessionFactory.create(sessionId, sessionName,
           graphs);
-      newSession.layout();
+      newSession.layoutCurrentGraph(null);
 
       sessionHolder.addSession(newSession);
       sessionHolder.setCurrentSession(newSession);

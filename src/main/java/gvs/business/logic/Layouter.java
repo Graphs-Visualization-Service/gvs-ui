@@ -20,6 +20,7 @@ import gvs.business.logic.physics.ticker.AreaTicker;
 import gvs.business.logic.physics.ticker.AreaTickerFactory;
 import gvs.business.logic.physics.ticker.Tickable;
 import gvs.business.model.graph.Graph;
+import gvs.interfaces.Action;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
 
@@ -33,7 +34,9 @@ import gvs.interfaces.IVertex;
  *
  */
 @Singleton
-public class LayoutController implements Tickable {
+public class Layouter implements Tickable {
+
+  private Action completionCallback;
 
   private volatile AreaTicker currentTicker;
 
@@ -41,25 +44,27 @@ public class LayoutController implements Tickable {
   private final Area area;
   private final Random random;
 
-  private static final int DEFAULT_MASS = 40;
-  private static final int SOFT_MULTIPLIER = 10;
+  private static final int FACTOR = 3;
+  
+  private static final int PARTICLE_MASS = 50;
+  private static final int TRACTION_DISTANCE = 70 * FACTOR;
+  private static final int TRACTION_IMPACT = 10;
+  
+  private static final int SOFT_MULTIPLIER = 100;
   private static final int FIXED_MULTIPLIER = 10;
-  private static final int DEFAULT_DISTANCE = 300;
-  private static final int DEFAULT_IMPACT = 10;
 
-  private static final int MAX_LAYOUT_DURATION_MS = 10000;
-  private static final int DEFAULT_TICK_RATE = 50;
+  private static final int TICK_RATE_PER_SEC = 10;
+  private static final int MAX_LAYOUT_DURATION_MS = 10_000;
 
-  private static final int DEFAULT_AREA_HEIGHT = 1300;
-  private static final int DEFAULT_AREA_WIDTH = 1600;
+  private static final int DEFAULT_AREA_HEIGHT = 600 * FACTOR;
+  private static final int DEFAULT_AREA_WIDTH = 800 * FACTOR;
 
   private static final int DEFAULT_SEED = 4000;
 
-  private static final Logger logger = LoggerFactory
-      .getLogger(LayoutController.class);
+  private static final Logger logger = LoggerFactory.getLogger(Layouter.class);
 
   @Inject
-  public LayoutController(AreaTickerFactory tickerFactory) {
+  public Layouter(AreaTickerFactory tickerFactory) {
 
     this.tickerFactory = tickerFactory;
     this.area = new Area(
@@ -86,12 +91,18 @@ public class LayoutController implements Tickable {
    * @param useSoftPoints
    *          use soft layout
    */
-  public void layoutGraph(Graph graph, boolean useSoftPoints) {
+  public void layoutGraph(Graph graph, boolean useSoftPoints,
+      Action completionCallback) {
     logger.info("Received new data to layout");
-    handleTickerThread();
 
-    resetArea();
-    calculatLayout(graph, useSoftPoints);
+    if (graph.isLayoutable()) {
+
+      this.completionCallback = completionCallback;
+      handleTickerThread();
+
+      resetArea();
+      calculatLayout(graph, useSoftPoints);
+    }
   }
 
   private void resetArea() {
@@ -123,7 +134,7 @@ public class LayoutController implements Tickable {
       }
     }
 
-    currentTicker = tickerFactory.create(this, DEFAULT_TICK_RATE);
+    currentTicker = tickerFactory.create(this, TICK_RATE_PER_SEC);
     logger.debug("Starting thread: {}", currentTicker.getName());
     currentTicker.start();
     logger.debug("Background process successfully started.");
@@ -139,6 +150,10 @@ public class LayoutController implements Tickable {
     if (area.isStable()) {
       logger.info("Layouting completed. Graph is stable. Stop layout engine.");
       currentTicker.terminate();
+      
+      if (completionCallback != null) {
+        completionCallback.execute();
+      }
     } else {
       logger.info("Continue layouting...");
       area.updateAll();
@@ -169,7 +184,7 @@ public class LayoutController implements Tickable {
       long particleId = v.getId();
       boolean isFixed = v.isFixedPosition();
       Particle newParticle = new Particle(position, particleId, v, isFixed,
-          DEFAULT_MASS);
+          PARTICLE_MASS);
 
       area.addParticles(newParticle);
     });
@@ -187,8 +202,8 @@ public class LayoutController implements Tickable {
       Particle fromParticle = area.getParticleWithID(vertexFrom.getId());
       Particle toParticle = area.getParticleWithID(vertexTo.getId());
 
-      Traction t = new Traction(fromParticle, toParticle, DEFAULT_IMPACT,
-          DEFAULT_DISTANCE);
+      Traction t = new Traction(fromParticle, toParticle, TRACTION_IMPACT,
+          TRACTION_DISTANCE);
 
       area.addTraction(t);
     });

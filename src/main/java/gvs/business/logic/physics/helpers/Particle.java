@@ -90,11 +90,6 @@ public class Particle {
     return weight;
   }
 
-  /**
-   * Returns the related vertex
-   * 
-   * @return related vertex
-   */
   public IVertex getRelatedVertex() {
     return relatedVertex;
   }

@@ -339,6 +339,7 @@ public class Persistor {
           edges.add(loadEdge(edgeElement, vertizes));
         });
 
+        // TODO should we set this graph id?
         int graphId = Integer
             .parseInt(graphElement.attributeValue(ATTRIBUTEID));
         Graph newGraph = new Graph(vertizes, edges);

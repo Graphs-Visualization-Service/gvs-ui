@@ -59,11 +59,11 @@ public class ApplicationController {
   /**
    * Sets session chosen from drop down, informs model and updates view.
    * 
-   * @param pSessionController
-   *          sessionController
+   * @param session
+   *          new current session
    */
-  public synchronized void changeCurrentSession(ISession pSessionController) {
-    sessionHolder.setCurrentSession(pSessionController);
+  public synchronized void changeCurrentSession(ISession session) {
+    sessionHolder.setCurrentSession(session);
   }
 
   /**
@@ -93,11 +93,10 @@ public class ApplicationController {
 
     if (sessionHolder.getSessions().size() > 0) {
       logger.debug("Session controller deleted. Set former graph session");
-      sessionHolder
-          .setCurrentSession(sessionHolder.getSessions().iterator().next());
+      ISession formerSession = sessionHolder.getSessions().iterator().next();
+      sessionHolder.setCurrentSession(formerSession);
 
     } else {
-
       // when the last session is deleted, create empty dummy controller
       // otherwise session-bindings for UI would have to be unbound etc.
       logger.debug("Set empty graph session");
@@ -164,6 +163,7 @@ public class ApplicationController {
         logger.info("Add graph to exsting session");
         Session existingSession = (Session) session;
         existingSession.addGraph(graph);
+        existingSession.changeCurrentGraphToLast();
         existingSession.layoutCurrentGraph(null);
 
         isSessionExisting = true;

@@ -56,22 +56,23 @@ public class GraphViewModel extends Observable implements Observer {
    */
   @Override
   public void update(Observable o, Object arg) {
-    //Hand updates over to JavaFX Thread
-    Platform.runLater(()-> {
+    // Hand updates over to JavaFX Thread
+    Platform.runLater(() -> {
+      
       logger.info("Current graph changed...");
-    GraphHolder currentGraphHolder = (GraphHolder) o;
-    // don't start drawing process, if graphPane hasn't already been set by
-    // SessionView
-    if (graphPane != null) {
-      draw(currentGraphHolder.getCurrentGraph());
-      sessionViewModel.updateStepProperties();
-    } else {
-      logger.warn("GraphPane has not been set before drawing!");
-    }
+      GraphHolder currentGraphHolder = (GraphHolder) o;
+      // don't start drawing process, if graphPane hasn't already been set by
+      // SessionView
+      if (graphPane != null) {
+        draw(currentGraphHolder.getCurrentGraph());
+        sessionViewModel.updateStepProperties();
+      } else {
+        logger.warn("GraphPane has not been set before drawing!");
+      }
     });
-    
+
   }
-  
+
   public void draw(Graph graph) {
     logger.info("Drawing graph...");
     vertexViewModels.clear();
@@ -118,11 +119,12 @@ public class GraphViewModel extends Observable implements Observer {
   public Set<EdgeViewModel> getEdgeViewModels() {
     return this.edgeViewModels;
   }
-  
+
   /**
    * Set pane on which all graph elements are drawn.
+   * 
    * @param newGraphPane
-   *   the pane on which all graph elements are drawn.
+   *          the pane on which all graph elements are drawn.
    */
   public void setPane(ScalableContentPane newGraphPane) {
     this.graphPane = newGraphPane;

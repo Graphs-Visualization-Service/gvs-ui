@@ -75,10 +75,9 @@ public class Session implements IGraphSessionController {
       graph.setId(previousGraph.getId() + 1);
     }
 
-    graphHolder.setCurrentGraph(graph);
-    graphs.add(graph);
-    logger.info("Added new graph with id {} to session {}", graph.getId(),
+    logger.info("Add new graph with id {} to session {}", graph.getId(),
         getId());
+    graphs.add(graph);
   }
 
   @Override

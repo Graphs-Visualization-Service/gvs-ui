@@ -60,10 +60,10 @@ public class EdgeViewModel {
   }
 
   private void bindLineCoordinates() {
-    line.startXProperty().bind(startVertex.centerXProperty());
-    line.startYProperty().bind(startVertex.centerYProperty());
-    line.endXProperty().bind(endVertex.centerXProperty());
-    line.endYProperty().bind(endVertex.centerYProperty());
+    line.startXProperty().bind(startVertex.getEllipse().centerXProperty());
+    line.startYProperty().bind(startVertex.getEllipse().centerYProperty());
+    line.endXProperty().bind(endVertex.getEllipse().centerXProperty());
+    line.endYProperty().bind(endVertex.getEllipse().centerYProperty());
   }
 
   private void bindLabelCoordinates() {

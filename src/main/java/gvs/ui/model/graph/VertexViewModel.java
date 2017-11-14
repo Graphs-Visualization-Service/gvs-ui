@@ -9,16 +9,13 @@ import org.slf4j.LoggerFactory;
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.NodeStyle;
 import gvs.interfaces.IVertex;
-import gvs.util.Dimension;
 import gvs.util.FontAwesome;
-import gvs.util.StringSizeCalculator;
 import javafx.application.Platform;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Ellipse;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
@@ -27,13 +24,13 @@ import jfxtras.labs.scene.layout.ScalableContentPane;
  * @author mwieland
  */
 public class VertexViewModel implements Observer {
+
   private double dragOriginalSceneX;
   private double dragOriginalSceneY;
 
   private final IVertex vertex;
-  private final Label node;
-  private final DoubleProperty centerXPropery = new SimpleDoubleProperty();
-  private final DoubleProperty centerYPropery = new SimpleDoubleProperty();
+  private final Label label;
+  private final Ellipse ellipse;
 
   private static final Logger logger = LoggerFactory
       .getLogger(VertexViewModel.class);
@@ -46,35 +43,38 @@ public class VertexViewModel implements Observer {
    *          JavaFX independent vertex representation
    */
   public VertexViewModel(IVertex vertex) {
-    this.node = new Label();
+    this.label = new Label();
     if (vertex.getIcon() != null) {
       logger.info("Creating VertexViewModel with an icon");
-      node.setGraphic(FontAwesome.createLabel(vertex.getIcon()));
+      label.setGraphic(FontAwesome.createLabel(vertex.getIcon()));
     }
-    node.setText(vertex.getLabel());
-    node.setCursor(Cursor.HAND);
+    label.setText(vertex.getLabel());
+    label.setCursor(Cursor.HAND);
+
+    ellipse = new Ellipse();
 
     updateCoordinates(vertex.getXPosition(), vertex.getYPosition());
 
     // bidirectional connection
     this.vertex = vertex;
     this.vertex.addObserver(this);
-    node.layoutXProperty().addListener(this::xProperyListener);
-    node.layoutYProperty().addListener(this::yProperyListener);
+    ellipse.centerXProperty().addListener(this::xProperyListener);
+    ellipse.centerYProperty().addListener(this::yProperyListener);
 
     setStyles();
   }
 
   private void setStyles() {
     NodeStyle style = vertex.getStyle();
-    node.getStyleClass().add(CSS_NODE);
-    node.getStyleClass().add("line-" + style.getLineColor().getColor());
-    node.getStyleClass().add(style.getLineStyle().getStyle() + "-"
+    ellipse.getStyleClass().add(CSS_NODE);
+    ellipse.getStyleClass().add("line-" + style.getLineColor().getColor());
+    ellipse.getStyleClass().add(style.getLineStyle().getStyle() + "-"
         + style.getLineThickness().getThickness());
-    node.getStyleClass().add("fill-" + style.getFillColor().getColor());
+    ellipse.getStyleClass().add("fill-" + style.getFillColor().getColor());
+    
     // TODO: find nicer method, maybe use getContrastColor()
     if (style.getDarkColors().contains(style.getFillColor())) {
-      node.textFillProperty().set(Color.WHITE);
+      label.textFillProperty().set(Color.WHITE);
     }
   }
 
@@ -144,56 +144,60 @@ public class VertexViewModel implements Observer {
   }
 
   private void updateCoordinates(double x, double y) {
-    Dimension dim = StringSizeCalculator.calculate(node.getText(),
-        node.getFont());
-    node.setLayoutX(x - (dim.getWidth() / 2));
-    node.setLayoutY(y - (dim.getHeight() / 2));
-    centerXPropery.set(x);
-    centerYPropery.set(y);
+    ellipse.setCenterX(x);
+    ellipse.setCenterY(y);
   }
 
   public void draw(ScalableContentPane p) {
     logger.info("Drawing VertexViewModel.");
-    p.getContentPane().getChildren().add(node);
+    p.getContentPane().getChildren().addAll(ellipse, label);
+
+    // TODO describe hack
+    label.applyCss();
+    double xRadius = label.prefWidth(-1) / 2;
+    double yRadius = label.prefHeight(-1) / 2;
+
+    ellipse.setRadiusX(xRadius);
+    ellipse.setRadiusY(yRadius);
+
+    label.layoutXProperty().bind(ellipse.centerXProperty().subtract(xRadius));
+    label.layoutYProperty().bind(ellipse.centerYProperty().subtract(yRadius));
+
     dragSupport(p);
   }
 
-  private void dragSupport(ScalableContentPane p) {
+  private void dragSupport(ScalableContentPane graphPane) {
     logger.info("Adding drag support on VertexViewModel.");
-    node.setOnMousePressed(e -> {
+    ellipse.setOnMousePressed(e -> {
       dragOriginalSceneX = e.getSceneX();
       dragOriginalSceneY = e.getSceneY();
     });
 
-    node.setOnMouseDragged(e -> {
+    ellipse.setOnMouseDragged(e -> {
       // logger level debug, because this will happen very often
       logger.debug("Mouse drag on VertexViewModel detected.");
-      Label l = (Label) (e.getSource());
-      l.setCursor(Cursor.HAND);
+      ellipse.setCursor(Cursor.HAND);
 
       double offsetX = (e.getSceneX() - dragOriginalSceneX)
-          / p.getContentScaleTransform().getX();
+          / graphPane.getContentScaleTransform().getX();
       double offsetY = (e.getSceneY() - dragOriginalSceneY)
-          / p.getContentScaleTransform().getY();
+          / graphPane.getContentScaleTransform().getY();
 
-      double newX = centerXPropery.get() + offsetX;
-      double newY = centerYPropery.get() + offsetY;
+      double newX = ellipse.getCenterX() + offsetX;
+      double newY = ellipse.getCenterY() + offsetY;
 
-      newX = checkXBoundaries(l, newX, p);
-      newY = checkYBoundaries(l, newY, p);
+      newX = checkXBoundaries(newX, graphPane);
+      newY = checkYBoundaries(newY, graphPane);
 
       updateCoordinates(newX, newY);
-      // l.setLayoutX(newX);
-      // l.setLayoutY(newY);
 
       dragOriginalSceneX = e.getSceneX();
       dragOriginalSceneY = e.getSceneY();
     });
   }
 
-  private double checkXBoundaries(Label node, double newX,
-      ScalableContentPane p) {
-    double minimum = node.getWidth() / 2;
+  private double checkXBoundaries(double newX, ScalableContentPane p) {
+    double minimum = ellipse.getRadiusX();
     double maximumX = p.getBoundsInLocal().getWidth();
 
     if (newX < minimum) {
@@ -205,9 +209,8 @@ public class VertexViewModel implements Observer {
     return newX;
   }
 
-  private double checkYBoundaries(Label node, double newY,
-      ScalableContentPane p) {
-    double minimum = node.getHeight() / 2;
+  private double checkYBoundaries(double newY, ScalableContentPane p) {
+    double minimum = ellipse.getRadiusY();
     double maximumY = p.getBoundsInLocal().getHeight();
 
     if (newY < minimum) {
@@ -219,16 +222,13 @@ public class VertexViewModel implements Observer {
     return newY;
   }
 
-  public Label getNode() {
-    return node;
+  public Ellipse getEllipse() {
+    return ellipse;
   }
 
-  public DoubleProperty centerXProperty() {
-    return centerXPropery;
-  }
-
-  public DoubleProperty centerYProperty() {
-    return centerYPropery;
+  public void toFront() {
+    ellipse.toFront();
+    label.toFront();
   }
 
 }

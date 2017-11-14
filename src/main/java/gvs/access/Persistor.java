@@ -172,10 +172,10 @@ public class Persistor {
     sessionNameElement.addText(sessionController.getSessionName());
   }
 
-  private void saveGraphSession(Element element, Session sessionController) {
+  private void saveGraphSession(Element element, Session session) {
     Element sessionElement = element.addElement(GRAPH);
-    addIdAndLabel(sessionElement, sessionController);
-    sessionController.getGraphs()
+    addIdAndLabel(sessionElement, session);
+    session.getGraphs()
         .forEach(model -> saveGraphModel(model, sessionElement));
   }
 
@@ -326,11 +326,8 @@ public class Persistor {
         List<IVertex> vertizes = new ArrayList<>();
         Element vertexElements = graphElement.element(VERTIZES);
         vertexElements.elements().forEach(vertexElement -> {
-          if (vertexElement.getName().equals(DEFAULTVERTEX)) {
-            vertizes.add(loadDefaultVertex(vertexElement));
-          } else if (vertexElement.getName().equals(RELATIVVERTEX)) {
-            vertizes.add(loadRelativVertex(vertexElement));
-          }
+          IVertex newVertex = loadVertex(vertexElement);
+          vertizes.add(newVertex);
         });
 
         List<IEdge> edges = new ArrayList<>();
@@ -414,7 +411,7 @@ public class Persistor {
     return new TreeSessionController(sessionId, sessionName, treeModels);
   }
 
-  private IVertex loadDefaultVertex(Element vertexElement) {
+  private IVertex loadVertex(Element vertexElement) {
     double xPos = 0;
     double yPos = 0;
     if (vertexElement.getName().equals(RELATIVVERTEX)) {
@@ -452,33 +449,6 @@ public class Persistor {
     NodeStyle style = new NodeStyle(linecolor, lineStyle, lineThickness,
         fillcolor);
     logger.info("Finish building DefaultVertex");
-    return new DefaultVertex(vertexId, label, style, xPos, yPos, icon);
-  }
-
-  private IVertex loadRelativVertex(Element pVertex) {
-    long vertexId = Long.parseLong(pVertex.attributeValue(ATTRIBUTEID));
-    Element eLabel = pVertex.element(LABEL);
-    Element eLineColor = pVertex.element(LINECOLOR);
-    Element eLineStyle = pVertex.element(LINESTYLE);
-    Element eLineThickness = pVertex.element(LINETHICKNESS);
-    Element eFillcolor = pVertex.element(FILLCOLOR);
-    Element eIcon = pVertex.element(ICON);
-    Element eXPos = pVertex.element(XPOS);
-    Element eYPos = pVertex.element(YPOS);
-
-    String label = eLabel.getText();
-    String linecolor = eLineColor.getText();
-    String linestyle = eLineStyle.getText();
-    String linethickness = eLineThickness.getText();
-    double xPos = Double.parseDouble(eXPos.getText());
-    double yPos = Double.parseDouble(eYPos.getText());
-    String fillcolor = eFillcolor.getText();
-    Glyph icon = null;
-    if (eIcon != null) {
-      icon = Glyph.valueOf(eIcon.getText());
-    }
-    NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness,
-        fillcolor);
     return new DefaultVertex(vertexId, label, style, xPos, yPos, icon);
   }
 

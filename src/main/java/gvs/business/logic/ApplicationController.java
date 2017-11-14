@@ -91,8 +91,10 @@ public class ApplicationController {
 
     if (sessionHolder.getSessions().size() > 0) {
       logger.debug("Session controller deleted. Set former graph session");
-      ISession formerSession = sessionHolder.getSessions().iterator().next();
-      sessionHolder.setCurrentSession(formerSession);
+
+      int size = sessionHolder.getSessions().size();
+      ISession mostRecentSession = sessionHolder.getSessions().get(size - 1);
+      sessionHolder.setCurrentSession(mostRecentSession);
 
     } else {
       // when the last session is deleted, create empty dummy controller
@@ -121,10 +123,10 @@ public class ApplicationController {
     Iterator<ISession> sessionIt = sessionHolder.getSessions().iterator();
     boolean isSessionExisting = false;
     while (sessionIt.hasNext()) {
-      ISession sc = (ISession) (sessionIt.next());
-      if (sc.getId() == pId) {
+      ISession session = (ISession) (sessionIt.next());
+      if (session.getId() == pId) {
         logger.debug("Add tree to exsting session");
-        ((ITreeSessionController) sc).addTreeModel(pTreeModel);
+        ((ITreeSessionController) session).addTreeModel(pTreeModel);
         isSessionExisting = true;
       }
     }

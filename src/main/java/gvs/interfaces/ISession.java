@@ -11,6 +11,10 @@ public interface ISession {
   long getId();
 
   void replay(long timeout, Action completionCallback);
+  
+  void pauseReplay();
+  
+  void cancelReplay();
 
   void layoutCurrentGraph(Action completionCallback);
 

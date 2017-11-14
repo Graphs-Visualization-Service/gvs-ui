@@ -393,4 +393,16 @@ public class TreeSessionController extends Observable
     return null;
   }
 
+  @Override
+  public void pauseReplay() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void cancelReplay() {
+    // TODO Auto-generated method stub
+    
+  }
+
 }

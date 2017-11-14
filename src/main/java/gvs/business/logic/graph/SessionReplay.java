@@ -19,9 +19,9 @@ import gvs.interfaces.Action;
 public class SessionReplay extends TimerTask {
 
   private int replayIteration;
+  private Action finishedCallback;
 
   private final Session session;
-  private final Action finishedCallback;
 
   private static final Logger logger = LoggerFactory
       .getLogger(SessionReplay.class);
@@ -31,17 +31,18 @@ public class SessionReplay extends TimerTask {
    * 
    * @param session
    *          session
-   * 
-   * @param callback
-   *          replay callback which updates the ui
+   * @param finishedCallback
+   *          callback executed if thread is terminated
+   * @param startGraphId
+   *          graph id to start with
    */
   @Inject
-  public SessionReplay(@Assisted Session session, @Assisted Action callback) {
-    this.replayIteration = 1;
-    this.session = session;
-    this.finishedCallback = callback;
+  public SessionReplay(@Assisted Session session,
+      @Assisted Action finishedCallback, @Assisted int startGraphId) {
 
-    session.changeCurrentGraphToFirst();
+    this.replayIteration = startGraphId;
+    this.finishedCallback = finishedCallback;
+    this.session = session;
   }
 
   /**
@@ -49,14 +50,30 @@ public class SessionReplay extends TimerTask {
    */
   public void run() {
     logger.info("Session replay task started...");
-    if (replayIteration <= session.getGraphs().size()) {
-      logger.debug("Replay graph {}", replayIteration);
-      session.changeCurrentGraphToNext();
+    if (replayIteration < session.getGraphs().size()) {
       replayIteration++;
+      logger.debug("Show graph with id {}", replayIteration);
+      session.changeCurrentGraphToNext();
     } else {
       logger.info("Replay finished");
-      finishedCallback.execute();
-      super.cancel();
+      cancel();
     }
+  }
+
+  /**
+   * Cancel current thread and execute callback.
+   * 
+   * @return true if this task is scheduled for one-time execution and has not
+   *         yet run, or this task is scheduled for repeated execution. Returns
+   *         false if the task was scheduled for one-time execution and has
+   *         already run, or if the task was never scheduled, or if the task was
+   *         already cancelled. (Loosely speaking, this method returns true if
+   *         it prevents one or more scheduled executions from taking place.)
+   */
+  public boolean cancel() {
+    if (finishedCallback != null) {
+      finishedCallback.execute();
+    }
+    return super.cancel();
   }
 }

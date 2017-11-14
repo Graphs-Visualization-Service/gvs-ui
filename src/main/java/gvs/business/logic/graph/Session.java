@@ -28,12 +28,14 @@ import gvs.interfaces.IGraphSessionController;
  */
 public class Session implements IGraphSessionController {
 
+  private SessionReplay sessionReplay;
+
   private final long id;
   private final String sessionName;
   private final GraphHolder graphHolder;
   private final List<Graph> graphs;
 
-  private final GraphSessionReplayFactory sessionReplayFactory;
+  private final SessionReplayFactory sessionReplayFactory;
   private final Layouter layouter;
   private final Persistor persistor;
   private final LayoutMonitor layoutMonitor;
@@ -43,7 +45,7 @@ public class Session implements IGraphSessionController {
   @Inject
   public Session(GraphHolder graphHolder, Persistor persistor,
       Layouter layouter, LayoutMonitor layoutMonitor,
-      GraphSessionReplayFactory replayFactory, @Assisted long sessionId,
+      SessionReplayFactory replayFactory, @Assisted long sessionId,
       @Assisted String sessionName) {
 
     logger.info("Instantiating new graph session.");
@@ -107,11 +109,27 @@ public class Session implements IGraphSessionController {
   @Override
   public void replay(long timeout, Action finishedCallback) {
     logger.info("Replaying current session");
-    SessionReplay sessionReplay = sessionReplayFactory.create(this,
-        finishedCallback);
+    if (this.sessionReplay == null) {
+      int startId = graphHolder.getCurrentGraph().getId();
+      this.sessionReplay = sessionReplayFactory.create(this, finishedCallback,
+          startId);
+      Timer timer = new Timer();
+      timer.schedule(sessionReplay, timeout, timeout);
+    } else {
+      pauseReplay();
+    }
+  }
 
-    Timer timer = new Timer();
-    timer.schedule(sessionReplay, timeout, timeout);
+  public void pauseReplay() {
+    if (this.sessionReplay != null) {
+      this.sessionReplay.cancel();
+      this.sessionReplay = null;
+    }
+  }
+
+  public void cancelReplay() {
+    pauseReplay();
+    changeCurrentGraphToFirst();
   }
 
   @Override

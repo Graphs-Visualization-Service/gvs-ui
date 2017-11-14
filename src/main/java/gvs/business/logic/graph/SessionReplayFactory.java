@@ -9,7 +9,7 @@ import gvs.interfaces.Action;
  * @author Michi
  *
  */
-public interface GraphSessionReplayFactory {
+public interface SessionReplayFactory {
 
   /**
    * Construct a graph session controller with dependencies, which are not
@@ -19,7 +19,10 @@ public interface GraphSessionReplayFactory {
    *          related graph session controller
    * @param callback
    *          callback which is executed after replay has finished
+   * @param startGraphId
+   *          id of the graph to start with
    * @return new instance
    */
-  SessionReplay create(Session graphSessionController, Action callback);
+  SessionReplay create(Session graphSessionController, Action callback,
+      int startGraphId);
 }

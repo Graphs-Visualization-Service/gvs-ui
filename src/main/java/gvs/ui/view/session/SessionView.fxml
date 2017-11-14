@@ -49,15 +49,17 @@
 					<children>
 						<GridPane fx:id="playGrid" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
 							<columnConstraints>
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50." />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
 								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
 							</columnConstraints>
 							<rowConstraints>
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 							</rowConstraints>
 							<children>
-								<Button fx:id="playBtn" mnemonicParsing="false" onMouseClicked="#replayGraph" />
-								<Button fx:id="autoLayoutBtn" mnemonicParsing="false" onMouseClicked="#autoLayout" text="AutoLayout" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+								<Button fx:id="replayBtn" mnemonicParsing="false" onMouseClicked="#replayGraph" GridPane.columnIndex="0" GridPane.halignment="CENTER" />
+								<Button fx:id="cancelReplayBtn" mnemonicParsing="false" onMouseClicked="#cancelReplayGraph" GridPane.columnIndex="1" GridPane.halignment="CENTER"  />
+								<Button fx:id="autoLayoutBtn" mnemonicParsing="false" onMouseClicked="#autoLayout" text="AutoLayout" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
 							</children>
 						</GridPane>
 						<Slider fx:id="speedSlider" majorTickUnit="500.0" max="2000.0" minorTickCount="10" prefWidth="200.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />

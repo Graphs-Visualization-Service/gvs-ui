@@ -20,6 +20,9 @@
 
 	<bottom>
 		<BorderPane>
+			<padding>
+				<Insets top="10" />
+			</padding>
 			<left>
 				<AnchorPane fx:id="leftPanel">
 					<children>
@@ -33,17 +36,21 @@
 							</columnConstraints>
 							<rowConstraints>
 								<RowConstraints minHeight="10.0" prefHeight="30.0"
-									vgrow="SOMETIMES" />
+									vgrow="ALWAYS" />
 							</rowConstraints>
 							<children>
-								<Button fx:id="firstBtn" mnemonicParsing="false"
-									onMouseClicked="#stepToFirst" GridPane.columnIndex="0" />
-								<Button fx:id="prevBtn" mnemonicParsing="false"
-									onMouseClicked="#stepBackward" GridPane.columnIndex="1" />
-								<Button fx:id="nextBtn" mnemonicParsing="false"
-									onMouseClicked="#stepForward" GridPane.columnIndex="2" />
-								<Button fx:id="lastBtn" mnemonicParsing="false"
-									onMouseClicked="#stepToLast" GridPane.columnIndex="3" />
+								<Button GridPane.halignment="CENTER" fx:id="firstBtn"
+									mnemonicParsing="false" onMouseClicked="#stepToFirst"
+									GridPane.columnIndex="0" />
+								<Button GridPane.halignment="CENTER" fx:id="prevBtn"
+									mnemonicParsing="false" onMouseClicked="#stepBackward"
+									GridPane.columnIndex="1" />
+								<Button GridPane.halignment="CENTER" fx:id="nextBtn"
+									mnemonicParsing="false" onMouseClicked="#stepForward"
+									GridPane.columnIndex="2" />
+								<Button GridPane.halignment="CENTER" fx:id="lastBtn"
+									mnemonicParsing="false" onMouseClicked="#stepToLast"
+									GridPane.columnIndex="3" />
 							</children>
 						</GridPane>
 					</children>

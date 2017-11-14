@@ -1,5 +1,7 @@
 package gvs.business.model.graph;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
 import org.slf4j.Logger;
@@ -22,19 +24,18 @@ public class GraphHolder extends Observable {
    *          udpated graph
    */
   public synchronized void setCurrentGraph(Graph newGraph) {
-    logger.info("Setting current graph and notifying observers.");
+    logger.info("Setting current graph and notify observers.");
     this.currentGraph = newGraph;
     setChanged();
     notifyObservers();
   }
 
   /**
-   * Returns current session, which is held by the model
+   * Returns current graph, which is displayed
    * 
-   * @return session controller
+   * @return current graph
    */
   public synchronized Graph getCurrentGraph() {
     return currentGraph;
   }
-
 }

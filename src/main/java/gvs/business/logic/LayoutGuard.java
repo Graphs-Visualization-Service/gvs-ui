@@ -2,6 +2,9 @@ package gvs.business.logic;
 
 import java.util.TimerTask;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gvs.business.logic.physics.helpers.Area;
 
 /**
@@ -10,8 +13,8 @@ import gvs.business.logic.physics.helpers.Area;
  * Once scheduled, this LayoutGuard will set the area to stable, which will stop
  * the calculation.
  * 
- * The {@link Layouter} schedules an instance of this class according to
- * the default delay.
+ * The {@link Layouter} schedules an instance of this class according to the
+ * default delay.
  * 
  * @author mwieland
  *
@@ -19,7 +22,15 @@ import gvs.business.logic.physics.helpers.Area;
 public class LayoutGuard extends TimerTask {
 
   private Area currentArea = null;
+  private static final Logger logger = LoggerFactory
+      .getLogger(LayoutGuard.class);
 
+  /**
+   * Constructor.
+   * 
+   * @param area
+   *          area to guard
+   */
   public LayoutGuard(Area area) {
     currentArea = area;
   }
@@ -28,6 +39,7 @@ public class LayoutGuard extends TimerTask {
    * Stabilize stored area.
    */
   public void run() {
+    logger.info("Layout Guard activated. Layouting took more than 10 seconds");
     currentArea.setIsStable(true);
   }
 }

@@ -1,8 +1,11 @@
 package gvs.business.model;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -19,11 +22,14 @@ import gvs.interfaces.ISession;
 public class SessionHolder extends Observable {
 
   private ISession currentSession = null;
-  private final Collection<ISession> sessions;
+  private final List<ISession> sessions;
+
+  private static final Logger logger = LoggerFactory
+      .getLogger(SessionHolder.class);
 
   @Inject
   public SessionHolder() {
-    this.sessions = new HashSet<>();
+    this.sessions = new ArrayList<>();
   }
 
   /**
@@ -32,8 +38,10 @@ public class SessionHolder extends Observable {
    * @param newSession
    */
   public synchronized void setCurrentSession(ISession newSession) {
+    logger.info("Setting current session and notify observers.");
+
     this.currentSession = newSession;
-    this.currentSession.changeCurrentGraphToFirst();
+    currentSession.changeCurrentGraphToFirst();
     setChanged();
     notifyObservers();
   }
@@ -72,7 +80,7 @@ public class SessionHolder extends Observable {
    * 
    * @return sessionControllers
    */
-  public synchronized Collection<ISession> getSessions() {
+  public synchronized List<ISession> getSessions() {
     return sessions;
   }
 }

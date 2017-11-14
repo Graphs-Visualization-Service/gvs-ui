@@ -2,15 +2,19 @@ package gvs.interfaces;
 
 import java.io.File;
 
-import gvs.business.model.graph.Graph;
+import gvs.business.model.graph.GraphHolder;
 
 public interface ISession {
 
   String getSessionName();
 
-  long getSessionId();
+  long getId();
 
   void replay(long timeout, Action completionCallback);
+  
+  void pauseReplay();
+  
+  void cancelReplay();
 
   void layoutCurrentGraph(Action completionCallback);
 
@@ -26,5 +30,5 @@ public interface ISession {
 
   int getTotalGraphCount();
 
-  Graph getCurrentGraph();
+  GraphHolder getGraphHolder();
 }

@@ -27,7 +27,7 @@ import jfxtras.labs.scene.layout.ScalableContentPane;
  * @author mtrentini
  */
 @Singleton
-public class SessionView{
+public class SessionView {
 
   @FXML
   private GridPane playGrid;
@@ -60,7 +60,10 @@ public class SessionView{
   private Button lastBtn;
 
   @FXML
-  private Button playBtn;
+  private Button replayBtn;
+
+  @FXML
+  private Button cancelReplayBtn;
 
   @FXML
   private Slider speedSlider;
@@ -131,8 +134,11 @@ public class SessionView{
 
     autoLayoutBtn.disableProperty()
         .bindBidirectional(sessionViewModel.getAutoLayoutBtnDisableProperty());
-    playBtn.disableProperty()
+
+    replayBtn.disableProperty()
         .bindBidirectional(sessionViewModel.getReplayBtnDisableProperty());
+    cancelReplayBtn.disableProperty().bindBidirectional(
+        sessionViewModel.getCancelReplayBtnDisableProperty());
   }
 
   private void setButtonIcons() {
@@ -141,7 +147,8 @@ public class SessionView{
     nextBtn.setGraphic(FontAwesome.createLabel(Glyph.FORWARD));
     lastBtn.setGraphic(FontAwesome.createLabel(Glyph.STEP_FORWARD));
 
-    playBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
+    replayBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
+    cancelReplayBtn.setGraphic(FontAwesome.createLabel(Glyph.STOP));
   }
 
   @FXML
@@ -166,8 +173,22 @@ public class SessionView{
 
   @FXML
   private void replayGraph() {
-    long sliderDelay = (long) speedSlider.getValue();
-    sessionViewModel.replayGraph(sliderDelay);
+    if (sessionViewModel.isReplaying()) {
+      sessionViewModel.pauseReplay();
+      sessionViewModel.setReplaying(false);
+      replayBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
+    } else {
+      long sliderDelay = (long) speedSlider.getValue();
+      sessionViewModel.replayGraph(sliderDelay);
+      sessionViewModel.setReplaying(true);
+      replayBtn.setGraphic(FontAwesome.createLabel(Glyph.PAUSE));
+    }
+  }
+
+  @FXML
+  private void cancelReplayGraph() {
+    sessionViewModel.cancelReplay();
+    replayBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
   }
 
   @FXML

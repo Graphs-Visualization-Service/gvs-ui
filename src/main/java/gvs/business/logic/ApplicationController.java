@@ -1,8 +1,6 @@
 package gvs.business.logic;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +9,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.access.Persistor;
-import gvs.business.logic.graph.GraphSessionFactory;
 import gvs.business.logic.graph.Session;
+import gvs.business.logic.graph.SessionFactory;
 import gvs.business.logic.tree.TreeSessionController;
 import gvs.business.model.SessionHolder;
 import gvs.business.model.graph.Graph;
@@ -30,7 +28,7 @@ import gvs.interfaces.ITreeSessionController;
 @Singleton
 public class ApplicationController {
 
-  private final GraphSessionFactory graphSessionFactory;
+  private final SessionFactory sessionFactory;
   private final Persistor persistor;
   private final SessionHolder sessionHolder;
 
@@ -49,21 +47,21 @@ public class ApplicationController {
    */
   @Inject
   public ApplicationController(SessionHolder sessionHolder, Persistor persistor,
-      GraphSessionFactory graphSessionFactory) {
+      SessionFactory graphSessionFactory) {
 
     this.sessionHolder = sessionHolder;
     this.persistor = persistor;
-    this.graphSessionFactory = graphSessionFactory;
+    this.sessionFactory = graphSessionFactory;
   }
 
   /**
    * Sets session chosen from drop down, informs model and updates view.
    * 
-   * @param pSessionController
-   *          sessionController
+   * @param session
+   *          new current session
    */
-  public synchronized void changeCurrentSession(ISession pSessionController) {
-    sessionHolder.setCurrentSession(pSessionController);
+  public synchronized void changeCurrentSession(ISession session) {
+    sessionHolder.setCurrentSession(session);
   }
 
   /**
@@ -93,15 +91,16 @@ public class ApplicationController {
 
     if (sessionHolder.getSessions().size() > 0) {
       logger.debug("Session controller deleted. Set former graph session");
-      sessionHolder
-          .setCurrentSession(sessionHolder.getSessions().iterator().next());
+
+      int size = sessionHolder.getSessions().size();
+      ISession mostRecentSession = sessionHolder.getSessions().get(size - 1);
+      sessionHolder.setCurrentSession(mostRecentSession);
 
     } else {
-
       // when the last session is deleted, create empty dummy controller
       // otherwise session-bindings for UI would have to be unbound etc.
       logger.debug("Set empty graph session");
-      sessionHolder.setCurrentSession(graphSessionFactory.create(-1, "", null));
+      sessionHolder.setCurrentSession(sessionFactory.create(-1, ""));
     }
   }
 
@@ -124,10 +123,10 @@ public class ApplicationController {
     Iterator<ISession> sessionIt = sessionHolder.getSessions().iterator();
     boolean isSessionExisting = false;
     while (sessionIt.hasNext()) {
-      ISession sc = (ISession) (sessionIt.next());
-      if (sc.getSessionId() == pId) {
+      ISession session = (ISession) (sessionIt.next());
+      if (session.getId() == pId) {
         logger.debug("Add tree to exsting session");
-        ((ITreeSessionController) sc).addTreeModel(pTreeModel);
+        ((ITreeSessionController) session).addTreeModel(pTreeModel);
         isSessionExisting = true;
       }
     }
@@ -159,11 +158,12 @@ public class ApplicationController {
 
     boolean isSessionExisting = false;
     for (ISession session : sessionHolder.getSessions()) {
-      if (session.getSessionId() == sessionId) {
+      if (session.getId() == sessionId) {
 
         logger.info("Add graph to exsting session");
         Session existingSession = (Session) session;
         existingSession.addGraph(graph);
+        existingSession.changeCurrentGraphToLast();
         existingSession.layoutCurrentGraph(null);
 
         isSessionExisting = true;
@@ -173,10 +173,9 @@ public class ApplicationController {
     if (!isSessionExisting) {
       logger.info("Create new session");
 
-      List<Graph> graphs = new ArrayList<>();
-      graphs.add(graph);
-      Session newSession = graphSessionFactory.create(sessionId, sessionName,
-          graphs);
+      Session newSession = sessionFactory.create(sessionId, sessionName);
+      newSession.addGraph(graph);
+      newSession.getGraphHolder().setCurrentGraph(graph);
       newSession.layoutCurrentGraph(null);
 
       sessionHolder.addSession(newSession);

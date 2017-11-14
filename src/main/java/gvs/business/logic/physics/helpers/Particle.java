@@ -13,12 +13,12 @@ import gvs.interfaces.IVertex;
  */
 public class Particle {
 
-  private AreaVector speed, acceleration;
-  private AreaPoint particlePosition = null;
-  private boolean positionFixed = false;
-  private double weight = 0;
-  private long particleId = 0;
-  private IVertex myNode = null;
+  private double weight;
+  private IVertex relatedVertex;
+
+  private AreaVector speed;
+  private AreaVector acceleration;
+  private AreaPoint particlePosition;
 
   private static final Logger logger = LoggerFactory.getLogger(Particle.class);
 
@@ -26,28 +26,21 @@ public class Particle {
    * Builds an instance of a particle.
    * 
    * @param position
-   * @param particleId
-   * @param myNode
-   * @param isfixed
+   *          position
+   * @param relatedVertex
+   *          related vertex
    * @param weight
+   *          particle weight
    */
-  public Particle(AreaPoint position, long particleId, IVertex myNode,
-      boolean isfixed, double weight) {
+  public Particle(AreaPoint position, IVertex relatedVertex, double weight) {
     this.particlePosition = position;
-    this.particleId = particleId;
-    this.myNode = myNode;
-    this.weight = 10;
+    this.relatedVertex = relatedVertex;
+    this.weight = weight;
 
     this.speed = new AreaVector(0, 0);
     this.acceleration = new AreaVector(0, 0);
-    this.positionFixed = isfixed;
   }
 
-  /**
-   * Returns position of a particle.
-   * 
-   * @return
-   */
   public AreaPoint getPointPosition() {
     return particlePosition;
   }
@@ -55,15 +48,16 @@ public class Particle {
   /**
    * Accelerates a particle.
    * 
-   * @param vec
+   * @param vector
+   *          acceleration vector
    */
-  public void accelerate(AreaVector vec) {
-    if (!positionFixed) {
+  public void accelerate(AreaVector vector) {
+    if (!relatedVertex.isStable()) {
       double scale = 1;
       if (weight >= 0) {
         scale = 1.0 / weight;
       }
-      acceleration.add(vec, scale);
+      acceleration.add(vector, scale);
     }
   }
 
@@ -71,71 +65,33 @@ public class Particle {
    * Each time a ticker impuls happens, the newly calculated acceleration and
    * speed Vector are updated and the new particle position will be set
    * accordingly. If the speed of a particle is lower than a given value, its
-   * position is marked as fixed.
+   * position is marked as is stable.
    */
   public void update() {
-    if (!positionFixed) {
+    if (!relatedVertex.isStable()) {
       speed.add(acceleration);
       particlePosition.addVector(speed);
       if (Math.abs(speed.getSpeedSummary()) < 0.2) {
-        this.positionFixed = true;
+        relatedVertex.setIsStable(true);
       }
     }
-    updateMyNode();
+    updateRelatedVertex();
   }
 
-  /**
-   * Returns speed of a particle.
-   * 
-   * @return
-   */
   public AreaVector getSpeed() {
     return speed;
   }
 
-  /**
-   * Returns acceleration of a particle.
-   * 
-   * @return
-   */
   public AreaVector getAcceleration() {
     return acceleration;
   }
 
-  /**
-   * Returns mass of a particle.
-   * 
-   * @return
-   */
   public double getWeight() {
     return weight;
   }
 
-  /**
-   * Sets mass of a particle.
-   * 
-   * @param weight
-   */
-  public void setWeight(double weight) {
-    this.weight = weight;
-  }
-
-  /**
-   * Returns particle id.
-   * 
-   * @return
-   */
-  public long getParticleId() {
-    return particleId;
-  }
-
-  /**
-   * Returns if actual particle is fixed.
-   * 
-   * @return
-   */
-  public boolean positionFixed() {
-    return this.positionFixed;
+  public IVertex getRelatedVertex() {
+    return relatedVertex;
   }
 
   /**
@@ -149,9 +105,10 @@ public class Particle {
    * updated in real time.
    *
    */
-  public void updateMyNode() {
-    myNode.setXPosition(particlePosition.getX() / 10);
-    myNode.setYPosition(particlePosition.getY() / 10);
+  public void updateRelatedVertex() {
+    double newX = particlePosition.getX() / 10;
+    double newY = particlePosition.getY() / 10;
+    relatedVertex.updateCoordinates(newX, newY);
   }
 
 }

@@ -7,7 +7,7 @@ import gvs.util.FontAwesome.Glyph;
 
 public interface IVertex {
 
-  boolean isRelative();
+  long getId();
 
   String getLabel();
 
@@ -15,20 +15,22 @@ public interface IVertex {
 
   double getYPosition();
 
-  boolean isFixedPosition();
+  void setXPosition(double xPos);
 
-  void setXPosition(double position);
+  void setYPosition(double yPos);
 
-  void setYPosition(double position);
+  void updateCoordinates(double xPos, double yPos);
 
-  void setFixedPosition(boolean isFixed);
-
-  long getId();
+  boolean isFixedPositioned();
   
+  boolean isStable();
+
+  void setIsStable(boolean isStable);
+
   Glyph getIcon();
 
   NodeStyle getStyle();
-  
+
   void addObserver(Observer o);
-  
+
 }

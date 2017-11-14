@@ -1,9 +1,5 @@
 package gvs.business.logic.graph;
 
-import java.util.List;
-
-import gvs.business.model.graph.Graph;
-
 /**
  * Factory interface for Guice
  * 
@@ -11,7 +7,7 @@ import gvs.business.model.graph.Graph;
  * @author Michi
  *
  */
-public interface GraphSessionFactory {
+public interface SessionFactory {
 
   /**
    * Construct a graph session controller with dependencies, which are not
@@ -21,10 +17,7 @@ public interface GraphSessionFactory {
    *          id of the session
    * @param sessionName
    *          name of the session
-   * @param graphs
-   *          list of graphs
    * @return new instance
    */
-  Session create(long sessionId, String sessionName,
-      List<Graph> graphs);
+  Session create(long sessionId, String sessionName);
 }

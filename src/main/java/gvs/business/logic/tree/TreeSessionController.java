@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 
 import gvs.access.Persistor;
-import gvs.business.model.graph.Graph;
+import gvs.business.model.graph.GraphHolder;
 import gvs.business.model.tree.Tree;
 import gvs.interfaces.Action;
 import gvs.interfaces.ITreeSessionController;
@@ -254,7 +254,8 @@ public class TreeSessionController extends Observable
   /**
    * Returns actaul session id
    */
-  public long getSessionId() {
+  @Override
+  public long getId() {
     return clientSessionId;
   }
 
@@ -387,8 +388,21 @@ public class TreeSessionController extends Observable
   }
 
   @Override
-  public Graph getCurrentGraph() {
+  public GraphHolder getGraphHolder() {
+    // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public void pauseReplay() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void cancelReplay() {
+    // TODO Auto-generated method stub
+    
   }
 
 }

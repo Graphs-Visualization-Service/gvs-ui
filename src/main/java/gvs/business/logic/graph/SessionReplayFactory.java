@@ -1,8 +1,5 @@
 package gvs.business.logic.graph;
 
-import java.util.List;
-
-import gvs.business.model.graph.Graph;
 import gvs.interfaces.Action;
 
 /**
@@ -12,7 +9,7 @@ import gvs.interfaces.Action;
  * @author Michi
  *
  */
-public interface GraphSessionReplayFactory {
+public interface SessionReplayFactory {
 
   /**
    * Construct a graph session controller with dependencies, which are not
@@ -20,12 +17,12 @@ public interface GraphSessionReplayFactory {
    * 
    * @param graphSessionController
    *          related graph session controller
-   * @param graphs
-   *          graphs to step through
    * @param callback
    *          callback which is executed after replay has finished
+   * @param startGraphId
+   *          id of the graph to start with
    * @return new instance
    */
-  GraphSessionReplay create(Session graphSessionController,
-      List<Graph> graphs, Action callback);
+  SessionReplay create(Session graphSessionController, Action callback,
+      int startGraphId);
 }

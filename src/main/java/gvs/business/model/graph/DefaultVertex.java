@@ -16,50 +16,49 @@ import gvs.util.FontAwesome.Glyph;
  */
 public class DefaultVertex extends Observable implements IVertex {
 
-  private long id = 0;
-  private String label = null;
+  private long id;
+  private String label;
   private NodeStyle style;
-  private boolean isFixed = false;
-  private boolean isRelative = false;
-  private double xPosition = 0;
-  private double yPosition = 0;
-  private Glyph icon;
+  private double xPosition;
+  private double yPosition;
+  private boolean isStable;
+  private boolean isFixedPositioned;
+
+  private final Glyph icon;
 
   private static final Logger logger = LoggerFactory
       .getLogger(DefaultVertex.class);
 
-  public DefaultVertex(long pId, String pLabel, NodeStyle style, Glyph icon) {
-    this.id = pId;
-    this.label = pLabel;
-    this.style = style;
-    this.isRelative = false;
+  public DefaultVertex(long id, String label, NodeStyle style, double xPosition,
+      double yPosition, Glyph icon) {
+
+    this.id = id;
+    this.label = label;
+    this.xPosition = xPosition;
+    this.yPosition = yPosition;
+    this.isStable = false;
     this.icon = icon;
-  }
+    this.style = style;
 
-  public DefaultVertex(long pId, String pLabel, NodeStyle style,
-      double pXPosition, double pYPosition, Glyph icon) {
-    this(pId, pLabel, style, icon);
-    this.xPosition = pXPosition;
-    this.yPosition = pYPosition;
-    this.isRelative = true;
-  }
-
-  public DefaultVertex(long pId, String pLabel, NodeStyle style,
-      double pXPosition, double pYPosition, boolean pIsRelative, Glyph icon) {
-    this(pId, pLabel, style, icon);
-    this.xPosition = pXPosition;
-    this.yPosition = pYPosition;
-    this.isRelative = pIsRelative;
+    if (xPosition > 0 && yPosition > 0) {
+      this.isFixedPositioned = true;
+      this.isStable = true;
+    }
   }
 
   public double getXPosition() {
     return xPosition;
   }
 
-  public void setXPosition(double position) {
-    xPosition = position;
+  public void updateCoordinates(double xPos, double yPos) {
+    xPosition = xPos;
+    yPosition = yPos;
     setChanged();
     notifyObservers();
+  }
+
+  public void setXPosition(double position) {
+    xPosition = position;
   }
 
   public double getYPosition() {
@@ -68,12 +67,18 @@ public class DefaultVertex extends Observable implements IVertex {
 
   public void setYPosition(double position) {
     yPosition = position;
-    setChanged();
-    notifyObservers();
   }
 
-  public boolean isRelative() {
-    return isRelative;
+  public boolean isStable() {
+    return isStable;
+  }
+
+  public void setIsStable(boolean isStable) {
+    this.isStable = isStable;
+  }
+
+  public boolean isFixedPositioned() {
+    return isFixedPositioned;
   }
 
   public String getLabel() {
@@ -82,14 +87,6 @@ public class DefaultVertex extends Observable implements IVertex {
 
   public NodeStyle getStyle() {
     return style;
-  }
-
-  public boolean isFixedPosition() {
-    return isFixed;
-  }
-
-  public void setFixedPosition(boolean pIsFixed) {
-    isFixed = pIsFixed;
   }
 
   public long getId() {

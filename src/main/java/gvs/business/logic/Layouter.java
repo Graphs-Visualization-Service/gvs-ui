@@ -45,11 +45,11 @@ public class Layouter implements Tickable {
   private final Random random;
 
   private static final int FACTOR = 3;
-  
-  private static final int PARTICLE_MASS = 50;
+
+  private static final int PARTICLE_WEIGHT = 10;
   private static final int TRACTION_DISTANCE = 70 * FACTOR;
   private static final int TRACTION_IMPACT = 10;
-  
+
   private static final int SOFT_MULTIPLIER = 100;
   private static final int FIXED_MULTIPLIER = 10;
 
@@ -70,17 +70,6 @@ public class Layouter implements Tickable {
     this.area = new Area(
         new AreaDimension(DEFAULT_AREA_WIDTH, DEFAULT_AREA_HEIGHT));
     this.random = new Random(DEFAULT_SEED);
-
-    initializeLayoutGuard();
-  }
-
-  /**
-   * Initializes the guard, which protects the layouter from running endlessly.
-   */
-  private void initializeLayoutGuard() {
-    Timer guard = new Timer();
-    LayoutGuard layoutGuard = new LayoutGuard(area);
-    guard.schedule(layoutGuard, MAX_LAYOUT_DURATION_MS);
   }
 
   /**
@@ -98,11 +87,22 @@ public class Layouter implements Tickable {
     if (graph.isLayoutable()) {
 
       this.completionCallback = completionCallback;
+
+      initializeLayoutGuard();
       handleTickerThread();
 
       resetArea();
       calculatLayout(graph, useSoftPoints);
     }
+  }
+
+  /**
+   * Initializes the guard, which protects the layouter from running endlessly.
+   */
+  private void initializeLayoutGuard() {
+    Timer guard = new Timer();
+    LayoutGuard layoutGuard = new LayoutGuard(area);
+    guard.schedule(layoutGuard, MAX_LAYOUT_DURATION_MS);
   }
 
   private void resetArea() {
@@ -150,7 +150,7 @@ public class Layouter implements Tickable {
     if (area.isStable()) {
       logger.info("Layouting completed. Graph is stable. Stop layout engine.");
       currentTicker.terminate();
-      
+
       if (completionCallback != null) {
         completionCallback.execute();
       }
@@ -167,24 +167,21 @@ public class Layouter implements Tickable {
   private void createVertexParticles(Collection<IVertex> vertices,
       boolean generateSoftPoints) {
 
-    vertices.forEach(v -> {
+    vertices.forEach(vertex -> {
       Point point = new Point();
 
-      if (!v.isFixedPosition()) {
+      if (!vertex.isStable()) {
         if (generateSoftPoints) {
-          point = generateSoftPoints(v);
+          point = generateSoftPoints(vertex);
         } else {
-          point = generateRandomPoints(v);
+          point = generateRandomPoints(vertex);
         }
       } else {
-        point = generateFixedPoints(v);
+        point = generateFixedPoints(vertex);
       }
 
       AreaPoint position = new AreaPoint(point);
-      long particleId = v.getId();
-      boolean isFixed = v.isFixedPosition();
-      Particle newParticle = new Particle(position, particleId, v, isFixed,
-          PARTICLE_MASS);
+      Particle newParticle = new Particle(position, vertex, PARTICLE_WEIGHT);
 
       area.addParticles(newParticle);
     });
@@ -199,8 +196,8 @@ public class Layouter implements Tickable {
       IVertex vertexFrom = e.getStartVertex();
       IVertex vertexTo = e.getEndVertex();
 
-      Particle fromParticle = area.getParticleWithID(vertexFrom.getId());
-      Particle toParticle = area.getParticleWithID(vertexTo.getId());
+      Particle fromParticle = area.getParticleByVertexId(vertexFrom.getId());
+      Particle toParticle = area.getParticleByVertexId(vertexTo.getId());
 
       Traction t = new Traction(fromParticle, toParticle, TRACTION_IMPACT,
           TRACTION_DISTANCE);

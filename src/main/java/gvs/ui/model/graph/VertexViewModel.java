@@ -97,7 +97,7 @@ public class VertexViewModel implements Observer {
    */
   private void xProperyListener(ObservableValue<? extends Number> observable,
       Number oldValue, Number newValue) {
-    if (Math.abs((double) oldValue - (double) newValue) <= 0.000001) {
+    if (!equalDouble(oldValue.doubleValue(), newValue.doubleValue())) {
       double newX = (double) newValue;
       vertex.setXPosition(newX);
     }
@@ -116,7 +116,7 @@ public class VertexViewModel implements Observer {
    */
   private void yProperyListener(ObservableValue<? extends Number> observable,
       Number oldValue, Number newValue) {
-    if (Math.abs((double) oldValue - (double) newValue) <= 0.000001) {
+    if (!equalDouble(oldValue.doubleValue(), newValue.doubleValue())) {
       double newY = (double) newValue;
       vertex.setYPosition(newY);
     }
@@ -231,4 +231,7 @@ public class VertexViewModel implements Observer {
     return centerYPropery;
   }
 
+  private boolean equalDouble(double p1, double p2) {
+    return Math.abs(p1 - p2) < 1e-6;
+  }
 }

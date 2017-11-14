@@ -188,6 +188,7 @@ public class SessionView {
   @FXML
   private void cancelReplayGraph() {
     sessionViewModel.cancelReplay();
+    replayBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
   }
 
   @FXML

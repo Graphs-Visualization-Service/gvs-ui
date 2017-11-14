@@ -1,8 +1,6 @@
 package gvs.business.logic;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,6 +173,7 @@ public class ApplicationController {
 
       Session newSession = sessionFactory.create(sessionId, sessionName);
       newSession.addGraph(graph);
+      newSession.getGraphHolder().setCurrentGraph(graph);
       newSession.layoutCurrentGraph(null);
 
       sessionHolder.addSession(newSession);

@@ -12,6 +12,7 @@ import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
@@ -58,8 +59,8 @@ public class VertexViewModel implements Observer {
     // bidirectional connection
     this.vertex = vertex;
     this.vertex.addObserver(this);
-    ellipse.centerXProperty().addListener(this::xProperyListener);
-    ellipse.centerYProperty().addListener(this::yProperyListener);
+    ellipse.centerXProperty().addListener(this::xPropertyListener);
+    ellipse.centerYProperty().addListener(this::yPropertyListener);
 
     setStyles();
   }
@@ -71,7 +72,7 @@ public class VertexViewModel implements Observer {
     ellipse.getStyleClass().add(style.getLineStyle().getStyle() + "-"
         + style.getLineThickness().getThickness());
     ellipse.getStyleClass().add("fill-" + style.getFillColor().getColor());
-    
+
     // TODO: find nicer method, maybe use getContrastColor()
     if (style.getDarkColors().contains(style.getFillColor())) {
       label.textFillProperty().set(Color.WHITE);
@@ -95,7 +96,7 @@ public class VertexViewModel implements Observer {
    * @param newValue
    *          value after the change
    */
-  private void xProperyListener(ObservableValue<? extends Number> observable,
+  private void xPropertyListener(ObservableValue<? extends Number> observable,
       Number oldValue, Number newValue) {
     if (Math.abs((double) oldValue - (double) newValue) <= 0.000001) {
       double newX = (double) newValue;
@@ -114,7 +115,7 @@ public class VertexViewModel implements Observer {
    * @param newValue
    *          value after the change
    */
-  private void yProperyListener(ObservableValue<? extends Number> observable,
+  private void yPropertyListener(ObservableValue<? extends Number> observable,
       Number oldValue, Number newValue) {
     if (Math.abs((double) oldValue - (double) newValue) <= 0.000001) {
       double newY = (double) newValue;
@@ -168,12 +169,13 @@ public class VertexViewModel implements Observer {
 
   private void dragSupport(ScalableContentPane graphPane) {
     logger.info("Adding drag support on VertexViewModel.");
-    ellipse.setOnMousePressed(e -> {
+
+    label.setOnMousePressed(e -> {
       dragOriginalSceneX = e.getSceneX();
       dragOriginalSceneY = e.getSceneY();
     });
 
-    ellipse.setOnMouseDragged(e -> {
+    label.setOnMouseDragged(e -> {
       // logger level debug, because this will happen very often
       logger.debug("Mouse drag on VertexViewModel detected.");
       ellipse.setCursor(Cursor.HAND);
@@ -231,4 +233,35 @@ public class VertexViewModel implements Observer {
     label.toFront();
   }
 
+  /**
+   * Find boundaries of the node shape.
+   * 
+   * Works like binary search
+   * 
+   * @param outside
+   * @param inside
+   * @return
+   */
+  public Point2D findBoundaryPoint(Point2D outside, Point2D inside) {
+    Point2D middle = middle(outside, inside);
+    if (pointsLenSqr(outside, inside) < 1.) {
+      return middle;
+    } else {
+      if (ellipse.contains(middle)) {
+        return findBoundaryPoint(outside, middle);
+      } else {
+        return findBoundaryPoint(middle, inside);
+      }
+    }
+  }
+
+  private Point2D middle(Point2D outside, Point2D inside) {
+    return new Point2D((outside.getX() + inside.getX()) / 2,
+        (outside.getY() + inside.getY()) / 2);
+  }
+
+  private double pointsLenSqr(Point2D startPoint, Point2D endPoint) {
+    return Math.pow(startPoint.getX() - endPoint.getX(), 2)
+        + Math.pow(startPoint.getY() - endPoint.getY(), 2);
+  }
 }

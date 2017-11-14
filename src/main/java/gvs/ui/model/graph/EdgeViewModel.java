@@ -8,7 +8,10 @@ import gvs.interfaces.IEdge;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
-import javafx.scene.shape.Line;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.transform.Affine;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
@@ -23,11 +26,12 @@ public class EdgeViewModel {
   private VertexViewModel endVertex;
 
   private final Label label;
-  private final Line line;
+  private final Path arrowHead;
 
   private static final String CSS_EDGE_LABEL = "edge-label";
   private static final Logger logger = LoggerFactory
       .getLogger(EdgeViewModel.class);
+  private static final double ARROW_HEAD_SIZE = 5;
 
   /**
    * Create a new EdgeViewModel with the corresponding vertices.
@@ -45,7 +49,7 @@ public class EdgeViewModel {
     this.startVertex = startVertex;
     this.endVertex = endVertex;
     this.label = new Label();
-    this.line = new Line();
+    this.arrowHead = new Path();
 
     this.label.setText(edge.getLabel());
 
@@ -59,7 +63,6 @@ public class EdgeViewModel {
         .addListener(this::ellipsePropertyListener);
 
     bindLineCoordinates();
-    bindLabelCoordinates();
 
     setStyles();
   }
@@ -72,13 +75,15 @@ public class EdgeViewModel {
 
   private void setStyles() {
     NodeStyle style = edge.getStyle();
-    line.getStyleClass().add("line-" + style.getLineColor().getColor());
-    line.getStyleClass().add(style.getLineStyle().getStyle() + "-"
-        + style.getLineThickness().getThickness());
+    // line.getStyleClass().add("line-" + style.getLineColor().getColor());
+    // line.getStyleClass().add(style.getLineStyle().getStyle() + "-"
+    // + style.getLineThickness().getThickness());
   }
 
   private void bindLineCoordinates() {
 
+    arrowHead.getElements().clear();
+    
     Point2D endVertexCenter = new Point2D(endVertex.getEllipse().getCenterX(),
         endVertex.getEllipse().getCenterY());
     Point2D startVertexCenter = new Point2D(
@@ -90,23 +95,43 @@ public class EdgeViewModel {
     Point2D endPoint = endVertex.findBoundaryPoint(startVertexCenter,
         endVertexCenter);
 
-    line.setStartX(startPoint.getX());
-    line.setStartY(startPoint.getY());
-    line.setEndX(endPoint.getX());
-    line.setEndY(endPoint.getY());
-  }
+    Point2D middle = startPoint.midpoint(endPoint);
+    label.setLayoutX(middle.getX());
+    label.setLayoutY(middle.getY());
 
-  private void bindLabelCoordinates() {
-    label.layoutXProperty()
-        .bind(line.startXProperty().add(line.endXProperty()).divide(2));
-    label.layoutYProperty()
-        .bind(line.startYProperty().add(line.endYProperty()).divide(2));
+    double length = Math.hypot(startPoint.getX(), endPoint.getY());
+
+    // Line
+    arrowHead.getElements()
+        .add(new MoveTo(startPoint.getX(), startPoint.getY()));
+    arrowHead.getElements().add(new LineTo(endPoint.getX(), endPoint.getY()));
+
+    // ArrowHead
+    if (edge.isDirected()) {
+      double angle = Math.atan2((endPoint.getY() - endPoint.getX()),
+          (endPoint.getX() - startPoint.getX())) - Math.PI / 2.0;
+      double sin = Math.sin(angle);
+      double cos = Math.cos(angle);
+      // point1
+      double x1 = (-1.0 / 2.0 * cos + Math.sqrt(3) / 2 * sin) * ARROW_HEAD_SIZE
+          + endPoint.getX();
+      double y1 = (-1.0 / 2.0 * sin - Math.sqrt(3) / 2 * cos) * ARROW_HEAD_SIZE
+          + endPoint.getY();
+      // point2
+      double x2 = (1.0 / 2.0 * cos + Math.sqrt(3) / 2 * sin) * ARROW_HEAD_SIZE
+          + endPoint.getX();
+      double y2 = (1.0 / 2.0 * sin - Math.sqrt(3) / 2 * cos) * ARROW_HEAD_SIZE
+          + endPoint.getY();
+      arrowHead.getElements().add(new LineTo(x1, y1));
+      arrowHead.getElements().add(new LineTo(x2, y2));
+      arrowHead.getElements().add(new LineTo(endPoint.getX(), endPoint.getY()));
+    }
   }
 
   public void draw(ScalableContentPane graphPane) {
     logger.info("Drawing EdgeViewModel.");
     bindLineCoordinates();
-    graphPane.getContentPane().getChildren().addAll(line, label);
+    graphPane.getContentPane().getChildren().addAll(arrowHead, label);
   }
 
 }

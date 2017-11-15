@@ -87,6 +87,8 @@ public class EdgeViewModel {
   private void bindLineCoordinates() {
     // clear previously drawn lines/arrows
     edgePath.getElements().clear();
+    arrowPath.getElements().clear();
+    
     Point2D startVertexCenter = new Point2D(
         startVertex.getEllipse().getCenterX(),
         startVertex.getEllipse().getCenterY());
@@ -104,14 +106,14 @@ public class EdgeViewModel {
     label.setLayoutX(middle.getX());
     label.setLayoutY(middle.getY());
 
-    // Initially draw a line from the startpoint horizontally with the correct
+    // Draw a line from the startpoint horizontally with the correct
     // length
     double length = startPoint.distance(endPoint);
     edgePath.getElements().addAll(
         new MoveTo(startPoint.getX(), startPoint.getY()),
         new LineTo(startPoint.getX() + length, startPoint.getY()));
     if (edge.isDirected()) {
-      // adds an arrowhead
+      // Draw an arrowhead
       arrowPath.getElements().addAll(
           new MoveTo(startPoint.getX() + length, startPoint.getY()),
           new LineTo(startPoint.getX() + length - 5, startPoint.getY() + 2),

@@ -264,4 +264,12 @@ public class VertexViewModel implements Observer {
     return Math.pow(startPoint.getX() - endPoint.getX(), 2)
         + Math.pow(startPoint.getY() - endPoint.getY(), 2);
   }
+
+  public String getLabel() {
+    return label.getText();
+  }
+  
+  public String toString() {
+    return getLabel() + " (" + getEllipse().getCenterX() + "," + getEllipse().getCenterY() +")";
+  }
 }

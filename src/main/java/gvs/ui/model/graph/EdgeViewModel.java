@@ -121,13 +121,7 @@ public class EdgeViewModel {
           new LineTo(startPoint.getX() + length - 5, startPoint.getY() - 2));
     }
 
-    // tempEndPoint is the endpoint of the horizontally drawn line. It is used
-    // to calculate the angle of rotation needed to transform the initial
-    // horizontal line into the correct position
-    Point2D tempEndPoint = new Point2D(startPoint.getX() + length,
-        startPoint.getY());
-
-    double angle = Math.atan2(endPoint.getY() - startPoint.getY(),
+      double angle = Math.atan2(endPoint.getY() - startPoint.getY(),
         endPoint.getX() - startPoint.getX());
     angle = Math.toDegrees(angle);
 

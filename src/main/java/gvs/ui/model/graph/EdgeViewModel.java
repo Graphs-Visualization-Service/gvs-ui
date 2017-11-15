@@ -81,14 +81,14 @@ public class EdgeViewModel {
     edgePath.getStyleClass().add("line-" + style.getLineColor().getColor());
     arrowPath.getStyleClass().add("line-" + style.getLineColor().getColor());
     edgePath.getStyleClass().add(style.getLineStyle().getStyle() + "-"
-     + style.getLineThickness().getThickness());
+        + style.getLineThickness().getThickness());
   }
 
   private void bindLineCoordinates() {
     // clear previously drawn lines/arrows
     edgePath.getElements().clear();
     arrowPath.getElements().clear();
-    
+
     Point2D startVertexCenter = new Point2D(
         startVertex.getEllipse().getCenterX(),
         startVertex.getEllipse().getCenterY());
@@ -120,17 +120,21 @@ public class EdgeViewModel {
           new MoveTo(startPoint.getX() + length, startPoint.getY()),
           new LineTo(startPoint.getX() + length - 5, startPoint.getY() - 2));
     }
-    // rotates the drawn line/arrow into the correct position
+
+    // tempEndPoint is the endpoint of the horizontally drawn line. It is used
+    // to calculate the angle of rotation needed to transform the initial
+    // horizontal line into the correct position
     Point2D tempEndPoint = new Point2D(startPoint.getX() + length,
         startPoint.getY());
     double angle = startPoint.angle(endPoint, tempEndPoint);
     if (endPoint.getY() < startPoint.getY()) {
       angle *= -1;
     }
+    // rotates the drawn line and arrow into the correct position
     edgePath.getTransforms()
         .add(new Rotate(angle, startPoint.getX(), startPoint.getY()));
     arrowPath.getTransforms()
-    .add(new Rotate(angle, startPoint.getX(), startPoint.getY()));
+        .add(new Rotate(angle, startPoint.getX(), startPoint.getY()));
   }
 
   public String toString() {

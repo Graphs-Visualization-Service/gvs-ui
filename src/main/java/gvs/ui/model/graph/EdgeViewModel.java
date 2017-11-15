@@ -29,7 +29,8 @@ public class EdgeViewModel {
   private VertexViewModel endVertex;
 
   private final Label label;
-  private final Path arrowHead;
+  private final Path edgePath;
+  private final Path arrowPath;
 
   private static final String CSS_EDGE_LABEL = "edge-label";
   private static final Logger logger = LoggerFactory
@@ -52,7 +53,8 @@ public class EdgeViewModel {
     this.startVertex = startVertex;
     this.endVertex = endVertex;
     this.label = new Label();
-    this.arrowHead = new Path();
+    this.edgePath = new Path();
+    this.arrowPath = new Path();
 
     this.label.setText(edge.getLabel());
 
@@ -76,20 +78,21 @@ public class EdgeViewModel {
 
   private void setStyles() {
     NodeStyle style = edge.getStyle();
-    // line.getStyleClass().add("line-" + style.getLineColor().getColor());
-    // line.getStyleClass().add(style.getLineStyle().getStyle() + "-"
-    // + style.getLineThickness().getThickness());
+    edgePath.getStyleClass().add("line-" + style.getLineColor().getColor());
+    arrowPath.getStyleClass().add("line-" + style.getLineColor().getColor());
+    edgePath.getStyleClass().add(style.getLineStyle().getStyle() + "-"
+     + style.getLineThickness().getThickness());
   }
 
   private void bindLineCoordinates() {
     // clear previously drawn lines/arrows
-    arrowHead.getElements().clear();
-
-    Point2D endVertexCenter = new Point2D(endVertex.getEllipse().getCenterX(),
-        endVertex.getEllipse().getCenterY());
+    edgePath.getElements().clear();
     Point2D startVertexCenter = new Point2D(
         startVertex.getEllipse().getCenterX(),
         startVertex.getEllipse().getCenterY());
+    Point2D endVertexCenter = new Point2D(endVertex.getEllipse().getCenterX(),
+        endVertex.getEllipse().getCenterY());
+
     // find intersection points of line and vertices
     Point2D startPoint = startVertex.findBoundaryPoint(endVertexCenter,
         startVertexCenter);
@@ -101,17 +104,19 @@ public class EdgeViewModel {
     label.setLayoutX(middle.getX());
     label.setLayoutY(middle.getY());
 
-    // Initially draw a line from the startpoint horizontally with the correct length
+    // Initially draw a line from the startpoint horizontally with the correct
+    // length
     double length = startPoint.distance(endPoint);
-    arrowHead.getElements().addAll(
+    edgePath.getElements().addAll(
         new MoveTo(startPoint.getX(), startPoint.getY()),
         new LineTo(startPoint.getX() + length, startPoint.getY()));
     if (edge.isDirected()) {
       // adds an arrowhead
-      arrowHead.getElements().addAll(
-          new LineTo(startPoint.getX() + length - 10, startPoint.getY() + 5),
+      arrowPath.getElements().addAll(
           new MoveTo(startPoint.getX() + length, startPoint.getY()),
-          new LineTo(startPoint.getX() + length - 10, startPoint.getY() - 5));
+          new LineTo(startPoint.getX() + length - 5, startPoint.getY() + 2),
+          new MoveTo(startPoint.getX() + length, startPoint.getY()),
+          new LineTo(startPoint.getX() + length - 5, startPoint.getY() - 2));
     }
     // rotates the drawn line/arrow into the correct position
     Point2D tempEndPoint = new Point2D(startPoint.getX() + length,
@@ -120,8 +125,10 @@ public class EdgeViewModel {
     if (endPoint.getY() < startPoint.getY()) {
       angle *= -1;
     }
-    arrowHead.getTransforms()
+    edgePath.getTransforms()
         .add(new Rotate(angle, startPoint.getX(), startPoint.getY()));
+    arrowPath.getTransforms()
+    .add(new Rotate(angle, startPoint.getX(), startPoint.getY()));
   }
 
   public String toString() {
@@ -131,7 +138,7 @@ public class EdgeViewModel {
   public void draw(ScalableContentPane graphPane) {
     logger.info("Drawing EdgeViewModel.");
     bindLineCoordinates();
-    graphPane.getContentPane().getChildren().addAll(arrowHead, label);
+    graphPane.getContentPane().getChildren().addAll(edgePath, arrowPath, label);
   }
 
 }

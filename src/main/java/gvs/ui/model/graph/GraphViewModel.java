@@ -85,7 +85,7 @@ public class GraphViewModel extends Observable implements Observer {
   }
 
   private void correctZOrder() {
-    vertexViewModels.values().forEach(v -> v.getNode().toFront());
+    vertexViewModels.values().forEach(v -> v.toFront());
   }
 
   private void drawVertices(Collection<IVertex> vertices) {

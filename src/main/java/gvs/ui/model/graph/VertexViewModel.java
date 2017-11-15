@@ -224,8 +224,32 @@ public class VertexViewModel implements Observer {
     return newY;
   }
 
-  public Ellipse getEllipse() {
-    return ellipse;
+  /**
+   * Find boundaries of the node shape.
+   * 
+   * Works like binary search (recursive)
+   * 
+   * @param outside
+   *          point outside the current vertex
+   * @param inside
+   *          point inside the current vertex
+   * @return intersection point
+   */
+  public Point2D findIntersectionPoint(Point2D outside, Point2D inside) {
+    Point2D middle = outside.midpoint(inside);
+
+    double deltaX = outside.getX() - inside.getX();
+    double deltaY = outside.getY() - inside.getY();
+
+    if (Math.hypot(deltaX, deltaY) < 1.) {
+      return middle;
+    } else {
+      if (ellipse.contains(middle)) {
+        return findIntersectionPoint(outside, middle);
+      } else {
+        return findIntersectionPoint(middle, inside);
+      }
+    }
   }
 
   public void toFront() {
@@ -233,43 +257,12 @@ public class VertexViewModel implements Observer {
     label.toFront();
   }
 
-  /**
-   * Find boundaries of the node shape.
-   * 
-   * Works like binary search
-   * 
-   * @param outside
-   * @param inside
-   * @return
-   */
-  public Point2D findBoundaryPoint(Point2D outside, Point2D inside) {
-    Point2D middle = middle(outside, inside);
-    if (pointsLenSqr(outside, inside) < 1.) {
-      return middle;
-    } else {
-      if (ellipse.contains(middle)) {
-        return findBoundaryPoint(outside, middle);
-      } else {
-        return findBoundaryPoint(middle, inside);
-      }
-    }
-  }
-
-  private Point2D middle(Point2D outside, Point2D inside) {
-    return new Point2D((outside.getX() + inside.getX()) / 2,
-        (outside.getY() + inside.getY()) / 2);
-  }
-
-  private double pointsLenSqr(Point2D startPoint, Point2D endPoint) {
-    return Math.pow(startPoint.getX() - endPoint.getX(), 2)
-        + Math.pow(startPoint.getY() - endPoint.getY(), 2);
+  public Ellipse getEllipse() {
+    return ellipse;
   }
 
   public String getLabel() {
     return label.getText();
   }
-  
-  public String toString() {
-    return getLabel() + " (" + getEllipse().getCenterX() + "," + getEllipse().getCenterY() +")";
-  }
+
 }

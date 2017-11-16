@@ -132,7 +132,7 @@ public class ApplicationController {
     }
     if (!isSessionExisting) {
       logger.debug("Build new tree session");
-      ITreeSessionController newSession = new TreeSessionController(pId,
+      ISession newSession = new TreeSessionController(pId,
           pSessionName, pTreeModel);
       sessionHolder.addSession(newSession);
       logger.debug("Set session as actual model");

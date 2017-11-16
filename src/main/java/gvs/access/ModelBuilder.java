@@ -61,11 +61,9 @@ public class ModelBuilder {
 
   // Graph
   private static final String GRAPH = "Graph";
-  private static final String BACKGROUND = "Background";
   private static final String MAXLABELLENGTH = "MaxLabelLength";
   private static final String VERTIZES = "Vertizes";
   private static final String RELATIVVERTEX = "RelativVertex";
-  private static final String DEFAULTVERTEX = "DefaultVertex";
   private static final String XPOS = "XPos";
   private static final String YPOS = "YPos";
   private static final String EDGES = "Edges";
@@ -77,9 +75,7 @@ public class ModelBuilder {
   // Tree
   private static final String TREE = "Tree";
   private static final String NODES = "Nodes";
-  private static final String BINARYNODE = "BinaryNode";
   private static final String TREEROOTID = "TreeRootId";
-  private static final String CHILDID = "Childid";
   private static final String RIGTHCHILD = "Rigthchild";
   private static final String LEFTCHILD = "Leftchild";
 
@@ -196,9 +192,9 @@ public class ModelBuilder {
     }
 
     logger.debug("Finish build tree from XML");
-    Tree tm = new Tree(treeLabel, Integer.parseInt(maxLabelLength), Color.WHITE,
-        rootNode, nodeMap.values());
-    applicationController.addTreeToSession(tm, treeId, treeLabel);
+    Tree tree = new Tree(treeLabel, Integer.parseInt(maxLabelLength),
+        Color.WHITE, rootNode, nodeMap.values());
+    applicationController.addTreeToSession(tree, treeId, treeLabel);
   }
 
   /**
@@ -333,9 +329,7 @@ public class ModelBuilder {
       }
     }
     logger.debug("Finish build DirectedEdge XML");
-    return new Edge(label,
-        new NodeStyle(linecolor, linestyle, linethickness, null), true,
-        fromVertex, toVertex);
+    return new Edge(label, style, true, fromVertex, toVertex);
 
   }
 
@@ -371,6 +365,8 @@ public class ModelBuilder {
     IVertex fromVertex = null;
     IVertex toVertex = null;
 
+    // TODO: put vertex into map -> access easy over key ID -> no iteration
+    // needed
     Iterator<IVertex> searchVertex = pVertizes.iterator();
     while (searchVertex.hasNext()) {
       IVertex tmp = (IVertex) (searchVertex.next());

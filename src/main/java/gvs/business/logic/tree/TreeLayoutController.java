@@ -123,7 +123,7 @@ public class TreeLayoutController {
       BinaryNode temp = (BinaryNode) it.next();
 
       if (temp.getMyTreeLevel() == 0) {
-        temp.setYPosition(+9);
+        temp.setYPosition(9); //margin to top of window?
       } else {
         temp.setYPosition(minHeightPerc * temp.getMyTreeLevel());
       }
@@ -183,7 +183,7 @@ public class TreeLayoutController {
 
   // Prepare model vector for layouting, check dimension
   private void prepareTreeBuild(List<INode> splitNodes) {
-    maxHeight = countNodes(rootNode, 0);
+    maxHeight = computeDepth(rootNode, 0);
     minHeightPerc = maxDimensionHeight / (maxHeight);
 
     setNodesXPosition(rootNode, 0, 1);
@@ -196,20 +196,16 @@ public class TreeLayoutController {
   // the depth of the node, and the routine returns the max of the
   // depths of the leaves in the subtree to which node points.
   // In each recursive call to this routine, depth goes up by one.
-  private int countNodes(IBinaryNode root, int depth) {
+  private int computeDepth(IBinaryNode root, int depth) {
     if (root == null) {
       // The tree is empty. Return 0.
       return 0;
     } else if (root.getLeftChild() == null && root.getRightChild() == null) {
       return depth;
     } else {
-      int leftMax = countNodes(root.getLeftChild(), depth + 1);
-      int rightMax = countNodes(root.getRightChild(), depth + 1);
-      if (leftMax > rightMax) {
-        return leftMax;
-      } else {
-        return rightMax;
-      }
+      int leftMax = computeDepth(root.getLeftChild(), depth + 1);
+      int rightMax = computeDepth(root.getRightChild(), depth + 1);
+      return Math.max(leftMax, rightMax);
     }
   }
 

@@ -28,7 +28,7 @@ import gvs.ui.model.tree.VisualizationTreeModel;
 public class TreeSessionController extends Observable
     implements ITreeSessionController {
 
-  private VisualizationTreeModel visualModel = null;
+//  private VisualizationTreeModel visualModel = null;
 //  private VisualizationTreePanel visualPanel = null;
   private TreeLayoutController layoutController = null;
   private long clientSessionId = 0;
@@ -81,8 +81,7 @@ public class TreeSessionController extends Observable
     currentTreeModel.setModelId(serverSessionId++);
     treeModels.add(currentTreeModel);
 
-    if (currentTreeModel.getNodes().size() > 0
-        && currentTreeModel.getNodes().size() != 0) {
+    if (currentTreeModel.getNodes().size() > 0) {
       callLayouter();
     } else {
       setVisualModel();
@@ -113,7 +112,7 @@ public class TreeSessionController extends Observable
     // TODO check logger replacement
     // this.treeContLogger =
     // gvs.common.Logger.getInstance().getTreeControllerLogger();
-    this.visualModel = new VisualizationTreeModel();
+//    this.visualModel = new VisualizationTreeModel();
 //    this.visualPanel = new VisualizationTreePanel(visualModel);
   }
 

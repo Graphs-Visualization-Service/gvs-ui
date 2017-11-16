@@ -44,7 +44,7 @@ public class Graph {
     this.snapshotDescription = new String();
 
     this.isLayoutable = getVertices().stream()
-        .noneMatch(v -> v.isFixedPositioned());
+        .noneMatch(v -> v.isUserPositioned());
   }
 
   public boolean isLayoutable() {

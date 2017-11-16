@@ -90,7 +90,7 @@ public class Session implements IGraphSessionController {
 
       Graph currentGraph = graphHolder.getCurrentGraph();
       currentGraph.getVertices().forEach(v -> {
-        v.setIsStable(false);
+        v.setStable(false);
       });
 
       // TODO isSoftLayout is always false -> check usage

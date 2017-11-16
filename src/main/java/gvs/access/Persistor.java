@@ -224,7 +224,7 @@ public class Persistor {
   private void saveDefaultVertex(DefaultVertex pVertex, Element pVertizes) {
     String vertexName = null;
 
-    if (pVertex.isFixedPositioned()) {
+    if (pVertex.isUserPositioned()) {
       vertexName = RELATIVVERTEX;
     } else {
       vertexName = DEFAULTVERTEX;

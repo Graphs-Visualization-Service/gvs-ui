@@ -72,7 +72,7 @@ public class Particle {
       speed.add(acceleration);
       particlePosition.addVector(speed);
       if (Math.abs(speed.getSpeedSummary()) < 0.2) {
-        relatedVertex.setIsStable(true);
+        relatedVertex.setStable(true);
       }
     }
     updateRelatedVertex();

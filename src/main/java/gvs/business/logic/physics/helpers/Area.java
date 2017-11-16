@@ -126,10 +126,9 @@ public class Area extends Observable {
   }
 
   /**
-   * Sets area as stable, if all particle positions are fixed. Layout Controller
-   * will then return positions to Session controller for drawing.
+   * Sets area as stable, if particle positions stabilized.
    * 
-   * @param pState
+   * @param state
    *          particle state
    */
   public synchronized void setIsStable(boolean state) {
@@ -137,7 +136,7 @@ public class Area extends Observable {
   }
 
   /**
-   * Return true if all available particles in area are fixed.
+   * Return true if all available particles in area are stable.
    * 
    * @return is area stable
    */

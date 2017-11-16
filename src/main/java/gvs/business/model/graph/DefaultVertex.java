@@ -22,7 +22,7 @@ public class DefaultVertex extends Observable implements IVertex {
   private double xPosition;
   private double yPosition;
   private boolean isStable;
-  private boolean isFixedPositioned;
+  private boolean isUserPositioned;
 
   private final Glyph icon;
 
@@ -41,7 +41,7 @@ public class DefaultVertex extends Observable implements IVertex {
     this.style = style;
 
     if (xPosition > 0 && yPosition > 0) {
-      this.isFixedPositioned = true;
+      this.isUserPositioned = true;
       this.isStable = true;
     }
   }
@@ -73,12 +73,16 @@ public class DefaultVertex extends Observable implements IVertex {
     return isStable;
   }
 
-  public void setIsStable(boolean isStable) {
-    this.isStable = isStable;
+  public void setStable(boolean stable) {
+    this.isStable = stable;
   }
 
-  public boolean isFixedPositioned() {
-    return isFixedPositioned;
+  public boolean isUserPositioned() {
+    return isUserPositioned;
+  }
+
+  public void setUserPositioned(boolean userPositioned) {
+    this.isUserPositioned = userPositioned;
   }
 
   public String getLabel() {

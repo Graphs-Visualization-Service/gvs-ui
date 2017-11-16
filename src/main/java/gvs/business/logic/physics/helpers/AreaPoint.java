@@ -1,7 +1,5 @@
 package gvs.business.logic.physics.helpers;
 
-import java.awt.Point;
-
 /**
  * A point in the layouting area
  * 
@@ -9,8 +7,9 @@ import java.awt.Point;
  *
  */
 public class AreaPoint {
-  private double x = 0;
-  private double y = 0;
+
+  private double x;
+  private double y;
 
   /**
    * Represents a default particle point in area
@@ -25,20 +24,9 @@ public class AreaPoint {
    * 
    * @param point
    */
-  public AreaPoint(Point point) {
-    this.setX(point.x);
-    this.setY(point.y);
-  }
-
-  /**
-   * Sets a particle position by coordinates
-   * 
-   * @param x
-   * @param y
-   */
   public AreaPoint(double x, double y) {
-    this.setX(x);
-    this.setY(y);
+    this.x = x;
+    this.y = y;
   }
 
   /**

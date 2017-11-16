@@ -28,7 +28,6 @@ import gvs.business.model.graph.Edge;
 import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.NodeStyle;
 import gvs.business.model.tree.BinaryNode;
-import gvs.business.model.tree.DefaultNode;
 import gvs.business.model.tree.Tree;
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
@@ -76,7 +75,6 @@ public class ModelBuilder {
   // Tree
   private static final String TREE = "Tree";
   private static final String NODES = "Nodes";
-  private static final String DEFAULTNODE = "DefaultNode";
   private static final String BINARYNODE = "BinaryNode";
   private static final String TREEROOTID = "TreeRootId";
   private static final String CHILDID = "Childid";
@@ -176,39 +174,20 @@ public class ModelBuilder {
     Iterator<Element> nodesIt = eNodes.elementIterator();
     while (nodesIt.hasNext()) {
       Element eNode = (Element) (nodesIt.next());
-      if (eNode.getName().equals(DEFAULTNODE)) {
-        nodes.add(buildDefaultNode(eNode));
-      } else if (eNode.getName().equals(BINARYNODE)) {
-        nodes.add(buildBinaryNode(eNode));
-      }
-
+      nodes.add(buildBinaryNode(eNode));
     }
 
     Iterator<INode> nodesModelIt = nodes.iterator();
     while (nodesModelIt.hasNext()) {
       Object tmp = nodesModelIt.next();
-      if (tmp.getClass() == BinaryNode.class) {
-        BinaryNode actual = (BinaryNode) tmp;
-        Iterator<INode> nodesModelIt2 = nodes.iterator();
-        while (nodesModelIt2.hasNext()) {
-          BinaryNode child = (BinaryNode) (nodesModelIt2.next());
-          if (actual.getLeftChildId() == child.getNodeId()) {
-            actual.setLeftChild(child);
-          } else if (actual.getRightChildId() == child.getNodeId()) {
-            actual.setRigthChild(child);
-          }
-        }
-      } else if (tmp.getClass() == DefaultNode.class) {
-        DefaultNode actual = (DefaultNode) tmp;
-        Iterator<INode> nodesModelIt2 = nodes.iterator();
-        while (nodesModelIt2.hasNext()) {
-          DefaultNode child = (DefaultNode) (nodesModelIt2.next());
-          long[] allchilds = actual.getChildIds();
-          for (int count = 0; count < allchilds.length; count++) {
-            if (child.getNodeId() == allchilds[count]) {
-              actual.addChild(child);
-            }
-          }
+      BinaryNode actual = (BinaryNode) tmp;
+      Iterator<INode> nodesModelIt2 = nodes.iterator();
+      while (nodesModelIt2.hasNext()) {
+        BinaryNode child = (BinaryNode) (nodesModelIt2.next());
+        if (actual.getLeftChildId() == child.getNodeId()) {
+          actual.setLeftChild(child);
+        } else if (actual.getRightChildId() == child.getNodeId()) {
+          actual.setRigthChild(child);
         }
       }
     }
@@ -231,46 +210,6 @@ public class ModelBuilder {
     Tree tm = new Tree(treeLabel, Integer.parseInt(maxLabelLength), Color.WHITE,
         rootNode, nodes);
     applicationController.addTreeToSession(tm, treeId, treeLabel);
-  }
-
-  /**
-   * Default Node Builder.
-   * 
-   * @param pNode
-   *          node
-   * @return Node
-   */
-  private INode buildDefaultNode(Element pNode) {
-    logger.debug("Build DefaultNode XML");
-    long nodeId = Long.parseLong(pNode.attributeValue(ATTRIBUTEID));
-    Element eLabel = pNode.element(LABEL);
-    Element eLineColor = pNode.element(LINECOLOR);
-    Element eLineStyle = pNode.element(LINESTYLE);
-    Element eLineThickness = pNode.element(LINETHICKNESS);
-    Element eFillcolor = pNode.element(FILLCOLOR);
-    List<Element> childIds = pNode.elements(CHILDID);
-
-    String label = eLabel.getText();
-    String linecolor = eLineColor.getText();
-    Color lineColor = typs.getColor(linecolor, false);
-    String linestyle = eLineStyle.getText();
-    String linethickness = eLineThickness.getText();
-    BasicStroke lineStroke = typs.getLineObject(linestyle, linethickness);
-    String fillcolor = eFillcolor.getText();
-    Color fillColor = typs.getColor(fillcolor, false);
-    long[] childs = new long[childIds.size()];
-
-    Iterator<Element> childIt = childIds.iterator();
-    int counter = 0;
-    while (childIt.hasNext()) {
-      Element childIdTmp = (Element) (childIt.next());
-      long childID = Long.parseLong(childIdTmp.getText());
-      childs[counter] = childID;
-      counter++;
-    }
-    logger.debug("Finihs build DefaultNode XML");
-    return new DefaultNode(nodeId, label, lineColor, lineStroke, fillColor,
-        childs);
   }
 
   /**

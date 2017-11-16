@@ -192,7 +192,9 @@ public class VertexViewModel implements Observer {
       newY = checkYBoundaries(newY, graphPane);
 
       updateCoordinates(newX, newY);
+      vertex.setUserPositioned(true);
 
+      // remember last coordinates
       dragOriginalSceneX = e.getSceneX();
       dragOriginalSceneY = e.getSceneY();
     });

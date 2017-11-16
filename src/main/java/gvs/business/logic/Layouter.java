@@ -168,22 +168,25 @@ public class Layouter implements Tickable {
       boolean generateSoftPoints) {
 
     vertices.forEach(vertex -> {
-      Point point = new Point();
 
-      if (!vertex.isStable()) {
-        if (generateSoftPoints) {
-          point = generateSoftPoints(vertex);
+      if (!vertex.isUserPositioned()) {
+        Point point = new Point();
+
+        if (!vertex.isStable()) {
+          if (generateSoftPoints) {
+            point = generateSoftPoints(vertex);
+          } else {
+            point = generateRandomPoints(vertex);
+          }
         } else {
-          point = generateRandomPoints(vertex);
+          point = generateFixedPoints(vertex);
         }
-      } else {
-        point = generateFixedPoints(vertex);
+
+        AreaPoint position = new AreaPoint(point);
+        Particle newParticle = new Particle(position, vertex, PARTICLE_WEIGHT);
+
+        area.addParticles(newParticle);
       }
-
-      AreaPoint position = new AreaPoint(point);
-      Particle newParticle = new Particle(position, vertex, PARTICLE_WEIGHT);
-
-      area.addParticles(newParticle);
     });
   }
 
@@ -195,14 +198,16 @@ public class Layouter implements Tickable {
     edges.forEach(e -> {
       IVertex vertexFrom = e.getStartVertex();
       IVertex vertexTo = e.getEndVertex();
+      
+      if (!vertexFrom.isUserPositioned() && !vertexTo.isUserPositioned()) {
+        Particle fromParticle = area.getParticleByVertexId(vertexFrom.getId());
+        Particle toParticle = area.getParticleByVertexId(vertexTo.getId());
 
-      Particle fromParticle = area.getParticleByVertexId(vertexFrom.getId());
-      Particle toParticle = area.getParticleByVertexId(vertexTo.getId());
-
-      Traction t = new Traction(fromParticle, toParticle, TRACTION_IMPACT,
-          TRACTION_DISTANCE);
-
-      area.addTraction(t);
+        Traction t = new Traction(fromParticle, toParticle, TRACTION_IMPACT,
+            TRACTION_DISTANCE);
+        area.addTraction(t);
+      }
+    
     });
   }
 

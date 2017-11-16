@@ -21,11 +21,13 @@ public interface IVertex {
 
   void updateCoordinates(double xPos, double yPos);
 
-  boolean isFixedPositioned();
-  
+  boolean isUserPositioned();
+
+  void setUserPositioned(boolean isUserPositioned);
+
   boolean isStable();
 
-  void setIsStable(boolean isStable);
+  void setStable(boolean isStable);
 
   Glyph getIcon();
 

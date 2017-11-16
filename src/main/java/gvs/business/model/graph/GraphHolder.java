@@ -26,6 +26,7 @@ public class GraphHolder extends Observable {
   public synchronized void setCurrentGraph(Graph newGraph) {
     logger.info("Setting current graph and notify observers.");
     this.currentGraph = newGraph;
+
     setChanged();
     notifyObservers();
   }

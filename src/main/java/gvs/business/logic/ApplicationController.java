@@ -76,6 +76,8 @@ public class ApplicationController {
 
     sessionHolder.addSession(loadedSession);
     sessionHolder.setCurrentSession(loadedSession);
+    
+    loadedSession.layoutCurrentGraph(null);
   }
 
   /**

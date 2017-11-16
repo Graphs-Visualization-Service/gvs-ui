@@ -1,6 +1,7 @@
 package gvs.business.logic.tree;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ public class TreeLayoutController {
   private double levelDistance = 0;
 
   private Vector<INode> rootNodes;
-  private Vector<INode> splitNodes;
+  private List<INode> splitNodes;
   private int numberOfRoots = 0;
   private double geteilteDim = 1;
   private int globalcounter = 0;
@@ -181,7 +182,7 @@ public class TreeLayoutController {
   }
 
   // Prepare model vector for layouting, check dimension
-  private void prepareTreeBuild(Vector<INode> splitNodes) {
+  private void prepareTreeBuild(List<INode> splitNodes) {
     maxHeight = countNodes(rootNode, 0);
     minHeightPerc = maxDimensionHeight / (maxHeight);
 
@@ -231,7 +232,7 @@ public class TreeLayoutController {
   }
 
   // Sorts node entries in order of their tree position
-  private void sortEntrysShortestDuration(Vector<INode> pNodes) {
+  private void sortEntrysShortestDuration(List<INode> pNodes) {
     treeContLogger.debug("Tree LayoutController is sorting nodes");
     Vector<INode> origEntrys = new Vector<>(pNodes);
     Vector<INode> searchArea = new Vector<>(pNodes);

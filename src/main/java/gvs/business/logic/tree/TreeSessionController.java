@@ -17,7 +17,6 @@ import gvs.business.model.tree.Tree;
 import gvs.interfaces.Action;
 import gvs.interfaces.ITreeSessionController;
 import gvs.ui.model.tree.VisualizationTreeModel;
-import gvs.ui.view.tree.VisualizationTreePanel;
 
 /**
  * The session contoller reacts on user input events and implements most of the
@@ -30,7 +29,7 @@ public class TreeSessionController extends Observable
     implements ITreeSessionController {
 
   private VisualizationTreeModel visualModel = null;
-  private VisualizationTreePanel visualPanel = null;
+//  private VisualizationTreePanel visualPanel = null;
   private TreeLayoutController layoutController = null;
   private long clientSessionId = 0;
   private int serverSessionId = 1;
@@ -115,7 +114,7 @@ public class TreeSessionController extends Observable
     // this.treeContLogger =
     // gvs.common.Logger.getInstance().getTreeControllerLogger();
     this.visualModel = new VisualizationTreeModel();
-    this.visualPanel = new VisualizationTreePanel(visualModel);
+//    this.visualPanel = new VisualizationTreePanel(visualModel);
   }
 
   /**

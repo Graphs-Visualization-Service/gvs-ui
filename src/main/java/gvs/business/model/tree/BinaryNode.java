@@ -154,7 +154,7 @@ public class BinaryNode implements IBinaryNode {
    * 
    * @param pRigthChild
    */
-  public void setRigthChild(IBinaryNode pRigthChild) {
+  public void setRightChild(IBinaryNode pRigthChild) {
     this.rightChild = pRigthChild;
   }
 

@@ -1,6 +1,9 @@
 package gvs.business.model.tree;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Vector;
 
 import gvs.interfaces.INode;
@@ -14,7 +17,7 @@ import gvs.interfaces.INode;
 public class Tree {
   private String treeLabel;
   private Color backgroundColor;
-  private Vector<INode> nodes;
+  private List<INode> nodes = new ArrayList<>();
   private INode rootNode;
   private int modelId;
   private int maxLabelLength;
@@ -34,11 +37,11 @@ public class Tree {
    *          vector of nodes
    */
   public Tree(String pTreeLabel, int maxLabelLength,
-      Color pBackgroundColor, INode pRootNode, Vector<INode> pNodes) {
+      Color pBackgroundColor, INode pRootNode, Collection<INode> pNodes) {
     this.treeLabel = pTreeLabel;
     this.backgroundColor = pBackgroundColor;
     this.rootNode = pRootNode;
-    this.nodes = pNodes;
+    this.nodes.addAll(pNodes);
     this.maxLabelLength = maxLabelLength;
   }
 
@@ -59,11 +62,11 @@ public class Tree {
    *          vector of nodes
    */
   public Tree(String pTreeLabel, int pModelId, int maxLabelLength,
-      Color pBackgroundColor, INode pRootNode, Vector<INode> pNodes) {
+      Color pBackgroundColor, INode pRootNode, Collection<INode> pNodes) {
     this.treeLabel = pTreeLabel;
     this.backgroundColor = pBackgroundColor;
     this.rootNode = pRootNode;
-    this.nodes = pNodes;
+    this.nodes.addAll(pNodes);
     this.maxLabelLength = maxLabelLength;
     this.modelId = pModelId;
   }
@@ -91,7 +94,7 @@ public class Tree {
    * 
    * @return
    */
-  public Vector<INode> getNodes() {
+  public List<INode> getNodes() {
     return nodes;
   }
 

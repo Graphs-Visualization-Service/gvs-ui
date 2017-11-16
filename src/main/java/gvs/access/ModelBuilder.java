@@ -9,9 +9,11 @@ package gvs.access;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.dom4j.Document;
@@ -170,45 +172,32 @@ public class ModelBuilder {
     String treeLabel = eTree.element(LABEL).getText();
     String maxLabelLength = eTree.element(MAXLABELLENGTH).getText();
 
-    Vector<INode> nodes = new Vector<>();
+    // build nodes
+    Map<Long, INode> nodeMap = new HashMap<>();
     Iterator<Element> nodesIt = eNodes.elementIterator();
     while (nodesIt.hasNext()) {
-      Element eNode = (Element) (nodesIt.next());
-      nodes.add(buildBinaryNode(eNode));
+      IBinaryNode newNode = buildBinaryNode(nodesIt.next());
+      nodeMap.put(newNode.getNodeId(), newNode);
     }
 
-    Iterator<INode> nodesModelIt = nodes.iterator();
-    while (nodesModelIt.hasNext()) {
-      Object tmp = nodesModelIt.next();
-      BinaryNode actual = (BinaryNode) tmp;
-      Iterator<INode> nodesModelIt2 = nodes.iterator();
-      while (nodesModelIt2.hasNext()) {
-        BinaryNode child = (BinaryNode) (nodesModelIt2.next());
-        if (actual.getLeftChildId() == child.getNodeId()) {
-          actual.setLeftChild(child);
-        } else if (actual.getRightChildId() == child.getNodeId()) {
-          actual.setRigthChild(child);
-        }
-      }
-    }
+    // set child nodes
+    nodeMap.values().forEach(n -> {
+      BinaryNode currentNode = (BinaryNode) n;
+      currentNode
+          .setLeftChild((BinaryNode) nodeMap.get(currentNode.getLeftChildId()));
+      currentNode.setRightChild(
+          (BinaryNode) nodeMap.get(currentNode.getRightChildId()));
+    });
 
     INode rootNode = null;
     if (eRoot != null) {
-
       long rootId = Long.parseLong(eRoot.getText());
-      Iterator<INode> nodeIt = nodes.iterator();
-      while (nodeIt.hasNext()) {
-        INode tmp = (INode) (nodeIt.next());
-        if (tmp.getNodeId() == rootId) {
-          rootNode = tmp;
-          break;
-        }
-      }
+      rootNode = nodeMap.get(rootId);
     }
 
     logger.debug("Finish build tree from XML");
     Tree tm = new Tree(treeLabel, Integer.parseInt(maxLabelLength), Color.WHITE,
-        rootNode, nodes);
+        rootNode, nodeMap.values());
     applicationController.addTreeToSession(tm, treeId, treeLabel);
   }
 

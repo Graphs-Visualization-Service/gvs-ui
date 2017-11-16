@@ -382,7 +382,7 @@ public class Persistor {
               if (current.getLeftChildId() == child.getNodeId()) {
                 current.setLeftChild(child);
               } else if (current.getRightChildId() == child.getNodeId()) {
-                current.setRigthChild(child);
+                current.setRightChild(child);
               }
             });
           }

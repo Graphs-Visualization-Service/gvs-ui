@@ -3,7 +3,10 @@ package gvs.business.logic.graph;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +21,7 @@ import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.GraphHolder;
 import gvs.interfaces.Action;
 import gvs.interfaces.IGraphSessionController;
+import gvs.interfaces.IVertex;
 
 /**
  * The session controller reacts on user input events and implements most of the
@@ -176,7 +180,9 @@ public class Session implements IGraphSessionController {
   public void changeCurrentGraphToNext() {
     int nextGraphId = graphHolder.getCurrentGraph().getId() + 1;
     if (validIndex(nextGraphId)) {
-      graphHolder.setCurrentGraph(getGraphs().get(nextGraphId - 1));
+      Graph nextGraph = getGraphs().get(nextGraphId - 1);
+      takeOverPreviousVertexPositions(graphHolder.getCurrentGraph(), nextGraph);
+      graphHolder.setCurrentGraph(nextGraph);
     }
   }
 
@@ -184,18 +190,18 @@ public class Session implements IGraphSessionController {
   public void changeCurrentGraphToPrev() {
     int prevGraphId = graphHolder.getCurrentGraph().getId() - 1;
     if (validIndex(prevGraphId)) {
-      graphHolder.setCurrentGraph(getGraphs().get(prevGraphId - 1));
+      Graph previousGraph = getGraphs().get(prevGraphId - 1);
+      takeOverPreviousVertexPositions(graphHolder.getCurrentGraph(),
+          previousGraph);
+      graphHolder.setCurrentGraph(previousGraph);
     }
-  }
-
-  private boolean validIndex(int i) {
-    return i > 0 && i <= getGraphs().size();
   }
 
   @Override
   public void changeCurrentGraphToFirst() {
     if (!getGraphs().isEmpty()) {
-      graphHolder.setCurrentGraph(getGraphs().get(0));
+      Graph firstGraph = getGraphs().get(0);
+      graphHolder.setCurrentGraph(firstGraph);
     }
   }
 
@@ -203,8 +209,44 @@ public class Session implements IGraphSessionController {
   public void changeCurrentGraphToLast() {
     int newIndex = getGraphs().size() - 1;
     if (validIndex(newIndex)) {
-      graphHolder.setCurrentGraph(getGraphs().get(newIndex));
+      Graph lastGraph = getGraphs().get(newIndex);
+      graphHolder.setCurrentGraph(lastGraph);
     }
+  }
+
+  /**
+   * Check if index is within range
+   * 
+   * @param i
+   *          index
+   * @return true if index is valid
+   */
+  private boolean validIndex(int i) {
+    return i > 0 && i <= getGraphs().size();
+  }
+
+  /**
+   * Reuse vertex coordinates of former graph.
+   * 
+   * @param sourceGraph
+   *          source graph
+   * @param targetGraph
+   *          target graph
+   */
+  private void takeOverPreviousVertexPositions(Graph sourceGraph,
+      Graph targetGraph) {
+
+    Map<Long, IVertex> formerVertices = sourceGraph.getVertices().stream()
+        .collect(Collectors.toMap(IVertex::getId, Function.identity()));
+
+    targetGraph.getVertices().forEach(currentVertex -> {
+      IVertex formerVertex = formerVertices.get(currentVertex.getId());
+      if (formerVertex != null) {
+        currentVertex.setXPosition(formerVertex.getXPosition());
+        currentVertex.setYPosition(formerVertex.getYPosition());
+        currentVertex.setUserPositioned(formerVertex.isUserPositioned());
+      }
+    });
   }
 
   @Override

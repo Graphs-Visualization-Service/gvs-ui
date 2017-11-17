@@ -20,6 +20,7 @@ public class Particle {
   private AreaVector acceleration;
   private AreaPoint particlePosition;
 
+  private static final double ZOOM_FACTOR = 1.4;
   private static final Logger logger = LoggerFactory.getLogger(Particle.class);
 
   /**
@@ -78,6 +79,23 @@ public class Particle {
     updateRelatedVertex();
   }
 
+  /**
+   * Updates the X/Y positions of the business vertex with the calculated
+   * values.
+   * 
+   * The new values are propagated via observers to the view model
+   * representation.
+   * 
+   * The ViewModel representation is bound to the current Ellipse object and
+   * updated in real time.
+   *
+   */
+  public void updateRelatedVertex() {
+    double newX = particlePosition.getX() / ZOOM_FACTOR;
+    double newY = particlePosition.getY() / ZOOM_FACTOR;
+    relatedVertex.updateCoordinates(newX, newY);
+  }
+
   public AreaVector getSpeed() {
     return speed;
   }
@@ -93,22 +111,4 @@ public class Particle {
   public IVertex getRelatedVertex() {
     return relatedVertex;
   }
-
-  /**
-   * Updates the X/Y positions of the business vertex with the calculated
-   * values.
-   * 
-   * The new values are propagated via observers to the view model
-   * representation.
-   * 
-   * The ViewModel representation is bound to the current Ellipse object and
-   * updated in real time.
-   *
-   */
-  public void updateRelatedVertex() {
-    double newX = particlePosition.getX() / 10;
-    double newY = particlePosition.getY() / 10;
-    relatedVertex.updateCoordinates(newX, newY);
-  }
-
 }

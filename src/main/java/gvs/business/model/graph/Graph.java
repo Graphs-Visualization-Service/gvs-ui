@@ -22,8 +22,6 @@ public class Graph {
   private Collection<IVertex> vertices;
   private Collection<IEdge> edges;
 
-  private final boolean isLayoutable;
-
   private static final Logger logger = LoggerFactory.getLogger(Graph.class);
 
   /**
@@ -42,13 +40,10 @@ public class Graph {
     // TODO: maybe better change persistor behaviour
     // initialize to empty string -> otherwise error when saving session
     this.snapshotDescription = new String();
-
-    this.isLayoutable = getVertices().stream()
-        .noneMatch(v -> v.isUserPositioned());
   }
 
   public boolean isLayoutable() {
-    return isLayoutable;
+    return !getVertices().stream().allMatch(v -> v.isUserPositioned());
   }
 
   public Collection<IVertex> getVertices() {

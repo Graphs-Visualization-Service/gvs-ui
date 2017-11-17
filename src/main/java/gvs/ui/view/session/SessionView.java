@@ -12,6 +12,7 @@ import gvs.ui.view.controls.StepProgressBar;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -96,7 +97,9 @@ public class SessionView {
     initializeReplaySlider();
     initializeStepIndicator();
     initializeButtons();
+    bindReplayIcons();
     graphViewModel.setPane(graphPane);
+    graphPane.setAutoRescale(true);
   }
 
   private void initializeStepIndicator() {
@@ -141,6 +144,18 @@ public class SessionView {
         sessionViewModel.getCancelReplayBtnDisableProperty());
   }
 
+  private void bindReplayIcons() {
+    sessionViewModel.getIsReplayingProperty()
+        .addListener((ObservableValue<? extends Boolean> observable,
+            Boolean oldValue, Boolean newValue) -> {
+          if (newValue) {
+            replayBtn.setGraphic(FontAwesome.createLabel(Glyph.PAUSE));
+          } else {
+            replayBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
+          }
+        });
+  }
+
   private void setButtonIcons() {
     firstBtn.setGraphic(FontAwesome.createLabel(Glyph.STEP_BACKWARD));
     prevBtn.setGraphic(FontAwesome.createLabel(Glyph.BACKWARD));
@@ -173,15 +188,11 @@ public class SessionView {
 
   @FXML
   private void replayGraph() {
-    if (sessionViewModel.isReplaying()) {
+    if (sessionViewModel.getIsReplayingProperty().get()) {
       sessionViewModel.pauseReplay();
-      sessionViewModel.setReplaying(false);
-      replayBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
     } else {
       long sliderDelay = (long) speedSlider.getValue();
       sessionViewModel.replayGraph(sliderDelay);
-      sessionViewModel.setReplaying(true);
-      replayBtn.setGraphic(FontAwesome.createLabel(Glyph.PAUSE));
     }
   }
 

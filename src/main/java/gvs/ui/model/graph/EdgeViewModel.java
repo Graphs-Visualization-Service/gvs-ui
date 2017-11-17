@@ -100,6 +100,8 @@ public class EdgeViewModel {
     String lineStyle = style.getLineStyle().getStyle();
     String lineThickness = style.getLineThickness().getThickness();
 
+    label.getStyleClass().add("edge-label");
+
     edgePath.getStyleClass().add("line-" + lineColor);
     edgePath.getStyleClass().add(lineStyle + "-" + lineThickness);
 

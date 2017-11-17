@@ -72,6 +72,8 @@ public class VertexViewModel implements Observer {
     String lineStyle = style.getLineStyle().getStyle();
     String lineThickness = style.getLineThickness().getThickness();
     
+    label.getStyleClass().add("vertex");
+    
     ellipse.getStyleClass().add("fill-" + fillColor);
     ellipse.getStyleClass().add("line-" + lineColor);
     ellipse.getStyleClass().add(lineStyle + "-" + lineThickness);

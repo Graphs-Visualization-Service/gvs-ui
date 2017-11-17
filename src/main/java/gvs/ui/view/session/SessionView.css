@@ -132,48 +132,48 @@
 /* cannot be in seperate classes, because thickness overrides dash-array */
 .dotted-standard{
 	-fx-stroke-dash-array: 1.0 5.0;
-	-fx-stroke-width: 2.0;
+	-fx-stroke-width: 1.0;
 }
 .dotted-slight{
 	-fx-stroke-dash-array: 1.0 5.0;
-	-fx-stroke-width: 1.0;
+	-fx-stroke-width: 0.5;
 }
 .dotted-bold{
 	-fx-stroke-dash-array: 1.0 5.0;
-	-fx-stroke-width: 3.0;
+	-fx-stroke-width: 2.0;
 }
 .dotted-fat{
 	-fx-stroke-dash-array: 1.0 5.0;
-	-fx-stroke-width: 8.0;
-}
-.dashed-standard{
-	-fx-stroke-dash-array: 8.0 2.0;
-	-fx-stroke-width: 2.0;
-}
-.dashed-slight{
-	-fx-stroke-dash-array: 8.0 2.0;
-	-fx-stroke-width: 1.0;
-}
-.dashed-bold{
-	-fx-stroke-dash-array: 8.0 2.0;
 	-fx-stroke-width: 3.0;
 }
+.dashed-standard{
+	-fx-stroke-dash-array: 4.0 2.0;
+	-fx-stroke-width: 1.0;
+}
+.dashed-slight{
+	-fx-stroke-dash-array: 4.0 2.0;
+	-fx-stroke-width: 0.5;
+}
+.dashed-bold{
+	-fx-stroke-dash-array: 4.0 2.0;
+	-fx-stroke-width: 2.0;
+}
 .dashed-fat{
-	-fx-stroke-dash-array: 8.0 2.0;
-	-fx-stroke-width: 8.0;
+	-fx-stroke-dash-array: 4.0 2.0;
+	-fx-stroke-width: 3.0;
 }
 
 /*-- ARROWHEAD THICKNESS--*/
 thickness-standard {
-	-fx-stroke-width: 2.0;
-}
-thickness-slight {
 	-fx-stroke-width: 1.0;
 }
+thickness-slight {
+	-fx-stroke-width: 0.5;
+}
 thickness-bold {
-	-fx-stroke-width: 3.0;
+	-fx-stroke-width: 2.0;
 }
 thickness-fat {
-	-fx-stroke-width: 8.0;
+	-fx-stroke-width: 3.0;
 }
 

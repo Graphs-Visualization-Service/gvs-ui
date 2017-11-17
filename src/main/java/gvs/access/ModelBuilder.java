@@ -405,9 +405,7 @@ public class ModelBuilder {
       }
     }
     logger.debug("Finish build DirectedEdge XML");
-    return new Edge(label,
-        new NodeStyle(linecolor, linestyle, linethickness, null), true,
-        fromVertex, toVertex);
+    return new Edge(label, style, true, fromVertex, toVertex);
 
   }
 

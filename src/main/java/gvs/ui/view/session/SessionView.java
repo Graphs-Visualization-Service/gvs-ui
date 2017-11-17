@@ -77,7 +77,9 @@ public class SessionView {
   private final GraphViewModel graphViewModel;
   private final SessionViewModel sessionViewModel;
 
+  private static final int MAX_SCALE_FACTOR = 3;
   private static final int DEFAULT_REPLAY_TIMEOUT = 1000;
+
   private static final Logger logger = LoggerFactory
       .getLogger(SessionView.class);
 
@@ -99,6 +101,8 @@ public class SessionView {
     initializeButtons();
     bindReplayIcons();
     graphViewModel.setPane(graphPane);
+    graphPane.setMaxScaleX(MAX_SCALE_FACTOR);
+    graphPane.setMaxScaleY(MAX_SCALE_FACTOR);
     graphPane.setAutoRescale(true);
   }
 

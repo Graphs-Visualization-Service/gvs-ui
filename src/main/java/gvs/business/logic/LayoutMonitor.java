@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Singleton;
 
-import gvs.business.logic.graph.Session;
-
 /**
  * In order to layout graphs in their own threads, it must be ensured that no
  * other data is sent to the layout modul. For this reason the monitor locks the

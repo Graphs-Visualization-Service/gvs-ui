@@ -22,7 +22,6 @@ import gvs.business.model.graph.GraphHolder;
 import gvs.interfaces.Action;
 import gvs.interfaces.IGraphSessionController;
 import gvs.interfaces.IVertex;
-import javafx.scene.shape.VLineTo;
 
 /**
  * The session controller reacts on user input events and implements most of the

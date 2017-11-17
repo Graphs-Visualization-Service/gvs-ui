@@ -317,7 +317,7 @@ public class Persistor {
 
     long sessionId = Long.parseLong(graphElements.attributeValue(ATTRIBUTEID));
     String sessionName = graphElements.element(LABEL).getText();
-    Session session = graphSessionFactory.create(sessionId, sessionName);
+    Session session = graphSessionFactory.createSession(sessionId, sessionName, false);
 
     graphElements.elements().forEach(graphElement -> {
 

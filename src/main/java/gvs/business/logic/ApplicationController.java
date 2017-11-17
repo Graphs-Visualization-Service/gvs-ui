@@ -102,7 +102,7 @@ public class ApplicationController {
       // when the last session is deleted, create empty dummy controller
       // otherwise session-bindings for UI would have to be unbound etc.
       logger.debug("Set empty graph session");
-      sessionHolder.setCurrentSession(sessionFactory.create(-1, ""));
+      sessionHolder.setCurrentSession(sessionFactory.createSession(-1, "", false));
     }
   }
 
@@ -154,7 +154,7 @@ public class ApplicationController {
    *          sessionName
    */
   public synchronized void addGraphToSession(Graph graph, long sessionId,
-      String sessionName) {
+      String sessionName, boolean isTreeSession) {
 
     logger.info("Received new graph");
 
@@ -174,8 +174,7 @@ public class ApplicationController {
 
     if (!isSessionExisting) {
       logger.info("Create new session");
-
-      Session newSession = sessionFactory.create(sessionId, sessionName);
+      Session newSession = sessionFactory.createSession(sessionId, sessionName, isTreeSession);
       newSession.addGraph(graph);
       newSession.getGraphHolder().setCurrentGraph(graph);
       newSession.layoutCurrentGraph(null);

@@ -8,13 +8,13 @@ package gvs.access;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -31,6 +31,7 @@ import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.NodeStyle;
 import gvs.business.model.tree.BinaryNode;
 import gvs.business.model.tree.Tree;
+import gvs.business.model.tree.TreeVertex;
 import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.INode;
@@ -149,7 +150,7 @@ public class ModelBuilder {
     logger.debug("Finish build graph from XML");
     long sessionId = Long.parseLong(graphElement.attributeValue(ATTRIBUTEID));
     String sessionName = graphElement.element(LABEL).getText();
-    applicationController.addGraphToSession(newGraph, sessionId, sessionName);
+    applicationController.addGraphToSession(newGraph, sessionId, sessionName, false);
   }
 
   /**
@@ -159,71 +160,75 @@ public class ModelBuilder {
    *          documentRoot
    */
   private void buildTree(Element pDocRoot) {
-    logger.debug("Build tree from XML");
+    logger.info("Building tree from XML...");
     Element eTree = pDocRoot.element(TREE);
-    Element eNodes = pDocRoot.element(NODES);
-    Element eRoot = eTree.element(TREEROOTID);
+    Element eVertices = pDocRoot.element(NODES);
 
-    long treeId = Long.parseLong(eTree.attributeValue(ATTRIBUTEID));
-    String treeLabel = eTree.element(LABEL).getText();
-    String maxLabelLength = eTree.element(MAXLABELLENGTH).getText();
+    long sessionId = Long.parseLong(eTree.attributeValue(ATTRIBUTEID));
+    String sessionName = eTree.element(LABEL).getText();
 
-    // build nodes
-    Map<Long, INode> nodeMap = new HashMap<>();
-    Iterator<Element> nodesIt = eNodes.elementIterator();
-    while (nodesIt.hasNext()) {
-      IBinaryNode newNode = buildBinaryNode(nodesIt.next());
-      nodeMap.put(newNode.getNodeId(), newNode);
+    // build vertices
+    Map<Long, IVertex> vertexMap = new HashMap<>();
+    Iterator<Element> elementIterator = eVertices.elementIterator();
+    while (elementIterator.hasNext()) {
+      TreeVertex newVertex = buildTreeVertex(elementIterator.next());
+      vertexMap.put(newVertex.getId(), newVertex);
     }
 
-    // set child nodes
-    nodeMap.values().forEach(n -> {
-      BinaryNode currentNode = (BinaryNode) n;
-      currentNode
-          .setLeftChild((BinaryNode) nodeMap.get(currentNode.getLeftChildId()));
-      currentNode.setRightChild(
-          (BinaryNode) nodeMap.get(currentNode.getRightChildId()));
+    Collection<IVertex> vertices = vertexMap.values();
+
+    // set child vertices
+    vertices.forEach(v -> {
+      TreeVertex current = (TreeVertex) v;
+      current.getChildIds().forEach(id -> {
+        current.addChild((TreeVertex) vertexMap.get(id));
+      });
     });
 
-    INode rootNode = null;
-    if (eRoot != null) {
-      long rootId = Long.parseLong(eRoot.getText());
-      rootNode = nodeMap.get(rootId);
-    }
+    Collection<IEdge> edges = buildTreeEdges(vertices);
 
-    logger.debug("Finish build tree from XML");
-    Tree tree = new Tree(treeLabel, Integer.parseInt(maxLabelLength),
-        Color.WHITE, rootNode, nodeMap.values());
-    applicationController.addTreeToSession(tree, treeId, treeLabel);
+    Graph tree = new Graph(vertices, edges);
+    logger.info("Finished build tree from XML.");
+    applicationController.addGraphToSession(tree, sessionId, sessionName, true);
+  }
+
+  private Collection<IEdge> buildTreeEdges(Collection<IVertex> vertices) {
+    List<IEdge> edges = new ArrayList<>();
+    vertices.forEach(v -> {
+      TreeVertex current  = (TreeVertex) vertices;
+      current.getChildren().forEach(child -> {
+        //TODO: what to do with label and style
+        edges.add(new Edge(null, null, false, current, child));
+      });
+    });
+    return edges;
   }
 
   /**
    * Binary Node Builder.
    * 
-   * @param pNode
+   * @param pVertex
    *          node
    * @return binaryNode
    */
-  private IBinaryNode buildBinaryNode(Element pNode) {
+  private TreeVertex buildTreeVertex(Element pVertex) {
     logger.debug("Build BinaryNode XML");
-    long nodeId = Long.parseLong(pNode.attributeValue(ATTRIBUTEID));
-    Element eLabel = pNode.element(LABEL);
-    Element eLineColor = pNode.element(LINECOLOR);
-    Element eLineStyle = pNode.element(LINESTYLE);
-    Element eLineThickness = pNode.element(LINETHICKNESS);
-    Element eFillcolor = pNode.element(FILLCOLOR);
-    Element eRigthChild = pNode.element(RIGTHCHILD);
-    Element eLeftChild = pNode.element(LEFTCHILD);
+    long vertexId = Long.parseLong(pVertex.attributeValue(ATTRIBUTEID));
+    Element eLabel = pVertex.element(LABEL);
+    Element eLineColor = pVertex.element(LINECOLOR);
+    Element eLineStyle = pVertex.element(LINESTYLE);
+    Element eLineThickness = pVertex.element(LINETHICKNESS);
+    Element eFillcolor = pVertex.element(FILLCOLOR);
+    Element eRigthChild = pVertex.element(RIGTHCHILD);
+    Element eLeftChild = pVertex.element(LEFTCHILD);
 
     String label = eLabel.getText();
-    String linecolor = eLineColor.getText();
-    Color lineColor = typs.getColor(linecolor, false);
-    String linestyle = eLineStyle.getText();
-    String linethickness = eLineThickness.getText();
-    BasicStroke lineStroke = typs.getLineObject(linestyle, linethickness);
-    String fillcolor = eFillcolor.getText();
-    Color fillColor = typs.getColor(fillcolor, false);
-
+    String lineColor = eLineColor.getText();
+    String lineStyle = eLineStyle.getText();
+    String lineThickness = eLineThickness.getText();
+    String fillColor = eFillcolor.getText();
+    NodeStyle style = new NodeStyle(lineColor, lineStyle, lineThickness,
+        fillColor);
     long leftchildId = -1;
     long rigthchildId = -1;
     if (eLeftChild != null) {
@@ -232,9 +237,11 @@ public class ModelBuilder {
     if (eRigthChild != null) {
       rigthchildId = Long.parseLong(eRigthChild.getText());
     }
-    logger.debug("Finish build BinaryNode XML");
-    return new BinaryNode(nodeId, label, lineColor, lineStroke, fillColor,
-        leftchildId, rigthchildId);
+    logger.info("Finish build TreeVertex from XML.");
+    TreeVertex newVertex = new TreeVertex(vertexId, label, style, false, null);
+    newVertex.addChildId(leftchildId);
+    newVertex.addChildId(rigthchildId);
+    return newVertex;
   }
 
   /**

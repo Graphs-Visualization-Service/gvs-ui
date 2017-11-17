@@ -15,8 +15,10 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 import gvs.access.Persistor;
+import gvs.business.logic.ILayouter;
 import gvs.business.logic.LayoutMonitor;
 import gvs.business.logic.Layouter;
+import gvs.business.logic.LayouterProvider;
 import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.GraphHolder;
 import gvs.interfaces.Action;
@@ -40,28 +42,45 @@ public class Session implements IGraphSessionController {
   private final List<Graph> graphs;
 
   private final SessionReplayFactory sessionReplayFactory;
-  private final Layouter layouter;
+  private final ILayouter layouter;
   private final Persistor persistor;
   private final LayoutMonitor layoutMonitor;
+
+  private boolean isTreeSession;
 
   private static final Logger logger = LoggerFactory.getLogger(Session.class);
 
   @Inject
   public Session(GraphHolder graphHolder, Persistor persistor,
-      Layouter layouter, LayoutMonitor layoutMonitor,
-      SessionReplayFactory replayFactory, @Assisted long sessionId,
-      @Assisted String sessionName) {
+      LayoutMonitor layoutMonitor, SessionReplayFactory replayFactory,
+      LayouterProvider layouterProvider, @Assisted long sessionId,
+      @Assisted String sessionName, @Assisted boolean isTreeSession) {
 
     logger.info("Instantiating new graph session.");
     this.sessionReplayFactory = replayFactory;
     this.persistor = persistor;
-    this.layouter = layouter;
+    if (isTreeSession) {
+
+    }
+    if (isTreeSession) {
+      this.layouter = layouterProvider.createTreeLayouter();
+    } else {
+      this.layouter = layouterProvider.createGraphLayouter();
+    }
     this.layoutMonitor = layoutMonitor;
 
     this.id = sessionId;
     this.sessionName = sessionName;
     this.graphHolder = graphHolder;
     this.graphs = new ArrayList<>();
+  }
+
+  public void setIsTree(boolean isTreeSession) {
+    this.isTreeSession = isTreeSession;
+  }
+
+  public boolean isTreeSession() {
+    return isTreeSession;
   }
 
   /**
@@ -88,22 +107,26 @@ public class Session implements IGraphSessionController {
 
   @Override
   public void layoutCurrentGraph(Action callback) {
-    try {
-      layoutMonitor.lock();
-      logger.info("Got layout monitor");
+    if (isTreeSession) {
+      layouter.layoutGraph(graphHolder.getCurrentGraph(), false, callback);
+    } else {
+      try {
+        layoutMonitor.lock();
+        logger.info("Got layout monitor");
 
-      Graph currentGraph = graphHolder.getCurrentGraph();
-      currentGraph.getVertices().forEach(v -> {
-        v.setStable(false);
-      });
+        Graph currentGraph = graphHolder.getCurrentGraph();
+        currentGraph.getVertices().forEach(v -> {
+          v.setStable(false);
+        });
 
-      // TODO isSoftLayout is always false -> check usage
-      layouter.layoutGraph(currentGraph, false, callback);
+        // TODO isSoftLayout is always false -> check usage
+        layouter.layoutGraph(currentGraph, false, callback);
 
-    } catch (InterruptedException e) {
-      logger.warn("Unable to get layout monitor", e);
-    } finally {
-      layoutMonitor.unlock();
+      } catch (InterruptedException e) {
+        logger.warn("Unable to get layout monitor", e);
+      } finally {
+        layoutMonitor.unlock();
+      }
     }
   }
 

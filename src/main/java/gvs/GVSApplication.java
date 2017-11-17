@@ -15,6 +15,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -84,6 +85,8 @@ public class GVSApplication extends Application {
     primaryStage.setMinHeight(MIN_HEIGHT);
     primaryStage.setMinWidth(MIN_WIDTH);
     primaryStage.setTitle(APP_NAME);
+    primaryStage.getIcons().add(new Image(
+        getClass().getClassLoader().getResourceAsStream("images/logo.png")));
 
     primaryStage.setOnCloseRequest(e -> {
       Platform.exit();

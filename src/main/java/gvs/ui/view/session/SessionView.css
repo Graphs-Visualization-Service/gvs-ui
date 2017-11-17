@@ -1,18 +1,3 @@
-Label.edge-label {
-	-fx-font: 5 arial;
-	-fx-background-color: white;
-	-fx-background-insets: 1;
-}
-
-.node {
-	-fx-background-radius: 10 10 10 10;
-    -fx-border-radius: 10 10 10 10;
-}
-
-#graphPane {
-	-fx-background-color: rgba(255,255,255,0.9);
-}
-
 /*-- LINECOLOR --*/
 .line-yellow {
 	-fx-stroke: rgb(255,255,0);
@@ -53,6 +38,7 @@ Label.edge-label {
 .line-standard {
 	-fx-stroke: rgb(170,170,170);
 }
+
 /*-- FILLCOLOR --*/
 .fill-yellow {
 	-fx-fill: rgb(255,255,0);
@@ -93,50 +79,14 @@ Label.edge-label {
 .fill-standard {
 	-fx-fill: rgb(170,170,170);
 }
-/*-- BORDERCOLOR --*/
-.line-yellow {
-	-fx-border-color: rgb(255,255,0);
-}
-.line-green {
-	-fx-border-color: rgb(0,255,0);
-}
-.line-lightGreen {
-	-fx-border-color: rgb(155,255,155);
-}
-.line-darkGreen {
-	-fx-border-color: rgb(0,100,0);
-}
-.line-blue {
-	-fx-border-color: rgb(0,0,255);
-}
-.line-darkBlue {
-	-fx-border-color: rgb(0,0,80);
-}
-.line-lightBlue {
-	-fx-border-color: rgb(175,215,230);
-}
-.line-red {
-	-fx-border-color: rgb(255,0,0);
-}
-.line-lightRed {
-	-fx-border-color: rgb(255,155,155);
-}
-.line-black {
-	-fx-border-color: rgb(0,0,0);
-}
-.line-gray {
-	-fx-border-color: rgb(130,130,130);
-}
-.line-lightGray {
-	-fx-border-color: rgb(215,215,215);
-}
-.line-standard {
-	-fx-border-color: rgb(170,170,170);
-}
 
 /*-- LINESTYLES & THICKNESS--*/
 /* cannot be in seperate classes, because thickness overrides dash-array */
 .dotted-standard{
+	-fx-stroke-dash-array: 1 5;
+	-fx-stroke-width: 2;
+}
+.dotted-slight{
 	-fx-stroke-dash-array: 1 5;
 	-fx-stroke-width: 1;
 }
@@ -146,14 +96,14 @@ Label.edge-label {
 }
 .dotted-fat{
 	-fx-stroke-dash-array: 1 5;
-	-fx-stroke-width: 6;
-}
-.dotted-slight{
-	-fx-stroke-dash-array: 1 5;
-	-fx-stroke-width: 0.5;
+	-fx-stroke-width: 8;
 }
 
 .dashed-standard{
+	-fx-stroke-dash-array: 8 2;
+	-fx-stroke-width: 2;
+}
+.dashed-slight{
 	-fx-stroke-dash-array: 8 2;
 	-fx-stroke-width: 1;
 }
@@ -163,9 +113,6 @@ Label.edge-label {
 }
 .dashed-fat{
 	-fx-stroke-dash-array: 8 2;
-	-fx-stroke-width: 6;
+	-fx-stroke-width: 8;
 }
-.dashed-slight{
-	-fx-stroke-dash-array: 8 2;
-	-fx-stroke-width: 0.5;
-}
+

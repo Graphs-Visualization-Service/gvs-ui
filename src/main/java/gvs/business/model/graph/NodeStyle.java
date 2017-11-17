@@ -3,28 +3,20 @@ package gvs.business.model.graph;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class NodeStyle {
 
   public enum GVSColor {
-    STANDARD("standard"), 
-    RED("red"), 
-    LIGHT_RED("lightred"),
-    GREEN("green"),
-    LIGHT_GREEN("lightgreen"),
-    DARK_GREEN("darkgreen"),
-    BLUE("blue"),
-    LIGHT_BLUE("lightblue"),
-    DARK_BLUE("darkblue"),
-    YELLOW("yellow"),
-    ORANGE("orange"),
-    BROWN("brown"),
-    BLACK("black"),
-    GRAY("gray"),
-    LIGHT_GRAY("lightgray"),
-    LIGHT_VIOLET("violet"),
-    LIGHT_PINK("pink"),
-    LIGHT_TURQOISE("turqoise");
-    
+    STANDARD("standard"), RED("red"), LIGHTRED("lightred"), GREEN(
+        "green"), LIGHTGREEN("lightgreen"), DARKGREEN("darkgreen"), BLUE(
+            "blue"), LIGHTBLUE("lightblue"), DARKBLUE("darkblue"), YELLOW(
+                "yellow"), ORANGE("orange"), BROWN(
+                    "brown"), BLACK("black"), GRAY("gray"), LIGHTGRAY(
+                        "lightgray"), LIGHTVIOLET("violet"), LIGHTPINK(
+                            "pink"), LIGHTTURQOISE("turqoise");
+
     private String color;
 
     GVSColor(String color) {
@@ -80,6 +72,8 @@ public class NodeStyle {
   private GVSColor fillColor;
   private Collection<GVSColor> darkColors;
 
+  private static final Logger logger = LoggerFactory.getLogger(NodeStyle.class);
+
   public NodeStyle(GVSColor lineColor, GVSLineStyle lineStyle,
       GVSLineThickness lineThickness, GVSColor fillColor) {
     this.lineColor = lineColor;
@@ -92,8 +86,8 @@ public class NodeStyle {
   private void fillDarkColors() {
     darkColors = new HashSet<>();
     darkColors.add(GVSColor.BLACK);
-    darkColors.add(GVSColor.DARK_BLUE);
-    darkColors.add(GVSColor.DARK_GREEN);
+    darkColors.add(GVSColor.DARKBLUE);
+    darkColors.add(GVSColor.DARKGREEN);
     darkColors.add(GVSColor.BLUE);
   }
 
@@ -102,25 +96,30 @@ public class NodeStyle {
     try {
       this.lineColor = GVSColor.byName(linecolor);
     } catch (Exception e) {
+      logger.info("Linecolor {} not supported. Use standard", linecolor);
       this.lineColor = GVSColor.STANDARD;
     }
     try {
       this.fillColor = GVSColor.byName(fillColor);
     } catch (Exception e) {
+      logger.info("Fillcolor {} not supported. Use standard", fillColor);
       this.fillColor = GVSColor.STANDARD;
     }
     try {
       this.lineStyle = GVSLineStyle.byName(linestyle);
     } catch (Exception e) {
+      logger.info("Linestyle {} not supported. Use standard", linestyle);
       this.lineStyle = GVSLineStyle.THROUGH;
     }
     try {
       this.lineThickness = GVSLineThickness.byName(lineThickness);
       System.out.println(lineThickness);
     } catch (Exception e) {
+      logger.info("Line Tickness {} not supported. Use standard",
+          lineThickness);
       this.lineThickness = GVSLineThickness.STANDARD;
     }
-    
+
     fillDarkColors();
   }
 

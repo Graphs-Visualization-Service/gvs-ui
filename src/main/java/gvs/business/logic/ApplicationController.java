@@ -71,8 +71,9 @@ public class ApplicationController {
 
     sessionHolder.addSession(loadedSession);
     sessionHolder.setCurrentSession(loadedSession);
-
-    loadedSession.layoutCurrentGraph(null);
+    if (!loadedSession.isTreeSession()) {
+      loadedSession.layoutCurrentGraph(null);
+    }
   }
 
   /**

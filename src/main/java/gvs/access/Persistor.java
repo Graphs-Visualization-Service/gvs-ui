@@ -1,9 +1,3 @@
-/*
- * Created on 01.12.2005
- *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
- */
 package gvs.access;
 
 import java.io.File;
@@ -46,9 +40,9 @@ import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome.Glyph;
 
 /**
- * This class loads and saves data. The color, line ... objects will be
- * translated into the enum type. The data will be saved in the directory
- * DataStorage.
+ * Loads and saves sessions. While loading, it translates XML into
+ * business POJOs. While saving, it reverses the process and saves an XML file
+ * at the user designated path.
  * 
  * @author mkoller
  */
@@ -151,7 +145,7 @@ public class Persistor {
     }
   }
 
-  private void addIdAndLabel(Element sessionElement,
+  private void addIdAndLabelForSession(Element sessionElement,
       ISession sessionController) {
     sessionElement.addAttribute(ATTRIBUTEID,
         String.valueOf(sessionController.getId()));
@@ -159,23 +153,27 @@ public class Persistor {
     sessionNameElement.addText(sessionController.getSessionName());
   }
 
+  private void addIdAndLabelForGraph(Element graphElement, Graph graph) {
+    graphElement.addAttribute(ATTRIBUTEID, String.valueOf(graph.getId()));
+    Element descriptionElement = graphElement.addElement(LABEL);
+    descriptionElement.addText(graph.getSnapshotDescription());
+  }
+
   private void saveGraphSession(Element element, Session session) {
     Element sessionElement = element.addElement(GRAPH);
-    addIdAndLabel(sessionElement, session);
+    addIdAndLabelForSession(sessionElement, session);
     session.getGraphs().forEach(model -> saveGraphModel(model, sessionElement));
   }
 
   private void saveTreeSession(Element element, Session session) {
     Element sessionElement = element.addElement(TREE);
-    addIdAndLabel(sessionElement, session);
+    addIdAndLabelForSession(sessionElement, session);
     session.getGraphs().forEach(model -> saveTreeModel(model, sessionElement));
   }
 
   private void saveGraphModel(Graph graph, Element pSession) {
     Element graphElement = pSession.addElement(GRAPHMODEL);
-    graphElement.addAttribute(ATTRIBUTEID, String.valueOf(graph.getId()));
-    Element graphLabelElement = graphElement.addElement(LABEL);
-    graphLabelElement.addText(graph.getSnapshotDescription());
+    addIdAndLabelForGraph(graphElement, graph);
 
     Element vertexElements = graphElement.addElement(VERTIZES);
     graph.getVertices().forEach(v -> {
@@ -185,13 +183,11 @@ public class Persistor {
     graph.getEdges().forEach(edge -> saveEdge(edge, edgeElements));
   }
 
-  private void saveTreeModel(Graph pModel, Element pSession) {
-    Element eTreeModel = pSession.addElement(TREEMODEL);
-    eTreeModel.addAttribute(ATTRIBUTEID, String.valueOf(pModel.getId()));
-    Element eTreeLabel = eTreeModel.addElement(LABEL);
-    eTreeLabel.addText(pModel.getSnapshotDescription());
-    Element eNodes = eTreeModel.addElement(NODES);
-    pModel.getVertices().forEach(n -> {
+  private void saveTreeModel(Graph graph, Element pSession) {
+    Element treeElement = pSession.addElement(TREEMODEL);
+    addIdAndLabelForGraph(pSession, graph);
+    Element eNodes = treeElement.addElement(NODES);
+    graph.getVertices().forEach(n -> {
       saveTreeVertex((TreeVertex) n, eNodes);
     });
   }
@@ -308,7 +304,6 @@ public class Persistor {
         session.addGraph(newGraph);
       }
     });
-
     return session;
   }
 
@@ -400,10 +395,8 @@ public class Persistor {
   private NodeStyle loadStyle(Element vertexElement, boolean isVertex) {
     Element lineColorElement = vertexElement.element(LINECOLOR);
     String linecolor = lineColorElement.getText();
-
     Element lineStyleElement = vertexElement.element(LINESTYLE);
     String lineStyle = lineStyleElement.getText();
-
     Element lineThicknessElement = vertexElement.element(LINETHICKNESS);
     String lineThickness = lineThicknessElement.getText();
     String fillcolor = null;
@@ -413,7 +406,6 @@ public class Persistor {
         fillcolor = fillColorElement.getText();
       }
     }
-
     NodeStyle style = new NodeStyle(linecolor, lineStyle, lineThickness,
         fillcolor);
     return style;
@@ -421,10 +413,10 @@ public class Persistor {
 
   private IEdge loadEdge(Element edgeElement, Map<Long, IVertex> vertices) {
     String isDirected = edgeElement.attributeValue(ISDIRECTED);
-    
+
     Element eLabel = edgeElement.element(LABEL);
     String label = eLabel.getText();
-    
+
     Element eFromVertex = edgeElement.element(FROMVERTEX);
     Element eToVertex = edgeElement.element(TOVERTEX);
 
@@ -432,14 +424,13 @@ public class Persistor {
     long toVertexId = Long.parseLong(eToVertex.getText());
     IVertex fromVertex = vertices.get(fromVertexId);
     IVertex toVertex = vertices.get(toVertexId);
-    
+
     NodeStyle style = loadStyle(edgeElement, false);
     if (isDirected.equals("true")) {
       return new Edge(label, style, true, fromVertex, toVertex);
     } else {
       return new Edge(label, style, false, fromVertex, toVertex);
     }
-
   }
 
   private TreeVertex loadTreeVertex(Element pVertex) {

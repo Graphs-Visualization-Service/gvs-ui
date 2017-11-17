@@ -15,15 +15,22 @@ import gvs.business.model.graph.Graph;
 import gvs.business.model.tree.TreeVertex;
 import gvs.interfaces.Action;
 
+/**
+ * Calculates the position of each TreeVertex according to its depth in the tree
+ * and the number of other vertices on the same depth.
+ * 
+ * @author mtrentini
+ *
+ */
 @Singleton
 public class TreeLayouter implements ILayouter {
 
   private final List<TreeVertex> vertices = new ArrayList<>();
   private final Map<Integer, List<TreeVertex>> depthMap = new HashMap<>();
 
-  private final static int PANEWIDTH = 300;
-  private final static int PANEHEIGHT = 100;
-  private final static int MARGIN = 5;
+  private static final int PANEWIDTH = 300;
+  private static final int PANEHEIGHT = 100;
+  private static final int MARGIN = 5;
   private static final Logger logger = LoggerFactory
       .getLogger(TreeLayouter.class);
 

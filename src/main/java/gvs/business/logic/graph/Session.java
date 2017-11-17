@@ -60,9 +60,6 @@ public class Session implements IGraphSessionController {
     this.sessionReplayFactory = replayFactory;
     this.persistor = persistor;
     if (isTreeSession) {
-
-    }
-    if (isTreeSession) {
       this.layouter = layouterProvider.createTreeLayouter();
     } else {
       this.layouter = layouterProvider.createGraphLayouter();

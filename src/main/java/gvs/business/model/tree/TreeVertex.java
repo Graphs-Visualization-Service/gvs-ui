@@ -90,6 +90,8 @@ public class TreeVertex extends Observable implements IVertex {
   public void updateCoordinates(double xPos, double yPos) {
     this.xPosition = xPos;
     this.yPosition = yPos;
+    setChanged();
+    notifyObservers();
   }
 
   @Override

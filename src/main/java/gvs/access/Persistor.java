@@ -175,8 +175,7 @@ public class Persistor {
   private void saveGraphSession(Element element, Session session) {
     Element sessionElement = element.addElement(GRAPH);
     addIdAndLabel(sessionElement, session);
-    session.getGraphs()
-        .forEach(model -> saveGraphModel(model, sessionElement));
+    session.getGraphs().forEach(model -> saveGraphModel(model, sessionElement));
   }
 
   private void saveTreeSession(Element element,

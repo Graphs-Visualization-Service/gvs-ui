@@ -1,7 +1,5 @@
 package gvs.business.logic;
 
-import java.util.Iterator;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,12 +9,9 @@ import com.google.inject.Singleton;
 import gvs.access.Persistor;
 import gvs.business.logic.graph.Session;
 import gvs.business.logic.graph.SessionFactory;
-import gvs.business.logic.tree.TreeSessionController;
 import gvs.business.model.SessionHolder;
 import gvs.business.model.graph.Graph;
-import gvs.business.model.tree.Tree;
 import gvs.interfaces.ISession;
-import gvs.interfaces.ITreeSessionController;
 
 /**
  * The Application Controller reacts on events from the user or newly received
@@ -76,7 +71,7 @@ public class ApplicationController {
 
     sessionHolder.addSession(loadedSession);
     sessionHolder.setCurrentSession(loadedSession);
-    
+
     loadedSession.layoutCurrentGraph(null);
   }
 
@@ -102,43 +97,8 @@ public class ApplicationController {
       // when the last session is deleted, create empty dummy controller
       // otherwise session-bindings for UI would have to be unbound etc.
       logger.debug("Set empty graph session");
-      sessionHolder.setCurrentSession(sessionFactory.createSession(-1, "", false));
-    }
-  }
-
-  /**
-   * Adds a new tree model, if an associated session exists, adds model to
-   * session. Otherwise, creates a new tree session
-   * 
-   * @param pTreeModel
-   *          TreeModel
-   * @param pId
-   *          Id
-   * @param pSessionName
-   *          SessionName
-   */
-  public synchronized void addTreeToSession(Tree pTreeModel, long pId,
-      String pSessionName) {
-    logger.info("New Tree arrived");
-
-    // TODO merge with addGraphToSession
-    Iterator<ISession> sessionIt = sessionHolder.getSessions().iterator();
-    boolean isSessionExisting = false;
-    while (sessionIt.hasNext()) {
-      ISession session = (ISession) (sessionIt.next());
-      if (session.getId() == pId) {
-        logger.debug("Add tree to exsting session");
-        ((ITreeSessionController) session).addTreeModel(pTreeModel);
-        isSessionExisting = true;
-      }
-    }
-    if (!isSessionExisting) {
-      logger.debug("Build new tree session");
-      ISession newSession = new TreeSessionController(pId,
-          pSessionName, pTreeModel);
-      sessionHolder.addSession(newSession);
-      logger.debug("Set session as actual model");
-      sessionHolder.setCurrentSession(newSession);
+      sessionHolder
+          .setCurrentSession(sessionFactory.createSession(-1, "", false));
     }
   }
 
@@ -174,7 +134,8 @@ public class ApplicationController {
 
     if (!isSessionExisting) {
       logger.info("Create new session");
-      Session newSession = sessionFactory.createSession(sessionId, sessionName, isTreeSession);
+      Session newSession = sessionFactory.createSession(sessionId, sessionName,
+          isTreeSession);
       newSession.addGraph(graph);
       newSession.getGraphHolder().setCurrentGraph(graph);
       newSession.layoutCurrentGraph(null);

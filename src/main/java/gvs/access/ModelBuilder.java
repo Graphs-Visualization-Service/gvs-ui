@@ -32,12 +32,8 @@ import gvs.business.model.graph.NodeStyle;
 import gvs.business.model.graph.NodeStyle.GVSColor;
 import gvs.business.model.graph.NodeStyle.GVSLineStyle;
 import gvs.business.model.graph.NodeStyle.GVSLineThickness;
-import gvs.business.model.tree.BinaryNode;
-import gvs.business.model.tree.Tree;
 import gvs.business.model.tree.TreeVertex;
-import gvs.interfaces.IBinaryNode;
 import gvs.interfaces.IEdge;
-import gvs.interfaces.INode;
 import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome.Glyph;
 
@@ -153,7 +149,8 @@ public class ModelBuilder {
     logger.debug("Finish build graph from XML");
     long sessionId = Long.parseLong(graphElement.attributeValue(ATTRIBUTEID));
     String sessionName = graphElement.element(LABEL).getText();
-    applicationController.addGraphToSession(newGraph, sessionId, sessionName, false);
+    applicationController.addGraphToSession(newGraph, sessionId, sessionName,
+        false);
   }
 
   /**
@@ -172,11 +169,10 @@ public class ModelBuilder {
 
     // build vertices
     Map<Long, IVertex> vertexMap = new HashMap<>();
-    Iterator<Element> elementIterator = eVertices.elementIterator();
-    while (elementIterator.hasNext()) {
-      TreeVertex newVertex = buildTreeVertex(elementIterator.next());
+    eVertices.elements().forEach(e -> {
+      TreeVertex newVertex = buildTreeVertex(e);
       vertexMap.put(newVertex.getId(), newVertex);
-    }
+    });
 
     Collection<IVertex> vertices = vertexMap.values();
 
@@ -201,10 +197,12 @@ public class ModelBuilder {
   private Collection<IEdge> buildTreeEdges(Collection<IVertex> vertices) {
     List<IEdge> edges = new ArrayList<>();
     vertices.forEach(v -> {
-      TreeVertex current  = (TreeVertex) v;
+      TreeVertex current = (TreeVertex) v;
       current.getChildren().forEach(child -> {
-        //TODO: what to do with label and style
-        edges.add(new Edge("", new NodeStyle(GVSColor.STANDARD, GVSLineStyle.THROUGH, GVSLineThickness.STANDARD, null), false, current, child));
+        // TODO: what to do with label and style
+        NodeStyle standardStyle = new NodeStyle(GVSColor.STANDARD,
+            GVSLineStyle.THROUGH, GVSLineThickness.STANDARD, null);
+        edges.add(new Edge("", standardStyle, false, current, child));
       });
     });
     return edges;
@@ -218,7 +216,7 @@ public class ModelBuilder {
    * @return binaryNode
    */
   private TreeVertex buildTreeVertex(Element pVertex) {
-    logger.debug("Build BinaryNode XML");
+    logger.info("Building TreeVertex from XML...");
     long vertexId = Long.parseLong(pVertex.attributeValue(ATTRIBUTEID));
     Element eLabel = pVertex.element(LABEL);
     Element eLineColor = pVertex.element(LINECOLOR);

@@ -46,7 +46,7 @@ public class Session implements IGraphSessionController {
   private final Persistor persistor;
   private final LayoutMonitor layoutMonitor;
 
-  private boolean isTreeSession;
+  private final boolean isTreeSession;
 
   private static final Logger logger = LoggerFactory.getLogger(Session.class);
 
@@ -59,6 +59,7 @@ public class Session implements IGraphSessionController {
     logger.info("Instantiating new graph session.");
     this.sessionReplayFactory = replayFactory;
     this.persistor = persistor;
+    this.isTreeSession = isTreeSession;
     if (isTreeSession) {
       this.layouter = layouterProvider.createTreeLayouter();
     } else {
@@ -70,10 +71,6 @@ public class Session implements IGraphSessionController {
     this.sessionName = sessionName;
     this.graphHolder = graphHolder;
     this.graphs = new ArrayList<>();
-  }
-
-  public void setIsTree(boolean isTreeSession) {
-    this.isTreeSession = isTreeSession;
   }
 
   public boolean isTreeSession() {
@@ -100,6 +97,13 @@ public class Session implements IGraphSessionController {
     logger.info("Add new graph with id {} to session {}", graph.getId(),
         getId());
     graphs.add(graph);
+  }
+
+  public void layoutWholeSession(Action callback) {
+    if (isTreeSession) {
+      graphs.forEach(t -> layouter.layoutGraph(t, false, callback));
+    }
+    // TODO: do we want this for graphs?
   }
 
   @Override
@@ -198,10 +202,13 @@ public class Session implements IGraphSessionController {
 
   @Override
   public void changeCurrentGraphToNext() {
-    int nextGraphId = graphHolder.getCurrentGraph().getId() + 1;
+    Graph currentGraph = graphHolder.getCurrentGraph();
+    int nextGraphId = currentGraph.getId() + 1;
     if (validIndex(nextGraphId)) {
       Graph nextGraph = getGraphs().get(nextGraphId - 1);
-      takeOverPreviousVertexPositions(graphHolder.getCurrentGraph(), nextGraph);
+      if (!isTreeSession) {
+        takeOverPreviousVertexPositions(currentGraph, nextGraph);
+      }
       graphHolder.setCurrentGraph(nextGraph);
     }
   }
@@ -211,8 +218,10 @@ public class Session implements IGraphSessionController {
     int prevGraphId = graphHolder.getCurrentGraph().getId() - 1;
     if (validIndex(prevGraphId)) {
       Graph previousGraph = getGraphs().get(prevGraphId - 1);
-      takeOverPreviousVertexPositions(graphHolder.getCurrentGraph(),
-          previousGraph);
+      if (!isTreeSession) {
+        takeOverPreviousVertexPositions(graphHolder.getCurrentGraph(),
+            previousGraph);
+      }
       graphHolder.setCurrentGraph(previousGraph);
     }
   }

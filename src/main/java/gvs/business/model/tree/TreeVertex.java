@@ -140,4 +140,8 @@ public class TreeVertex extends Observable implements IVertex {
   public void addChild(TreeVertex vertex) {
     children.add(vertex);
   }
+  
+  public String toString() {
+    return String.format("TreeVertex(%s [%f,%f])", label, xPosition, yPosition);
+  }
 }

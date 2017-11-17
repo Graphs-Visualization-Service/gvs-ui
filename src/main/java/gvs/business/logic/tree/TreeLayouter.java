@@ -21,8 +21,8 @@ public class TreeLayouter implements ILayouter {
   private final List<TreeVertex> vertices = new ArrayList<>();
   private final Map<Integer, List<TreeVertex>> depthMap = new HashMap<>();
 
-  private final static int PANEWIDTH = 5;
-  private final static int PANEHEIGHT = 5;
+  private final static int PANEWIDTH = 300;
+  private final static int PANEHEIGHT = 100;
   private final static int MARGIN = 5;
   private static final Logger logger = LoggerFactory
       .getLogger(TreeLayouter.class);

@@ -6,12 +6,25 @@ import java.util.HashSet;
 public class NodeStyle {
 
   public enum GVSColor {
-    YELLOW("yellow"), GREEN("green"), LIGHTGREEN("lightGreen"), DARKGREEN(
-        "darkGreen"), BLUE("blue"), DARKBLUE(
-            "darkBlue"), LIGHTBLUE("lightBlue"), RED("red"), LIGHTRED(
-                "lightRed"), BLACK("black"), GRAY(
-                    "gray"), LIGHTGRAY("lightGray"), STANDARD("standard");
-
+    STANDARD("standard"), 
+    RED("red"), 
+    LIGHT_RED("lightred"),
+    GREEN("green"),
+    LIGHT_GREEN("lightgreen"),
+    DARK_GREEN("darkgreen"),
+    BLUE("blue"),
+    LIGHT_BLUE("lightblue"),
+    DARK_BLUE("darkblue"),
+    YELLOW("yellow"),
+    ORANGE("orange"),
+    BROWN("brown"),
+    BLACK("black"),
+    GRAY("gray"),
+    LIGHT_GRAY("lightgray"),
+    LIGHT_VIOLET("violet"),
+    LIGHT_PINK("pink"),
+    LIGHT_TURQOISE("turqoise");
+    
     private String color;
 
     GVSColor(String color) {
@@ -79,8 +92,8 @@ public class NodeStyle {
   private void fillDarkColors() {
     darkColors = new HashSet<>();
     darkColors.add(GVSColor.BLACK);
-    darkColors.add(GVSColor.DARKBLUE);
-    darkColors.add(GVSColor.DARKGREEN);
+    darkColors.add(GVSColor.DARK_BLUE);
+    darkColors.add(GVSColor.DARK_GREEN);
     darkColors.add(GVSColor.BLUE);
   }
 

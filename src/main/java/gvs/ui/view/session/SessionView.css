@@ -1,30 +1,42 @@
 /*-- EDGE LINE COLOR / VERTEX BORDER COLOR --*/
-.line-yellow {
-	-fx-stroke: rgb(255,255,0);
+.line-standard {
+	-fx-stroke: rgb(170,170,170);
+}
+.line-red {
+	-fx-stroke: rgb(255,0,0);
+}
+.line-lightred {
+	-fx-stroke: rgb(255,155,155);
 }
 .line-green {
 	-fx-stroke: rgb(0,255,0);
 }
-.line-lightGreen {
+.line-lightgreen {
 	-fx-stroke: rgb(155,255,155);
 }
-.line-darkGreen {
+.line-darkgreen {
 	-fx-stroke: rgb(0,100,0);
 }
 .line-blue {
 	-fx-stroke: rgb(0,0,255);
 }
-.line-darkBlue {
-	-fx-stroke: rgb(0,0,80);
-}
-.line-lightBlue {
+.line-lightblue {
 	-fx-stroke: rgb(175,215,230);
 }
-.line-red {
-	-fx-stroke: rgb(255,0,0);
+.line-darkblue {
+	-fx-stroke: rgb(0,0,80);
 }
-.line-lightRed {
-	-fx-stroke: rgb(255,155,155);
+.line-yellow {
+	-fx-stroke: rgb(255,255,0);
+}
+.line-orange {
+	-fx-stroke: rgb(255,165,0);
+}
+.line-orange {
+	-fx-stroke: rgb(222,184,135);
+}
+.line-brown {
+	-fx-stroke: rgb(222,184,135);
 }
 .line-black {
 	-fx-stroke: rgb(0,0,0);
@@ -32,40 +44,58 @@
 .line-gray {
 	-fx-stroke: rgb(130,130,130);
 }
-.line-lightGray {
+.line-lightgray {
 	-fx-stroke: rgb(215,215,215);
 }
-.line-standard {
-	-fx-stroke: rgb(170,170,170);
+.line-violet {
+	-fx-stroke: rgb(238,130,238);
+}
+.line-pink {
+	-fx-stroke: rgb(255,192,203);
+}
+.line-turqoise {
+	-fx-stroke: rgb(64,224,208);
 }
 
 /*-- VERTEX FILL COLOR --*/
-.fill-yellow {
-	-fx-fill: rgb(255,255,0);
+.fill-standard {
+	-fx-fill: rgb(170,170,170);
+}
+.fill-red {
+	-fx-fill: rgb(255,0,0);
+}
+.fill-lightred {
+	-fx-fill: rgb(255,155,155);
 }
 .fill-green {
 	-fx-fill: rgb(0,255,0);
 }
-.fill-lightGreen {
+.fill-lightgreen {
 	-fx-fill: rgb(155,255,155);
 }
-.fill-darkGreen {
+.fill-darkgreen {
 	-fx-fill: rgb(0,100,0);
 }
 .fill-blue {
 	-fx-fill: rgb(0,0,255);
 }
-.fill-darkBlue {
-	-fx-fill: rgb(0,0,80);
-}
-.fill-lightBlue {
+.fill-lightblue {
 	-fx-fill: rgb(175,215,230);
 }
-.fill-red {
-	-fx-fill: rgb(255,0,0);
+.fill-darkblue {
+	-fx-fill: rgb(0,0,80);
 }
-.fill-lightRed {
-	-fx-fill: rgb(255,155,155);
+.fill-yellow {
+	-fx-fill: rgb(255,255,0);
+}
+.fill-orange {
+	-fx-fill: rgb(255,165,0);
+}
+.fill-orange {
+	-fx-fill: rgb(222,184,135);
+}
+.fill-brown {
+	-fx-fill: rgb(222,184,135);
 }
 .fill-black {
 	-fx-fill: rgb(0,0,0);
@@ -73,12 +103,19 @@
 .fill-gray {
 	-fx-fill: rgb(130,130,130);
 }
-.fill-lightGray {
+.fill-lightgray {
 	-fx-fill: rgb(215,215,215);
 }
-.fill-standard {
-	-fx-fill: rgb(170,170,170);
+.fill-violet {
+	-fx-fill: rgb(238,130,238);
 }
+.fill-pink {
+	-fx-fill: rgb(255,192,203);
+}
+.fill-turqoise {
+	-fx-fill: rgb(64,224,208);
+}
+
 
 /*-- LINESTYLES & THICKNESS--*/
 /* cannot be in seperate classes, because thickness overrides dash-array */

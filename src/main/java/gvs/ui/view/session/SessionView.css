@@ -152,3 +152,17 @@
 	-fx-stroke-width: 8;
 }
 
+/*-- ARROWHEAD THICKNESS--*/
+thickness-standard {
+	-fx-stroke-width: 2;
+}
+thickness-slight {
+	-fx-stroke-width: 1;
+}
+thickness-bold {
+	-fx-stroke-width: 3;
+}
+thickness-fat {
+	-fx-stroke-width: 8;
+}
+

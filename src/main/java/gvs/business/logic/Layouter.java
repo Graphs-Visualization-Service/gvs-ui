@@ -91,6 +91,8 @@ public class Layouter implements Tickable {
       resetArea();
 
       calculatLayout(graph, useSeededRandoms);
+    } else if (callback != null) {
+      callback.execute();
     }
   }
 

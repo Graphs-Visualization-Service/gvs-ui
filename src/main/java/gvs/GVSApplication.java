@@ -43,7 +43,7 @@ public class GVSApplication extends Application {
   private static final Logger logger = LoggerFactory
       .getLogger(GVSApplication.class);
 
-  private static final String APP_NAME = "GVS";
+  private static final String APP_NAME = "Graph Visualization Service";
   private static final int MIN_WIDTH = 800;
   private static final int MIN_HEIGHT = 600;
 

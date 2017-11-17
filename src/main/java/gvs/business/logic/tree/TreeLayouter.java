@@ -18,8 +18,6 @@ import gvs.interfaces.Action;
 @Singleton
 public class TreeLayouter implements ILayouter {
 
-  private Graph currentGraph;
-
   private final List<TreeVertex> vertices = new ArrayList<>();
   private final Map<Integer, List<TreeVertex>> depthMap = new HashMap<>();
 
@@ -32,7 +30,6 @@ public class TreeLayouter implements ILayouter {
   @Override
   public void layoutGraph(Graph currentGraph, boolean b, Action callback) {
     logger.info("Layouting tree...");
-    this.currentGraph = currentGraph;
     currentGraph.getVertices().forEach(v -> vertices.add((TreeVertex) v));
     sortByDepth(-1, vertices.get(0));
     if (!vertices.isEmpty()) {
@@ -49,7 +46,11 @@ public class TreeLayouter implements ILayouter {
 
   private void calculateCoordinates() {
     int maxDepth = depthMap.keySet().size() - 1;
-    int spacingY = (PANEHEIGHT - 2 * MARGIN) / maxDepth;
+    int spacingY = 0;
+    if (maxDepth != 0) {
+      spacingY = (PANEHEIGHT - 2 * MARGIN) / maxDepth;
+    }
+    final int finalSpacingY = spacingY;
     depthMap.keySet().forEach(depth -> {
       List<TreeVertex> depthList = depthMap.get(depth);
       int childrenPerDepthLevel = depthList.size();
@@ -57,7 +58,7 @@ public class TreeLayouter implements ILayouter {
       for (int i = 0; i < childrenPerDepthLevel; i++) {
         TreeVertex current = depthList.get(i);
         int x = MARGIN + spacingX + i * spacingX;
-        int y = depth * spacingY + MARGIN;
+        int y = depth * finalSpacingY + MARGIN;
         current.updateCoordinates(x, y);
       }
     });
@@ -72,7 +73,9 @@ public class TreeLayouter implements ILayouter {
     }
     depthList.add(vertex);
     vertices.remove(vertex);
-    vertex.getChildren().forEach(c -> sortByDepth(currentDepth, c));
+    if (!vertex.getChildren().isEmpty()) {
+      vertex.getChildren().forEach(c -> sortByDepth(currentDepth, c));
+    }
   }
 
 }

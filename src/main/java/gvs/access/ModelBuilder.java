@@ -29,6 +29,9 @@ import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
 import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.NodeStyle;
+import gvs.business.model.graph.NodeStyle.GVSColor;
+import gvs.business.model.graph.NodeStyle.GVSLineStyle;
+import gvs.business.model.graph.NodeStyle.GVSLineThickness;
 import gvs.business.model.tree.BinaryNode;
 import gvs.business.model.tree.Tree;
 import gvs.business.model.tree.TreeVertex;
@@ -181,7 +184,10 @@ public class ModelBuilder {
     vertices.forEach(v -> {
       TreeVertex current = (TreeVertex) v;
       current.getChildIds().forEach(id -> {
-        current.addChild((TreeVertex) vertexMap.get(id));
+        TreeVertex child = (TreeVertex) vertexMap.get(id);
+        if (child != null) {
+          current.addChild(child);
+        }
       });
     });
 
@@ -195,10 +201,10 @@ public class ModelBuilder {
   private Collection<IEdge> buildTreeEdges(Collection<IVertex> vertices) {
     List<IEdge> edges = new ArrayList<>();
     vertices.forEach(v -> {
-      TreeVertex current  = (TreeVertex) vertices;
+      TreeVertex current  = (TreeVertex) v;
       current.getChildren().forEach(child -> {
         //TODO: what to do with label and style
-        edges.add(new Edge(null, null, false, current, child));
+        edges.add(new Edge("", new NodeStyle(GVSColor.STANDARD, GVSLineStyle.THROUGH, GVSLineThickness.STANDARD, null), false, current, child));
       });
     });
     return edges;

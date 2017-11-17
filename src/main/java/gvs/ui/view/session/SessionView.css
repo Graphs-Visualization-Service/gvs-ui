@@ -1,4 +1,4 @@
-/*-- LINECOLOR --*/
+/*-- EDGE LINE COLOR / VERTEX BORDER COLOR --*/
 .line-yellow {
 	-fx-stroke: rgb(255,255,0);
 }
@@ -39,7 +39,7 @@
 	-fx-stroke: rgb(170,170,170);
 }
 
-/*-- FILLCOLOR --*/
+/*-- VERTEX FILL COLOR --*/
 .fill-yellow {
 	-fx-fill: rgb(255,255,0);
 }
@@ -98,7 +98,6 @@
 	-fx-stroke-dash-array: 1 5;
 	-fx-stroke-width: 8;
 }
-
 .dashed-standard{
 	-fx-stroke-dash-array: 8 2;
 	-fx-stroke-width: 2;

@@ -149,7 +149,7 @@ public class VertexViewModel implements Observer {
     logger.info("Drawing VertexViewModel.");
     p.getContentPane().getChildren().addAll(ellipse, label);
 
-    // TODO describe hack
+    // this hack forces the label to compute its height and width
     label.applyCss();
     double xRadius = label.prefWidth(-1) / 2;
     double yRadius = label.prefHeight(-1) / 2;

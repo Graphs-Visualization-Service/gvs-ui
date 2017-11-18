@@ -1,11 +1,14 @@
 package gvs.business.logic;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.Singleton;
 
 /**
- * In order to layout graphs in their own threads, it must be ensured that no
- * other data is sent to the layout modul. For this reason the monitor locks the
- * visualization modul until layouting
+ * In order to compute the layout of a graph in its own thread, it must be
+ * ensured that only one graph is layouted at a time. Therefore the monitor
+ * locks the layouting process until its completion.
  * 
  * @author aegli
  *
@@ -14,6 +17,8 @@ import com.google.inject.Singleton;
 public class LayoutMonitor {
 
   private boolean locked = false;
+  private static final Logger logger = LoggerFactory
+      .getLogger(LayoutMonitor.class);
 
   /**
    * Locks monitor, so other threads have to wait until former thread releases
@@ -24,6 +29,7 @@ public class LayoutMonitor {
       wait();
     }
     locked = true;
+    logger.info("Layouter locked");
   }
 
   /**
@@ -33,5 +39,6 @@ public class LayoutMonitor {
   public synchronized void unlock() {
     locked = false;
     notifyAll();
+    logger.info("Layouter unlocked");
   }
 }

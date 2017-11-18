@@ -12,6 +12,7 @@ import gvs.ui.view.controls.StepProgressBar;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
@@ -62,7 +63,9 @@ public class SessionView {
   private final GraphViewModel graphViewModel;
   private final SessionViewModel sessionViewModel;
 
+  private static final int MAX_SCALE_FACTOR = 3;
   private static final int DEFAULT_REPLAY_TIMEOUT = 1000;
+
   private static final Logger logger = LoggerFactory
       .getLogger(SessionView.class);
 
@@ -83,7 +86,11 @@ public class SessionView {
     initializeReplaySlider();
     initializeStepIndicator();
     initializeButtons();
+    bindReplayIcons();
     graphViewModel.setPane(graphPane);
+    graphPane.setMaxScaleX(MAX_SCALE_FACTOR);
+    graphPane.setMaxScaleY(MAX_SCALE_FACTOR);
+    graphPane.setAutoRescale(true);
   }
 
   private void initializeStepIndicator() {
@@ -126,6 +133,18 @@ public class SessionView {
 
     autoLayoutBtn.disableProperty()
         .bindBidirectional(sessionViewModel.getAutoLayoutBtnDisableProperty());
+  }
+
+  private void bindReplayIcons() {
+    sessionViewModel.getIsReplayingProperty()
+        .addListener((ObservableValue<? extends Boolean> observable,
+            Boolean oldValue, Boolean newValue) -> {
+          if (newValue) {
+            replayBtn.setGraphic(FontAwesome.createLabel(Glyph.PAUSE));
+          } else {
+            replayBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
+          }
+        });
   }
 
   private void setButtonIcons() {
@@ -173,15 +192,11 @@ public class SessionView {
 
   @FXML
   private void replayGraph() {
-    if (sessionViewModel.isReplaying()) {
+    if (sessionViewModel.getIsReplayingProperty().get()) {
       sessionViewModel.pauseReplay();
-      sessionViewModel.setReplaying(false);
-      replayBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
     } else {
       long sliderDelay = (long) speedSlider.getValue();
       sessionViewModel.replayGraph(sliderDelay);
-      sessionViewModel.setReplaying(true);
-      replayBtn.setGraphic(FontAwesome.createLabel(Glyph.PAUSE));
     }
   }
 

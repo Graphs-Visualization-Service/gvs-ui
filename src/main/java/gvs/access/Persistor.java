@@ -1,21 +1,16 @@
-/*
- * Created on 01.12.2005
- *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
- */
 package gvs.access;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -32,24 +27,23 @@ import com.google.inject.Singleton;
 
 import gvs.business.logic.graph.Session;
 import gvs.business.logic.graph.SessionFactory;
-import gvs.business.logic.tree.TreeSessionController;
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
 import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.NodeStyle;
-import gvs.business.model.tree.BinaryNode;
-import gvs.business.model.tree.Tree;
-import gvs.interfaces.IBinaryNode;
+import gvs.business.model.graph.NodeStyle.GVSColor;
+import gvs.business.model.graph.NodeStyle.GVSLineStyle;
+import gvs.business.model.graph.NodeStyle.GVSLineThickness;
+import gvs.business.model.tree.TreeVertex;
 import gvs.interfaces.IEdge;
-import gvs.interfaces.INode;
 import gvs.interfaces.ISession;
 import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome.Glyph;
 
 /**
- * This class loads and saves data. The color, line ... objects will be
- * translated into the enum type. The data will be saved in the directory
- * DataStorage.
+ * Loads and saves sessions. While loading, it translates XML into business
+ * POJOs. While saving, it reverses the process and saves an XML file at the
+ * user designated path.
  * 
  * @author mkoller
  */
@@ -65,13 +59,10 @@ public class Persistor {
   private static final String LINECOLOR = "Linecolor";
   private static final String LINESTYLE = "Linestyle";
   private static final String LINETHICKNESS = "Linethickness";
-  private static final String STANDARD = "Standard";
 
   // Graph
   private static final String GRAPH = "GraphSession";
   private static final String GRAPHMODEL = "GraphModel";
-  private static final String BACKGROUND = "Background";
-  private static final String MAXLABELLENGTH = "MaxLabelLength";
   private static final String VERTIZES = "Vertizes";
   private static final String RELATIVVERTEX = "RelativVertex";
   private static final String DEFAULTVERTEX = "DefaultVertex";
@@ -88,11 +79,9 @@ public class Persistor {
   private static final String TREEMODEL = "TreeModel";
   private static final String NODES = "Nodes";
   private static final String BINARYNODE = "BinaryNode";
-  private static final String TREEROOTID = "TreeRootId";
   private static final String RIGTHCHILD = "Rigthchild";
   private static final String LEFTCHILD = "Leftchild";
 
-  private final Configuration configuration;
   private final SessionFactory graphSessionFactory;
 
   private static final Logger logger = LoggerFactory.getLogger(Persistor.class);
@@ -100,21 +89,16 @@ public class Persistor {
   @Inject
   public Persistor(SessionFactory graphSessionFactory) {
     this.graphSessionFactory = graphSessionFactory;
-    configuration = Configuration.getInstance();
   }
 
   public synchronized void saveToDisk(Session session, File file) {
     Document document = DocumentHelper.createDocument();
     Element docRoot = document.addElement(ROOT);
-    this.saveGraphSession(docRoot, session);
-    this.writeToDisk(document, session, file);
-  }
-
-  public synchronized void saveToDisk(TreeSessionController session,
-      File file) {
-    Document document = DocumentHelper.createDocument();
-    Element docRoot = document.addElement(ROOT);
-    this.saveTreeSession(docRoot, session);
+    if (session.isTreeSession()) {
+      this.saveTreeSession(docRoot, session);
+    } else {
+      this.saveGraphSession(docRoot, session);
+    }
     this.writeToDisk(document, session, file);
   }
 
@@ -146,8 +130,6 @@ public class Persistor {
     return session;
   }
 
-  // ************************************SAVER AND
-  // LOADER*************************
   private void writeToDisk(Document pDocument, ISession pSession, File output) {
     try {
       OutputFormat format = OutputFormat.createPrettyPrint();
@@ -164,7 +146,7 @@ public class Persistor {
     }
   }
 
-  private void addIdAndLabel(Element sessionElement,
+  private void addIdAndLabelForSession(Element sessionElement,
       ISession sessionController) {
     sessionElement.addAttribute(ATTRIBUTEID,
         String.valueOf(sessionController.getId()));
@@ -172,25 +154,27 @@ public class Persistor {
     sessionNameElement.addText(sessionController.getSessionName());
   }
 
+  private void addIdAndLabelForGraph(Element graphElement, Graph graph) {
+    graphElement.addAttribute(ATTRIBUTEID, String.valueOf(graph.getId()));
+    Element descriptionElement = graphElement.addElement(LABEL);
+    descriptionElement.addText(graph.getSnapshotDescription());
+  }
+
   private void saveGraphSession(Element element, Session session) {
     Element sessionElement = element.addElement(GRAPH);
-    addIdAndLabel(sessionElement, session);
+    addIdAndLabelForSession(sessionElement, session);
     session.getGraphs().forEach(model -> saveGraphModel(model, sessionElement));
   }
 
-  private void saveTreeSession(Element element,
-      TreeSessionController sessionController) {
+  private void saveTreeSession(Element element, Session session) {
     Element sessionElement = element.addElement(TREE);
-    addIdAndLabel(sessionElement, sessionController);
-    sessionController.getMyGraphModels()
-        .forEach(model -> saveTreeModel(model, sessionElement));
+    addIdAndLabelForSession(sessionElement, session);
+    session.getGraphs().forEach(model -> saveTreeModel(model, sessionElement));
   }
 
   private void saveGraphModel(Graph graph, Element pSession) {
     Element graphElement = pSession.addElement(GRAPHMODEL);
-    graphElement.addAttribute(ATTRIBUTEID, String.valueOf(graph.getId()));
-    Element graphLabelElement = graphElement.addElement(LABEL);
-    graphLabelElement.addText(graph.getSnapshotDescription());
+    addIdAndLabelForGraph(graphElement, graph);
 
     Element vertexElements = graphElement.addElement(VERTIZES);
     graph.getVertices().forEach(v -> {
@@ -200,23 +184,12 @@ public class Persistor {
     graph.getEdges().forEach(edge -> saveEdge(edge, edgeElements));
   }
 
-  private void saveTreeModel(Tree pModel, Element pSession) {
-    Element eTreeModel = pSession.addElement(TREEMODEL);
-    eTreeModel.addAttribute(ATTRIBUTEID, String.valueOf(pModel.getModelId()));
-    Element eTreeLabel = eTreeModel.addElement(LABEL);
-    eTreeLabel.addText(pModel.getTreeLabel());
-    Element eMaxLabelLength = eTreeModel.addElement(MAXLABELLENGTH);
-    eMaxLabelLength.addText(String.valueOf(pModel.getMaxLabelLength()));
-    INode rootNode = pModel.getRootNode();
-    if (rootNode != null) {
-      Element eRootNode = eTreeModel.addElement(TREEROOTID);
-      eRootNode.addText(String.valueOf(rootNode.getNodeId()));
-    }
-    Element eNodes = eTreeModel.addElement(NODES);
-    pModel.getNodes().forEach(n -> {
-      if (n.getClass() == BinaryNode.class) {
-        saveBinaryNode((BinaryNode) n, eNodes);
-      }
+  private void saveTreeModel(Graph graph, Element pSession) {
+    Element treeElement = pSession.addElement(TREEMODEL);
+    addIdAndLabelForGraph(pSession, graph);
+    Element eNodes = treeElement.addElement(NODES);
+    graph.getVertices().forEach(n -> {
+      saveTreeVertex((TreeVertex) n, eNodes);
     });
   }
 
@@ -236,14 +209,8 @@ public class Persistor {
 
     eLabel.addText(vertexLabel);
 
-    Element eLineColor = eVertex.addElement(LINECOLOR);
-    eLineColor.addText(pVertex.getStyle().getLineColor().getColor());
-    Element eLineStyle = eVertex.addElement(LINESTYLE);
-    eLineStyle.addText(pVertex.getStyle().getLineStyle().getStyle());
-    Element eLineThick = eVertex.addElement(LINETHICKNESS);
-    eLineThick.addText(pVertex.getStyle().getLineThickness().getThickness());
-    Element eFillColor = eVertex.addElement(FILLCOLOR);
-    eFillColor.addText(pVertex.getStyle().getFillColor().getColor());
+    saveStyle(eVertex, pVertex.getStyle(), true);
+
     Element eXPos = eVertex.addElement(XPOS);
     eXPos.addText(String.valueOf(pVertex.getXPosition()));
     Element eYPos = eVertex.addElement(YPOS);
@@ -260,13 +227,7 @@ public class Persistor {
     Element eLabel = edgeElement.addElement(LABEL);
     eLabel.addText(pEdge.getLabel());
 
-    Element eLineColor = edgeElement.addElement(LINECOLOR);
-    eLineColor.addText(pEdge.getStyle().getLineColor().getColor());
-
-    Element eLineStyle = edgeElement.addElement(LINESTYLE);
-    eLineStyle.addText(pEdge.getStyle().getLineStyle().getStyle());
-    Element eLineThick = edgeElement.addElement(LINETHICKNESS);
-    eLineThick.addText(pEdge.getStyle().getLineThickness().getThickness());
+    saveStyle(edgeElement, pEdge.getStyle(), false);
 
     Element eFromVertex = edgeElement.addElement(FROMVERTEX);
     eFromVertex.addText(String.valueOf(pEdge.getStartVertex().getId()));
@@ -274,40 +235,41 @@ public class Persistor {
     eToVertex.addText(String.valueOf(pEdge.getEndVertex().getId()));
   }
 
-  private void saveBinaryNode(BinaryNode pNode, Element pNodes) {
+  private void saveTreeVertex(TreeVertex pNode, Element pNodes) {
     Element eBinaryNode = pNodes.addElement(BINARYNODE);
-    eBinaryNode.addAttribute(ATTRIBUTEID, String.valueOf(pNode.getNodeId()));
+    eBinaryNode.addAttribute(ATTRIBUTEID, String.valueOf(pNode.getId()));
 
     Element eLabel = eBinaryNode.addElement(LABEL);
-    eLabel.addText(pNode.getNodeLabel());
+    eLabel.addText(pNode.getLabel());
 
-    Element eLineColor = eBinaryNode.addElement(LINECOLOR);
-    eLineColor.addText(configuration.getColorName(pNode.getLineColor()));
-
-    BasicStroke stroke = (BasicStroke) pNode.getLineStroke();
-    Element eLineStyle = eBinaryNode.addElement(LINESTYLE);
-    eLineStyle.addText(configuration.getLineStyleName(stroke.getDashArray()));
-    Element eLineThick = eBinaryNode.addElement(LINETHICKNESS);
-    eLineThick.addText(
-        configuration.getLineThicknessName((int) stroke.getLineWidth()));
-
-    Element eFillColor = eBinaryNode.addElement(FILLCOLOR);
-    eFillColor.addText(configuration.getColorName(pNode.getFillColor()));
+    saveStyle(eBinaryNode, pNode.getStyle(), true);
 
     Element eXPos = eBinaryNode.addElement(XPOS);
     eXPos.addText(String.valueOf(pNode.getXPosition()));
     Element eYPos = eBinaryNode.addElement(YPOS);
     eYPos.addText(String.valueOf(pNode.getYPosition()));
 
-    IBinaryNode leftChild = pNode.getLeftChild();
-    IBinaryNode rigthChild = pNode.getRightChild();
-    if (leftChild != null) {
+    // TODO: to truly make tree more general than binarytree: make changes here.
+    List<TreeVertex> children = pNode.getChildren();
+    if (children.size() > 0) {
       Element eLeftChild = eBinaryNode.addElement(LEFTCHILD);
-      eLeftChild.addText(String.valueOf(leftChild.getNodeId()));
-    }
-    if (rigthChild != null) {
+      eLeftChild.addText(String.valueOf(children.get(0).getId()));
+    } else if (children.size() > 1) {
       Element eRigthChild = eBinaryNode.addElement(RIGTHCHILD);
-      eRigthChild.addText(String.valueOf(rigthChild.getNodeId()));
+      eRigthChild.addText(String.valueOf(children.get(1).getId()));
+    }
+  }
+
+  private void saveStyle(Element parent, NodeStyle style, boolean isVertex) {
+    Element eLineColor = parent.addElement(LINECOLOR);
+    eLineColor.addText(style.getLineColor().getColor());
+    Element eLineStyle = parent.addElement(LINESTYLE);
+    eLineStyle.addText(style.getLineStyle().getStyle());
+    Element eLineThick = parent.addElement(LINETHICKNESS);
+    eLineThick.addText(style.getLineThickness().getThickness());
+    if (isVertex) {
+      Element eFillColor = parent.addElement(FILLCOLOR);
+      eFillColor.addText(style.getFillColor().getColor());
     }
   }
 
@@ -316,98 +278,113 @@ public class Persistor {
 
     long sessionId = Long.parseLong(graphElements.attributeValue(ATTRIBUTEID));
     String sessionName = graphElements.element(LABEL).getText();
-    Session session = graphSessionFactory.create(sessionId, sessionName);
+    Session session = graphSessionFactory.createSession(sessionId, sessionName,
+        false);
 
     graphElements.elements().forEach(graphElement -> {
 
       if (graphElement.getName().equals(GRAPHMODEL)) {
-
-        List<IVertex> vertizes = new ArrayList<>();
+        Map<Long, IVertex> vertices = new HashMap<>();
         Element vertexElements = graphElement.element(VERTIZES);
         vertexElements.elements().forEach(vertexElement -> {
           IVertex newVertex = loadVertex(vertexElement);
-          vertizes.add(newVertex);
+          vertices.put(newVertex.getId(), newVertex);
         });
 
         List<IEdge> edges = new ArrayList<>();
         Element edgeElements = graphElement.element(EDGES);
         edgeElements.elements().forEach(edgeElement -> {
-          edges.add(loadEdge(edgeElement, vertizes));
+          edges.add(loadEdge(edgeElement, vertices));
         });
 
         // TODO should we set this graph id?
         int graphId = Integer
             .parseInt(graphElement.attributeValue(ATTRIBUTEID));
-        Graph newGraph = new Graph(vertizes, edges);
+        Graph newGraph = new Graph(vertices.values(), edges);
 
         session.addGraph(newGraph);
       }
     });
-
     return session;
   }
 
-  private TreeSessionController loadTreeSession(Element pTreeSession) {
+  private Session loadTreeSession(Element graphElements) {
     logger.info("Parsing Tree from XML.");
-    Vector<Tree> treeModels = new Vector<Tree>();
-    Element eSessionName = pTreeSession.element(LABEL);
-    String sessionName = eSessionName.getText();
-    long sessionId = Long.parseLong(pTreeSession.attributeValue(ATTRIBUTEID));
 
-    Iterator<Element> modelIt = pTreeSession.elementIterator();
-    while (modelIt.hasNext()) {
-      Element eTreeModel = (Element) modelIt.next();
-      if (TREEMODEL.equals(eTreeModel.getName())) {
-        int modelId = Integer.parseInt(eTreeModel.attributeValue(ATTRIBUTEID));
-        String treeLabel = eTreeModel.getText();
-        Element eMaxLabelLength = eTreeModel.element(MAXLABELLENGTH);
-        String maxLabelLength = eMaxLabelLength.getText();
+    long sessionId = Long.parseLong(graphElements.attributeValue(ATTRIBUTEID));
+    String sessionName = graphElements.element(LABEL).getText();
+    Session session = graphSessionFactory.createSession(sessionId, sessionName,
+        true);
 
-        Vector<INode> nodes = new Vector<INode>();
-        Element eNodes = eTreeModel.element(NODES);
-        Iterator<Element> nodeIt = eNodes.elementIterator();
-        while (nodeIt.hasNext()) {
-          Element eNode = (nodeIt.next());
-          if (eNode.getName().equals(BINARYNODE)) {
-            nodes.add(loadBinaryNode(eNode));
-          }
-        }
+    graphElements.elements().forEach(graphElement -> {
 
-        nodes.forEach(n -> {
-          if (n.getClass() == BinaryNode.class) {
-            BinaryNode current = (BinaryNode) n;
-            nodes.forEach(m -> {
-              BinaryNode child = (BinaryNode) m;
-              if (current.getLeftChildId() == child.getNodeId()) {
-                current.setLeftChild(child);
-              } else if (current.getRightChildId() == child.getNodeId()) {
-                current.setRigthChild(child);
-              }
-            });
-          }
-        });
-        /////////////////////////////////////////////////
-        Element eRootNode = eTreeModel.element(TREEROOTID);
-        long rootNodeId = -1;
-        if (eRootNode != null) {
-          Long.parseLong(eRootNode.getText());
+      if (graphElement.getName().equals(TREEMODEL)) {
+        // uses a map for easy access to vertices over their id
+        Map<Long, IVertex> vertexMap = buildTreeVertices(graphElement);
 
-        }
-        IBinaryNode rootNode = null;
-        Iterator<INode> rootNodeModelIt = nodes.iterator();
-        while (rootNodeModelIt.hasNext()) {
-          BinaryNode child = (BinaryNode) (rootNodeModelIt.next());
-          if (rootNodeId == child.getNodeId()) {
-            rootNode = child;
-          }
-        }
+        Collection<IVertex> vertices = resolveChildReferences(vertexMap);
+        findRoots(vertices);
+        Collection<IEdge> edges = buildTreeEdges(vertices);
 
-        treeModels.add(new Tree(treeLabel, modelId,
-            Integer.parseInt(maxLabelLength), Color.WHITE, rootNode, nodes));
+        // TODO should we set this graph id?
+        int graphId = Integer
+            .parseInt(graphElement.attributeValue(ATTRIBUTEID));
+        Graph newGraph = new Graph(vertices, edges);
+        session.addGraph(newGraph);
       }
-    }
+    });
+    session.layoutWholeSession(null);
+    return session;
+  }
 
-    return new TreeSessionController(sessionId, sessionName, treeModels);
+  private void findRoots(Collection<IVertex> vertices) {
+    List<TreeVertex> treeVertices = vertices.stream().map(v -> (TreeVertex) v)
+        .collect(Collectors.toList());
+    List<TreeVertex> children = new ArrayList<>();
+    treeVertices.forEach(v -> children.addAll(v.getChildren()));
+    treeVertices.stream().filter(v -> !children.contains(v))
+        .forEach(v -> v.setRoot(true));
+  }
+
+  private Collection<IVertex> resolveChildReferences(
+      Map<Long, IVertex> vertexMap) {
+    Collection<IVertex> vertices = vertexMap.values();
+
+    // set child vertices
+    vertices.forEach(v -> {
+      TreeVertex current = (TreeVertex) v;
+      current.getChildIds().forEach(id -> {
+        TreeVertex child = (TreeVertex) vertexMap.get(id);
+        if (child != null) {
+          current.addChild(child);
+        }
+      });
+    });
+    return vertices;
+  }
+
+  private Map<Long, IVertex> buildTreeVertices(Element graphElement) {
+    Element vertexElements = graphElement.element(NODES);
+    Map<Long, IVertex> vertexMap = new HashMap<>();
+    vertexElements.elements().forEach(e -> {
+      TreeVertex newVertex = loadTreeVertex(e);
+      vertexMap.put(newVertex.getId(), newVertex);
+    });
+    return vertexMap;
+  }
+
+  private Collection<IEdge> buildTreeEdges(Collection<IVertex> vertices) {
+    List<IEdge> edges = new ArrayList<>();
+    vertices.forEach(v -> {
+      TreeVertex current = (TreeVertex) v;
+      current.getChildren().forEach(child -> {
+        // TODO: what to do with label and style
+        NodeStyle standardStyle = new NodeStyle(GVSColor.STANDARD,
+            GVSLineStyle.THROUGH, GVSLineThickness.STANDARD, null);
+        edges.add(new Edge("", standardStyle, false, current, child));
+      });
+    });
+    return edges;
   }
 
   private IVertex loadVertex(Element vertexElement) {
@@ -423,95 +400,70 @@ public class Persistor {
     Element labelElement = vertexElement.element(LABEL);
     String label = labelElement.getText();
 
-    Element lineColorElement = vertexElement.element(LINECOLOR);
-    String linecolor = lineColorElement.getText();
-
-    Element lineStyleElement = vertexElement.element(LINESTYLE);
-    String lineStyle = lineStyleElement.getText();
-
-    Element lineThicknessElement = vertexElement.element(LINETHICKNESS);
-    String lineThickness = lineThicknessElement.getText();
+    NodeStyle style = loadStyle(vertexElement, true);
 
     Element iconElement = vertexElement.element(ICON);
     Glyph icon = null;
     if (iconElement != null) {
       icon = Glyph.valueOf(iconElement.getText());
     }
-
-    Element fillColorElement = vertexElement.element(FILLCOLOR);
-    String fillcolor = null;
-    if (fillColorElement != null) {
-      fillcolor = fillColorElement.getText();
-    }
-
     long vertexId = Long.parseLong(vertexElement.attributeValue(ATTRIBUTEID));
-    NodeStyle style = new NodeStyle(linecolor, lineStyle, lineThickness,
-        fillcolor);
+
     logger.info("Finish building DefaultVertex");
     return new DefaultVertex(vertexId, label, style, xPos, yPos, icon);
   }
 
-  private IEdge loadEdge(Element edgeElement, List<IVertex> vertices) {
+  private NodeStyle loadStyle(Element vertexElement, boolean isVertex) {
+    Element lineColorElement = vertexElement.element(LINECOLOR);
+    String linecolor = lineColorElement.getText();
+    Element lineStyleElement = vertexElement.element(LINESTYLE);
+    String lineStyle = lineStyleElement.getText();
+    Element lineThicknessElement = vertexElement.element(LINETHICKNESS);
+    String lineThickness = lineThicknessElement.getText();
+    String fillcolor = null;
+    if (isVertex) {
+      Element fillColorElement = vertexElement.element(FILLCOLOR);
+      if (fillColorElement != null) {
+        fillcolor = fillColorElement.getText();
+      }
+    }
+    NodeStyle style = new NodeStyle(linecolor, lineStyle, lineThickness,
+        fillcolor);
+    return style;
+  }
+
+  private IEdge loadEdge(Element edgeElement, Map<Long, IVertex> vertices) {
     String isDirected = edgeElement.attributeValue(ISDIRECTED);
+
     Element eLabel = edgeElement.element(LABEL);
-    Element eLineColor = edgeElement.element(LINECOLOR);
-    Element eLineStyle = edgeElement.element(LINESTYLE);
-    Element eLineThickness = edgeElement.element(LINETHICKNESS);
+    String label = eLabel.getText();
+
     Element eFromVertex = edgeElement.element(FROMVERTEX);
     Element eToVertex = edgeElement.element(TOVERTEX);
 
-    String label = eLabel.getText();
-    String linecolor = eLineColor.getText();
-    String linestyle = eLineStyle.getText();
-    String linethickness = eLineThickness.getText();
-
     long fromVertexId = Long.parseLong(eFromVertex.getText());
     long toVertexId = Long.parseLong(eToVertex.getText());
-    IVertex fromVertex = null;
-    IVertex toVertex = null;
+    IVertex fromVertex = vertices.get(fromVertexId);
+    IVertex toVertex = vertices.get(toVertexId);
 
-    Iterator<IVertex> searchVertex = vertices.iterator();
-    while (searchVertex.hasNext()) {
-      IVertex tmp = (searchVertex.next());
-      if (tmp.getId() == fromVertexId) {
-        fromVertex = tmp;
-      }
-      if (tmp.getId() == toVertexId) {
-        toVertex = tmp;
-      }
-    }
-    NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness, null);
+    NodeStyle style = loadStyle(edgeElement, false);
     if (isDirected.equals("true")) {
       return new Edge(label, style, true, fromVertex, toVertex);
     } else {
       return new Edge(label, style, false, fromVertex, toVertex);
     }
-
   }
 
-  private INode loadBinaryNode(Element pNode) {
-    long nodeId = Long.parseLong(pNode.attributeValue(ATTRIBUTEID));
-    Element eLabel = pNode.element(LABEL);
-    Element eLineColor = pNode.element(LINECOLOR);
-    Element eLineStyle = pNode.element(LINESTYLE);
-    Element eLineThickness = pNode.element(LINETHICKNESS);
-    Element eFillcolor = pNode.element(FILLCOLOR);
-    Element eXPos = pNode.element(XPOS);
-    Element eYPos = pNode.element(YPOS);
-
-    Element eLeftChild = pNode.element(LEFTCHILD);
-    Element eRigthChild = pNode.element(RIGTHCHILD);
-
+  private TreeVertex loadTreeVertex(Element pVertex) {
+    logger.info("Loading TreeVertex...");
+    long vertexId = Long.parseLong(pVertex.attributeValue(ATTRIBUTEID));
+    Element eLabel = pVertex.element(LABEL);
     String label = eLabel.getText();
-    String linecolor = eLineColor.getText();
-    Color lineColor = configuration.getColor(linecolor, false);
-    String linestyle = eLineStyle.getText();
-    String linethickness = eLineThickness.getText();
-    BasicStroke lineStroke = configuration.getLineObject(linestyle,
-        linethickness);
-    String fillcolor = eFillcolor.getText();
-    Color fillColor = configuration.getColor(fillcolor, false);
 
+    NodeStyle style = loadStyle(pVertex, true);
+
+    Element eRigthChild = pVertex.element(RIGTHCHILD);
+    Element eLeftChild = pVertex.element(LEFTCHILD);
     long leftchildId = -1;
     long rigthchildId = -1;
     if (eLeftChild != null) {
@@ -520,11 +472,10 @@ public class Persistor {
     if (eRigthChild != null) {
       rigthchildId = Long.parseLong(eRigthChild.getText());
     }
-
-    double xPos = Double.parseDouble(eXPos.getText());
-    double yPos = Double.parseDouble(eYPos.getText());
-
-    return new BinaryNode(nodeId, label, lineColor, lineStroke, fillColor,
-        leftchildId, rigthchildId, xPos, yPos);
+    logger.info("Finished loading TreeVertex.");
+    TreeVertex newVertex = new TreeVertex(vertexId, label, style, false, null);
+    newVertex.addChildId(leftchildId);
+    newVertex.addChildId(rigthchildId);
+    return newVertex;
   }
 }

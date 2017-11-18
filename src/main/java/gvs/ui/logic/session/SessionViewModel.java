@@ -28,8 +28,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 @Singleton
 public class SessionViewModel implements Observer {
 
-  private boolean isReplaying;
-
   private final SessionHolder sessionHolder;
 
   private final BooleanProperty lastBtnDisableProperty;
@@ -39,6 +37,7 @@ public class SessionViewModel implements Observer {
   private final BooleanProperty autoLayoutBtnDisableProperty;
   private final BooleanProperty replayBtnDisableProperty;
   private final BooleanProperty cancelReplayBtnDisableProperty;
+  private final BooleanProperty isReplayingProperty;
 
   private final IntegerProperty currentGraphIdProperty;
   private final IntegerProperty totalGraphCountProperty;
@@ -60,6 +59,7 @@ public class SessionViewModel implements Observer {
     this.currentGraphIdProperty = new SimpleIntegerProperty();
     this.totalGraphCountProperty = new SimpleIntegerProperty();
 
+    this.isReplayingProperty = new SimpleBooleanProperty();
     this.replayBtnDisableProperty = new SimpleBooleanProperty();
     this.cancelReplayBtnDisableProperty = new SimpleBooleanProperty();
 
@@ -124,7 +124,7 @@ public class SessionViewModel implements Observer {
         int maxPosition = currentSession.getTotalGraphCount();
         totalGraphCountProperty.set(maxPosition);
         currentGraphIdProperty.set(currentPosition);
-        if (!isReplaying) {
+        if (!isReplayingProperty.get()) {
           if (currentPosition <= 1) {
             disableStepButtons(true, true, false, false);
           } else if (currentPosition == maxPosition) {
@@ -143,32 +143,39 @@ public class SessionViewModel implements Observer {
 
   public void replayGraph(long timeout) {
     logger.info("Starting replay with speed {}", timeout);
+    isReplayingProperty.set(true);
+
     boolean disable = true;
     disableStepButtons(disable, disable, disable, disable);
     disableLayoutButton(disable);
-    isReplaying = true;
     sessionHolder.getCurrentSession().replay(timeout, this::finishReplay);
   }
 
   public void pauseReplay() {
+    isReplayingProperty.set(false);
     sessionHolder.getCurrentSession().pauseReplay();
   }
 
   public void cancelReplay() {
+    isReplayingProperty.set(false);
     sessionHolder.getCurrentSession().cancelReplay();
   }
 
   public void finishReplay() {
-    disableAllButtons(false);
-    isReplaying = false;
+    Platform.runLater(() -> {
+      isReplayingProperty.set(false);
+      disableAllButtons(false);
+    });
   }
 
   public void autoLayout() {
-    logger.info("Auto-layouting the current graph model...");
+    if (sessionHolder.getCurrentSession().isTreeSession()) {
+      logger.info("Auto-layouting the current graph model...");
     disableAllButtons(true);
     disableLayoutButton(true); // overwrite explicit!
     sessionHolder.getCurrentSession()
         .layoutCurrentGraph(this::finishAutolayout);
+    }
   }
 
   public void finishAutolayout() {
@@ -238,12 +245,8 @@ public class SessionViewModel implements Observer {
     return cancelReplayBtnDisableProperty;
   }
 
-  public boolean isReplaying() {
-    return isReplaying;
-  }
-
-  public void setReplaying(boolean isReplaying) {
-    this.isReplaying = isReplaying;
+  public BooleanProperty getIsReplayingProperty() {
+    return isReplayingProperty;
   }
 
 }

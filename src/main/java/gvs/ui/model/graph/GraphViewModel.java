@@ -81,7 +81,6 @@ public class GraphViewModel extends Observable implements Observer {
     drawVertices(graph.getVertices());
     drawEdges(graph.getEdges());
     correctZOrder();
-    graphPane.requestScale();
   }
 
   private void correctZOrder() {

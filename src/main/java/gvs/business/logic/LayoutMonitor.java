@@ -5,7 +5,7 @@ import com.google.inject.Singleton;
 /**
  * In order to compute the layout of a graph in its own thread, it must be
  * ensured that only one graph is layouted at a time. Therefore the monitor
- * locks the layouting process until its complition.
+ * locks the layouting process until its completion.
  * 
  * @author aegli
  *

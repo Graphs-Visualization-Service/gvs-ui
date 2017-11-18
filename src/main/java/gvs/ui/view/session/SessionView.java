@@ -15,6 +15,7 @@ import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 
@@ -129,13 +130,25 @@ public class SessionView {
 
   private void setButtonIcons() {
     firstBtn.setGraphic(FontAwesome.createLabel(Glyph.STEP_BACKWARD));
+    firstBtn.setTooltip(new Tooltip("Show first session"));
+
     prevBtn.setGraphic(FontAwesome.createLabel(Glyph.BACKWARD));
+    prevBtn.setTooltip(new Tooltip("Show previous session"));
+
     nextBtn.setGraphic(FontAwesome.createLabel(Glyph.FORWARD));
+    nextBtn.setTooltip(new Tooltip("Show next session"));
+
     lastBtn.setGraphic(FontAwesome.createLabel(Glyph.STEP_FORWARD));
+    lastBtn.setTooltip(new Tooltip("Show last session"));
+
     autoLayoutBtn.setGraphic(FontAwesome.createLabel(Glyph.MAGIC));
+    autoLayoutBtn.setTooltip(new Tooltip("Autolayout current graph"));
 
     replayBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
+    replayBtn.setTooltip(new Tooltip("Replay session"));
+
     cancelReplayBtn.setGraphic(FontAwesome.createLabel(Glyph.STOP));
+    cancelReplayBtn.setTooltip(new Tooltip("Cancel replay"));
   }
 
   @FXML

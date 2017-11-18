@@ -5,7 +5,6 @@ import java.io.File;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.business.model.graph.NodeStyle;
 import gvs.ui.logic.app.AppViewModel;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
@@ -13,17 +12,8 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -55,6 +45,7 @@ public class AppView {
   private Parent sessionView;
 
   private FileChooser fileChooser;
+
   private final AppViewModel appViewModel;
 
   @Inject
@@ -72,7 +63,6 @@ public class AppView {
     saveSessionBtn.disableProperty()
         .bind(appViewModel.sessionVisibilityProperty().not());
 
-    setLogoAsBackground();
     initButtonlabels();
     initFileChooser();
     fillDropDown();
@@ -88,16 +78,6 @@ public class AppView {
         .bindBidirectional(appViewModel.getCurrentSessionName());
   }
 
-  private void setLogoAsBackground() {
-    BackgroundImage myBI = new BackgroundImage(
-        new Image(
-            getClass().getClassLoader().getResourceAsStream("images/logo.png"),
-            200, 200, true, true),
-        BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
-        BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
-    rootPane.setBackground(new Background(myBI));
-  }
-
   private void initFileChooser() {
     fileChooser = new FileChooser();
     FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter(
@@ -106,11 +86,13 @@ public class AppView {
   }
 
   private void initButtonlabels() {
-    importSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.UPLOAD, 20));
+    importSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.UPLOAD));
     importSessionBtn.setTooltip(new Tooltip("Load Session"));
-    saveSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.SAVE, 20));
+
+    saveSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.SAVE));
     saveSessionBtn.setTooltip(new Tooltip("Store Session"));
-    deleteSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.TRASH, 20));
+
+    deleteSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.TRASH));
     deleteSessionBtn.setTooltip(new Tooltip("Delete Session"));
   }
 
@@ -139,10 +121,5 @@ public class AppView {
   private void changeSession() {
     String name = chooseSessionBox.getValue();
     appViewModel.changeSession(name);
-  }
-
-  @FXML
-  private void quitGVS() {
-    appViewModel.terminateApplication();
   }
 }

@@ -146,6 +146,7 @@ public class SessionView {
     prevBtn.setGraphic(FontAwesome.createLabel(Glyph.BACKWARD));
     nextBtn.setGraphic(FontAwesome.createLabel(Glyph.FORWARD));
     lastBtn.setGraphic(FontAwesome.createLabel(Glyph.STEP_FORWARD));
+    autoLayoutBtn.setGraphic(FontAwesome.createLabel(Glyph.MAGIC));
 
     replayBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
     cancelReplayBtn.setGraphic(FontAwesome.createLabel(Glyph.STOP));

@@ -1,130 +1,100 @@
 /*-- LABEL FONT --*/
 .edge-label {
-	-fx-font-size: 6px;
+	-fx-font-size: 6.0px;
     -fx-font-family: "Verdana";	
 }
 .vertex {
-	-fx-font-size: 8px;
+	-fx-font-size: 8.0px;
     -fx-font-family: "Verdana";	
-    	-fx-padding: 3px;
+    	-fx-padding: 3.0px;
 }
 
 /*-- EDGE LINE COLOR / VERTEX BORDER COLOR --*/
 .line-standard {
-	-fx-stroke: rgb(170.0,170.0,170.0);
+	-fx-stroke: rgb(0.0,0.0,0.0);
 }
 .line-red {
-	-fx-stroke: rgb(255.0,0.0,0.0);
+	-fx-stroke: rgb(229.0, 80.0,76.0);
 }
 .line-lightred {
-	-fx-stroke: rgb(255.0,155.0,155.0);
+	-fx-stroke: rgb(229.0, 80.0,76.0);
 }
 .line-green {
-	-fx-stroke: rgb(0.0,255.0,0.0);
+	-fx-stroke: rgb(143.0,198.0,94.0);
 }
 .line-lightgreen {
-	-fx-stroke: rgb(155.0,255.0,155.0);
+	-fx-stroke: rgb(143.0,198.0,94.0);
 }
 .line-darkgreen {
-	-fx-stroke: rgb(0.0,100.0,0.0);
+	-fx-stroke: rgb(143.0,198.0,94.0);
 }
 .line-blue {
-	-fx-stroke: rgb(0.0,0.0,255.0);
+	-fx-stroke: rgb(55.0,179.0,252.0);
 }
 .line-lightblue {
-	-fx-stroke: rgb(175.0,215.0,230.0);
+	-fx-stroke: rgb(55.0,179.0,252.0);
 }
 .line-darkblue {
-	-fx-stroke: rgb(0.0,0.0,80.0);
+	-fx-stroke: rgb(55.0,179.0,252.0);
 }
 .line-yellow {
-	-fx-stroke: rgb(255.0,255.0,0.0);
+	-fx-stroke: rgb(229.0,198.0,76.0);
 }
 .line-orange {
-	-fx-stroke: rgb(255.0,165.0,0.0);
-}
-.line-orange {
-	-fx-stroke: rgb(222.0,184.0,135.0);
-}
-.line-brown {
-	-fx-stroke: rgb(222.0,184.0,135.0);
+	-fx-stroke: rgb(236.0,162.0,57.0);
 }
 .line-black {
 	-fx-stroke: rgb(0.0,0.0,0.0);
 }
 .line-gray {
-	-fx-stroke: rgb(130.0,130.0,130.0);
+	-fx-stroke: rgb(223.0,223.0,223.0);
 }
 .line-lightgray {
-	-fx-stroke: rgb(215.0,215.0,215.0);
-}
-.line-violet {
-	-fx-stroke: rgb(238.0,130.0,238.0);
-}
-.line-pink {
-	-fx-stroke: rgb(255.0,192.0,203.0);
-}
-.line-turqoise {
-	-fx-stroke: rgb(64.0,224.0,208.0);
+	-fx-stroke: rgb(223.0,223.0,223.0);
 }
 
 /*-- VERTEX FILL COLOR --*/
-.fill-standard {
-	-fx-fill: rgb(170.0,170.0,170.0);
+fill-standard {
+	-fx-fill: rgb(0.0,0.0,0.0);
 }
 .fill-red {
-	-fx-fill: rgb(255.0,0.0,0.0);
+	-fx-fill: rgb(229.0, 80.0,76.0);
 }
 .fill-lightred {
-	-fx-fill: rgb(255.0,155.0,155.0);
+	-fx-fill: rgb(229.0, 80.0,76.0);
 }
 .fill-green {
-	-fx-fill: rgb(0.0,255.0,0.0);
+	-fx-fill: rgb(143.0,198.0,94.0);
 }
 .fill-lightgreen {
-	-fx-fill: rgb(155.0,255.0,155.0);
+	-fx-fill: rgb(143.0,198.0,94.0);
 }
 .fill-darkgreen {
-	-fx-fill: rgb(0.0,100.0,0.0);
+	-fx-fill: rgb(143.0,198.0,94.0);
 }
 .fill-blue {
-	-fx-fill: rgb(0.0,0.0,255.0);
+	-fx-fill: rgb(55.0,179.0,252.0);
 }
 .fill-lightblue {
-	-fx-fill: rgb(175.0,215.0,230.0);
+	-fx-fill: rgb(55.0,179.0,252.0);
 }
 .fill-darkblue {
-	-fx-fill: rgb(0.0,0.0,80.0);
+	-fx-fill: rgb(55.0,179.0,252.0);
 }
 .fill-yellow {
-	-fx-fill: rgb(255.0,255.0,0.0);
+	-fx-fill: rgb(229.0,198.0,76.0);
 }
 .fill-orange {
-	-fx-fill: rgb(255.0,165.0,0.0);
-}
-.fill-orange {
-	-fx-fill: rgb(222.0,184.0,135.0);
-}
-.fill-brown {
-	-fx-fill: rgb(222.0,184.0,135.0);
+	-fx-fill: rgb(236.0,162.0,57.0);
 }
 .fill-black {
 	-fx-fill: rgb(0.0,0.0,0.0);
 }
 .fill-gray {
-	-fx-fill: rgb(130.0,130.0,130.0);
+	-fx-fill: rgb(223.0,223.0,223.0);
 }
 .fill-lightgray {
-	-fx-fill: rgb(215.0,215.0,215.0);
-}
-.fill-violet {
-	-fx-fill: rgb(238.0,130.0,238.0);
-}
-.fill-pink {
-	-fx-fill: rgb(255.0,192.0,203.0);
-}
-.fill-turqoise {
-	-fx-fill: rgb(64.0,224.0,208.0);
+	-fx-fill: rgb(223.0,223.0,223.0);
 }
 
 

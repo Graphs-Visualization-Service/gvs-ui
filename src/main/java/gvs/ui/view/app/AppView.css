@@ -1,0 +1,17 @@
+.root {
+	-fx-base: rgb(42.0, 42.0, 42.0);
+    	-fx-background: rgb(42.0, 42.0, 42.0);
+    	-fx-control-inner-background: rgb(60.0, 60.0, 60.0);
+    	-fx-control-inner-background-alt: rgb(223.0, 223.0, 223.0);
+}
+
+.icon-button{
+	-fx-background-color: transparent;
+    -fx-background-radius: 0.0;
+    -fx-border-width: 0.0;
+}
+
+.toolbar {
+	-fx-background-color: rgb(60.0, 60.0, 60.0);
+}
+

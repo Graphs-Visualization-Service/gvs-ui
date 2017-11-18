@@ -12,77 +12,46 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.HBox?>
 
 <BorderPane fx:id="rootPane" prefHeight="600" prefWidth="800"
 	stylesheets="@AppView.css" xmlns="http://javafx.com/javafx/8.0.111"
 	xmlns:fx="http://javafx.com/fxml/1" fx:controller="gvs.ui.view.app.AppView">
 	<top>
-		<GridPane>
+		<GridPane GridPane.rowIndex="1" styleClass="toolbar">
+			<padding>
+				<Insets top="10" right="10" bottom="10" left="10" />
+			</padding>
 			<columnConstraints>
+				<ColumnConstraints hgrow="ALWAYS" />
 				<ColumnConstraints hgrow="ALWAYS" />
 			</columnConstraints>
 			<rowConstraints>
-				<RowConstraints prefHeight="30.0"
-					vgrow="ALWAYS" />
-				<RowConstraints prefHeight="40.0"
-					vgrow="ALWAYS" />
+				<RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
 			</rowConstraints>
 			<children>
-				<MenuBar GridPane.rowIndex="0">
-					<menus>
-						<Menu fx:id="gvsMenu" text="GVS">
-							<items>
-								<MenuItem fx:id="importMenuItem" onAction="#loadSession"
-									text="_Import" />
-								<MenuItem fx:id="quitMenuItem" onAction="#quitGVS"
-									text="_Quit" />
-							</items>
-						</Menu>
-					</menus>
-				</MenuBar>
-				<GridPane GridPane.rowIndex="1">
-					<padding>
-						<Insets top="5" right="10" bottom="5" left="5" />
-					</padding>
-					<columnConstraints>
-						<ColumnConstraints hgrow="SOMETIMES" minWidth="300.0"
-							prefWidth="300.0" />
-						<ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0"
-							minWidth="200.0" prefWidth="200.0" />
-					</columnConstraints>
-					<rowConstraints>
-						<RowConstraints minHeight="10.0" prefHeight="30.0"
-							vgrow="SOMETIMES" />
-					</rowConstraints>
-					<children>
-						<ComboBox fx:id="chooseSessionBox" onAction="#changeSession"
-							prefWidth="350.0" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS">
-							<GridPane.margin>
-								<Insets left="10.0" />
-							</GridPane.margin>
-						</ComboBox>
-						<ButtonBar GridPane.columnIndex="1" GridPane.halignment="RIGHT"
-							GridPane.hgrow="NEVER">
-							<GridPane.margin>
-								<Insets right="10.0" />
-							</GridPane.margin>
-							<buttons>
-								<Button fx:id="saveSessionBtn" mnemonicParsing="false"
-									onMouseClicked="#saveSession" text="Save" />
-								<Button fx:id="deleteSessionBtn" mnemonicParsing="false"
-									onMouseClicked="#removeSession" text="Delete" />
-							</buttons>
-						</ButtonBar>
-					</children>
-				</GridPane>
+				<HBox prefWidth="300" GridPane.columnIndex="0"
+					GridPane.halignment="LEFT">
+
+					<Button fx:id="importSessionBtn" mnemonicParsing="false"
+						onMouseClicked="#loadSession" styleClass="icon-button" />
+					<Button fx:id="saveSessionBtn" mnemonicParsing="false"
+						onMouseClicked="#saveSession" styleClass="icon-button" />
+					<Button fx:id="deleteSessionBtn" mnemonicParsing="false"
+						onMouseClicked="#removeSession" styleClass="icon-button" />
+				</HBox>
+				<ComboBox fx:id="chooseSessionBox" onAction="#changeSession"
+					GridPane.columnIndex="1" prefWidth="350.0" GridPane.halignment="RIGHT"
+					GridPane.hgrow="ALWAYS">
+					<GridPane.margin>
+						<Insets left="10.0" />
+					</GridPane.margin>
+				</ComboBox>
 			</children>
 		</GridPane>
 	</top>
 	<center>
 		<AnchorPane BorderPane.alignment="CENTER">
-			<padding>
-				<Insets top="5" right="10" bottom="5" left="5" />
-			</padding>
 			<children>
 				<fx:include fx:id="sessionView" source="../session/SessionView.fxml"
 					AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
@@ -90,6 +59,4 @@
 			</children>
 		</AnchorPane>
 	</center>
-
-
 </BorderPane>

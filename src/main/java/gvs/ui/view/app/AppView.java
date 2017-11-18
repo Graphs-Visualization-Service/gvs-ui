@@ -5,6 +5,7 @@ import java.io.File;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import gvs.business.model.graph.NodeStyle;
 import gvs.ui.logic.app.AppViewModel;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
@@ -14,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -21,6 +23,7 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -34,19 +37,13 @@ import javafx.stage.Stage;
 public class AppView {
 
   @FXML
-  private Menu gvsMenu;
-
-  @FXML
-  private MenuItem quitMenuItem;
-
-  @FXML
-  private MenuItem importMenuItem;
-
-  @FXML
-  private Button deleteSessionBtn;
+  private Button importSessionBtn;
 
   @FXML
   private Button saveSessionBtn;
+
+  @FXML
+  private Button deleteSessionBtn;
 
   @FXML
   private ComboBox<String> chooseSessionBox;
@@ -109,8 +106,12 @@ public class AppView {
   }
 
   private void initButtonlabels() {
-    saveSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.SAVE));
-    deleteSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.REMOVE));
+    importSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.UPLOAD, 20));
+    importSessionBtn.setTooltip(new Tooltip("Load Session"));
+    saveSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.SAVE, 20));
+    saveSessionBtn.setTooltip(new Tooltip("Store Session"));
+    deleteSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.TRASH, 20));
+    deleteSessionBtn.setTooltip(new Tooltip("Delete Session"));
   }
 
   @FXML

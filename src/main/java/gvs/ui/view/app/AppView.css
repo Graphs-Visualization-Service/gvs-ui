@@ -5,15 +5,11 @@
     	-fx-control-inner-background-alt: rgb(223.0, 223.0, 223.0);
 }
 
-.main-window {
+.logo-bg {
     	-fx-background-image: url("../../../../images/logo.png");
     	-fx-background-position: center;
     	-fx-background-repeat: no-repeat no-repeat;
     	-fx-background-size: 200, 200;
-}
-
-.graph-pane {
-	
 }
 
 .icon-button{

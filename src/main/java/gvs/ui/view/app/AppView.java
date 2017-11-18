@@ -13,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -40,6 +41,9 @@ public class AppView {
 
   @FXML
   private BorderPane rootPane;
+
+  @FXML
+  private AnchorPane sessionContainer;
 
   @FXML
   private Parent sessionView;
@@ -101,6 +105,7 @@ public class AppView {
     Stage stage = (Stage) rootPane.getScene().getWindow();
     fileChooser.setTitle("Load Session File");
     File file = fileChooser.showOpenDialog(stage);
+    sessionContainer.getStyleClass().remove("logo-bg");
     appViewModel.loadSession(file);
   }
 
@@ -115,6 +120,9 @@ public class AppView {
   @FXML
   private void removeSession() {
     appViewModel.removeCurrentSession();
+    if (appViewModel.getSessionNames().isEmpty()) {
+      sessionContainer.getStyleClass().add("logo-bg");
+    }
   }
 
   @FXML

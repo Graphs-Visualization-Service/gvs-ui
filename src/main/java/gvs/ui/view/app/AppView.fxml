@@ -51,7 +51,7 @@
 		</GridPane>
 	</top>
 	<center>
-		<AnchorPane BorderPane.alignment="CENTER" styleClass="main-window">
+		<AnchorPane fx:id="sessionContainer" BorderPane.alignment="CENTER" styleClass="logo-bg">
 			<children>
 				<fx:include fx:id="sessionView" source="../session/SessionView.fxml"
 					AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"

@@ -17,7 +17,6 @@ import com.google.inject.assistedinject.Assisted;
 import gvs.access.Persistor;
 import gvs.business.logic.ILayouter;
 import gvs.business.logic.LayoutMonitor;
-import gvs.business.logic.Layouter;
 import gvs.business.logic.LayouterProvider;
 import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.GraphHolder;
@@ -216,18 +215,13 @@ public class Session implements IGraphSessionController {
     Graph currentGraph = graphHolder.getCurrentGraph();
     int nextGraphId = currentGraph.getId() + 1;
     if (validIndex(nextGraphId)) {
-      boolean hasNewVerticesToLayout = false;
       Graph nextGraph = getGraphs().get(nextGraphId - 1);
-
       if (!isTreeSession) {
-        hasNewVerticesToLayout = takeOverPreviousVertexPositions(
-            graphHolder.getCurrentGraph(), nextGraph);
-        if (hasNewVerticesToLayout) {
-          layoutCurrentGraph(null);
-        }
+        takeOverPreviousVertexPositions(graphHolder.getCurrentGraph(),
+            nextGraph);
+      } else {
+        graphHolder.setCurrentGraph(nextGraph);
       }
-      
-      graphHolder.setCurrentGraph(nextGraph);
     }
   }
 
@@ -235,18 +229,14 @@ public class Session implements IGraphSessionController {
   public void changeCurrentGraphToPrev() {
     int prevGraphId = graphHolder.getCurrentGraph().getId() - 1;
     if (validIndex(prevGraphId)) {
-      boolean hasNewVerticesToLayout = false;
       Graph previousGraph = getGraphs().get(prevGraphId - 1);
 
       if (!isTreeSession) {
-        hasNewVerticesToLayout = takeOverPreviousVertexPositions(
-            graphHolder.getCurrentGraph(), previousGraph);
-        if (hasNewVerticesToLayout) {
-          layoutCurrentGraph(null);
-        }
+        takeOverPreviousVertexPositions(graphHolder.getCurrentGraph(),
+            previousGraph);
+      } else {
+        graphHolder.setCurrentGraph(previousGraph);
       }
-      
-      graphHolder.setCurrentGraph(previousGraph);
     }
   }
 
@@ -285,10 +275,8 @@ public class Session implements IGraphSessionController {
    *          source graph
    * @param targetGraph
    *          target graph
-   * @return returns false, if none of the vertices need their coordinates
-   *         recalculated, otherwise returns true
    */
-  private boolean takeOverPreviousVertexPositions(Graph sourceGraph,
+  private void takeOverPreviousVertexPositions(Graph sourceGraph,
       Graph targetGraph) {
 
     Map<Long, IVertex> formerVertices = sourceGraph.getVertices().stream()
@@ -307,7 +295,11 @@ public class Session implements IGraphSessionController {
       }
     }
 
-    return verticesToLayout;
+    graphHolder.setCurrentGraph(targetGraph);
+
+    if (verticesToLayout) {
+      layoutCurrentGraph(null);
+    }
   }
 
   @Override

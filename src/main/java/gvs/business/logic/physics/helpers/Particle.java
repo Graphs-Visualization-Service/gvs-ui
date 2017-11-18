@@ -20,7 +20,7 @@ public class Particle {
   private AreaVector acceleration;
   private AreaPoint particlePosition;
 
-  private static final double ZOOM_FACTOR = 1.4;
+  private static final double ZOOM_FACTOR = 1.5;
   private static final Logger logger = LoggerFactory.getLogger(Particle.class);
 
   /**

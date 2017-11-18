@@ -6,8 +6,6 @@
  */
 package gvs.access;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -96,18 +94,18 @@ public class ModelBuilder {
    *          Document
    */
   public void buildModelFromXML(Document document) {
-    logger.debug("Model will be built from XML");
+    logger.info("Building model from XML...");
     Element documentRootElement = document.getRootElement();
 
     for (Element rootElement : documentRootElement.elements()) {
       if (rootElement.getName().equals(GRAPH)) {
-        logger.debug("It is a graph");
+        logger.info("Building graph model...");
         buildGraph(documentRootElement);
       } else if (rootElement.getName().equals(TREE)) {
-        logger.debug("It is a tree");
+        logger.info("Building tree model...");
         buildTree(documentRootElement);
       } else {
-        logger.debug("Unknown structure detected. Import aborted.");
+        logger.info("Unknown structure detected. Import aborted.");
         break;
       }
     }
@@ -225,31 +223,16 @@ public class ModelBuilder {
     return edges;
   }
 
-  /**
-   * Binary Node Builder.
-   * 
-   * @param pVertex
-   *          node
-   * @return binaryNode
-   */
   private TreeVertex buildTreeVertex(Element pVertex) {
     logger.info("Building TreeVertex from XML...");
     long vertexId = Long.parseLong(pVertex.attributeValue(ATTRIBUTEID));
     Element eLabel = pVertex.element(LABEL);
-    Element eLineColor = pVertex.element(LINECOLOR);
-    Element eLineStyle = pVertex.element(LINESTYLE);
-    Element eLineThickness = pVertex.element(LINETHICKNESS);
-    Element eFillcolor = pVertex.element(FILLCOLOR);
+    String label = eLabel.getText();
+  
+    NodeStyle style = buildStyle(pVertex, true);
+
     Element eRigthChild = pVertex.element(RIGTHCHILD);
     Element eLeftChild = pVertex.element(LEFTCHILD);
-
-    String label = eLabel.getText();
-    String lineColor = eLineColor.getText();
-    String lineStyle = eLineStyle.getText();
-    String lineThickness = eLineThickness.getText();
-    String fillColor = eFillcolor.getText();
-    NodeStyle style = new NodeStyle(lineColor, lineStyle, lineThickness,
-        fillColor);
     long leftchildId = -1;
     long rigthchildId = -1;
     if (eLeftChild != null) {
@@ -287,32 +270,35 @@ public class ModelBuilder {
     Element labelElement = vertexElement.element(LABEL);
     String label = labelElement.getText();
 
-    Element lineColorElement = vertexElement.element(LINECOLOR);
-    String linecolor = lineColorElement.getText();
-
-    Element lineStyleElement = vertexElement.element(LINESTYLE);
-    String lineStyle = lineStyleElement.getText();
-
-    Element lineThicknessElement = vertexElement.element(LINETHICKNESS);
-    String lineThickness = lineThicknessElement.getText();
-
+    NodeStyle style = buildStyle(vertexElement, true);
+    
     Element iconElement = vertexElement.element(ICON);
     Glyph icon = null;
     if (iconElement != null) {
       icon = Glyph.valueOf(iconElement.getText());
     }
 
-    Element fillColorElement = vertexElement.element(FILLCOLOR);
-    String fillcolor = null;
-    if (fillColorElement != null) {
-      fillcolor = fillColorElement.getText();
-    }
-
     long vertexId = Long.parseLong(vertexElement.attributeValue(ATTRIBUTEID));
-    NodeStyle style = new NodeStyle(linecolor, lineStyle, lineThickness,
-        fillcolor);
+
     logger.info("Finish building DefaultVertex");
     return new DefaultVertex(vertexId, label, style, xPos, yPos, icon);
+  }
+
+  private NodeStyle buildStyle(Element e, boolean isVertex) {
+    Element lineColorElement = e.element(LINECOLOR);
+    String linecolor = lineColorElement.getText();
+    Element lineStyleElement = e.element(LINESTYLE);
+    String lineStyle = lineStyleElement.getText();
+    Element lineThicknessElement = e.element(LINETHICKNESS);
+    String lineThickness = lineThicknessElement.getText();
+    String fillcolor = null;
+    if (isVertex) {
+      Element fillColorElement = e.element(FILLCOLOR);
+      if (fillColorElement != null) {
+        fillcolor = fillColorElement.getText();
+      }
+    }
+    return new NodeStyle(linecolor, lineStyle, lineThickness, fillcolor);
   }
 
   /**
@@ -328,19 +314,10 @@ public class ModelBuilder {
       Collection<IVertex> pVertizes) {
     logger.debug("Build DirectedEdge XML");
     Element eLabel = pEdge.element(LABEL);
-    Element eLineColor = pEdge.element(LINECOLOR);
-    Element eLineStyle = pEdge.element(LINESTYLE);
-    Element eLineThickness = pEdge.element(LINETHICKNESS);
+    String label = eLabel.getText();
+    NodeStyle style =  buildStyle(pEdge, false);
     Element eFromVertex = pEdge.element(FROMVERTEX);
     Element eToVertex = pEdge.element(TOVERTEX);
-
-    String label = eLabel.getText();
-    String linecolor = eLineColor.getText();
-    String linestyle = eLineStyle.getText();
-    String linethickness = eLineThickness.getText();
-
-    NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness, null);
-
     long fromVertexId = Long.parseLong(eFromVertex.getText());
     long toVertexId = Long.parseLong(eToVertex.getText());
     IVertex fromVertex = null;
@@ -376,18 +353,10 @@ public class ModelBuilder {
     int arrowPos = Integer.parseInt(pEdge.attributeValue(ARROWPOS));
 
     Element eLabel = pEdge.element(LABEL);
-    Element eLineColor = pEdge.element(LINECOLOR);
-    Element eLineStyle = pEdge.element(LINESTYLE);
-    Element eLineThickness = pEdge.element(LINETHICKNESS);
+    String label = eLabel.getText();
+    NodeStyle style = buildStyle(pEdge, false);
     Element eFromVertex = pEdge.element(FROMVERTEX);
     Element eToVertex = pEdge.element(TOVERTEX);
-
-    String label = eLabel.getText();
-    String linecolor = eLineColor.getText();
-    String linestyle = eLineStyle.getText();
-    String linethickness = eLineThickness.getText();
-    NodeStyle style = new NodeStyle(linecolor, linestyle, linethickness, null);
-
     long fromVertexId = Long.parseLong(eFromVertex.getText());
     long toVertexId = Long.parseLong(eToVertex.getText());
     IVertex fromVertex = null;

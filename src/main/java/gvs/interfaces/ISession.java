@@ -31,4 +31,6 @@ public interface ISession {
   int getTotalGraphCount();
 
   GraphHolder getGraphHolder();
+  
+  public boolean isTreeSession();
 }

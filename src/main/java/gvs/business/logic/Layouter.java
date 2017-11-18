@@ -33,7 +33,7 @@ import gvs.interfaces.IVertex;
  *
  */
 @Singleton
-public class Layouter implements Tickable {
+public class Layouter implements Tickable, ILayouter {
 
   private Action completionCallback;
 

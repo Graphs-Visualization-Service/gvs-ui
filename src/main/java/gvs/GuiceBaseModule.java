@@ -12,7 +12,7 @@ import gvs.business.logic.physics.ticker.AreaTickerFactory;
 /**
  * Base module for guice dependecy injection
  * 
- * @author Michi
+ * @author mwieland
  *
  */
 public class GuiceBaseModule extends AbstractModule {

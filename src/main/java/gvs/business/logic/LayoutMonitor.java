@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Singleton;
 
 /**
- * In order to layout graphs in their own threads, it must be ensured that no
- * other data is sent to the layout modul. For this reason the monitor locks the
- * visualization modul until layouting
+ * In order to compute the layout of a graph in its own thread, it must be
+ * ensured that only one graph is layouted at a time. Therefore the monitor
+ * locks the layouting process until its completion.
  * 
  * @author aegli
  *

@@ -15,8 +15,10 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 import gvs.access.Persistor;
+import gvs.business.logic.ILayouter;
 import gvs.business.logic.LayoutMonitor;
 import gvs.business.logic.Layouter;
+import gvs.business.logic.LayouterProvider;
 import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.GraphHolder;
 import gvs.interfaces.Action;
@@ -40,28 +42,39 @@ public class Session implements IGraphSessionController {
   private final List<Graph> graphs;
 
   private final SessionReplayFactory sessionReplayFactory;
-  private final Layouter layouter;
+  private final ILayouter layouter;
   private final Persistor persistor;
   private final LayoutMonitor layoutMonitor;
+
+  private final boolean isTreeSession;
 
   private static final Logger logger = LoggerFactory.getLogger(Session.class);
 
   @Inject
   public Session(GraphHolder graphHolder, Persistor persistor,
-      Layouter layouter, LayoutMonitor layoutMonitor,
-      SessionReplayFactory replayFactory, @Assisted long sessionId,
-      @Assisted String sessionName) {
+      LayoutMonitor layoutMonitor, SessionReplayFactory replayFactory,
+      LayouterProvider layouterProvider, @Assisted long sessionId,
+      @Assisted String sessionName, @Assisted boolean isTreeSession) {
 
     logger.info("Instantiating new graph session.");
     this.sessionReplayFactory = replayFactory;
     this.persistor = persistor;
-    this.layouter = layouter;
+    this.isTreeSession = isTreeSession;
+    if (isTreeSession) {
+      this.layouter = layouterProvider.createTreeLayouter();
+    } else {
+      this.layouter = layouterProvider.createGraphLayouter();
+    }
     this.layoutMonitor = layoutMonitor;
 
     this.id = sessionId;
     this.sessionName = sessionName;
     this.graphHolder = graphHolder;
     this.graphs = new ArrayList<>();
+  }
+
+  public boolean isTreeSession() {
+    return isTreeSession;
   }
 
   /**
@@ -86,26 +99,37 @@ public class Session implements IGraphSessionController {
     graphs.add(graph);
   }
 
+  public void layoutWholeSession(Action callback) {
+    if (isTreeSession) {
+      graphs.forEach(t -> layouter.layoutGraph(t, false, callback));
+    }
+    // TODO: do we want this for graphs?
+  }
+
   @Override
   public void layoutCurrentGraph(Action callback) {
-
     Graph currentGraph = graphHolder.getCurrentGraph();
 
     if (currentGraph.isLayoutable()) {
-      try {
-        layoutMonitor.lock();
+      if (isTreeSession) {
+        layouter.layoutGraph(currentGraph, false, callback);
+      } else {
+        try {
+          layoutMonitor.lock();
+          logger.info("Got layout monitor");
 
-        currentGraph.getVertices().forEach(v -> {
-          v.setStable(false);
-        });
+          currentGraph.getVertices().forEach(v -> {
+            v.setStable(false);
+          });
 
-        boolean useSeededRandom = false;
-        layouter.layoutGraph(currentGraph, useSeededRandom, callback);
+          boolean useSeededRandom = false;
+          layouter.layoutGraph(currentGraph, useSeededRandom, callback);
 
-      } catch (InterruptedException e) {
-        logger.warn("Unable to get layout monitor", e);
-      } finally {
-        layoutMonitor.unlock();
+        } catch (InterruptedException e) {
+          logger.warn("Unable to get layout monitor", e);
+        } finally {
+          layoutMonitor.unlock();
+        }
       }
     } else if (callback != null) {
       callback.execute();
@@ -189,17 +213,21 @@ public class Session implements IGraphSessionController {
 
   @Override
   public void changeCurrentGraphToNext() {
-    int nextGraphId = graphHolder.getCurrentGraph().getId() + 1;
+    Graph currentGraph = graphHolder.getCurrentGraph();
+    int nextGraphId = currentGraph.getId() + 1;
     if (validIndex(nextGraphId)) {
       boolean hasNewVerticesToLayout = false;
       Graph nextGraph = getGraphs().get(nextGraphId - 1);
-      hasNewVerticesToLayout = takeOverPreviousVertexPositions(
-          graphHolder.getCurrentGraph(), nextGraph);
-      graphHolder.setCurrentGraph(nextGraph);
 
-      if (hasNewVerticesToLayout) {
-        layoutCurrentGraph(null);
+      if (!isTreeSession) {
+        hasNewVerticesToLayout = takeOverPreviousVertexPositions(
+            graphHolder.getCurrentGraph(), nextGraph);
+        if (hasNewVerticesToLayout) {
+          layoutCurrentGraph(null);
+        }
       }
+      
+      graphHolder.setCurrentGraph(nextGraph);
     }
   }
 
@@ -210,13 +238,15 @@ public class Session implements IGraphSessionController {
       boolean hasNewVerticesToLayout = false;
       Graph previousGraph = getGraphs().get(prevGraphId - 1);
 
-      hasNewVerticesToLayout = takeOverPreviousVertexPositions(
-          graphHolder.getCurrentGraph(), previousGraph);
-      graphHolder.setCurrentGraph(previousGraph);
-
-      if (hasNewVerticesToLayout) {
-        layoutCurrentGraph(null);
+      if (!isTreeSession) {
+        hasNewVerticesToLayout = takeOverPreviousVertexPositions(
+            graphHolder.getCurrentGraph(), previousGraph);
+        if (hasNewVerticesToLayout) {
+          layoutCurrentGraph(null);
+        }
       }
+      
+      graphHolder.setCurrentGraph(previousGraph);
     }
   }
 

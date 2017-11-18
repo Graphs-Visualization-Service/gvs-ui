@@ -209,7 +209,7 @@ public class Session implements IGraphSessionController {
     if (validIndex(prevGraphId)) {
       boolean hasNewVerticesToLayout = false;
       Graph previousGraph = getGraphs().get(prevGraphId - 1);
-      
+
       hasNewVerticesToLayout = takeOverPreviousVertexPositions(
           graphHolder.getCurrentGraph(), previousGraph);
       graphHolder.setCurrentGraph(previousGraph);
@@ -255,6 +255,8 @@ public class Session implements IGraphSessionController {
    *          source graph
    * @param targetGraph
    *          target graph
+   * @return returns false, if none of the vertices need their coordinates
+   *         recalculated, otherwise returns true
    */
   private boolean takeOverPreviousVertexPositions(Graph sourceGraph,
       Graph targetGraph) {

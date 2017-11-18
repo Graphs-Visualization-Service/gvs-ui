@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -48,7 +49,6 @@ public class ModelBuilder {
 
   // Visualization-Service
   private ApplicationController applicationController;
-  private Configuration typs = null;
 
   // Generally
   private static final String ATTRIBUTEID = "Id";
@@ -61,7 +61,6 @@ public class ModelBuilder {
 
   // Graph
   private static final String GRAPH = "Graph";
-  private static final String MAXLABELLENGTH = "MaxLabelLength";
   private static final String VERTIZES = "Vertizes";
   private static final String RELATIVVERTEX = "RelativVertex";
   private static final String XPOS = "XPos";
@@ -75,7 +74,6 @@ public class ModelBuilder {
   // Tree
   private static final String TREE = "Tree";
   private static final String NODES = "Nodes";
-  private static final String TREEROOTID = "TreeRootId";
   private static final String RIGTHCHILD = "Rigthchild";
   private static final String LEFTCHILD = "Leftchild";
 
@@ -89,7 +87,6 @@ public class ModelBuilder {
   @Inject
   public ModelBuilder(ApplicationController appController) {
     this.applicationController = appController;
-    typs = Configuration.getInstance();
   }
 
   /**
@@ -167,13 +164,38 @@ public class ModelBuilder {
     long sessionId = Long.parseLong(eTree.attributeValue(ATTRIBUTEID));
     String sessionName = eTree.element(LABEL).getText();
 
-    // build vertices
+    // uses a map for easy access to vertices over their id
+    Map<Long, IVertex> vertexMap = buildTreeVertices(eVertices);
+    Collection<IVertex> vertices = resolveChildReferences(vertexMap);
+    findRoots(vertices);
+
+    Collection<IEdge> edges = buildTreeEdges(vertices);
+
+    Graph tree = new Graph(vertices, edges);
+    logger.info("Finished build tree from XML.");
+    applicationController.addGraphToSession(tree, sessionId, sessionName, true);
+  }
+
+  private Map<Long, IVertex> buildTreeVertices(Element eVertices) {
     Map<Long, IVertex> vertexMap = new HashMap<>();
     eVertices.elements().forEach(e -> {
       TreeVertex newVertex = buildTreeVertex(e);
       vertexMap.put(newVertex.getId(), newVertex);
     });
+    return vertexMap;
+  }
 
+  private void findRoots(Collection<IVertex> vertices) {
+    List<TreeVertex> treeVertices = vertices.stream().map(v -> (TreeVertex) v)
+        .collect(Collectors.toList());
+    List<TreeVertex> children = new ArrayList<>();
+    treeVertices.forEach(v -> children.addAll(v.getChildren()));
+    treeVertices.stream().filter(v -> !children.contains(v))
+        .forEach(v -> v.setRoot(true));
+  }
+
+  private Collection<IVertex> resolveChildReferences(
+      Map<Long, IVertex> vertexMap) {
     Collection<IVertex> vertices = vertexMap.values();
 
     // set child vertices
@@ -186,12 +208,7 @@ public class ModelBuilder {
         }
       });
     });
-
-    Collection<IEdge> edges = buildTreeEdges(vertices);
-
-    Graph tree = new Graph(vertices, edges);
-    logger.info("Finished build tree from XML.");
-    applicationController.addGraphToSession(tree, sessionId, sessionName, true);
+    return vertices;
   }
 
   private Collection<IEdge> buildTreeEdges(Collection<IVertex> vertices) {

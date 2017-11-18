@@ -39,9 +39,15 @@ public class TreeLayouter implements ILayouter {
     logger.info("Layouting tree...");
     currentGraph.getVertices().forEach(v -> vertices.add((TreeVertex) v));
     sortByDepth(-1, vertices.get(0));
-    if (!vertices.isEmpty()) {
+    while (!vertices.isEmpty()) {
       logger.info("Multiple roots detected.");
-      // TODO
+      if (vertices.get(0).isRoot()) {
+        sortByDepth(-1, vertices.get(0));
+      } else {
+        //moves children to the end of the list
+        TreeVertex child = vertices.remove(0);
+        vertices.add(child);
+      }
     }
     calculateCoordinates();
     logger.info("Finished layouting tree.");

@@ -19,6 +19,7 @@ public class TreeVertex extends Observable implements IVertex {
   private NodeStyle style;
   private double xPosition;
   private double yPosition;
+  private boolean isRoot;
   private boolean isUserPositioned;
 
   private final List<Long> childIds;
@@ -131,6 +132,14 @@ public class TreeVertex extends Observable implements IVertex {
 
   public List<TreeVertex> getChildren() {
     return children;
+  }
+
+  public boolean isRoot() {
+    return isRoot;
+  }
+
+  public void setRoot(boolean isRoot) {
+    this.isRoot = isRoot;
   }
 
   public void addChildId(long childId) {

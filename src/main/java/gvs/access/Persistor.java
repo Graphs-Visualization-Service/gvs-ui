@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -40,9 +41,9 @@ import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome.Glyph;
 
 /**
- * Loads and saves sessions. While loading, it translates XML into
- * business POJOs. While saving, it reverses the process and saves an XML file
- * at the user designated path.
+ * Loads and saves sessions. While loading, it translates XML into business
+ * POJOs. While saving, it reverses the process and saves an XML file at the
+ * user designated path.
  * 
  * @author mkoller
  */
@@ -318,27 +319,11 @@ public class Persistor {
     graphElements.elements().forEach(graphElement -> {
 
       if (graphElement.getName().equals(TREEMODEL)) {
-        // build vertices
-        Element vertexElements = graphElement.element(NODES);
-        Map<Long, IVertex> vertexMap = new HashMap<>();
-        vertexElements.elements().forEach(e -> {
-          TreeVertex newVertex = loadTreeVertex(e);
-          vertexMap.put(newVertex.getId(), newVertex);
-        });
+        // uses a map for easy access to vertices over their id
+        Map<Long, IVertex> vertexMap = buildTreeVertices(graphElement);
 
-        Collection<IVertex> vertices = vertexMap.values();
-
-        // set child vertices
-        vertices.forEach(v -> {
-          TreeVertex current = (TreeVertex) v;
-          current.getChildIds().forEach(id -> {
-            TreeVertex child = (TreeVertex) vertexMap.get(id);
-            if (child != null) {
-              current.addChild(child);
-            }
-          });
-        });
-
+        Collection<IVertex> vertices = resolveChildReferences(vertexMap);
+        findRoots(vertices);
         Collection<IEdge> edges = buildTreeEdges(vertices);
 
         // TODO should we set this graph id?
@@ -350,6 +335,42 @@ public class Persistor {
     });
     session.layoutWholeSession(null);
     return session;
+  }
+
+  private void findRoots(Collection<IVertex> vertices) {
+    List<TreeVertex> treeVertices = vertices.stream().map(v -> (TreeVertex) v)
+        .collect(Collectors.toList());
+    List<TreeVertex> children = new ArrayList<>();
+    treeVertices.forEach(v -> children.addAll(v.getChildren()));
+    treeVertices.stream().filter(v -> !children.contains(v))
+        .forEach(v -> v.setRoot(true));
+  }
+
+  private Collection<IVertex> resolveChildReferences(
+      Map<Long, IVertex> vertexMap) {
+    Collection<IVertex> vertices = vertexMap.values();
+
+    // set child vertices
+    vertices.forEach(v -> {
+      TreeVertex current = (TreeVertex) v;
+      current.getChildIds().forEach(id -> {
+        TreeVertex child = (TreeVertex) vertexMap.get(id);
+        if (child != null) {
+          current.addChild(child);
+        }
+      });
+    });
+    return vertices;
+  }
+
+  private Map<Long, IVertex> buildTreeVertices(Element graphElement) {
+    Element vertexElements = graphElement.element(NODES);
+    Map<Long, IVertex> vertexMap = new HashMap<>();
+    vertexElements.elements().forEach(e -> {
+      TreeVertex newVertex = loadTreeVertex(e);
+      vertexMap.put(newVertex.getId(), newVertex);
+    });
+    return vertexMap;
   }
 
   private Collection<IEdge> buildTreeEdges(Collection<IVertex> vertices) {

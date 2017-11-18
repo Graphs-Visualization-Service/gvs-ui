@@ -1,13 +1,19 @@
 .root {
 	-fx-base: rgb(42.0, 42.0, 42.0);
-	-fx-background: rgb(42.0, 42.0, 42.0);
+	-fx-background: -fx-base;
     	-fx-control-inner-background: rgb(60.0, 60.0, 60.0);
     	-fx-control-inner-background-alt: rgb(223.0, 223.0, 223.0);
-    	
+}
+
+.main-window {
     	-fx-background-image: url("../../../../images/logo.png");
     	-fx-background-position: center;
     	-fx-background-repeat: no-repeat no-repeat;
     	-fx-background-size: 200, 200;
+}
+
+.graph-pane {
+	
 }
 
 .icon-button{

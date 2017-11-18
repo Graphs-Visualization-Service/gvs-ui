@@ -31,7 +31,7 @@
 			<left>
 				<AnchorPane fx:id="leftPanel">
 					<children>
-						<GridPane fx:id="stepButtons" AnchorPane.leftAnchor="5.0"
+						<GridPane AnchorPane.leftAnchor="5.0"
 							AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
 							<columnConstraints>
 								<ColumnConstraints hgrow="SOMETIMES" />
@@ -64,7 +64,7 @@
 			<center>
 				<AnchorPane>
 					<children>
-						<TextArea prefHeight="80" prefWidth="200.0"
+						<TextArea prefHeight="80" prefWidth="200.0"  fx:id="snapshotDescription" 
 							AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0"
 							AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
 					</children>
@@ -81,8 +81,7 @@
 							<Button fx:id="autoLayoutBtn" mnemonicParsing="false"
 								onMouseClicked="#autoLayout" styleClass="icon-button" />
 						</HBox>
-						<Slider fx:id="speedSlider" majorTickUnit="500.0" max="2000.0"
-							minorTickCount="10" prefWidth="200.0" showTickLabels="true"
+						<Slider fx:id="speedSlider" prefWidth="200.0" showTickLabels="true"
 							showTickMarks="true" snapToTicks="true" AnchorPane.bottomAnchor="5.0"
 							AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
 					</children>

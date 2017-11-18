@@ -16,8 +16,10 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
+import javafx.util.StringConverter;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
@@ -58,13 +60,21 @@ public class SessionView {
   @FXML
   private AnchorPane leftPanel;
 
+  @FXML
+  private TextArea snapshotDescription;
+
   private StepProgressBar stepProgressBar;
 
   private final GraphViewModel graphViewModel;
   private final SessionViewModel sessionViewModel;
 
   private static final int MAX_SCALE_FACTOR = 3;
-  private static final int DEFAULT_REPLAY_TIMEOUT = 1000;
+
+  private static final int ONE_SECOND_MS = 1000;
+
+  private static final double SLIDER_MIN = 0.0;
+  private static final double SLIDER_DEFAULT = 1.0;
+  private static final double SLIDER_MAX = 2.0;
 
   private static final Logger logger = LoggerFactory
       .getLogger(SessionView.class);
@@ -91,6 +101,8 @@ public class SessionView {
     graphPane.setMaxScaleX(MAX_SCALE_FACTOR);
     graphPane.setMaxScaleY(MAX_SCALE_FACTOR);
     graphPane.setAutoRescale(true);
+
+    snapshotDescription.setPromptText("Snapshot description");
   }
 
   private void initializeStepIndicator() {
@@ -108,7 +120,15 @@ public class SessionView {
   }
 
   private void initializeReplaySlider() {
-    speedSlider.setValue(DEFAULT_REPLAY_TIMEOUT);
+    speedSlider.setMin(SLIDER_MIN);
+    speedSlider.setMax(SLIDER_MAX);
+    speedSlider.setValue(SLIDER_DEFAULT);
+    speedSlider.setMinorTickCount(0);
+    speedSlider.setMajorTickUnit(0.5);
+    speedSlider.setSnapToTicks(true);
+    speedSlider.setShowTickMarks(true);
+    speedSlider.setShowTickLabels(true);
+    speedSlider.setLabelFormatter(new ReplaySliderStringConverter());
   }
 
   private void initializeButtons() {
@@ -195,7 +215,8 @@ public class SessionView {
     if (sessionViewModel.getIsReplayingProperty().get()) {
       sessionViewModel.pauseReplay();
     } else {
-      long sliderDelay = (long) speedSlider.getValue();
+      long sliderDelay = (long) ((SLIDER_MAX + 0.01 - speedSlider.getValue())
+          * ONE_SECOND_MS);
       sessionViewModel.replayGraph(sliderDelay);
     }
   }

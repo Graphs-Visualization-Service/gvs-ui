@@ -14,11 +14,8 @@ import gvs.util.FontAwesome.Glyph;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
@@ -30,22 +27,10 @@ import jfxtras.labs.scene.layout.ScalableContentPane;
 public class SessionView {
 
   @FXML
-  private GridPane playGrid;
-
-  @FXML
-  private Label stepLabel;
-
-  @FXML
-  private GridPane stepButtons;
-
-  @FXML
-  private TextArea descriptionField;
+  private ScalableContentPane graphPane;
 
   @FXML
   private Button autoLayoutBtn;
-
-  @FXML
-  private ScalableContentPane graphPane;
 
   @FXML
   private Button firstBtn;
@@ -83,6 +68,7 @@ public class SessionView {
   @Inject
   public SessionView(GraphViewModel graphViewModel,
       SessionViewModel sessionViewModel) {
+
     logger.info("Initiating SessionView...");
     this.graphViewModel = graphViewModel;
     this.sessionViewModel = sessionViewModel;
@@ -102,10 +88,10 @@ public class SessionView {
   private void initializeStepIndicator() {
     stepProgressBar = new StepProgressBar();
     leftPanel.getChildren().add(stepProgressBar);
-    int margin = 5;
-    AnchorPane.setBottomAnchor(stepProgressBar, (double) margin);
-    AnchorPane.setLeftAnchor(stepProgressBar, (double) margin);
-    AnchorPane.setRightAnchor(stepProgressBar, (double) margin);
+    double margin = 5.0;
+    AnchorPane.setBottomAnchor(stepProgressBar, margin);
+    AnchorPane.setLeftAnchor(stepProgressBar, margin);
+    AnchorPane.setRightAnchor(stepProgressBar, margin);
 
     stepProgressBar.totalStepProperty()
         .bind(Bindings.convert(sessionViewModel.totalGraphCountProperty()));
@@ -132,13 +118,13 @@ public class SessionView {
     prevBtn.disableProperty()
         .bindBidirectional(sessionViewModel.getPrevBtnDisableProperty());
 
-    autoLayoutBtn.disableProperty()
-        .bindBidirectional(sessionViewModel.getAutoLayoutBtnDisableProperty());
-
     replayBtn.disableProperty()
         .bindBidirectional(sessionViewModel.getReplayBtnDisableProperty());
     cancelReplayBtn.disableProperty().bindBidirectional(
         sessionViewModel.getCancelReplayBtnDisableProperty());
+
+    autoLayoutBtn.disableProperty()
+        .bindBidirectional(sessionViewModel.getAutoLayoutBtnDisableProperty());
   }
 
   private void setButtonIcons() {

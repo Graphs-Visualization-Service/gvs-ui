@@ -43,7 +43,7 @@ public class AppViewModel implements Observer {
   private final SessionHolder appModel;
   private final ApplicationController appController;
 
-  private static final String PROMT_MESSAGE = "no active session";
+  private static final String PROMT_MESSAGE = "No active session";
   private static final Logger logger = LoggerFactory
       .getLogger(AppViewModel.class);
 

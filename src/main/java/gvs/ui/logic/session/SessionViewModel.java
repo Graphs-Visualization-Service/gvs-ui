@@ -169,7 +169,7 @@ public class SessionViewModel implements Observer {
   }
 
   public void autoLayout() {
-    if (sessionHolder.getCurrentSession().isTreeSession()) {
+    if (!sessionHolder.getCurrentSession().isTreeSession()) {
       logger.info("Auto-layouting the current graph model...");
     disableAllButtons(true);
     disableLayoutButton(true); // overwrite explicit!

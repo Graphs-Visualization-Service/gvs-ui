@@ -3,22 +3,32 @@ package gvs.business.model.graph;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class NodeStyle {
+
   public enum GVSColor {
-    YELLOW("yellow"), GREEN("green"), LIGHTGREEN(
-        "lightGreen"), DARKGREEN("darkGreen"), BLUE(
-            "blue"), DARKBLUE("darkBlue"), LIGHTBLUE("lightBlue"), RED(
-                "red"), LIGHTRED("lightRed"), BLACK(
-                    "black"), GRAY("gray"), LIGHTGRAY("lightGray"), STANDARD("standard");
+    STANDARD("standard"), RED("red"), LIGHTRED("lightred"), GREEN(
+        "green"), LIGHTGREEN("lightgreen"), DARKGREEN("darkgreen"), BLUE(
+            "blue"), LIGHTBLUE("lightblue"), DARKBLUE("darkblue"), YELLOW(
+                "yellow"), ORANGE("orange"), BROWN(
+                    "brown"), BLACK("black"), GRAY("gray"), LIGHTGRAY(
+                        "lightgray"), LIGHTVIOLET("violet"), LIGHTPINK(
+                            "pink"), LIGHTTURQOISE("turqoise");
 
     private String color;
 
     GVSColor(String color) {
-      this.color = color;
+      this.color = color.toLowerCase();
     }
 
     public String getColor() {
       return color;
+    }
+
+    public static GVSColor byName(String colorName) {
+      return valueOf(colorName.toUpperCase());
     }
   }
 
@@ -27,24 +37,32 @@ public class NodeStyle {
     private String style;
 
     GVSLineStyle(String style) {
-      this.style = style;
+      this.style = style.toLowerCase();
     }
 
     public String getStyle() {
       return style;
     }
+
+    public static GVSLineStyle byName(String styleName) {
+      return valueOf(styleName.toUpperCase());
+    }
   }
 
   public enum GVSLineThickness {
-    STANDARD("standard"),BOLD("bold"), SLIGHT("slight"), FAT("fat");
+    STANDARD("standard"), BOLD("bold"), SLIGHT("slight"), FAT("fat");
     private String thickness;
 
     GVSLineThickness(String thickness) {
-      this.thickness = thickness;
+      this.thickness = thickness.toLowerCase();
     }
 
     public String getThickness() {
       return thickness;
+    }
+
+    public static GVSLineThickness byName(String ticknessName) {
+      return valueOf(ticknessName.toUpperCase());
     }
   }
 
@@ -53,6 +71,8 @@ public class NodeStyle {
   private GVSLineThickness lineThickness;
   private GVSColor fillColor;
   private Collection<GVSColor> darkColors;
+
+  private static final Logger logger = LoggerFactory.getLogger(NodeStyle.class);
 
   public NodeStyle(GVSColor lineColor, GVSLineStyle lineStyle,
       GVSLineThickness lineThickness, GVSColor fillColor) {
@@ -74,25 +94,32 @@ public class NodeStyle {
   public NodeStyle(String linecolor, String linestyle, String lineThickness,
       String fillColor) {
     try {
-      this.lineColor = GVSColor.valueOf(linecolor.toUpperCase());
+      this.lineColor = GVSColor.byName(linecolor);
     } catch (Exception e) {
+      logger.info("Linecolor {} not supported. Use standard", linecolor);
       this.lineColor = GVSColor.STANDARD;
     }
     try {
-      this.fillColor = GVSColor.valueOf(fillColor.toUpperCase());
+      this.fillColor = GVSColor.byName(fillColor);
     } catch (Exception e) {
+      logger.info("Fillcolor {} not supported. Use standard", fillColor);
       this.fillColor = GVSColor.STANDARD;
     }
     try {
-      this.lineStyle = GVSLineStyle.valueOf(linestyle.toUpperCase());
+      this.lineStyle = GVSLineStyle.byName(linestyle);
     } catch (Exception e) {
+      logger.info("Linestyle {} not supported. Use standard", linestyle);
       this.lineStyle = GVSLineStyle.THROUGH;
     }
     try {
-      this.lineThickness = GVSLineThickness.valueOf(lineThickness.toUpperCase());
+      this.lineThickness = GVSLineThickness.byName(lineThickness);
+      System.out.println(lineThickness);
     } catch (Exception e) {
+      logger.info("Line Tickness {} not supported. Use standard",
+          lineThickness);
       this.lineThickness = GVSLineThickness.STANDARD;
     }
+
     fillDarkColors();
   }
 

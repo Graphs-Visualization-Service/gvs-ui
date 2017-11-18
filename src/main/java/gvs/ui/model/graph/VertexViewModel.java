@@ -35,7 +35,6 @@ public class VertexViewModel implements Observer {
 
   private static final Logger logger = LoggerFactory
       .getLogger(VertexViewModel.class);
-  private static final String CSS_NODE = "node";
 
   /**
    * Create a new DefaultVertexViewModel with the corresponding Vertex.
@@ -67,23 +66,22 @@ public class VertexViewModel implements Observer {
 
   private void setStyles() {
     NodeStyle style = vertex.getStyle();
-    ellipse.getStyleClass().add(CSS_NODE);
-    ellipse.getStyleClass().add("line-" + style.getLineColor().getColor());
-    ellipse.getStyleClass().add(style.getLineStyle().getStyle() + "-"
-        + style.getLineThickness().getThickness());
-    ellipse.getStyleClass().add("fill-" + style.getFillColor().getColor());
+    
+    String fillColor = style.getFillColor().getColor();
+    String lineColor = style.getLineColor().getColor();
+    String lineStyle = style.getLineStyle().getStyle();
+    String lineThickness = style.getLineThickness().getThickness();
+    
+    label.getStyleClass().add("vertex");
+    
+    ellipse.getStyleClass().add("fill-" + fillColor);
+    ellipse.getStyleClass().add("line-" + lineColor);
+    ellipse.getStyleClass().add(lineStyle + "-" + lineThickness);
 
-    // TODO: find nicer method, maybe use getContrastColor()
     if (style.getDarkColors().contains(style.getFillColor())) {
       label.textFillProperty().set(Color.WHITE);
     }
   }
-
-  // private static Color getContrastColor(Color color) {
-  // double y = (299 * color.getRed() + 587 * color.getGreen() + 114 *
-  // color.getBlue()) / 1000;
-  // return y >= 128 ? Color.BLACK : Color.WHITE;
-  // }
 
   /**
    * Inform the business logic {@link DefaultVertex} about changes, made in the
@@ -153,7 +151,7 @@ public class VertexViewModel implements Observer {
     logger.info("Drawing VertexViewModel.");
     p.getContentPane().getChildren().addAll(ellipse, label);
 
-    // TODO describe hack
+    // this hack forces the label to compute its height and width
     label.applyCss();
     double xRadius = label.prefWidth(-1) / 2;
     double yRadius = label.prefHeight(-1) / 2;

@@ -1,171 +1,149 @@
-Label.edge-label {
-	-fx-font: 5 arial;
-	-fx-background-color: white;
-	-fx-background-insets: 1;
+/*-- LABEL FONT --*/
+.edge-label {
+	-fx-font-size: 6.0px;
+    -fx-font-family: "Verdana";	
+}
+.vertex {
+	-fx-font-size: 8.0px;
+    -fx-font-family: "Verdana";	
+    	-fx-padding: 3.0px;
 }
 
-.node {
-	-fx-background-radius: 10 10 10 10;
-    -fx-border-radius: 10 10 10 10;
-}
-
-#graphPane {
-	-fx-background-color: rgba(255,255,255,0.9);
-}
-
-/*-- LINECOLOR --*/
-.line-yellow {
-	-fx-stroke: rgb(255,255,0);
-}
-.line-green {
-	-fx-stroke: rgb(0,255,0);
-}
-.line-lightGreen {
-	-fx-stroke: rgb(155,255,155);
-}
-.line-darkGreen {
-	-fx-stroke: rgb(0,100,0);
-}
-.line-blue {
-	-fx-stroke: rgb(0,0,255);
-}
-.line-darkBlue {
-	-fx-stroke: rgb(0,0,80);
-}
-.line-lightBlue {
-	-fx-stroke: rgb(175,215,230);
+/*-- EDGE LINE COLOR / VERTEX BORDER COLOR --*/
+.line-standard {
+	-fx-stroke: rgb(0.0,0.0,0.0);
 }
 .line-red {
-	-fx-stroke: rgb(255,0,0);
+	-fx-stroke: rgb(229.0, 80.0,76.0);
 }
-.line-lightRed {
-	-fx-stroke: rgb(255,155,155);
+.line-lightred {
+	-fx-stroke: rgb(229.0, 80.0,76.0);
+}
+.line-green {
+	-fx-stroke: rgb(143.0,198.0,94.0);
+}
+.line-lightgreen {
+	-fx-stroke: rgb(143.0,198.0,94.0);
+}
+.line-darkgreen {
+	-fx-stroke: rgb(143.0,198.0,94.0);
+}
+.line-blue {
+	-fx-stroke: rgb(55.0,179.0,252.0);
+}
+.line-lightblue {
+	-fx-stroke: rgb(55.0,179.0,252.0);
+}
+.line-darkblue {
+	-fx-stroke: rgb(55.0,179.0,252.0);
+}
+.line-yellow {
+	-fx-stroke: rgb(229.0,198.0,76.0);
+}
+.line-orange {
+	-fx-stroke: rgb(236.0,162.0,57.0);
 }
 .line-black {
-	-fx-stroke: rgb(0,0,0);
+	-fx-stroke: rgb(0.0,0.0,0.0);
 }
 .line-gray {
-	-fx-stroke: rgb(130,130,130);
+	-fx-stroke: rgb(223.0,223.0,223.0);
 }
-.line-lightGray {
-	-fx-stroke: rgb(215,215,215);
+.line-lightgray {
+	-fx-stroke: rgb(223.0,223.0,223.0);
 }
-.line-standard {
-	-fx-stroke: rgb(170,170,170);
-}
-/*-- FILLCOLOR --*/
-.fill-yellow {
-	-fx-fill: rgb(255,255,0);
-}
-.fill-green {
-	-fx-fill: rgb(0,255,0);
-}
-.fill-lightGreen {
-	-fx-fill: rgb(155,255,155);
-}
-.fill-darkGreen {
-	-fx-fill: rgb(0,100,0);
-}
-.fill-blue {
-	-fx-fill: rgb(0,0,255);
-}
-.fill-darkBlue {
-	-fx-fill: rgb(0,0,80);
-}
-.fill-lightBlue {
-	-fx-fill: rgb(175,215,230);
+
+/*-- VERTEX FILL COLOR --*/
+fill-standard {
+	-fx-fill: rgb(0.0,0.0,0.0);
 }
 .fill-red {
-	-fx-fill: rgb(255,0,0);
+	-fx-fill: rgb(229.0, 80.0,76.0);
 }
-.fill-lightRed {
-	-fx-fill: rgb(255,155,155);
+.fill-lightred {
+	-fx-fill: rgb(229.0, 80.0,76.0);
+}
+.fill-green {
+	-fx-fill: rgb(143.0,198.0,94.0);
+}
+.fill-lightgreen {
+	-fx-fill: rgb(143.0,198.0,94.0);
+}
+.fill-darkgreen {
+	-fx-fill: rgb(143.0,198.0,94.0);
+}
+.fill-blue {
+	-fx-fill: rgb(55.0,179.0,252.0);
+}
+.fill-lightblue {
+	-fx-fill: rgb(55.0,179.0,252.0);
+}
+.fill-darkblue {
+	-fx-fill: rgb(55.0,179.0,252.0);
+}
+.fill-yellow {
+	-fx-fill: rgb(229.0,198.0,76.0);
+}
+.fill-orange {
+	-fx-fill: rgb(236.0,162.0,57.0);
 }
 .fill-black {
-	-fx-fill: rgb(0,0,0);
+	-fx-fill: rgb(0.0,0.0,0.0);
 }
 .fill-gray {
-	-fx-fill: rgb(130,130,130);
+	-fx-fill: rgb(223.0,223.0,223.0);
 }
-.fill-lightGray {
-	-fx-fill: rgb(215,215,215);
+.fill-lightgray {
+	-fx-fill: rgb(223.0,223.0,223.0);
 }
-.fill-standard {
-	-fx-fill: rgb(170,170,170);
-}
-/*-- BORDERCOLOR --*/
-.line-yellow {
-	-fx-border-color: rgb(255,255,0);
-}
-.line-green {
-	-fx-border-color: rgb(0,255,0);
-}
-.line-lightGreen {
-	-fx-border-color: rgb(155,255,155);
-}
-.line-darkGreen {
-	-fx-border-color: rgb(0,100,0);
-}
-.line-blue {
-	-fx-border-color: rgb(0,0,255);
-}
-.line-darkBlue {
-	-fx-border-color: rgb(0,0,80);
-}
-.line-lightBlue {
-	-fx-border-color: rgb(175,215,230);
-}
-.line-red {
-	-fx-border-color: rgb(255,0,0);
-}
-.line-lightRed {
-	-fx-border-color: rgb(255,155,155);
-}
-.line-black {
-	-fx-border-color: rgb(0,0,0);
-}
-.line-gray {
-	-fx-border-color: rgb(130,130,130);
-}
-.line-lightGray {
-	-fx-border-color: rgb(215,215,215);
-}
-.line-standard {
-	-fx-border-color: rgb(170,170,170);
-}
+
 
 /*-- LINESTYLES & THICKNESS--*/
 /* cannot be in seperate classes, because thickness overrides dash-array */
 .dotted-standard{
-	-fx-stroke-dash-array: 1 5;
-	-fx-stroke-width: 1;
-}
-.dotted-bold{
-	-fx-stroke-dash-array: 1 5;
-	-fx-stroke-width: 3;
-}
-.dotted-fat{
-	-fx-stroke-dash-array: 1 5;
-	-fx-stroke-width: 6;
+	-fx-stroke-dash-array: 1.0 5.0;
+	-fx-stroke-width: 1.0;
 }
 .dotted-slight{
-	-fx-stroke-dash-array: 1 5;
+	-fx-stroke-dash-array: 1.0 5.0;
 	-fx-stroke-width: 0.5;
 }
-
+.dotted-bold{
+	-fx-stroke-dash-array: 1.0 5.0;
+	-fx-stroke-width: 2.0;
+}
+.dotted-fat{
+	-fx-stroke-dash-array: 1.0 5.0;
+	-fx-stroke-width: 3.0;
+}
 .dashed-standard{
-	-fx-stroke-dash-array: 8 2;
-	-fx-stroke-width: 1;
-}
-.dashed-bold{
-	-fx-stroke-dash-array: 8 2;
-	-fx-stroke-width: 3;
-}
-.dashed-fat{
-	-fx-stroke-dash-array: 8 2;
-	-fx-stroke-width: 6;
+	-fx-stroke-dash-array: 4.0 2.0;
+	-fx-stroke-width: 1.0;
 }
 .dashed-slight{
-	-fx-stroke-dash-array: 8 2;
+	-fx-stroke-dash-array: 4.0 2.0;
 	-fx-stroke-width: 0.5;
 }
+.dashed-bold{
+	-fx-stroke-dash-array: 4.0 2.0;
+	-fx-stroke-width: 2.0;
+}
+.dashed-fat{
+	-fx-stroke-dash-array: 4.0 2.0;
+	-fx-stroke-width: 3.0;
+}
+
+/*-- ARROWHEAD THICKNESS--*/
+thickness-standard {
+	-fx-stroke-width: 1.0;
+}
+thickness-slight {
+	-fx-stroke-width: 0.5;
+}
+thickness-bold {
+	-fx-stroke-width: 2.0;
+}
+thickness-fat {
+	-fx-stroke-width: 3.0;
+}
+

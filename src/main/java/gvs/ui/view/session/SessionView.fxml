@@ -10,23 +10,28 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import jfxtras.labs.scene.layout.ScalableContentPane?>
+<?import javafx.scene.layout.HBox?>
 
 <BorderPane stylesheets="@SessionView.css" xmlns="http://javafx.com/javafx/8.0.111"
 	xmlns:fx="http://javafx.com/fxml/1" fx:controller="gvs.ui.view.session.SessionView">
 
 	<center>
-		<ScalableContentPane fx:id="graphPane" />
+		<ScalableContentPane fx:id="graphPane">
+			<padding>
+				<Insets top="20" right="10" bottom="20" left="10" />
+			</padding>
+		</ScalableContentPane>
 	</center>
 
 	<bottom>
-		<BorderPane>
+		<BorderPane styleClass="toolbar">
 			<padding>
-				<Insets top="10" />
+				<Insets top="10" right="10" bottom="10" left="10" />
 			</padding>
 			<left>
 				<AnchorPane fx:id="leftPanel">
 					<children>
-						<GridPane fx:id="stepButtons" AnchorPane.leftAnchor="5.0"
+						<GridPane AnchorPane.leftAnchor="5.0"
 							AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
 							<columnConstraints>
 								<ColumnConstraints hgrow="SOMETIMES" />
@@ -41,16 +46,16 @@
 							<children>
 								<Button GridPane.halignment="CENTER" fx:id="firstBtn"
 									mnemonicParsing="false" onMouseClicked="#stepToFirst"
-									GridPane.columnIndex="0" />
+									GridPane.columnIndex="0" styleClass="icon-button" />
 								<Button GridPane.halignment="CENTER" fx:id="prevBtn"
 									mnemonicParsing="false" onMouseClicked="#stepBackward"
-									GridPane.columnIndex="1" />
+									GridPane.columnIndex="1" styleClass="icon-button" />
 								<Button GridPane.halignment="CENTER" fx:id="nextBtn"
 									mnemonicParsing="false" onMouseClicked="#stepForward"
-									GridPane.columnIndex="2" />
+									GridPane.columnIndex="2" styleClass="icon-button" />
 								<Button GridPane.halignment="CENTER" fx:id="lastBtn"
 									mnemonicParsing="false" onMouseClicked="#stepToLast"
-									GridPane.columnIndex="3" />
+									GridPane.columnIndex="3" styleClass="icon-button" />
 							</children>
 						</GridPane>
 					</children>
@@ -59,7 +64,7 @@
 			<center>
 				<AnchorPane>
 					<children>
-						<TextArea prefHeight="80" prefWidth="200.0"
+						<TextArea prefHeight="80" prefWidth="200.0"  fx:id="snapshotDescription" 
 							AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0"
 							AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
 					</children>
@@ -68,34 +73,15 @@
 			<right>
 				<AnchorPane>
 					<children>
-						<GridPane fx:id="playGrid" AnchorPane.leftAnchor="5.0"
-							AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
-							<columnConstraints>
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
-									prefWidth="50." />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
-									prefWidth="50.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
-									prefWidth="100.0" />
-							</columnConstraints>
-							<rowConstraints>
-								<RowConstraints minHeight="10.0" prefHeight="30.0"
-									vgrow="SOMETIMES" />
-							</rowConstraints>
-							<children>
-								<Button fx:id="replayBtn" mnemonicParsing="false"
-									onMouseClicked="#replayGraph" GridPane.columnIndex="0"
-									GridPane.halignment="CENTER" />
-								<Button fx:id="cancelReplayBtn" mnemonicParsing="false"
-									onMouseClicked="#cancelReplayGraph" GridPane.columnIndex="1"
-									GridPane.halignment="CENTER" />
-								<Button fx:id="autoLayoutBtn" mnemonicParsing="false"
-									onMouseClicked="#autoLayout" text="AutoLayout"
-									GridPane.columnIndex="2" GridPane.halignment="CENTER" />
-							</children>
-						</GridPane>
-						<Slider fx:id="speedSlider" majorTickUnit="500.0" max="2000.0"
-							minorTickCount="10" prefWidth="200.0" showTickLabels="true"
+						<HBox>
+							<Button fx:id="replayBtn" mnemonicParsing="false"
+								onMouseClicked="#replayGraph" styleClass="icon-button" />
+							<Button fx:id="cancelReplayBtn" mnemonicParsing="false"
+								onMouseClicked="#cancelReplayGraph" styleClass="icon-button" />
+							<Button fx:id="autoLayoutBtn" mnemonicParsing="false"
+								onMouseClicked="#autoLayout" styleClass="icon-button" />
+						</HBox>
+						<Slider fx:id="speedSlider" prefWidth="200.0" showTickLabels="true"
 							showTickMarks="true" snapToTicks="true" AnchorPane.bottomAnchor="5.0"
 							AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
 					</children>

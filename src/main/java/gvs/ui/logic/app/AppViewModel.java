@@ -35,15 +35,14 @@ import javafx.collections.ObservableList;
 @Singleton
 public class AppViewModel implements Observer {
 
-  private final BooleanProperty sessionControlVisibilityProperty = new SimpleBooleanProperty();
-  private final StringProperty currentSessionName = new SimpleStringProperty();
-  private final ObservableList<String> sessionNames = FXCollections
-      .observableArrayList();
-  private final Map<String, ISession> controllerMap = new HashMap<>();
+  private final BooleanProperty sessionControlVisibilityProperty;
+  private final StringProperty currentSessionName;
+  private final ObservableList<String> sessionNames;
+  private final Map<String, ISession> controllerMap;
   private final SessionHolder appModel;
   private final ApplicationController appController;
 
-  private static final String PROMT_MESSAGE = "no active session";
+  private static final String PROMT_MESSAGE = "No active session";
   private static final Logger logger = LoggerFactory
       .getLogger(AppViewModel.class);
 
@@ -53,6 +52,11 @@ public class AppViewModel implements Observer {
     // context.init();
     this.appModel = appModel;
     this.appController = appController;
+
+    this.sessionControlVisibilityProperty = new SimpleBooleanProperty();
+    this.currentSessionName = new SimpleStringProperty();
+    this.sessionNames = FXCollections.observableArrayList();
+    this.controllerMap = new HashMap<>();
 
     this.appModel.addObserver(this);
     this.currentSessionName.set(PROMT_MESSAGE);
@@ -143,18 +147,12 @@ public class AppViewModel implements Observer {
     ISession c = controllerMap.get(name);
     if (appModel.getCurrentSession().getSessionName() != name) {
       appController.changeCurrentSession(c);
-      logger.info(String.format("Changing current session to '%s'...", name));
+      logger.info("Changing current session to {}...", name);
     }
   }
 
   private boolean isInvalidSessionName(String name) {
     return name == null || name.isEmpty() || PROMT_MESSAGE.equals(name);
-  }
-
-  public void terminateApplication() {
-    logger.info("Quitting GVS...");
-    Platform.exit();
-    System.exit(0);
   }
 
   public BooleanProperty sessionVisibilityProperty() {

@@ -25,17 +25,23 @@ public class FontAwesome {
    * @return
    */
   public static Label createLabel(Glyph character) {
-    Label l = new Label();
-    l.setFont(loadFontResource());
-    l.setText(String.valueOf(character.getChar()));
-    return l;
+    Label label = new Label();
+    label.setFont(loadFontResource(20));
+    label.setText(String.valueOf(character.getChar()));
+    return label;
+  }
+  
+  public static Label createLabel(Glyph character, int size) {
+    Label label = new Label();
+    label.setFont(loadFontResource(size));
+    label.setText(String.valueOf(character.getChar()));
+    return label;
   }
 
-  private static Font loadFontResource() {
+  private static Font loadFontResource(int size) {
     InputStream is = FontAwesome.class.getClassLoader()
         .getResourceAsStream("fonts/fontawesome-webfont.ttf");
-    final int defaultSize = -1;
-    return Font.loadFont(is, defaultSize);
+    return Font.loadFont(is, size);
   }
 
   /**

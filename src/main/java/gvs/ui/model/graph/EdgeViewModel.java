@@ -92,12 +92,19 @@ public class EdgeViewModel {
    */
   private void setStyles() {
     NodeStyle style = edge.getStyle();
-    edgePath.getStyleClass().add("line-" + style.getLineColor().getColor());
-    edgePath.getStyleClass().add(style.getLineStyle().getStyle() + "-"
-        + style.getLineThickness().getThickness());
+
+    String lineColor = style.getLineColor().getColor();
+    String lineStyle = style.getLineStyle().getStyle();
+    String lineThickness = style.getLineThickness().getThickness();
+
+    label.getStyleClass().add("edge-label");
+
+    edgePath.getStyleClass().add("line-" + lineColor);
+    edgePath.getStyleClass().add(lineStyle + "-" + lineThickness);
 
     if (edge.isDirected()) {
-      arrowPath.getStyleClass().add("line-" + style.getLineColor().getColor());
+      arrowPath.getStyleClass().add("line-" + lineColor);
+      arrowPath.getStyleClass().add("thickness" + lineThickness);
     }
   }
 

@@ -32,7 +32,7 @@ import gvs.interfaces.IVertex;
  */
 public class Session implements IGraphSessionController {
 
-  private SessionReplay sessionReplay;
+  private SessionReplay currentReplayThread;
 
   private final long id;
   private final String sessionName;
@@ -67,8 +67,8 @@ public class Session implements IGraphSessionController {
   /**
    * Adds a new graph session to an existing session.
    * 
-   * @param pGraphModel
-   *          graphModel
+   * @param graph
+   *          new graph
    */
   @Override
   public void addGraph(Graph graph) {
@@ -88,22 +88,27 @@ public class Session implements IGraphSessionController {
 
   @Override
   public void layoutCurrentGraph(Action callback) {
-    try {
-      layoutMonitor.lock();
-      logger.info("Got layout monitor");
 
-      Graph currentGraph = graphHolder.getCurrentGraph();
-      currentGraph.getVertices().forEach(v -> {
-        v.setStable(false);
-      });
+    Graph currentGraph = graphHolder.getCurrentGraph();
 
-      // TODO isSoftLayout is always false -> check usage
-      layouter.layoutGraph(currentGraph, false, callback);
+    if (currentGraph.isLayoutable()) {
+      try {
+        layoutMonitor.lock();
 
-    } catch (InterruptedException e) {
-      logger.warn("Unable to get layout monitor", e);
-    } finally {
-      layoutMonitor.unlock();
+        currentGraph.getVertices().forEach(v -> {
+          v.setStable(false);
+        });
+
+        boolean useSeededRandom = false;
+        layouter.layoutGraph(currentGraph, useSeededRandom, callback);
+
+      } catch (InterruptedException e) {
+        logger.warn("Unable to get layout monitor", e);
+      } finally {
+        layoutMonitor.unlock();
+      }
+    } else if (callback != null) {
+      callback.execute();
     }
   }
 
@@ -113,21 +118,27 @@ public class Session implements IGraphSessionController {
   @Override
   public void replay(long timeout, Action finishedCallback) {
     logger.info("Replaying current session");
-    if (this.sessionReplay == null) {
+    if (currentReplayThread == null || currentReplayThread.isCanceled()) {
       int startId = graphHolder.getCurrentGraph().getId();
-      this.sessionReplay = sessionReplayFactory.create(this, finishedCallback,
-          startId);
+      int lastId = graphs.get(graphs.size() - 1).getId();
+      if (startId == lastId) {
+        startId = 1;
+        changeCurrentGraphToFirst();
+      }
+
+      this.currentReplayThread = sessionReplayFactory.create(this,
+          finishedCallback, startId);
       Timer timer = new Timer();
-      timer.schedule(sessionReplay, timeout, timeout);
+      timer.schedule(currentReplayThread, timeout, timeout);
     } else {
       pauseReplay();
     }
   }
 
   public void pauseReplay() {
-    if (this.sessionReplay != null) {
-      this.sessionReplay.cancel();
-      this.sessionReplay = null;
+    if (this.currentReplayThread != null) {
+      currentReplayThread.cancel();
+      currentReplayThread = null;
     }
   }
 
@@ -180,9 +191,15 @@ public class Session implements IGraphSessionController {
   public void changeCurrentGraphToNext() {
     int nextGraphId = graphHolder.getCurrentGraph().getId() + 1;
     if (validIndex(nextGraphId)) {
+      boolean hasNewVerticesToLayout = false;
       Graph nextGraph = getGraphs().get(nextGraphId - 1);
-      takeOverPreviousVertexPositions(graphHolder.getCurrentGraph(), nextGraph);
+      hasNewVerticesToLayout = takeOverPreviousVertexPositions(
+          graphHolder.getCurrentGraph(), nextGraph);
       graphHolder.setCurrentGraph(nextGraph);
+
+      if (hasNewVerticesToLayout) {
+        layoutCurrentGraph(null);
+      }
     }
   }
 
@@ -190,10 +207,16 @@ public class Session implements IGraphSessionController {
   public void changeCurrentGraphToPrev() {
     int prevGraphId = graphHolder.getCurrentGraph().getId() - 1;
     if (validIndex(prevGraphId)) {
+      boolean hasNewVerticesToLayout = false;
       Graph previousGraph = getGraphs().get(prevGraphId - 1);
-      takeOverPreviousVertexPositions(graphHolder.getCurrentGraph(),
-          previousGraph);
+
+      hasNewVerticesToLayout = takeOverPreviousVertexPositions(
+          graphHolder.getCurrentGraph(), previousGraph);
       graphHolder.setCurrentGraph(previousGraph);
+
+      if (hasNewVerticesToLayout) {
+        layoutCurrentGraph(null);
+      }
     }
   }
 
@@ -232,21 +255,29 @@ public class Session implements IGraphSessionController {
    *          source graph
    * @param targetGraph
    *          target graph
+   * @return returns false, if none of the vertices need their coordinates
+   *         recalculated, otherwise returns true
    */
-  private void takeOverPreviousVertexPositions(Graph sourceGraph,
+  private boolean takeOverPreviousVertexPositions(Graph sourceGraph,
       Graph targetGraph) {
 
     Map<Long, IVertex> formerVertices = sourceGraph.getVertices().stream()
         .collect(Collectors.toMap(IVertex::getId, Function.identity()));
 
-    targetGraph.getVertices().forEach(currentVertex -> {
+    boolean verticesToLayout = false;
+
+    for (IVertex currentVertex : targetGraph.getVertices()) {
       IVertex formerVertex = formerVertices.get(currentVertex.getId());
       if (formerVertex != null) {
         currentVertex.setXPosition(formerVertex.getXPosition());
         currentVertex.setYPosition(formerVertex.getYPosition());
         currentVertex.setUserPositioned(formerVertex.isUserPositioned());
+      } else {
+        verticesToLayout = true;
       }
-    });
+    }
+
+    return verticesToLayout;
   }
 
   @Override

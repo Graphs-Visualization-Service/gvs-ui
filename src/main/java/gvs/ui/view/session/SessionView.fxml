@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import jfxtras.labs.scene.layout.ScalableContentPane?>
 <?import javafx.scene.layout.HBox?>
+<?import org.controlsfx.control.ToggleSwitch?>
 
 <BorderPane stylesheets="@SessionView.css" xmlns="http://javafx.com/javafx/8.0.111"
 	xmlns:fx="http://javafx.com/fxml/1" fx:controller="gvs.ui.view.session.SessionView">
@@ -64,7 +65,7 @@
 			<center>
 				<AnchorPane>
 					<children>
-						<TextArea prefHeight="80" prefWidth="200.0"  fx:id="snapshotDescription" 
+						<TextArea prefHeight="80" prefWidth="200.0" fx:id="snapshotDescription"
 							AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0"
 							AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
 					</children>
@@ -73,17 +74,32 @@
 			<right>
 				<AnchorPane>
 					<children>
-						<HBox>
-							<Button fx:id="replayBtn" mnemonicParsing="false"
-								onMouseClicked="#replayGraph" styleClass="icon-button" />
-							<Button fx:id="cancelReplayBtn" mnemonicParsing="false"
-								onMouseClicked="#cancelReplayGraph" styleClass="icon-button" />
-							<Button fx:id="autoLayoutBtn" mnemonicParsing="false"
-								onMouseClicked="#autoLayout" styleClass="icon-button" />
-						</HBox>
-						<Slider fx:id="speedSlider" prefWidth="200.0" showTickLabels="true"
-							showTickMarks="true" snapToTicks="true" AnchorPane.bottomAnchor="5.0"
-							AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+						<BorderPane AnchorPane.topAnchor="5.0"
+							AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+							<left>
+								<HBox>
+
+									<Button fx:id="replayBtn" mnemonicParsing="false"
+										onMouseClicked="#replayGraph" styleClass="icon-button" />
+									<Button fx:id="cancelReplayBtn" mnemonicParsing="false"
+										onMouseClicked="#cancelReplayGraph" styleClass="icon-button" />
+								</HBox>
+							</left>
+							<right>
+								<HBox>
+									<ToggleSwitch fx:id="randomLayoutSwitch" selected="true">
+										<padding>
+											<Insets top="5" bottom="5" />
+										</padding>
+									</ToggleSwitch>
+									<Button fx:id="autoLayoutBtn" mnemonicParsing="false"
+										onMouseClicked="#autoLayout" styleClass="icon-button" />
+								</HBox>
+							</right>
+						</BorderPane>
+						<Slider fx:id="speedSlider" prefWidth="200.0"
+							AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0"
+							AnchorPane.rightAnchor="5.0" />
 					</children>
 				</AnchorPane>
 			</right>

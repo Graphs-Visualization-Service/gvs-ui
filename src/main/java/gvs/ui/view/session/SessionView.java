@@ -1,5 +1,6 @@
 package gvs.ui.view.session;
 
+import org.controlsfx.control.ToggleSwitch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +36,9 @@ public class SessionView {
 
   @FXML
   private Button autoLayoutBtn;
+  
+  @FXML
+  private ToggleSwitch randomLayoutSwitch;
 
   @FXML
   private Button firstBtn;
@@ -229,6 +233,7 @@ public class SessionView {
 
   @FXML
   private void autoLayout() {
-    sessionViewModel.autoLayout();
+    boolean useRandomLayout = randomLayoutSwitch.isSelected();
+    sessionViewModel.autoLayout(useRandomLayout);
   }
 }

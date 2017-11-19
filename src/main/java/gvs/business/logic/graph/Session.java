@@ -106,7 +106,7 @@ public class Session implements IGraphSessionController {
   }
 
   @Override
-  public void layoutCurrentGraph(Action callback) {
+  public void layoutCurrentGraph(boolean useRandomLayout, Action callback) {
     Graph currentGraph = graphHolder.getCurrentGraph();
 
     if (currentGraph.isLayoutable()) {
@@ -121,8 +121,7 @@ public class Session implements IGraphSessionController {
             v.setStable(false);
           });
 
-          boolean useSeededRandom = false;
-          layouter.layoutGraph(currentGraph, useSeededRandom, callback);
+          layouter.layoutGraph(currentGraph, useRandomLayout, callback);
 
         } catch (InterruptedException e) {
           logger.warn("Unable to get layout monitor", e);
@@ -298,7 +297,7 @@ public class Session implements IGraphSessionController {
     graphHolder.setCurrentGraph(targetGraph);
 
     if (verticesToLayout) {
-      layoutCurrentGraph(null);
+      layoutCurrentGraph(true, null);
     }
   }
 

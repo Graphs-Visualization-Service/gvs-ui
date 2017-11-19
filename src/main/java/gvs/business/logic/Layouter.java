@@ -73,12 +73,12 @@ public class Layouter implements Tickable, ILayouter {
    * 
    * @param graph
    *          graph with vertices and edges
-   * @param useSeededRandoms
-   *          use always the same random points
+   * @param useRandomLayout
+   *          use random points
    * @param callback
    *          callback function
    */
-  public void layoutGraph(Graph graph, boolean useSeededRandoms,
+  public void layoutGraph(Graph graph, boolean useRandomLayout,
       Action callback) {
     logger.info("Received new data to layout");
 
@@ -90,7 +90,7 @@ public class Layouter implements Tickable, ILayouter {
       handleTickerThread();
       resetArea();
 
-      calculatLayout(graph, useSeededRandoms);
+      calculatLayout(graph, useRandomLayout);
     } else if (callback != null) {
       callback.execute();
     }
@@ -118,11 +118,11 @@ public class Layouter implements Tickable, ILayouter {
    * 
    * @param graph
    *          graph to layout
-   * @param useSeededRandoms
-   *          use always the same random
+   * @param useRandomLayout
+   *          use random points
    */
-  private void calculatLayout(Graph graph, boolean useSeededRandoms) {
-    createVertexParticles(graph.getVertices(), useSeededRandoms);
+  private void calculatLayout(Graph graph, boolean useRandomLayout) {
+    createVertexParticles(graph.getVertices(), useRandomLayout);
     createEdgeTractions(graph.getEdges());
   }
 
@@ -176,23 +176,25 @@ public class Layouter implements Tickable, ILayouter {
    *
    * @param vertices
    *          related vertices
-   * @param useSeededRandoms
-   *          use always the same randoms
+   * @param useRandomLayout
+   *          use random points
    */
   private void createVertexParticles(Collection<IVertex> vertices,
-      boolean useSeededRandoms) {
+      boolean useRandomLayout) {
 
+    // initialize seeded random every layout iteration
     Random seededRandom = new Random(SEED);
+
     vertices.forEach(vertex -> {
 
       if (!vertex.isUserPositioned()) {
 
         AreaPoint position = null;
         if (!vertex.isStable()) {
-          if (useSeededRandoms) {
-            position = generateSeededRandomPoints(seededRandom);
-          } else {
+          if (useRandomLayout) {
             position = generateRandomPoints();
+          } else {
+            position = generateSeededRandomPoints(seededRandom);
           }
         } else {
           position = generateFixedPoints(vertex);
@@ -243,6 +245,8 @@ public class Layouter implements Tickable, ILayouter {
 
   /**
    * Use always the same random coordinates as input for engine.
+   * 
+   * The seeded Random class generates always the same sequence of randoms.
    * 
    * @param seededRandom
    *          pseudo random object, that returns always the same randoms

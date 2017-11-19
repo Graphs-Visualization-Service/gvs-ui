@@ -72,7 +72,7 @@ public class ApplicationController {
     sessionHolder.addSession(loadedSession);
     sessionHolder.setCurrentSession(loadedSession);
     if (!loadedSession.isTreeSession()) {
-      loadedSession.layoutCurrentGraph(null);
+      loadedSession.layoutCurrentGraph(true, null);
     }
   }
 
@@ -127,7 +127,7 @@ public class ApplicationController {
         Session existingSession = (Session) session;
         existingSession.addGraph(graph);
         existingSession.changeCurrentGraphToLast();
-        existingSession.layoutCurrentGraph(null);
+        existingSession.layoutCurrentGraph(true, null);
 
         isSessionExisting = true;
       }
@@ -139,7 +139,7 @@ public class ApplicationController {
           isTreeSession);
       newSession.addGraph(graph);
       newSession.getGraphHolder().setCurrentGraph(graph);
-      newSession.layoutCurrentGraph(null);
+      newSession.layoutCurrentGraph(true, null);
 
       sessionHolder.addSession(newSession);
       sessionHolder.setCurrentSession(newSession);

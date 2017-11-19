@@ -168,13 +168,13 @@ public class SessionViewModel implements Observer {
     });
   }
 
-  public void autoLayout() {
+  public void autoLayout(boolean useRandomLayout) {
     if (!sessionHolder.getCurrentSession().isTreeSession()) {
       logger.info("Auto-layouting the current graph model...");
-    disableAllButtons(true);
-    disableLayoutButton(true); // overwrite explicit!
-    sessionHolder.getCurrentSession()
-        .layoutCurrentGraph(this::finishAutolayout);
+      disableAllButtons(true);
+      disableLayoutButton(true); // overwrite explicit!
+      sessionHolder.getCurrentSession().layoutCurrentGraph(useRandomLayout,
+          this::finishAutolayout);
     }
   }
 

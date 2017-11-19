@@ -16,7 +16,7 @@ public interface ISession {
   
   void cancelReplay();
 
-  void layoutCurrentGraph(Action completionCallback);
+  void layoutCurrentGraph(boolean useRandomLayout, Action completionCallback);
 
   void saveSession(File file);
 

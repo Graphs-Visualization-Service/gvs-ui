@@ -5,6 +5,7 @@ import gvs.interfaces.Action;
 
 public interface ILayouter {
 
-  void layoutGraph(Graph currentGraph, boolean b, Action callback);
+  void layoutGraph(Graph currentGraph, boolean useRandomLayout,
+      Action callback);
 
 }

@@ -30,10 +30,10 @@ import gvs.business.logic.graph.SessionFactory;
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
 import gvs.business.model.graph.Graph;
-import gvs.business.model.graph.NodeStyle;
-import gvs.business.model.graph.NodeStyle.GVSColor;
-import gvs.business.model.graph.NodeStyle.GVSLineStyle;
-import gvs.business.model.graph.NodeStyle.GVSLineThickness;
+import gvs.business.model.styles.GVSColor;
+import gvs.business.model.styles.GVSLineStyle;
+import gvs.business.model.styles.GVSLineThickness;
+import gvs.business.model.styles.GVSStyle;
 import gvs.business.model.tree.TreeVertex;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.ISession;
@@ -260,7 +260,7 @@ public class Persistor {
     }
   }
 
-  private void saveStyle(Element parent, NodeStyle style, boolean isVertex) {
+  private void saveStyle(Element parent, GVSStyle style, boolean isVertex) {
     Element eLineColor = parent.addElement(LINECOLOR);
     eLineColor.addText(style.getLineColor().getColor());
     Element eLineStyle = parent.addElement(LINESTYLE);
@@ -379,7 +379,7 @@ public class Persistor {
       TreeVertex current = (TreeVertex) v;
       current.getChildren().forEach(child -> {
         // TODO: what to do with label and style
-        NodeStyle standardStyle = new NodeStyle(GVSColor.STANDARD,
+        GVSStyle standardStyle = new GVSStyle(GVSColor.STANDARD,
             GVSLineStyle.THROUGH, GVSLineThickness.STANDARD, null);
         edges.add(new Edge("", standardStyle, false, current, child));
       });
@@ -400,7 +400,7 @@ public class Persistor {
     Element labelElement = vertexElement.element(LABEL);
     String label = labelElement.getText();
 
-    NodeStyle style = loadStyle(vertexElement, true);
+    GVSStyle style = loadStyle(vertexElement, true);
 
     Element iconElement = vertexElement.element(ICON);
     Glyph icon = null;
@@ -413,7 +413,7 @@ public class Persistor {
     return new DefaultVertex(vertexId, label, style, xPos, yPos, icon);
   }
 
-  private NodeStyle loadStyle(Element vertexElement, boolean isVertex) {
+  private GVSStyle loadStyle(Element vertexElement, boolean isVertex) {
     Element lineColorElement = vertexElement.element(LINECOLOR);
     String linecolor = lineColorElement.getText();
     Element lineStyleElement = vertexElement.element(LINESTYLE);
@@ -427,7 +427,7 @@ public class Persistor {
         fillcolor = fillColorElement.getText();
       }
     }
-    NodeStyle style = new NodeStyle(linecolor, lineStyle, lineThickness,
+    GVSStyle style = new GVSStyle(linecolor, lineStyle, lineThickness,
         fillcolor);
     return style;
   }
@@ -446,7 +446,7 @@ public class Persistor {
     IVertex fromVertex = vertices.get(fromVertexId);
     IVertex toVertex = vertices.get(toVertexId);
 
-    NodeStyle style = loadStyle(edgeElement, false);
+    GVSStyle style = loadStyle(edgeElement, false);
     if (isDirected.equals("true")) {
       return new Edge(label, style, true, fromVertex, toVertex);
     } else {
@@ -460,7 +460,7 @@ public class Persistor {
     Element eLabel = pVertex.element(LABEL);
     String label = eLabel.getText();
 
-    NodeStyle style = loadStyle(pVertex, true);
+    GVSStyle style = loadStyle(pVertex, true);
 
     Element eRigthChild = pVertex.element(RIGTHCHILD);
     Element eLeftChild = pVertex.element(LEFTCHILD);

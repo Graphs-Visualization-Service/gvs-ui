@@ -5,6 +5,7 @@ import java.util.Observable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gvs.business.model.styles.GVSStyle;
 import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome.Glyph;
 
@@ -18,7 +19,7 @@ public class DefaultVertex extends Observable implements IVertex {
 
   private long id;
   private String label;
-  private NodeStyle style;
+  private GVSStyle style;
   private double xPosition;
   private double yPosition;
   private boolean isStable;
@@ -29,7 +30,7 @@ public class DefaultVertex extends Observable implements IVertex {
   private static final Logger logger = LoggerFactory
       .getLogger(DefaultVertex.class);
 
-  public DefaultVertex(long id, String label, NodeStyle style, double xPosition,
+  public DefaultVertex(long id, String label, GVSStyle style, double xPosition,
       double yPosition, Glyph icon) {
 
     this.id = id;
@@ -89,7 +90,7 @@ public class DefaultVertex extends Observable implements IVertex {
     return label;
   }
 
-  public NodeStyle getStyle() {
+  public GVSStyle getStyle() {
     return style;
   }
 

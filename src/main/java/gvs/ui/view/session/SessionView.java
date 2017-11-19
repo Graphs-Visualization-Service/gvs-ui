@@ -20,7 +20,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.StringConverter;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**

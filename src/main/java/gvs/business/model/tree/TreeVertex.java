@@ -3,20 +3,19 @@ package gvs.business.model.tree;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
-import java.util.Observer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.business.model.graph.DefaultVertex;
-import gvs.business.model.graph.NodeStyle;
+import gvs.business.model.styles.GVSStyle;
 import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome.Glyph;
 
 public class TreeVertex extends Observable implements IVertex {
   private long id;
   private String label;
-  private NodeStyle style;
+  private GVSStyle style;
   private double xPosition;
   private double yPosition;
   private boolean isRoot;
@@ -31,7 +30,7 @@ public class TreeVertex extends Observable implements IVertex {
       .getLogger(DefaultVertex.class);
 
   // TODO: do i need this?
-  public TreeVertex(long id, String label, NodeStyle style, double xPosition,
+  public TreeVertex(long id, String label, GVSStyle style, double xPosition,
       double yPosition, boolean isUserPositioned, Glyph icon) {
     this.id = id;
     this.label = label;
@@ -45,7 +44,7 @@ public class TreeVertex extends Observable implements IVertex {
     this.children = new ArrayList<>();
   }
 
-  public TreeVertex(long id, String label, NodeStyle style,
+  public TreeVertex(long id, String label, GVSStyle style,
       boolean isUserPositioned, Glyph icon) {
     this.id = id;
     this.label = label;
@@ -122,7 +121,7 @@ public class TreeVertex extends Observable implements IVertex {
   }
 
   @Override
-  public NodeStyle getStyle() {
+  public GVSStyle getStyle() {
     return style;
   }
 

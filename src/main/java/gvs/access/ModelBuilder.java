@@ -27,10 +27,10 @@ import gvs.business.logic.ApplicationController;
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
 import gvs.business.model.graph.Graph;
-import gvs.business.model.graph.NodeStyle;
-import gvs.business.model.graph.NodeStyle.GVSColor;
-import gvs.business.model.graph.NodeStyle.GVSLineStyle;
-import gvs.business.model.graph.NodeStyle.GVSLineThickness;
+import gvs.business.model.styles.GVSColor;
+import gvs.business.model.styles.GVSLineStyle;
+import gvs.business.model.styles.GVSLineThickness;
+import gvs.business.model.styles.GVSStyle;
 import gvs.business.model.tree.TreeVertex;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
@@ -215,7 +215,7 @@ public class ModelBuilder {
       TreeVertex current = (TreeVertex) v;
       current.getChildren().forEach(child -> {
         // TODO: what to do with label and style
-        NodeStyle standardStyle = new NodeStyle(GVSColor.STANDARD,
+        GVSStyle standardStyle = new GVSStyle(GVSColor.STANDARD,
             GVSLineStyle.THROUGH, GVSLineThickness.STANDARD, null);
         edges.add(new Edge("", standardStyle, false, current, child));
       });
@@ -228,8 +228,8 @@ public class ModelBuilder {
     long vertexId = Long.parseLong(pVertex.attributeValue(ATTRIBUTEID));
     Element eLabel = pVertex.element(LABEL);
     String label = eLabel.getText();
-  
-    NodeStyle style = buildStyle(pVertex, true);
+
+    GVSStyle style = buildStyle(pVertex, true);
 
     Element eRigthChild = pVertex.element(RIGTHCHILD);
     Element eLeftChild = pVertex.element(LEFTCHILD);
@@ -270,8 +270,8 @@ public class ModelBuilder {
     Element labelElement = vertexElement.element(LABEL);
     String label = labelElement.getText();
 
-    NodeStyle style = buildStyle(vertexElement, true);
-    
+    GVSStyle style = buildStyle(vertexElement, true);
+
     Element iconElement = vertexElement.element(ICON);
     Glyph icon = null;
     if (iconElement != null) {
@@ -284,7 +284,7 @@ public class ModelBuilder {
     return new DefaultVertex(vertexId, label, style, xPos, yPos, icon);
   }
 
-  private NodeStyle buildStyle(Element e, boolean isVertex) {
+  private GVSStyle buildStyle(Element e, boolean isVertex) {
     Element lineColorElement = e.element(LINECOLOR);
     String linecolor = lineColorElement.getText();
     Element lineStyleElement = e.element(LINESTYLE);
@@ -298,7 +298,7 @@ public class ModelBuilder {
         fillcolor = fillColorElement.getText();
       }
     }
-    return new NodeStyle(linecolor, lineStyle, lineThickness, fillcolor);
+    return new GVSStyle(linecolor, lineStyle, lineThickness, fillcolor);
   }
 
   /**
@@ -315,7 +315,7 @@ public class ModelBuilder {
     logger.debug("Build DirectedEdge XML");
     Element eLabel = pEdge.element(LABEL);
     String label = eLabel.getText();
-    NodeStyle style =  buildStyle(pEdge, false);
+    GVSStyle style = buildStyle(pEdge, false);
     Element eFromVertex = pEdge.element(FROMVERTEX);
     Element eToVertex = pEdge.element(TOVERTEX);
     long fromVertexId = Long.parseLong(eFromVertex.getText());
@@ -354,7 +354,7 @@ public class ModelBuilder {
 
     Element eLabel = pEdge.element(LABEL);
     String label = eLabel.getText();
-    NodeStyle style = buildStyle(pEdge, false);
+    GVSStyle style = buildStyle(pEdge, false);
     Element eFromVertex = pEdge.element(FROMVERTEX);
     Element eToVertex = pEdge.element(TOVERTEX);
     long fromVertexId = Long.parseLong(eFromVertex.getText());

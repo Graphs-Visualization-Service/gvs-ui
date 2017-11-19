@@ -1,5 +1,6 @@
 package gvs.business.model.graph;
 
+import gvs.business.model.styles.GVSStyle;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
 
@@ -11,7 +12,7 @@ import gvs.interfaces.IVertex;
  */
 public class Edge implements IEdge {
 
-  private NodeStyle style;
+  private GVSStyle style;
   private String label;
   private boolean isDirected;
   private IVertex startVertex;
@@ -26,7 +27,7 @@ public class Edge implements IEdge {
    * @param pStartVertex
    * @param pEndVertex
    */
-  public Edge(String pLabel, NodeStyle style, boolean pIsDirected,
+  public Edge(String pLabel, GVSStyle style, boolean pIsDirected,
       IVertex pStartVertex, IVertex pEndVertex) {
     this.style = style;
     this.label = pLabel;
@@ -47,7 +48,7 @@ public class Edge implements IEdge {
     return label;
   }
 
-  public NodeStyle getStyle() {
+  public GVSStyle getStyle() {
     return style;
   }
 

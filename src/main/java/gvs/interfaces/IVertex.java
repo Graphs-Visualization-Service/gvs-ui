@@ -2,7 +2,7 @@ package gvs.interfaces;
 
 import java.util.Observer;
 
-import gvs.business.model.graph.NodeStyle;
+import gvs.business.model.styles.GVSStyle;
 import gvs.util.FontAwesome.Glyph;
 
 public interface IVertex {
@@ -31,7 +31,7 @@ public interface IVertex {
 
   Glyph getIcon();
 
-  NodeStyle getStyle();
+  GVSStyle getStyle();
 
   void addObserver(Observer o);
 

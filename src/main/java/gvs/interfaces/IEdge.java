@@ -1,6 +1,6 @@
 package gvs.interfaces;
 
-import gvs.business.model.graph.NodeStyle;
+import gvs.business.model.styles.GVSStyle;
 
 public interface IEdge {
 
@@ -10,7 +10,7 @@ public interface IEdge {
 
   String getLabel();
 
-  NodeStyle getStyle();
+  GVSStyle getStyle();
 
   IVertex getStartVertex();
 

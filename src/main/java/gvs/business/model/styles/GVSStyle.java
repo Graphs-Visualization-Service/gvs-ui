@@ -1,4 +1,4 @@
-package gvs.business.model.graph;
+package gvs.business.model.styles;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -6,65 +6,7 @@ import java.util.HashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NodeStyle {
-
-  public enum GVSColor {
-    STANDARD("standard"), RED("red"), LIGHTRED("lightred"), GREEN(
-        "green"), LIGHTGREEN("lightgreen"), DARKGREEN("darkgreen"), BLUE(
-            "blue"), LIGHTBLUE("lightblue"), DARKBLUE("darkblue"), YELLOW(
-                "yellow"), ORANGE("orange"), BROWN(
-                    "brown"), BLACK("black"), GRAY("gray"), LIGHTGRAY(
-                        "lightgray"), LIGHTVIOLET("violet"), LIGHTPINK(
-                            "pink"), LIGHTTURQOISE("turqoise");
-
-    private String color;
-
-    GVSColor(String color) {
-      this.color = color.toLowerCase();
-    }
-
-    public String getColor() {
-      return color;
-    }
-
-    public static GVSColor byName(String colorName) {
-      return valueOf(colorName.toUpperCase());
-    }
-  }
-
-  public enum GVSLineStyle {
-    DOTTED("dotted"), DASHED("dashed"), THROUGH("through");
-    private String style;
-
-    GVSLineStyle(String style) {
-      this.style = style.toLowerCase();
-    }
-
-    public String getStyle() {
-      return style;
-    }
-
-    public static GVSLineStyle byName(String styleName) {
-      return valueOf(styleName.toUpperCase());
-    }
-  }
-
-  public enum GVSLineThickness {
-    STANDARD("standard"), BOLD("bold"), SLIGHT("slight"), FAT("fat");
-    private String thickness;
-
-    GVSLineThickness(String thickness) {
-      this.thickness = thickness.toLowerCase();
-    }
-
-    public String getThickness() {
-      return thickness;
-    }
-
-    public static GVSLineThickness byName(String ticknessName) {
-      return valueOf(ticknessName.toUpperCase());
-    }
-  }
+public class GVSStyle {
 
   private GVSColor lineColor;
   private GVSLineStyle lineStyle;
@@ -72,9 +14,9 @@ public class NodeStyle {
   private GVSColor fillColor;
   private Collection<GVSColor> darkColors;
 
-  private static final Logger logger = LoggerFactory.getLogger(NodeStyle.class);
+  private static final Logger logger = LoggerFactory.getLogger(GVSStyle.class);
 
-  public NodeStyle(GVSColor lineColor, GVSLineStyle lineStyle,
+  public GVSStyle(GVSColor lineColor, GVSLineStyle lineStyle,
       GVSLineThickness lineThickness, GVSColor fillColor) {
     this.lineColor = lineColor;
     this.lineStyle = lineStyle;
@@ -91,7 +33,7 @@ public class NodeStyle {
     darkColors.add(GVSColor.BLUE);
   }
 
-  public NodeStyle(String linecolor, String linestyle, String lineThickness,
+  public GVSStyle(String linecolor, String linestyle, String lineThickness,
       String fillColor) {
     try {
       this.lineColor = GVSColor.byName(linecolor);

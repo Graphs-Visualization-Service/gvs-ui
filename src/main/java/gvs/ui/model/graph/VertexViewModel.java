@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.business.model.graph.DefaultVertex;
-import gvs.business.model.graph.NodeStyle;
+import gvs.business.model.styles.GVSStyle;
 import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome;
 import javafx.application.Platform;
@@ -65,7 +65,7 @@ public class VertexViewModel implements Observer {
   }
 
   private void setStyles() {
-    NodeStyle style = vertex.getStyle();
+    GVSStyle style = vertex.getStyle();
     
     String fillColor = style.getFillColor().getColor();
     String lineColor = style.getLineColor().getColor();

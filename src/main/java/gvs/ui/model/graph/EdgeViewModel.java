@@ -3,7 +3,7 @@ package gvs.ui.model.graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.business.model.graph.NodeStyle;
+import gvs.business.model.styles.GVSStyle;
 import gvs.interfaces.IEdge;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
@@ -91,7 +91,7 @@ public class EdgeViewModel {
    * Set edge styles for line and optionally arrowhead
    */
   private void setStyles() {
-    NodeStyle style = edge.getStyle();
+    GVSStyle style = edge.getStyle();
 
     String lineColor = style.getLineColor().getColor();
     String lineStyle = style.getLineStyle().getStyle();

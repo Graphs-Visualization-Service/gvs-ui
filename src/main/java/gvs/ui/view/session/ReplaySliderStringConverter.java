@@ -10,41 +10,35 @@ import javafx.util.StringConverter;
 public class ReplaySliderStringConverter extends StringConverter<Double> {
 
   private static final double SLIDER_SLOW = 0.0;
-  private static final double SLIDER_MEDIUM = 0.5;
-  private static final double SLIDER_DEFAULT = 1.0;
-  private static final double SLIDER_FAST = 1.5;
-  private static final double SLIDER_FASTEST = 2.0;
+  private static final double SLIDER_MEDIUM = 1.0;
+  private static final double SLIDER_FAST = 2.0;
+
+  private static final String SLOW = "slow";
+  private static final String MEDIUM = "medium";
+  private static final String FAST = "fast";
 
   @Override
   public String toString(Double number) {
-    if (number == SLIDER_SLOW) {
-      return "slow";
-    } else if (number <= SLIDER_MEDIUM) {
-      return "medium";
-    } else if (number == SLIDER_DEFAULT) {
-      return "default";
-    } else if (number <= SLIDER_FAST) {
-      return "fast";
+    if (number < SLIDER_MEDIUM) {
+      return SLOW;
+    } else if (number < SLIDER_FAST) {
+      return MEDIUM;
     } else {
-      return "fastest";
+      return FAST;
     }
   }
 
   @Override
   public Double fromString(String s) {
     switch (s) {
-    case "slow":
+    case SLOW:
       return SLIDER_SLOW;
-    case "medium":
+    case MEDIUM:
       return SLIDER_MEDIUM;
-    case "default":
-      return SLIDER_DEFAULT;
-    case "fast":
+    case FAST:
       return SLIDER_FAST;
-    case "fastest":
-      return SLIDER_FASTEST;
     default:
-      return SLIDER_DEFAULT;
+      return SLIDER_MEDIUM;
     }
   }
 

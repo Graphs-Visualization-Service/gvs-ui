@@ -123,9 +123,9 @@ public class SessionView {
     speedSlider.setMin(SLIDER_MIN);
     speedSlider.setMax(SLIDER_MAX);
     speedSlider.setValue(SLIDER_DEFAULT);
-    speedSlider.setMinorTickCount(0);
-    speedSlider.setMajorTickUnit(0.5);
-    speedSlider.setSnapToTicks(true);
+    speedSlider.setMinorTickCount(4);
+    speedSlider.setMajorTickUnit(1);
+    speedSlider.setSnapToTicks(false);
     speedSlider.setShowTickMarks(true);
     speedSlider.setShowTickLabels(true);
     speedSlider.setLabelFormatter(new ReplaySliderStringConverter());

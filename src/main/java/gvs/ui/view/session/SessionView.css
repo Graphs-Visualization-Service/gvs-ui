@@ -11,90 +11,90 @@
 
 /*-- EDGE LINE COLOR / VERTEX BORDER COLOR --*/
 .line-standard {
-	-fx-stroke: rgb(0.0,0.0,0.0);
+	-fx-stroke: -black;
 }
 .line-red {
-	-fx-stroke: rgb(229.0, 80.0,76.0);
+	-fx-stroke: -red;
 }
 .line-lightred {
-	-fx-stroke: rgb(229.0, 80.0,76.0);
+	-fx-stroke: -red;
 }
 .line-green {
-	-fx-stroke: rgb(143.0,198.0,94.0);
+	-fx-stroke: -green;
 }
 .line-lightgreen {
-	-fx-stroke: rgb(143.0,198.0,94.0);
+	-fx-stroke: -green;
 }
 .line-darkgreen {
-	-fx-stroke: rgb(143.0,198.0,94.0);
+	-fx-stroke: -green;
 }
 .line-blue {
-	-fx-stroke: rgb(55.0,179.0,252.0);
+	-fx-stroke: -blue;
 }
 .line-lightblue {
-	-fx-stroke: rgb(55.0,179.0,252.0);
+	-fx-stroke: -blue-light;
 }
 .line-darkblue {
-	-fx-stroke: rgb(55.0,179.0,252.0);
+	-fx-stroke: -blue;
 }
 .line-yellow {
-	-fx-stroke: rgb(229.0,198.0,76.0);
+	-fx-stroke: -orange;
 }
 .line-orange {
-	-fx-stroke: rgb(236.0,162.0,57.0);
+	-fx-stroke: -orange;
 }
 .line-black {
-	-fx-stroke: rgb(0.0,0.0,0.0);
+	-fx-stroke: -black;
 }
 .line-gray {
-	-fx-stroke: rgb(223.0,223.0,223.0);
+	-fx-stroke: -grey-light;
 }
 .line-lightgray {
-	-fx-stroke: rgb(223.0,223.0,223.0);
+	-fx-stroke: -grey-light;
 }
 
 /*-- VERTEX FILL COLOR --*/
 fill-standard {
-	-fx-fill: rgb(0.0,0.0,0.0);
+	-fx-fill: -black;
 }
 .fill-red {
-	-fx-fill: rgb(229.0, 80.0,76.0);
+	-fx-fill: -red;
 }
 .fill-lightred {
-	-fx-fill: rgb(229.0, 80.0,76.0);
+	-fx-fill: -red;
 }
 .fill-green {
-	-fx-fill: rgb(143.0,198.0,94.0);
+	-fx-fill: -green;
 }
 .fill-lightgreen {
-	-fx-fill: rgb(143.0,198.0,94.0);
+	-fx-fill: -green;
 }
 .fill-darkgreen {
-	-fx-fill: rgb(143.0,198.0,94.0);
+	-fx-fill: -green;
 }
 .fill-blue {
-	-fx-fill: rgb(55.0,179.0,252.0);
+	-fx-fill: -blue;
 }
 .fill-lightblue {
-	-fx-fill: rgb(55.0,179.0,252.0);
+	-fx-fill: -blue-light;
 }
 .fill-darkblue {
-	-fx-fill: rgb(55.0,179.0,252.0);
+	-fx-fill: -blue;
 }
 .fill-yellow {
-	-fx-fill: rgb(229.0,198.0,76.0);
+	-fx-fill: -orange;
 }
 .fill-orange {
-	-fx-fill: rgb(236.0,162.0,57.0);
+	-fx-fill: -orange;
 }
 .fill-black {
-	-fx-fill: rgb(0.0,0.0,0.0);
+	-fx-fill: -black;
 }
 .fill-gray {
-	-fx-fill: rgb(223.0,223.0,223.0);
+	-fx-fill: -grey;
 }
 .fill-lightgray {
-	-fx-fill: rgb(223.0,223.0,223.0);
+	-fx-fill: -grey-light;
 }
 
 

@@ -1,8 +1,19 @@
 .root {
-	-fx-base: rgb(42.0, 42.0, 42.0);
-	-fx-background: -fx-base;
-    	-fx-control-inner-background: rgb(60.0, 60.0, 60.0);
-    	-fx-control-inner-background-alt: rgb(223.0, 223.0, 223.0);
+	-grey-dark: #17181a;
+	-grey: #212326;
+	-grey-light: #27292d;
+	-blue: #085fd1;
+	-blue-light: #25d6f5;
+	-red: #d7422c;
+	-orange: #ff8e05;
+	-green: #51bd84;
+	-white: #ffffff;
+	-black: #000000;
+	
+	-fx-base: -grey;
+	-fx-background: -grey;
+    	-fx-control-inner-background: -grey;
+    	-fx-control-inner-background-alt: -blue-light;
 }
 
 .logo-bg {
@@ -19,6 +30,6 @@
 }
 
 .toolbar {
-	-fx-background-color: rgb(60.0, 60.0, 60.0);
+	-fx-background-color: -grey-dark;
 }
 

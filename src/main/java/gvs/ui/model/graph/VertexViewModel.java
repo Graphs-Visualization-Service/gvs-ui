@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.styles.GVSStyle;
+import gvs.business.model.tree.TreeVertex;
 import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome;
 import javafx.application.Platform;
@@ -49,7 +50,9 @@ public class VertexViewModel implements Observer {
       label.setGraphic(FontAwesome.createLabel(vertex.getIcon()));
     }
     label.setText(vertex.getLabel());
-    label.setCursor(Cursor.HAND);
+    if (!vertex.isTreeVertex()) {
+      label.setCursor(Cursor.HAND);
+    }
 
     ellipse = new Ellipse();
 
@@ -165,43 +168,51 @@ public class VertexViewModel implements Observer {
     dragSupport(p);
   }
 
+  /**
+   * Add drag support for graph vertices
+   * 
+   * @param graphPane
+   *          parent pane
+   */
   private void dragSupport(ScalableContentPane graphPane) {
-    logger.info("Adding drag support on VertexViewModel.");
 
-    label.setOnMousePressed(e -> {
-      dragOriginalSceneX = e.getSceneX()
-          / graphPane.getContentScaleTransform().getX();
-      dragOriginalSceneY = e.getSceneY()
-          / graphPane.getContentScaleTransform().getY();
-    });
+    if (!vertex.isTreeVertex()) {
 
-    label.setOnMouseDragged(e -> {
-      // logger level debug, because this will happen very often
-      logger.debug("Mouse drag on VertexViewModel detected.");
-      ellipse.setCursor(Cursor.HAND);
+      logger.info("Adding drag support on VertexViewModel.");
 
-      double offsetX = (e.getSceneX()
-          / graphPane.getContentScaleTransform().getX()) - dragOriginalSceneX;
-      double offsetY = (e.getSceneY()
-          / graphPane.getContentScaleTransform().getY()) - dragOriginalSceneY;
+      label.setOnMousePressed(e -> {
+        dragOriginalSceneX = e.getSceneX()
+            / graphPane.getContentScaleTransform().getX();
+        dragOriginalSceneY = e.getSceneY()
+            / graphPane.getContentScaleTransform().getY();
+      });
 
-      double newX = ellipse.getCenterX() + offsetX;
-      double newY = ellipse.getCenterY() + offsetY;
+      label.setOnMouseDragged(e -> {
+        // logger level debug, because this will happen very often
+        logger.debug("Mouse drag on VertexViewModel detected.");
 
-      newX = checkXBoundaries(newX, graphPane);
-      newY = checkYBoundaries(newY, graphPane);
+        double offsetX = (e.getSceneX()
+            / graphPane.getContentScaleTransform().getX()) - dragOriginalSceneX;
+        double offsetY = (e.getSceneY()
+            / graphPane.getContentScaleTransform().getY()) - dragOriginalSceneY;
 
-      updateCoordinates(newX, newY);
+        double newX = ellipse.getCenterX() + offsetX;
+        double newY = ellipse.getCenterY() + offsetY;
 
-      vertex.setUserPositioned(true);
+        newX = checkXBoundaries(newX, graphPane);
+        newY = checkYBoundaries(newY, graphPane);
 
-      // remember last coordinates
-      dragOriginalSceneX = e.getSceneX()
-          / graphPane.getContentScaleTransform().getX();
-      dragOriginalSceneY = e.getSceneY()
-          / graphPane.getContentScaleTransform().getY();
+        updateCoordinates(newX, newY);
 
-    });
+        vertex.setUserPositioned(true);
+
+        // remember last coordinates
+        dragOriginalSceneX = e.getSceneX()
+            / graphPane.getContentScaleTransform().getX();
+        dragOriginalSceneY = e.getSceneY()
+            / graphPane.getContentScaleTransform().getY();
+      });
+    }
   }
 
   /**

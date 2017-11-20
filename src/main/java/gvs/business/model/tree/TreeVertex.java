@@ -133,11 +133,10 @@ public class TreeVertex extends Observable implements IVertex {
     return style;
   }
 
-  
   public boolean isLeaf() {
     return getChildren().isEmpty();
   }
-  
+
   public List<Long> getChildIds() {
     return childIds;
   }
@@ -207,4 +206,8 @@ public class TreeVertex extends Observable implements IVertex {
     return shift;
   }
 
+  @Override
+  public boolean isTreeVertex() {
+    return true;
+  }
 }

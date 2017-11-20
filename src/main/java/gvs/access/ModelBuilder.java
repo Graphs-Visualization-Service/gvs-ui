@@ -205,8 +205,19 @@ public class ModelBuilder {
           current.addChild(child);
         }
       });
+      setChildRelations(current);
     });
     return vertices;
+  }
+
+  /**
+   * Set child relations for use in TreeLayouter
+   * 
+   * @param vertex
+   *          parent vertex
+   */
+  private void setChildRelations(TreeVertex vertex) {
+    vertex.getChildren().forEach(c -> c.setParent(vertex));
   }
 
   private Collection<IEdge> buildTreeEdges(Collection<IVertex> vertices) {
@@ -315,7 +326,9 @@ public class ModelBuilder {
     logger.debug("Build DirectedEdge XML");
     Element eLabel = pEdge.element(LABEL);
     String label = eLabel.getText();
+
     GVSStyle style = buildStyle(pEdge, false);
+
     Element eFromVertex = pEdge.element(FROMVERTEX);
     Element eToVertex = pEdge.element(TOVERTEX);
     long fromVertexId = Long.parseLong(eFromVertex.getText());

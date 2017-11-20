@@ -359,8 +359,19 @@ public class Persistor {
           current.addChild(child);
         }
       });
+      setChildRelations(current);
     });
     return vertices;
+  }
+
+  /**
+   * Set child relations for use in TreeLayouter
+   * 
+   * @param vertex
+   *          parent vertex
+   */
+  private void setChildRelations(TreeVertex vertex) {
+    vertex.getChildren().forEach(c -> c.setParent(vertex));
   }
 
   private Map<Long, IVertex> buildTreeVertices(Element graphElement) {

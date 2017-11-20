@@ -55,7 +55,6 @@ public class GVSStyle {
     }
     try {
       this.lineThickness = GVSLineThickness.byName(lineThickness);
-      System.out.println(lineThickness);
     } catch (Exception e) {
       logger.info("Line Tickness {} not supported. Use standard",
           lineThickness);

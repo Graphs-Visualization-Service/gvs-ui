@@ -18,8 +18,16 @@ public class TreeVertex extends Observable implements IVertex {
   private GVSStyle style;
   private double xPosition;
   private double yPosition;
-  private boolean isRoot;
   private boolean isUserPositioned;
+
+  private boolean isRoot;
+  private TreeVertex parent;
+  // values are needed for layouting trees
+  private TreeVertex thread;
+  private double mod;
+  private double prelim;
+  private double change;
+  private double shift;
 
   private final List<Long> childIds;
   private final List<TreeVertex> children;
@@ -28,21 +36,6 @@ public class TreeVertex extends Observable implements IVertex {
 
   private static final Logger logger = LoggerFactory
       .getLogger(DefaultVertex.class);
-
-  // TODO: do i need this?
-  public TreeVertex(long id, String label, GVSStyle style, double xPosition,
-      double yPosition, boolean isUserPositioned, Glyph icon) {
-    this.id = id;
-    this.label = label;
-    this.style = style;
-    this.xPosition = xPosition;
-    this.yPosition = yPosition;
-    this.isUserPositioned = isUserPositioned;
-    this.icon = icon;
-
-    this.childIds = new ArrayList<>();
-    this.children = new ArrayList<>();
-  }
 
   public TreeVertex(long id, String label, GVSStyle style,
       boolean isUserPositioned, Glyph icon) {
@@ -54,6 +47,7 @@ public class TreeVertex extends Observable implements IVertex {
 
     this.childIds = new ArrayList<>();
     this.children = new ArrayList<>();
+    logger.info("Instantiated TreeVertex: {}", id);
   }
 
   @Override
@@ -84,6 +78,20 @@ public class TreeVertex extends Observable implements IVertex {
   @Override
   public void setYPosition(double yPos) {
     this.yPosition = yPos;
+  }
+
+  /**
+   * This property is used in layouting trees {@see TreeLayouter}. It specifies
+   * by how much child vertices of a vertex need to be shifted on the x axis.
+   * 
+   * @return
+   */
+  public double getMod() {
+    return mod;
+  }
+
+  public void setMod(double mod) {
+    this.mod = mod;
   }
 
   @Override
@@ -125,6 +133,11 @@ public class TreeVertex extends Observable implements IVertex {
     return style;
   }
 
+  
+  public boolean isLeaf() {
+    return getChildren().isEmpty();
+  }
+  
   public List<Long> getChildIds() {
     return childIds;
   }
@@ -148,8 +161,50 @@ public class TreeVertex extends Observable implements IVertex {
   public void addChild(TreeVertex vertex) {
     children.add(vertex);
   }
-  
+
+  public TreeVertex getParent() {
+    return parent;
+  }
+
+  public void setParent(TreeVertex parent) {
+    this.parent = parent;
+  }
+
+  public TreeVertex getThread() {
+    return thread;
+  }
+
+  public double getPrelim() {
+    return prelim;
+  }
+
+  public void setPrelim(double prelim) {
+    this.prelim = prelim;
+  }
+
+  public void setThread(TreeVertex thread) {
+    this.thread = thread;
+  }
+
+  @Override
   public String toString() {
     return String.format("TreeVertex(%s [%f,%f])", label, xPosition, yPosition);
   }
+
+  public void setChange(double change) {
+    this.change = change;
+  }
+
+  public double getChange() {
+    return change;
+  }
+
+  public void setShift(double shift) {
+    this.shift = shift;
+  }
+
+  public double getShift() {
+    return shift;
+  }
+
 }

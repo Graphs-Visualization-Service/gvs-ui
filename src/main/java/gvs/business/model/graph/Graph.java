@@ -77,5 +77,17 @@ public class Graph {
   public void setEdges(Set<IEdge> edges) {
     this.edges = edges;
   }
+  
+  public String toString() {
+    String verticesString = "";
+    for (IVertex v : vertices) {
+      verticesString += v.toString();
+    }
+    String edgesString = "";
+    for (IEdge e : edges) {
+      edgesString += e.toString();
+    }
+    return String.format("%d \t Vertices: [%s], Edges: [%s]", id, verticesString, edgesString);
+  }
 
 }

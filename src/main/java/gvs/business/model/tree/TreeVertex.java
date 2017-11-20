@@ -21,22 +21,18 @@ public class TreeVertex extends Observable implements IVertex {
   private boolean isUserPositioned;
 
   private boolean isRoot;
-  private boolean isLeftMostChild;
-  private TreeVertex leftMostSibling;
-  private TreeVertex previousSibling;
-  private TreeVertex nextSibling;
   private TreeVertex parent;
+  // values are needed ofr lyouting trees
   private TreeVertex thread;
   private double mod;
   private double prelim;
+  private double change;
+  private double shift;
 
   private final List<Long> childIds;
   private final List<TreeVertex> children;
 
   private final Glyph icon;
-  private TreeVertex setAncestor;
-  private double change;
-  private double shift;
 
   private static final Logger logger = LoggerFactory
       .getLogger(DefaultVertex.class);
@@ -51,6 +47,7 @@ public class TreeVertex extends Observable implements IVertex {
 
     this.childIds = new ArrayList<>();
     this.children = new ArrayList<>();
+    logger.info("Instantiated TreeVertex: {}", id);
   }
 
   @Override
@@ -152,22 +149,6 @@ public class TreeVertex extends Observable implements IVertex {
     this.isRoot = isRoot;
   }
 
-  public boolean isLeftMostChild() {
-    return isLeftMostChild || isRoot;
-  }
-
-  public void setLeftMostChild(boolean isLeftMostChild) {
-    this.isLeftMostChild = isLeftMostChild;
-  }
-
-  public TreeVertex getPreviousSibling() {
-    return previousSibling;
-  }
-
-  public void setPreviousSibling(TreeVertex previousSibling) {
-    this.previousSibling = previousSibling;
-  }
-
   public void addChildId(long childId) {
     childIds.add(childId);
   }
@@ -176,24 +157,8 @@ public class TreeVertex extends Observable implements IVertex {
     children.add(vertex);
   }
 
-  public TreeVertex getLeftMostSibling() {
-    return leftMostSibling;
-  }
-
-  public TreeVertex getNextSibling() {
-    return nextSibling;
-  }
-
   public TreeVertex getParent() {
     return parent;
-  }
-
-  public void setLeftMostSibling(TreeVertex sibling) {
-    this.leftMostSibling = sibling;
-  }
-
-  public void setNextSibling(TreeVertex sibling) {
-    this.nextSibling = sibling;
   }
 
   public void setParent(TreeVertex parent) {
@@ -221,22 +186,18 @@ public class TreeVertex extends Observable implements IVertex {
     return String.format("TreeVertex(%s [%f,%f])", label, xPosition, yPosition);
   }
 
-  public void setAncestor(TreeVertex vertex) {
-    this.setAncestor = vertex;
-  }
-  
   public void setChange(double change) {
     this.change = change;
   }
-  
+
   public double getChange() {
     return change;
   }
-  
+
   public void setShift(double shift) {
     this.shift = shift;
   }
-  
+
   public double getShift() {
     return shift;
   }

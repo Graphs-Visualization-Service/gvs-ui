@@ -1,5 +1,7 @@
 package gvs.business.logic.tree;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +14,7 @@ import gvs.business.logic.ILayouter;
 import gvs.business.model.graph.Graph;
 import gvs.business.model.tree.TreeVertex;
 import gvs.interfaces.Action;
+import gvs.interfaces.IVertex;
 
 /**
  * Calculates the position of each TreeVertex as specified by the
@@ -24,11 +27,12 @@ import gvs.interfaces.Action;
 @Singleton
 public class TreeLayouter implements ILayouter {
 
-  private static final int NODESIZE = 50;
-  private static final double SIBLING_DISTANCE = 50;
-  private static final double LEVEL_DISTANCE = 100;
+  private static final int NODESIZE = 50; //TODO: account for nodeSize
+  private static final double SIBLING_DISTANCE = 20;
+  private static final double LEVEL_DISTANCE = 20;
   private static final Logger logger = LoggerFactory
       .getLogger(TreeLayouter.class);
+  private static final double MARGIN = 10;
 
   @Override
   public void layoutGraph(Graph currentGraph, boolean b, Action callback) {
@@ -38,20 +42,33 @@ public class TreeLayouter implements ILayouter {
         .map(v -> (TreeVertex) v).filter(v -> v.isRoot())
         .collect(Collectors.toList());
 
+    // TODO: support multiple roots
     roots.forEach(root -> {
-      initializePositions(root);
       firstWalk(root);
       secondWalk(root, -root.getPrelim());
+      centerGraph(root, currentGraph);
     });
-    logger.debug(currentGraph.toString());
-    logger.debug("\n");
+
+    logger.info("Finished layouting tree.");
+  }
+
+  private void centerGraph(TreeVertex root, Graph currentGraph) {
+    List<IVertex> verticesSorted = currentGraph.getVertices().stream()
+        .sorted(
+            (v1, v2) -> Double.compare(v1.getXPosition(), v2.getXPosition()))
+        .collect(Collectors.toList());
+    double minX = verticesSorted.get(0).getXPosition();
+    if (minX < 0) {
+      verticesSorted
+          .forEach(v -> v.setXPosition(v.getXPosition() + Math.abs(minX)+ MARGIN));
+    }
   }
 
   private void secondWalk(TreeVertex vertex, double m) {
     vertex.setXPosition(vertex.getPrelim() + m);
-    //TODO: add leveldistance
-    vertex.setYPosition(getLevel(vertex) * LEVEL_DISTANCE + LEVEL_DISTANCE);
-    vertex.getChildren().forEach(child -> secondWalk(child, m + vertex.getMod()));
+    vertex.setYPosition(getLevel(vertex) * LEVEL_DISTANCE + MARGIN);
+    vertex.getChildren()
+        .forEach(child -> secondWalk(child, m + vertex.getMod()));
   }
 
   private double getLevel(TreeVertex vertex) {
@@ -125,7 +142,6 @@ public class TreeLayouter implements ILayouter {
         insideRightVertex = nextLeft(insideRightVertex);
         outsideLeftVertex = nextLeft(outsideLeftVertex);
         outsideRightVertex = nextRight(outsideRightVertex);
-        outsideRightVertex.setAncestor(vertex);
         double shift = (insideLeftVertex.getPrelim() + insideLeftModSum)
             - (insideRightVertex.getPrelim() + insideRightModSum)
             + SIBLING_DISTANCE;
@@ -140,7 +156,6 @@ public class TreeLayouter implements ILayouter {
         outsideLeftModSum += outsideLeftVertex.getMod();
         outsideRightModSum += outsideRightVertex.getMod();
       }
-      // TODO: should this be outside the while loop?
       if (nextRight(insideLeftVertex) != null
           && nextRight(outsideRightVertex) == null) {
         outsideRightVertex.setThread(nextRight(insideLeftVertex));
@@ -155,7 +170,6 @@ public class TreeLayouter implements ILayouter {
         defaultAncestor = vertex;
       }
     }
-
   }
 
   private void moveSubTree(TreeVertex vertexLeft, TreeVertex vertexRight,
@@ -163,7 +177,6 @@ public class TreeLayouter implements ILayouter {
     int subtrees = number(vertexRight) - number(vertexLeft);
     vertexRight.setChange(vertexRight.getChange() - shift / subtrees);
     vertexRight.setShift(vertexRight.getShift() + shift);
-
     vertexLeft.setChange(vertexLeft.getChange() - shift / subtrees);
     vertexRight.setPrelim(vertexRight.getPrelim() + shift);
     vertexRight.setMod(vertexRight.getMod() + shift);
@@ -230,10 +243,4 @@ public class TreeLayouter implements ILayouter {
     }
     return null;
   }
-
-  private void initializePositions(TreeVertex root) {
-    // TODO Auto-generated method stub
-
-  }
-
 }

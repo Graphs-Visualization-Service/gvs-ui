@@ -53,7 +53,7 @@ public class Layouter implements Tickable, ILayouter {
   private static final int MAX_LAYOUT_DURATION_MS = 10_000;
 
   private static final int DEFAULT_AREA_HEIGHT = 450;
-  private static final int DEFAULT_AREA_WIDTH = 750;
+  private static final int DEFAULT_AREA_WIDTH = 800;
 
   private static final int SEED = 4000;
 

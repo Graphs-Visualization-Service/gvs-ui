@@ -35,7 +35,7 @@ public class SessionView {
 
   @FXML
   private Button autoLayoutBtn;
-  
+
   @FXML
   private ToggleSwitch randomLayoutSwitch;
 
@@ -71,8 +71,6 @@ public class SessionView {
   private final GraphViewModel graphViewModel;
   private final SessionViewModel sessionViewModel;
 
-  private static final int MAX_SCALE_FACTOR = 3;
-
   private static final int ONE_SECOND_MS = 1000;
 
   private static final double SLIDER_MIN = 0.0;
@@ -100,11 +98,9 @@ public class SessionView {
     initializeStepIndicator();
     initializeButtons();
     bindReplayIcons();
-    graphViewModel.setPane(graphPane);
-    graphPane.setMaxScaleX(MAX_SCALE_FACTOR);
-    graphPane.setMaxScaleY(MAX_SCALE_FACTOR);
+    
     graphPane.setAutoRescale(true);
-
+    graphViewModel.setPane(graphPane);
     snapshotDescription.setPromptText("Snapshot description");
   }
 

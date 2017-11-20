@@ -66,14 +66,14 @@ public class VertexViewModel implements Observer {
 
   private void setStyles() {
     GVSStyle style = vertex.getStyle();
-    
+
     String fillColor = style.getFillColor().getColor();
     String lineColor = style.getLineColor().getColor();
     String lineStyle = style.getLineStyle().getStyle();
     String lineThickness = style.getLineThickness().getThickness();
-    
+
     label.getStyleClass().add("vertex");
-    
+
     ellipse.getStyleClass().add("fill-" + fillColor);
     ellipse.getStyleClass().add("line-" + lineColor);
     ellipse.getStyleClass().add(lineStyle + "-" + lineThickness);
@@ -169,8 +169,10 @@ public class VertexViewModel implements Observer {
     logger.info("Adding drag support on VertexViewModel.");
 
     label.setOnMousePressed(e -> {
-      dragOriginalSceneX = e.getSceneX();
-      dragOriginalSceneY = e.getSceneY();
+      dragOriginalSceneX = e.getSceneX()
+          / graphPane.getContentScaleTransform().getX();
+      dragOriginalSceneY = e.getSceneY()
+          / graphPane.getContentScaleTransform().getY();
     });
 
     label.setOnMouseDragged(e -> {
@@ -178,10 +180,10 @@ public class VertexViewModel implements Observer {
       logger.debug("Mouse drag on VertexViewModel detected.");
       ellipse.setCursor(Cursor.HAND);
 
-      double offsetX = (e.getSceneX() - dragOriginalSceneX)
-          / graphPane.getContentScaleTransform().getX();
-      double offsetY = (e.getSceneY() - dragOriginalSceneY)
-          / graphPane.getContentScaleTransform().getY();
+      double offsetX = (e.getSceneX()
+          / graphPane.getContentScaleTransform().getX()) - dragOriginalSceneX;
+      double offsetY = (e.getSceneY()
+          / graphPane.getContentScaleTransform().getY()) - dragOriginalSceneY;
 
       double newX = ellipse.getCenterX() + offsetX;
       double newY = ellipse.getCenterY() + offsetY;
@@ -190,37 +192,45 @@ public class VertexViewModel implements Observer {
       newY = checkYBoundaries(newY, graphPane);
 
       updateCoordinates(newX, newY);
+
       vertex.setUserPositioned(true);
-      
+
       // remember last coordinates
-      dragOriginalSceneX = e.getSceneX();
-      dragOriginalSceneY = e.getSceneY();
+      dragOriginalSceneX = e.getSceneX()
+          / graphPane.getContentScaleTransform().getX();
+      dragOriginalSceneY = e.getSceneY()
+          / graphPane.getContentScaleTransform().getY();
+
     });
   }
 
-  private double checkXBoundaries(double newX, ScalableContentPane p) {
-    double minimum = ellipse.getRadiusX();
-    double maximumX = p.getBoundsInLocal().getWidth();
-
-    if (newX < minimum) {
-      newX = minimum;
-    }
-    if (newX > maximumX) {
-      newX = maximumX;
-    }
+  /**
+   * Check whether new x coordinate is within the boundaries of the parent.
+   * 
+   * @param newX
+   *          x coordinate to check
+   * @param graphPane
+   *          parent
+   * @return x coordinate within range
+   */
+  private double checkXBoundaries(double newX, ScalableContentPane graphPane) {
+    newX = Math.max(newX, ellipse.getRadiusX());
+    newX = Math.min(newX, graphPane.getBoundsInLocal().getWidth());
     return newX;
   }
 
-  private double checkYBoundaries(double newY, ScalableContentPane p) {
-    double minimum = ellipse.getRadiusY();
-    double maximumY = p.getBoundsInLocal().getHeight();
-
-    if (newY < minimum) {
-      newY = minimum;
-    }
-    if (newY > maximumY) {
-      newY = maximumY;
-    }
+  /**
+   * Check whether new y coordinate is within the boundaries of the parent.
+   * 
+   * @param newY
+   *          y coordinate to check
+   * @param graphPane
+   *          parent
+   * @return y coordinate within range
+   */
+  private double checkYBoundaries(double newY, ScalableContentPane graphPane) {
+    newY = Math.max(newY, ellipse.getRadiusY());
+    newY = Math.min(newY, graphPane.getBoundsInLocal().getHeight());
     return newY;
   }
 

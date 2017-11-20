@@ -7,6 +7,7 @@ import java.util.Observable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gvs.business.logic.tree.TreeLayouter;
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.styles.GVSStyle;
 import gvs.interfaces.IVertex;
@@ -18,7 +19,13 @@ public class TreeVertex extends Observable implements IVertex {
   private GVSStyle style;
   private double xPosition;
   private double yPosition;
+  private double mod;
   private boolean isRoot;
+  private boolean isLeftMostChild;
+  private TreeVertex leftMostSibling;
+  private TreeVertex previousSibling;
+  private TreeVertex nextSibling;
+  private TreeVertex parent;
   private boolean isUserPositioned;
 
   private final List<Long> childIds;
@@ -28,21 +35,6 @@ public class TreeVertex extends Observable implements IVertex {
 
   private static final Logger logger = LoggerFactory
       .getLogger(DefaultVertex.class);
-
-  // TODO: do i need this?
-  public TreeVertex(long id, String label, GVSStyle style, double xPosition,
-      double yPosition, boolean isUserPositioned, Glyph icon) {
-    this.id = id;
-    this.label = label;
-    this.style = style;
-    this.xPosition = xPosition;
-    this.yPosition = yPosition;
-    this.isUserPositioned = isUserPositioned;
-    this.icon = icon;
-
-    this.childIds = new ArrayList<>();
-    this.children = new ArrayList<>();
-  }
 
   public TreeVertex(long id, String label, GVSStyle style,
       boolean isUserPositioned, Glyph icon) {
@@ -84,6 +76,20 @@ public class TreeVertex extends Observable implements IVertex {
   @Override
   public void setYPosition(double yPos) {
     this.yPosition = yPos;
+  }
+
+  /**
+   * This property is used in layouting trees {@see TreeLayouter}. It specifies
+   * by how much child vertices of a vertex need to be shifted on the x axis.
+   * 
+   * @return
+   */
+  public double getMod() {
+    return mod;
+  }
+
+  public void setMod(double mod) {
+    this.mod = mod;
   }
 
   @Override
@@ -141,6 +147,22 @@ public class TreeVertex extends Observable implements IVertex {
     this.isRoot = isRoot;
   }
 
+  public boolean isLeftMostChild() {
+    return isLeftMostChild || isRoot;
+  }
+
+  public void setLeftMostChild(boolean isLeftMostChild) {
+    this.isLeftMostChild = isLeftMostChild;
+  }
+
+  public TreeVertex getPreviousSibling() {
+    return previousSibling;
+  }
+
+  public void setPreviousSibling(TreeVertex previousSibling) {
+    this.previousSibling = previousSibling;
+  }
+
   public void addChildId(long childId) {
     childIds.add(childId);
   }
@@ -148,7 +170,32 @@ public class TreeVertex extends Observable implements IVertex {
   public void addChild(TreeVertex vertex) {
     children.add(vertex);
   }
-  
+
+  public TreeVertex getLeftMostSibling() {
+    return leftMostSibling;
+  }
+
+  public TreeVertex getNextSibling() {
+    return nextSibling;
+  }
+
+  public TreeVertex getParent() {
+    return parent;
+  }
+
+  public void setLeftMostSibling(TreeVertex sibling) {
+    this.leftMostSibling = sibling;
+  }
+
+  public void setNextSibling(TreeVertex sibling) {
+    this.nextSibling = sibling;
+  }
+
+  public void setParent(TreeVertex parent) {
+    this.parent = parent;
+  }
+
+  @Override
   public String toString() {
     return String.format("TreeVertex(%s [%f,%f])", label, xPosition, yPosition);
   }

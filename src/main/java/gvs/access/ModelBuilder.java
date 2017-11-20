@@ -205,8 +205,36 @@ public class ModelBuilder {
           current.addChild(child);
         }
       });
+      setChildRelations(current);
     });
     return vertices;
+  }
+
+  /**
+   * Set child relations for use in TreeLayouter
+   * 
+   * @param vertex
+   */
+  private void setChildRelations(TreeVertex vertex) {
+    List<TreeVertex> children = vertex.getChildren();
+    if (!children.isEmpty()) {
+      TreeVertex leftMostSibling = children.get(0);
+      leftMostSibling.setLeftMostChild(true);
+      leftMostSibling.setParent(vertex);
+      for (int i = 1; i < children.size() - 1; i++) {
+        if (i == 1) {
+          leftMostSibling.setNextSibling(children.get(i));
+        }
+        children.get(i).setParent(vertex);
+        children.get(i).setPreviousSibling(children.get(i - 1));
+        children.get(i).setNextSibling(children.get(i + 1));
+        children.get(i).setLeftMostSibling(leftMostSibling);
+      }
+      children.get(children.size() - 1)
+          .setPreviousSibling(children.get(children.size() - 1));
+      children.get(children.size() - 1).setLeftMostSibling(leftMostSibling);
+      children.get(children.size() - 1).setParent(vertex);
+    }
   }
 
   private Collection<IEdge> buildTreeEdges(Collection<IVertex> vertices) {
@@ -230,6 +258,7 @@ public class ModelBuilder {
     String label = eLabel.getText();
 
     GVSStyle style = buildStyle(pVertex, true);
+
 
     Element eRigthChild = pVertex.element(RIGTHCHILD);
     Element eLeftChild = pVertex.element(LEFTCHILD);
@@ -315,7 +344,9 @@ public class ModelBuilder {
     logger.debug("Build DirectedEdge XML");
     Element eLabel = pEdge.element(LABEL);
     String label = eLabel.getText();
+
     GVSStyle style = buildStyle(pEdge, false);
+
     Element eFromVertex = pEdge.element(FROMVERTEX);
     Element eToVertex = pEdge.element(TOVERTEX);
     long fromVertexId = Long.parseLong(eFromVertex.getText());

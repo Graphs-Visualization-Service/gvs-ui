@@ -359,10 +359,37 @@ public class Persistor {
           current.addChild(child);
         }
       });
+      setChildRelations(current);
     });
     return vertices;
   }
 
+  /**
+   * Set child relations for use in TreeLayouter
+   * 
+   * @param vertex
+   */
+  private void setChildRelations(TreeVertex vertex) {
+    List<TreeVertex> children = vertex.getChildren();
+    if (!children.isEmpty()) {
+      TreeVertex leftMostSibling = children.get(0);
+      leftMostSibling.setLeftMostChild(true);
+      leftMostSibling.setParent(vertex);
+      for (int i = 1; i < children.size() - 1; i++) {
+        if (i == 1) {
+          leftMostSibling.setNextSibling(children.get(i));
+        }
+        children.get(i).setParent(vertex);
+        children.get(i).setPreviousSibling(children.get(i - 1));
+        children.get(i).setNextSibling(children.get(i + 1));
+        children.get(i).setLeftMostSibling(leftMostSibling);
+      }
+      children.get(children.size() - 1)
+          .setPreviousSibling(children.get(children.size() - 1));
+      children.get(children.size() - 1).setLeftMostSibling(leftMostSibling);
+      children.get(children.size() - 1).setParent(vertex);
+    }
+  }
   private Map<Long, IVertex> buildTreeVertices(Element graphElement) {
     Element vertexElements = graphElement.element(NODES);
     Map<Long, IVertex> vertexMap = new HashMap<>();

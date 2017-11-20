@@ -80,8 +80,7 @@ public class TreeLayouter implements ILayouter {
   }
 
   private void firstWalk(TreeVertex vertex) {
-    // if vertex is a leaf
-    if (vertex.getChildren().isEmpty()) {
+    if (vertex.isLeaf()) {
       vertex.setPrelim(0);
       TreeVertex leftSibling = getLeftSibling(vertex);
       if (leftSibling != null) {
@@ -202,7 +201,7 @@ public class TreeLayouter implements ILayouter {
    * @return the successor of vertex on this contour
    */
   private TreeVertex nextLeft(TreeVertex vertex) {
-    if (!vertex.getChildren().isEmpty()) {
+    if (!vertex.isLeaf()) {
       return vertex.getChildren().get(0);
     } else {
       return vertex.getThread();
@@ -216,7 +215,7 @@ public class TreeLayouter implements ILayouter {
    * @return the successor of vertex on this contour
    */
   private TreeVertex nextRight(TreeVertex vertex) {
-    if (!vertex.getChildren().isEmpty()) {
+    if (!vertex.isLeaf()) {
       return vertex.getChildren().get(vertex.getChildren().size() - 1);
     } else {
       return vertex.getThread();

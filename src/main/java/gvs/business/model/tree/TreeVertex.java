@@ -22,7 +22,7 @@ public class TreeVertex extends Observable implements IVertex {
 
   private boolean isRoot;
   private TreeVertex parent;
-  // values are needed ofr lyouting trees
+  // values are needed for layouting trees
   private TreeVertex thread;
   private double mod;
   private double prelim;
@@ -133,6 +133,11 @@ public class TreeVertex extends Observable implements IVertex {
     return style;
   }
 
+  
+  public boolean isLeaf() {
+    return getChildren().isEmpty();
+  }
+  
   public List<Long> getChildIds() {
     return childIds;
   }

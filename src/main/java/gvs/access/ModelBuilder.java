@@ -214,14 +214,10 @@ public class ModelBuilder {
    * Set child relations for use in TreeLayouter
    * 
    * @param vertex
+   *          parent vertex
    */
   private void setChildRelations(TreeVertex vertex) {
-    List<TreeVertex> children = vertex.getChildren();
-    if (!children.isEmpty()) {
-      for (int i = 0; i < children.size(); i++) {
-        children.get(i).setParent(vertex);
-      }
-    }
+    vertex.getChildren().forEach(c -> c.setParent(vertex));
   }
 
   private Collection<IEdge> buildTreeEdges(Collection<IVertex> vertices) {
@@ -245,7 +241,6 @@ public class ModelBuilder {
     String label = eLabel.getText();
 
     GVSStyle style = buildStyle(pVertex, true);
-
 
     Element eRigthChild = pVertex.element(RIGTHCHILD);
     Element eLeftChild = pVertex.element(LEFTCHILD);

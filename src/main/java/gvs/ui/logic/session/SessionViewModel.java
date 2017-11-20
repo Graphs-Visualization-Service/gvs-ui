@@ -64,7 +64,7 @@ public class SessionViewModel implements Observer {
     this.cancelReplayBtnDisableProperty = new SimpleBooleanProperty();
 
     this.autoLayoutBtnDisableProperty = new SimpleBooleanProperty();
-
+    
     updateStepProperties();
 
     currentSessionHolder.addObserver(this);
@@ -188,7 +188,7 @@ public class SessionViewModel implements Observer {
     disableLayoutButton(disabled);
 
     boolean isLayoutable = sessionHolder.getCurrentSession().getGraphHolder()
-        .getCurrentGraph().isLayoutable();
+        .getCurrentGraph().isLayoutable() && !sessionHolder.getCurrentSession().isTreeSession();
     autoLayoutBtnDisableProperty.set(!isLayoutable);
   }
 

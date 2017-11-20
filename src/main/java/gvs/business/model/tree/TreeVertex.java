@@ -152,4 +152,9 @@ public class TreeVertex extends Observable implements IVertex {
   public String toString() {
     return String.format("TreeVertex(%s [%f,%f])", label, xPosition, yPosition);
   }
+
+  @Override
+  public boolean isTreeVertex() {
+    return true;
+  }
 }

@@ -101,4 +101,9 @@ public class DefaultVertex extends Observable implements IVertex {
   public Glyph getIcon() {
     return icon;
   }
+
+  @Override
+  public boolean isTreeVertex() {
+    return false;
+  }
 }

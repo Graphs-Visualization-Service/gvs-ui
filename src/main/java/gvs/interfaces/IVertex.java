@@ -34,5 +34,7 @@ public interface IVertex {
   GVSStyle getStyle();
 
   void addObserver(Observer o);
+  
+  boolean isTreeVertex();
 
 }

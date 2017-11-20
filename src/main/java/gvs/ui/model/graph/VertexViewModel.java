@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.styles.GVSStyle;
+import gvs.business.model.tree.TreeVertex;
 import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome;
 import javafx.application.Platform;
@@ -49,7 +50,9 @@ public class VertexViewModel implements Observer {
       label.setGraphic(FontAwesome.createLabel(vertex.getIcon()));
     }
     label.setText(vertex.getLabel());
-    label.setCursor(Cursor.HAND);
+    if (!vertex.isTreeVertex()) {
+      label.setCursor(Cursor.HAND);
+    }
 
     ellipse = new Ellipse();
 
@@ -174,6 +177,9 @@ public class VertexViewModel implements Observer {
     });
 
     label.setOnMouseDragged(e -> {
+      if (vertex.isTreeVertex()) {
+        return; 
+      }
       // logger level debug, because this will happen very often
       logger.debug("Mouse drag on VertexViewModel detected.");
       ellipse.setCursor(Cursor.HAND);

@@ -7,7 +7,6 @@ import java.util.Observable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.business.logic.tree.TreeLayouter;
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.styles.GVSStyle;
 import gvs.interfaces.IVertex;
@@ -19,19 +18,25 @@ public class TreeVertex extends Observable implements IVertex {
   private GVSStyle style;
   private double xPosition;
   private double yPosition;
-  private double mod;
+  private boolean isUserPositioned;
+
   private boolean isRoot;
   private boolean isLeftMostChild;
   private TreeVertex leftMostSibling;
   private TreeVertex previousSibling;
   private TreeVertex nextSibling;
   private TreeVertex parent;
-  private boolean isUserPositioned;
+  private TreeVertex thread;
+  private double mod;
+  private double prelim;
 
   private final List<Long> childIds;
   private final List<TreeVertex> children;
 
   private final Glyph icon;
+  private TreeVertex setAncestor;
+  private double change;
+  private double shift;
 
   private static final Logger logger = LoggerFactory
       .getLogger(DefaultVertex.class);
@@ -195,8 +200,45 @@ public class TreeVertex extends Observable implements IVertex {
     this.parent = parent;
   }
 
+  public TreeVertex getThread() {
+    return thread;
+  }
+
+  public double getPrelim() {
+    return prelim;
+  }
+
+  public void setPrelim(double prelim) {
+    this.prelim = prelim;
+  }
+
+  public void setThread(TreeVertex thread) {
+    this.thread = thread;
+  }
+
   @Override
   public String toString() {
     return String.format("TreeVertex(%s [%f,%f])", label, xPosition, yPosition);
   }
+
+  public void setAncestor(TreeVertex vertex) {
+    this.setAncestor = vertex;
+  }
+  
+  public void setChange(double change) {
+    this.change = change;
+  }
+  
+  public double getChange() {
+    return change;
+  }
+  
+  public void setShift(double shift) {
+    this.shift = shift;
+  }
+  
+  public double getShift() {
+    return shift;
+  }
+
 }

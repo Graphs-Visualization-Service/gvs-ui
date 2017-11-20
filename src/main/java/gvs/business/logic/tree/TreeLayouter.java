@@ -1,9 +1,6 @@
 package gvs.business.logic.tree;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -28,8 +25,8 @@ import gvs.interfaces.Action;
 public class TreeLayouter implements ILayouter {
 
   private static final int NODESIZE = 50;
-  private static final double SIBLING_DISTANCE = 200;
-  private static final double TREE_DISTANCE = 500;
+  private static final double SIBLING_DISTANCE = 50;
+  private static final double LEVEL_DISTANCE = 100;
   private static final Logger logger = LoggerFactory
       .getLogger(TreeLayouter.class);
 
@@ -41,196 +38,202 @@ public class TreeLayouter implements ILayouter {
         .map(v -> (TreeVertex) v).filter(v -> v.isRoot())
         .collect(Collectors.toList());
 
-    roots.forEach(root -> initializeVertices(root, 0));
-    roots.forEach(root -> calculateInitialXPosition(root));
-    roots.forEach(root -> checkAllChildrenOnScreen(root));
-    roots.forEach(root -> calculateFinalPositions(root, 0));
+    roots.forEach(root -> {
+      initializePositions(root);
+      firstWalk(root);
+      secondWalk(root, -root.getPrelim());
+    });
     logger.debug(currentGraph.toString());
     logger.debug("\n");
   }
 
-  private void checkAllChildrenOnScreen(TreeVertex vertex) {
-    Map<Double, Double> nodeContour = new HashMap<>();
-
-    getLeftContour(vertex, 0, nodeContour);
-
-    double shiftAmount = 0;
-    
-    for (Double key : nodeContour.keySet()) {
-      if (nodeContour.get(key) + shiftAmount < 0) {
-        shiftAmount = (nodeContour.get(key) * -1);
-      }
-    }
-
-    if (shiftAmount > 0) {
-      vertex.setXPosition(vertex.getXPosition() + shiftAmount);
-      vertex.setMod(vertex.getMod() + shiftAmount);
-    }
+  private void secondWalk(TreeVertex vertex, double m) {
+    vertex.setXPosition(vertex.getPrelim() + m);
+    //TODO: add leveldistance
+    vertex.setYPosition(getLevel(vertex) * LEVEL_DISTANCE + LEVEL_DISTANCE);
+    vertex.getChildren().forEach(child -> secondWalk(child, m + vertex.getMod()));
   }
 
-  private void getLeftContour(TreeVertex vertex, double modSum,
-      Map<Double, Double> values) {
-    if (!values.containsKey(vertex.getYPosition())) {
-      values.put(vertex.getYPosition(), vertex.getXPosition() + modSum);
+  private double getLevel(TreeVertex vertex) {
+    if (vertex.getParent() == null) {
+      return 1;
     } else {
-      values.put(vertex.getYPosition(), Math.min(
-          values.get(vertex.getYPosition()), vertex.getXPosition() + modSum));
-    }
-    modSum += vertex.getMod();
-    double finalModSum = modSum;
-    vertex.getChildren()
-        .forEach(child -> getLeftContour(child, finalModSum, values));
-  }
-
-  private void getRightContour(TreeVertex vertex, double modSum,
-      Map<Double, Double> values) {
-    if (!values.containsKey(vertex.getYPosition())) {
-      values.put(vertex.getYPosition(), vertex.getXPosition() + modSum);
-    } else {
-      values.put(vertex.getYPosition(), Math.max(
-          values.get(vertex.getYPosition()), vertex.getXPosition() + modSum));
-    }
-    modSum += vertex.getMod();
-    double finalModSum = modSum;
-    vertex.getChildren()
-        .forEach(child -> getRightContour(child, finalModSum, values));
-  }
-
-  private void calculateFinalPositions(TreeVertex vertex, double modSum) {
-    vertex.setMod(vertex.getMod() + modSum);
-    modSum += vertex.getMod();
-    double finalModSum = modSum;
-    vertex.getChildren()
-        .forEach(child -> calculateFinalPositions(child, finalModSum));
-
-    if (!vertex.getChildren().isEmpty()) {
-      double biggestX = vertex.getChildren().stream()
-          .sorted(
-              (v1, v2) -> Double.compare(v2.getXPosition(), v1.getXPosition()))
-          .collect(Collectors.toList()).get(0).getXPosition();
-      double biggestY = vertex.getChildren().stream()
-          .sorted(
-              (v1, v2) -> Double.compare(v2.getYPosition(), v1.getYPosition()))
-          .collect(Collectors.toList()).get(0).getYPosition();
-      vertex.setXPosition(biggestX);
-      vertex.setYPosition(biggestY);
+      return 1 + getLevel(vertex.getParent());
     }
   }
 
-  private void initializeVertices(TreeVertex vertex, int depth) {
-    vertex.setXPosition(-1); // TODO: probably superfluous
-    vertex.setYPosition(depth);
-    vertex.setMod(0);// TODO: probably superfluous
-
-    vertex.getChildren().forEach(child -> initializeVertices(child, depth + 1));
-  }
-
-  private void calculateInitialXPosition(TreeVertex vertex) {
-    vertex.getChildren().forEach(child -> calculateInitialXPosition(child));
-
-    // if no children
+  private void firstWalk(TreeVertex vertex) {
+    // if vertex is a leaf
     if (vertex.getChildren().isEmpty()) {
-      // if there is a previous sibling in this set, set X to prevous sibling +
-      // designated distance
-      if (!vertex.isLeftMostChild() && !vertex.isRoot()) {
-        vertex.setXPosition(vertex.getPreviousSibling().getXPosition()
-            + NODESIZE + SIBLING_DISTANCE);
-      } else {
-        // if this is the first node in a set, set X to 0
-        vertex.setXPosition(0);
-      }
-    }
-    // if there is only one child
-    else if (vertex.getChildren().size() == 1) {
-      // if this is the first node in a set, set it's X value equal to it's
-      // child's X value
-      if (vertex.isLeftMostChild()) {
-        vertex.setXPosition(vertex.getChildren().get(0).getXPosition());
-      } else {
-        vertex.setXPosition(vertex.getPreviousSibling().getXPosition()
-            + NODESIZE + SIBLING_DISTANCE);
-        vertex.setMod(
-            vertex.getXPosition() - vertex.getChildren().get(0).getXPosition());
+      vertex.setPrelim(0);
+      TreeVertex leftSibling = getLeftSibling(vertex);
+      if (leftSibling != null) {
+        vertex.setPrelim(leftSibling.getPrelim() + SIBLING_DISTANCE);
       }
     } else {
+      TreeVertex defaultAncestor = vertex.getChildren().get(0);
+      vertex.getChildren().forEach(child -> {
+        firstWalk(child);
+        apportion(child, defaultAncestor);
+      });
+      executeShifts(vertex);
       TreeVertex leftMostChild = vertex.getChildren().get(0);
       TreeVertex rightMostChild = vertex.getChildren()
           .get(vertex.getChildren().size() - 1);
-      double middle = (leftMostChild.getXPosition()
-          + rightMostChild.getXPosition()) / 2;
-
-      if (vertex.isLeftMostChild()) {
-        vertex.setXPosition(middle);
+      double midPoint = 0.5
+          * (leftMostChild.getPrelim() + rightMostChild.getPrelim());
+      TreeVertex leftSibling = getLeftSibling(vertex);
+      if (leftSibling != null) {
+        vertex.setPrelim(leftSibling.getPrelim() + SIBLING_DISTANCE);
+        vertex.setMod(leftSibling.getPrelim() - midPoint);
       } else {
-        vertex.setXPosition(vertex.getPreviousSibling().getXPosition()
-            + NODESIZE + SIBLING_DISTANCE);
-        vertex.setMod(vertex.getXPosition() - middle);
+        vertex.setPrelim(midPoint);
       }
-    }
-    if (vertex.getChildren().size() > 0 && !vertex.isLeftMostChild()) {
-      // Since subtrees can overlap, check for conflicts and shift tree right if
-      // needed
-      checkForConflicts(vertex);
     }
   }
 
-  private void checkForConflicts(TreeVertex vertex) {
-    double minDistance = TREE_DISTANCE + NODESIZE;
-    double shiftValue = 0.0;
+  private void executeShifts(TreeVertex vertex) {
+    double shift = 0;
+    double change = 0;
+    List<TreeVertex> children = vertex.getChildren();
+    for (int i = children.size() - 1; i == 0; i--) {
+      TreeVertex child = children.get(i);
+      child.setPrelim(child.getPrelim() + shift);
+      child.setMod(child.getMod() + shift);
+      change += child.getChange();
+      shift = shift + child.getShift() + change;
+    }
+  }
 
-    Map<Double, Double> nodeContour = new HashMap<>();
-    getLeftContour(vertex, 0, nodeContour);
+  private void apportion(TreeVertex vertex, TreeVertex defaultAncestor) {
+    TreeVertex leftSibling = getLeftSibling(vertex);
+    if (leftSibling != null) {
+      TreeVertex leftMostSibling = getLeftMostSibling(vertex);
+      TreeVertex insideRightVertex = vertex;
+      TreeVertex insideLeftVertex = leftSibling;
+      TreeVertex outsideRightVertex = vertex;
+      TreeVertex outsideLeftVertex = leftMostSibling;
 
-    TreeVertex sibling = vertex.getLeftMostSibling();
-    while (sibling != null && sibling != vertex) {
-      Map<Double, Double> siblingContour = new HashMap<>();
-      getRightContour(sibling, 0, siblingContour);
+      double insideRightModSum = insideRightVertex.getMod();
+      double insideLeftModSum = insideLeftVertex.getMod();
+      double outsideRightModSum = outsideRightVertex.getMod();
+      double outsideLeftModSum = outsideLeftVertex.getMod();
 
-      for (double level = vertex.getYPosition() + 1; level <= Math.min(
-          Collections.max(siblingContour.keySet()),
-          Collections.max(nodeContour.keySet())); level++) {
-        double distance = nodeContour.get(level) - siblingContour.get(level);
-        if (distance + shiftValue < minDistance) {
-          shiftValue = Math.max(minDistance - distance, shiftValue);
+      while (nextRight(insideLeftVertex) != null
+          && nextLeft(insideRightVertex) != null) {
+        insideLeftVertex = nextRight(insideLeftVertex);
+        insideRightVertex = nextLeft(insideRightVertex);
+        outsideLeftVertex = nextLeft(outsideLeftVertex);
+        outsideRightVertex = nextRight(outsideRightVertex);
+        outsideRightVertex.setAncestor(vertex);
+        double shift = (insideLeftVertex.getPrelim() + insideLeftModSum)
+            - (insideRightVertex.getPrelim() + insideRightModSum)
+            + SIBLING_DISTANCE;
+        if (shift > 0) {
+          moveSubTree(ancestor(insideLeftVertex, vertex, defaultAncestor),
+              vertex, shift);
+          insideRightModSum += shift;
+          outsideRightModSum += shift;
         }
+        insideLeftModSum += insideLeftVertex.getMod();
+        insideRightModSum += insideRightVertex.getMod();
+        outsideLeftModSum += outsideLeftVertex.getMod();
+        outsideRightModSum += outsideRightVertex.getMod();
       }
-
-      if (shiftValue > 0) {
-        vertex.setXPosition(vertex.getXPosition() + shiftValue);
-        vertex.setMod(vertex.getMod() + shiftValue);
-
-        centerNodesBetween(vertex, sibling);
-
-        shiftValue = 0;
+      // TODO: should this be outside the while loop?
+      if (nextRight(insideLeftVertex) != null
+          && nextRight(outsideRightVertex) == null) {
+        outsideRightVertex.setThread(nextRight(insideLeftVertex));
+        outsideRightVertex.setMod(outsideRightVertex.getMod() + insideLeftModSum
+            + outsideRightModSum);
       }
+      if (nextLeft(insideRightVertex) != null
+          && nextLeft(outsideLeftVertex) == null) {
+        outsideLeftVertex.setThread(nextLeft(insideRightVertex));
+        outsideLeftVertex.setMod(
+            outsideLeftVertex.getMod() + insideRightModSum + outsideLeftModSum);
+        defaultAncestor = vertex;
+      }
+    }
 
-      sibling = sibling.getNextSibling();
+  }
+
+  private void moveSubTree(TreeVertex vertexLeft, TreeVertex vertexRight,
+      double shift) {
+    int subtrees = number(vertexRight) - number(vertexLeft);
+    vertexRight.setChange(vertexRight.getChange() - shift / subtrees);
+    vertexRight.setShift(vertexRight.getShift() + shift);
+
+    vertexLeft.setChange(vertexLeft.getChange() - shift / subtrees);
+    vertexRight.setPrelim(vertexRight.getPrelim() + shift);
+    vertexRight.setMod(vertexRight.getMod() + shift);
+  }
+
+  private int number(TreeVertex vertexRight) {
+    return vertexRight.getParent().getChildren().indexOf(vertexRight);
+  }
+
+  private TreeVertex ancestor(TreeVertex insideLeftVertex, TreeVertex vertex,
+      TreeVertex defaultAncestor) {
+    if (insideLeftVertex.getParent().getParent().equals(vertex.getParent())) {
+      return insideLeftVertex.getParent();
+    } else {
+      return defaultAncestor;
     }
   }
 
-  private void centerNodesBetween(TreeVertex leftNode, TreeVertex rightNode) {
-    int leftIndex = leftNode.getParent().getChildren().indexOf(leftNode);
-    int rightIndex = leftNode.getParent().getChildren().indexOf(rightNode);
-
-    double numNodesBetween = (rightIndex - leftIndex) - 1;
-
-    if (numNodesBetween > 0) {
-      double distanceBetweenNodes = (leftNode.getXPosition()
-          - rightNode.getXPosition()) / (numNodesBetween + 1);
-
-      int count = 1;
-      for (int i = leftIndex + 1; i < rightIndex; i++) {
-        TreeVertex middleNode = leftNode.getParent().getChildren().get(i);
-
-        double desiredX = rightNode.getXPosition()
-            + (distanceBetweenNodes * count);
-        double offset = desiredX - middleNode.getXPosition();
-        middleNode.setXPosition(middleNode.getXPosition() + offset);
-        middleNode.setMod(middleNode.getMod() + offset);
-        count++;
-      }
-      checkForConflicts(leftNode);
+  /**
+   * Used to traverse the left contour of a subtree.
+   * 
+   * @param vertex
+   * @return the successor of vertex on this contour
+   */
+  private TreeVertex nextLeft(TreeVertex vertex) {
+    if (!vertex.getChildren().isEmpty()) {
+      return vertex.getChildren().get(0);
+    } else {
+      return vertex.getThread();
     }
+  }
+
+  /**
+   * Used to traverse the right contour of a subtree.
+   * 
+   * @param vertex
+   * @return the successor of vertex on this contour
+   */
+  private TreeVertex nextRight(TreeVertex vertex) {
+    if (!vertex.getChildren().isEmpty()) {
+      return vertex.getChildren().get(vertex.getChildren().size() - 1);
+    } else {
+      return vertex.getThread();
+    }
+  }
+
+  private TreeVertex getLeftMostSibling(TreeVertex vertex) {
+    TreeVertex parent = vertex.getParent();
+    if (parent != null) {
+      return parent.getChildren().get(0);
+    }
+    return null;
+  }
+
+  private TreeVertex getLeftSibling(TreeVertex vertex) {
+    TreeVertex parent = vertex.getParent();
+    if (parent != null) {
+      int index = parent.getChildren().indexOf(vertex);
+      if (index == 0) {
+        return null;
+      } else {
+        return parent.getChildren().get(index - 1);
+      }
+    }
+    return null;
+  }
+
+  private void initializePositions(TreeVertex root) {
+    // TODO Auto-generated method stub
+
   }
 
 }

@@ -125,7 +125,10 @@ public class SessionViewModel implements Observer {
         totalGraphCountProperty.set(maxPosition);
         currentGraphIdProperty.set(currentPosition);
         if (!isReplayingProperty.get()) {
-          if (currentPosition <= 1) {
+          if (currentPosition == 1 && maxPosition == 1) {
+            disableStepButtons(true, true, true, true);
+            disableReplayButtons(true, true);
+          } else if (currentPosition <= 1) {
             disableStepButtons(true, true, false, false);
           } else if (currentPosition == maxPosition) {
             disableStepButtons(false, false, true, true);

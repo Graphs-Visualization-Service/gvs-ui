@@ -27,9 +27,6 @@ public class GraphVertex extends Observable implements IVertex {
 
   private final Glyph icon;
 
-  private static final Logger logger = LoggerFactory
-      .getLogger(GraphVertex.class);
-
   public GraphVertex(long id, String label, GVSStyle style, double xPosition,
       double yPosition, Glyph icon) {
 

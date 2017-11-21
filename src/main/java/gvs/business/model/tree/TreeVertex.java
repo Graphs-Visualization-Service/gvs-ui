@@ -47,7 +47,6 @@ public class TreeVertex extends Observable implements IVertex {
 
     this.childIds = new ArrayList<>();
     this.children = new ArrayList<>();
-    logger.info("Instantiated TreeVertex: {}", id);
   }
 
   @Override

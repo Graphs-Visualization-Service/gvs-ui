@@ -109,6 +109,7 @@ public class GraphVertex extends Observable implements IVertex {
 
   @Override
   public String toString() {
-    return String.format("GraphVertex(%s [%f,%f])", label, xPosition, yPosition);
+    return String.format("GraphVertex(%s [%f,%f])", label, xPosition,
+        yPosition);
   }
 }

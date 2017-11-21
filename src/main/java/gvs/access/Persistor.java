@@ -474,7 +474,7 @@ public class Persistor {
     if (eRigthChild != null) {
       rigthchildId = Long.parseLong(eRigthChild.getText());
     }
-    logger.info("Finished loading TreeVertex.");
+    logger.info("Finished loading TreeVertex");
     TreeVertex newVertex = new TreeVertex(vertexId, label, style, false, null);
     newVertex.addChildId(leftchildId);
     newVertex.addChildId(rigthchildId);

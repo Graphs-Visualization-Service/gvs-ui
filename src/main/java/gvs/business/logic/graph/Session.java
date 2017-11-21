@@ -234,7 +234,13 @@ public class Session {
     int newIndex = getGraphs().size() - 1;
     if (validIndex(newIndex)) {
       Graph lastGraph = getGraphs().get(newIndex);
-      graphHolder.setCurrentGraph(lastGraph);
+
+      if (!isTreeSession) {
+        takeOverPreviousVertexPositions(graphHolder.getCurrentGraph(),
+            lastGraph);
+      } else {
+        graphHolder.setCurrentGraph(lastGraph);
+      }
     }
   }
 

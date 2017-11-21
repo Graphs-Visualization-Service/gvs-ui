@@ -16,6 +16,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  * The ViewModel class for the current session. Corresponds to the classical
@@ -64,7 +66,7 @@ public class SessionViewModel implements Observer {
     this.cancelReplayBtnDisableProperty = new SimpleBooleanProperty();
 
     this.autoLayoutBtnDisableProperty = new SimpleBooleanProperty();
-    
+
     updateStepProperties();
 
     currentSessionHolder.addObserver(this);
@@ -191,7 +193,8 @@ public class SessionViewModel implements Observer {
     disableLayoutButton(disabled);
 
     boolean isLayoutable = sessionHolder.getCurrentSession().getGraphHolder()
-        .getCurrentGraph().isLayoutable() && !sessionHolder.getCurrentSession().isTreeSession();
+        .getCurrentGraph().isLayoutable()
+        && !sessionHolder.getCurrentSession().isTreeSession();
     autoLayoutBtnDisableProperty.set(!isLayoutable);
   }
 
@@ -251,5 +254,4 @@ public class SessionViewModel implements Observer {
   public BooleanProperty getIsReplayingProperty() {
     return isReplayingProperty;
   }
-
 }

@@ -300,7 +300,9 @@ public class Persistor {
         // TODO should we set this graph id?
         int graphId = Integer
             .parseInt(graphElement.attributeValue(ATTRIBUTEID));
-        Graph newGraph = new Graph(vertices.values(), edges);
+        String snapShotDescription = graphElement.element(LABEL).getText();
+        Graph newGraph = new Graph(snapShotDescription, vertices.values(),
+            edges);
 
         session.addGraph(newGraph);
       }
@@ -329,7 +331,8 @@ public class Persistor {
         // TODO should we set this graph id?
         int graphId = Integer
             .parseInt(graphElement.attributeValue(ATTRIBUTEID));
-        Graph newGraph = new Graph(vertices, edges);
+        String snapShotDescription = graphElement.element(LABEL).getText();
+        Graph newGraph = new Graph(snapShotDescription, vertices, edges);
         session.addGraph(newGraph);
       }
     });

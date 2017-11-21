@@ -139,7 +139,8 @@ public class ModelBuilder {
       }
     });
 
-    Graph newGraph = new Graph(vertizes, edges);
+    String snapShotDescription = graphElement.element(LABEL).getText();
+    Graph newGraph = new Graph(snapShotDescription, vertizes, edges);
 
     logger.debug("Finish build graph from XML");
     long sessionId = Long.parseLong(graphElement.attributeValue(ATTRIBUTEID));
@@ -156,11 +157,11 @@ public class ModelBuilder {
    */
   private void buildTree(Element pDocRoot) {
     logger.info("Building tree from XML...");
-    Element eTree = pDocRoot.element(TREE);
+    Element treeElement = pDocRoot.element(TREE);
     Element eVertices = pDocRoot.element(NODES);
 
-    long sessionId = Long.parseLong(eTree.attributeValue(ATTRIBUTEID));
-    String sessionName = eTree.element(LABEL).getText();
+    long sessionId = Long.parseLong(treeElement.attributeValue(ATTRIBUTEID));
+    String sessionName = treeElement.element(LABEL).getText();
 
     // uses a map for easy access to vertices over their id
     Map<Long, IVertex> vertexMap = buildTreeVertices(eVertices);
@@ -169,7 +170,8 @@ public class ModelBuilder {
 
     Collection<IEdge> edges = buildTreeEdges(vertices);
 
-    Graph tree = new Graph(vertices, edges);
+    String snapShotDescription = treeElement.element(LABEL).getText();
+    Graph tree = new Graph(snapShotDescription, vertices, edges);
     logger.info("Finished build tree from XML.");
     applicationController.addGraphToSession(tree, sessionId, sessionName, true);
   }

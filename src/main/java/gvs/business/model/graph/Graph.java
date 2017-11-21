@@ -32,14 +32,13 @@ public class Graph {
    * @param edges
    *          edges
    */
-  public Graph(Collection<IVertex> vertices, Collection<IEdge> edges) {
+  public Graph(String snapshotDescription, Collection<IVertex> vertices,
+      Collection<IEdge> edges) {
 
     logger.info("Building new Graph.");
     this.vertices = vertices;
     this.edges = edges;
-    // TODO: maybe better change persistor behaviour
-    // initialize to empty string -> otherwise error when saving session
-    this.snapshotDescription = new String();
+    this.snapshotDescription = snapshotDescription;
   }
 
   public boolean isLayoutable() {
@@ -77,7 +76,7 @@ public class Graph {
   public void setEdges(Set<IEdge> edges) {
     this.edges = edges;
   }
-  
+
   public String toString() {
     String verticesString = "";
     for (IVertex v : vertices) {
@@ -87,7 +86,8 @@ public class Graph {
     for (IEdge e : edges) {
       edgesString += e.toString();
     }
-    return String.format("%d \t Vertices: [%s], Edges: [%s]", id, verticesString, edgesString);
+    return String.format("%d \t Vertices: [%s], Edges: [%s]", id,
+        verticesString, edgesString);
   }
 
 }

@@ -106,4 +106,9 @@ public class GraphVertex extends Observable implements IVertex {
   public boolean isTreeVertex() {
     return false;
   }
+
+  @Override
+  public String toString() {
+    return String.format("GraphVertex(%s [%f,%f])", label, xPosition, yPosition);
+  }
 }

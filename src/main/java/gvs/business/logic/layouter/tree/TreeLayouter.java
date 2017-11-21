@@ -50,16 +50,18 @@ public class TreeLayouter implements ILayouter {
     logger.info("Finished layouting tree.");
   }
 
+  //TODO: more a fix than anything else. Better only shift trees with roots in the negative and then center the whole content pane in the UI!
   private void centerGraph(TreeVertex root, Graph currentGraph) {
     List<IVertex> verticesSorted = currentGraph.getVertices().stream()
         .sorted(
             (v1, v2) -> Double.compare(v1.getXPosition(), v2.getXPosition()))
         .collect(Collectors.toList());
     double minX = verticesSorted.get(0).getXPosition();
-    if (minX < 0) {
-      verticesSorted.forEach(
-          v -> v.setXPosition(v.getXPosition() + Math.abs(minX) + MARGIN));
-    }
+    double maxX = verticesSorted.get(verticesSorted.size() - 1).getXPosition();
+    double treeMiddleX = (maxX + minX) / 2;
+    double paneMiddle = 180;
+    verticesSorted
+        .forEach(v -> v.setXPosition(v.getXPosition() + (paneMiddle-treeMiddleX)));
   }
 
   /**

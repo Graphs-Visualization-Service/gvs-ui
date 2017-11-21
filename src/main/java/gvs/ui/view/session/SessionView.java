@@ -20,6 +20,9 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.shape.Rectangle;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
@@ -29,6 +32,8 @@ import jfxtras.labs.scene.layout.ScalableContentPane;
  */
 @Singleton
 public class SessionView {
+  @FXML
+  private BorderPane sessionRoot;
 
   @FXML
   private ScalableContentPane graphPane;
@@ -71,8 +76,8 @@ public class SessionView {
   private final GraphViewModel graphViewModel;
   private final SessionViewModel sessionViewModel;
 
+  private static final int INITIAL_CLIP_DIMENSION = 800;
   private static final int ONE_SECOND_MS = 1000;
-
   private static final double SLIDER_MIN = 0.0;
   private static final double SLIDER_DEFAULT = 1.0;
   private static final double SLIDER_MAX = 2.0;
@@ -94,6 +99,8 @@ public class SessionView {
    */
   @FXML
   private void initialize() {
+    clipRootPane();
+
     initializeReplaySlider();
     initializeStepIndicator();
     initializeButtons();
@@ -104,6 +111,21 @@ public class SessionView {
     snapshotDescription.setPromptText("Snapshot description");
     snapshotDescription.textProperty()
         .bindBidirectional(graphViewModel.snapshotDescriptionProperty());
+  }
+
+  /**
+   * Prohibits child elements to overlap the bounds of the root pane.
+   */
+  private void clipRootPane() {
+    final Rectangle clip = new Rectangle();
+    clip.setWidth(INITIAL_CLIP_DIMENSION);
+    clip.setHeight(INITIAL_CLIP_DIMENSION);
+    sessionRoot.setClip(clip);
+
+    sessionRoot.layoutBoundsProperty().addListener((ov, oldValue, newValue) -> {
+      clip.setWidth(newValue.getWidth());
+      clip.setHeight(newValue.getHeight());
+    });
   }
 
   private void initializeStepIndicator() {

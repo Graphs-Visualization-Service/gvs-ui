@@ -113,17 +113,6 @@ public class TreeVertex extends Observable implements IVertex {
   }
 
   @Override
-  public boolean isStable() {
-    // TODO: remove this when IVertex is adapted -> issue #182
-    return true;
-  }
-
-  @Override
-  public void setStable(boolean isStable) {
-    // TODO: remove this when IVertex is adapted -> issue #182
-  }
-
-  @Override
   public Glyph getIcon() {
     return icon;
   }

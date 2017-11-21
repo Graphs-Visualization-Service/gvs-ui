@@ -18,6 +18,7 @@ import gvs.business.logic.physics.rules.Traction;
 import gvs.business.logic.physics.ticker.AreaTicker;
 import gvs.business.logic.physics.ticker.AreaTickerFactory;
 import gvs.business.logic.physics.ticker.Tickable;
+import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Graph;
 import gvs.interfaces.Action;
 import gvs.interfaces.IEdge;
@@ -83,6 +84,11 @@ public class Layouter implements Tickable, ILayouter {
     logger.info("Received new data to layout");
 
     if (graph.isLayoutable()) {
+
+      graph.getVertices().forEach(v -> {
+        DefaultVertex graphVertex = (DefaultVertex) v;
+        graphVertex.setStable(false);
+      });
 
       this.completionCallback = callback;
 
@@ -187,20 +193,23 @@ public class Layouter implements Tickable, ILayouter {
 
     vertices.forEach(vertex -> {
 
-      if (!vertex.isUserPositioned()) {
+      DefaultVertex graphVertex = (DefaultVertex) vertex;
+
+      if (!graphVertex.isUserPositioned()) {
 
         AreaPoint position = null;
-        if (!vertex.isStable()) {
+        if (!graphVertex.isStable()) {
           if (useRandomLayout) {
             position = generateRandomPoints();
           } else {
             position = generateSeededRandomPoints(seededRandom);
           }
         } else {
-          position = generateFixedPoints(vertex);
+          position = generateFixedPoints(graphVertex);
         }
 
-        Particle newParticle = new Particle(position, vertex, PARTICLE_WEIGHT);
+        Particle newParticle = new Particle(position, graphVertex,
+            PARTICLE_WEIGHT);
         area.addParticles(newParticle);
       }
     });

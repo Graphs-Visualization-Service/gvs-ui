@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.business.model.IVertex;
-import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
 import gvs.util.FontAwesome;
 import javafx.application.Platform;
@@ -42,7 +41,16 @@ public class VertexViewModel implements Observer {
    *          JavaFX independent vertex representation
    */
   public VertexViewModel(IVertex vertex) {
+    this.vertex = vertex;
+    this.ellipse = new Ellipse();
     this.label = new Label();
+
+    // bidirectional connection
+    this.vertex.addObserver(this);
+    ellipse.centerXProperty().addListener(this::xPropertyListener);
+    ellipse.centerYProperty().addListener(this::yPropertyListener);
+
+    // setup label text and optional icon
     if (vertex.getIcon() != null) {
       logger.info("Creating VertexViewModel with an icon");
       label.setGraphic(FontAwesome.createLabel(vertex.getIcon()));
@@ -52,19 +60,14 @@ public class VertexViewModel implements Observer {
       label.setCursor(Cursor.HAND);
     }
 
-    ellipse = new Ellipse();
-
     updateCoordinates(vertex.getXPosition(), vertex.getYPosition());
-
-    // bidirectional connection
-    this.vertex = vertex;
-    this.vertex.addObserver(this);
-    ellipse.centerXProperty().addListener(this::xPropertyListener);
-    ellipse.centerYProperty().addListener(this::yPropertyListener);
 
     setStyles();
   }
 
+  /**
+   * Set correct CSS classes
+   */
   private void setStyles() {
     GVSStyle style = vertex.getStyle();
 
@@ -134,19 +137,32 @@ public class VertexViewModel implements Observer {
   public void update(Observable o, Object arg) {
     // Hand updates over to JavaFX Thread
     Platform.runLater(() -> {
-      // logger level debug, because this will happen very often when layouting
       updateCoordinates(vertex.getXPosition(), vertex.getYPosition());
     });
   }
 
+  /**
+   * Update coordinates of the ellipse.
+   * 
+   * @param x
+   *          x position
+   * @param y
+   *          y position
+   */
   private void updateCoordinates(double x, double y) {
     ellipse.setCenterX(x);
     ellipse.setCenterY(y);
   }
 
-  public void draw(ScalableContentPane p) {
+  /**
+   * Draw vertex on given ScaleableContentPane
+   * 
+   * @param contentPane
+   *          given scaleable content pane
+   */
+  public void draw(ScalableContentPane contentPane) {
     logger.info("Drawing VertexViewModel.");
-    p.getContentPane().getChildren().addAll(ellipse, label);
+    contentPane.getContentPane().getChildren().addAll(ellipse, label);
 
     // this hack forces the label to compute its height and width
     label.applyCss();
@@ -159,7 +175,7 @@ public class VertexViewModel implements Observer {
     label.layoutXProperty().bind(ellipse.centerXProperty().subtract(xRadius));
     label.layoutYProperty().bind(ellipse.centerYProperty().subtract(yRadius));
 
-    dragSupport(p);
+    dragSupport(contentPane);
   }
 
   /**
@@ -267,6 +283,9 @@ public class VertexViewModel implements Observer {
     }
   }
 
+  /**
+   * Correct z order
+   */
   public void toFront() {
     ellipse.toFront();
     label.toFront();
@@ -280,7 +299,16 @@ public class VertexViewModel implements Observer {
     return label.getText();
   }
 
-  private boolean equalDouble(double p1, double p2) {
-    return Math.abs(p1 - p2) < 1e-6;
+  /**
+   * Check whether two double are equal
+   * 
+   * @param d1
+   *          first double
+   * @param d2
+   *          second double
+   * @return true if params are equal
+   */
+  private boolean equalDouble(double d1, double d2) {
+    return Math.abs(d1 - d2) < 1e-6;
   }
 }

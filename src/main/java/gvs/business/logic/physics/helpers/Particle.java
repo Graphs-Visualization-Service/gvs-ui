@@ -1,9 +1,6 @@
 package gvs.business.logic.physics.helpers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import gvs.interfaces.IVertex;
+import gvs.business.model.graph.DefaultVertex;
 
 /**
  * Represents an element in the layouting area
@@ -14,14 +11,13 @@ import gvs.interfaces.IVertex;
 public class Particle {
 
   private double weight;
-  private IVertex relatedVertex;
+  private DefaultVertex relatedVertex;
 
   private AreaVector speed;
   private AreaVector acceleration;
   private AreaPoint particlePosition;
 
   private static final double ZOOM_FACTOR = 1.8;
-  private static final Logger logger = LoggerFactory.getLogger(Particle.class);
 
   /**
    * Builds an instance of a particle.
@@ -33,7 +29,8 @@ public class Particle {
    * @param weight
    *          particle weight
    */
-  public Particle(AreaPoint position, IVertex relatedVertex, double weight) {
+  public Particle(AreaPoint position, DefaultVertex relatedVertex,
+      double weight) {
     this.particlePosition = position;
     this.relatedVertex = relatedVertex;
     this.weight = weight;
@@ -72,7 +69,7 @@ public class Particle {
     if (!relatedVertex.isStable()) {
       speed.add(acceleration);
       particlePosition.addVector(speed);
-      if (Math.abs(speed.getSpeedSummary()) < 0.2) {
+      if (Math.abs(speed.getSpeedSum()) < 0.2) {
         relatedVertex.setStable(true);
       }
     }
@@ -108,7 +105,7 @@ public class Particle {
     return weight;
   }
 
-  public IVertex getRelatedVertex() {
+  public DefaultVertex getRelatedVertex() {
     return relatedVertex;
   }
 }

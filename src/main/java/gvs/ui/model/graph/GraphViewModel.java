@@ -20,6 +20,9 @@ import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
 import gvs.ui.logic.session.SessionViewModel;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
@@ -31,7 +34,11 @@ import jfxtras.labs.scene.layout.ScalableContentPane;
  */
 @Singleton
 public class GraphViewModel extends Observable implements Observer {
+
+  private GraphHolder graphHolder;
   private ScalableContentPane graphPane;
+
+  private final StringProperty snapshotDescriptionProperty;
 
   private final Map<Long, VertexViewModel> vertexViewModels;
   private final Set<EdgeViewModel> edgeViewModels;
@@ -48,7 +55,23 @@ public class GraphViewModel extends Observable implements Observer {
     this.vertexViewModels = new HashMap<>();
     this.edgeViewModels = new HashSet<>();
 
+    this.snapshotDescriptionProperty = new SimpleStringProperty();
+    this.snapshotDescriptionProperty
+        .addListener(this::snapshotDescriptionListener);
+
     currentGraphHolder.addObserver(this);
+  }
+
+  private void snapshotDescriptionListener(
+      ObservableValue<? extends String> observable, String oldValue,
+      String newValue) {
+
+    if (newValue != null && oldValue != null) {
+      if (!oldValue.equals(newValue)) {
+        Graph currentGraph = graphHolder.getCurrentGraph();
+        currentGraph.setSnapshotDescription(newValue);
+      }
+    }
   }
 
   /**
@@ -58,13 +81,15 @@ public class GraphViewModel extends Observable implements Observer {
   public void update(Observable o, Object arg) {
     // Hand updates over to JavaFX Thread
     Platform.runLater(() -> {
-      
+
       logger.info("Current graph changed...");
-      GraphHolder currentGraphHolder = (GraphHolder) o;
+      this.graphHolder = (GraphHolder) o;
+
       // don't start drawing process, if graphPane hasn't already been set by
-      // SessionView
+      // the SessionView.
       if (graphPane != null) {
-        draw(currentGraphHolder.getCurrentGraph());
+        Graph currentGraph = graphHolder.getCurrentGraph();
+        draw(currentGraph);
         sessionViewModel.updateStepProperties();
       } else {
         logger.warn("GraphPane has not been set before drawing!");
@@ -78,6 +103,9 @@ public class GraphViewModel extends Observable implements Observer {
     vertexViewModels.clear();
     edgeViewModels.clear();
     graphPane.getContentPane().getChildren().clear();
+
+    snapshotDescriptionProperty.set(graph.getSnapshotDescription());
+
     drawVertices(graph.getVertices());
     drawEdges(graph.getEdges());
     correctZOrder();
@@ -127,6 +155,10 @@ public class GraphViewModel extends Observable implements Observer {
    */
   public void setPane(ScalableContentPane newGraphPane) {
     this.graphPane = newGraphPane;
+  }
+
+  public StringProperty snapshotDescriptionProperty() {
+    return snapshotDescriptionProperty;
   }
 
 }

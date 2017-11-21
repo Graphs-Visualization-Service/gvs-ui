@@ -102,7 +102,6 @@ public class Session implements IGraphSessionController {
     if (isTreeSession) {
       graphs.forEach(t -> layouter.layoutGraph(t, false, callback));
     }
-    // TODO: do we want this for graphs?
   }
 
   @Override
@@ -116,10 +115,6 @@ public class Session implements IGraphSessionController {
         try {
           layoutMonitor.lock();
           logger.info("Got layout monitor");
-
-          currentGraph.getVertices().forEach(v -> {
-            v.setStable(false);
-          });
 
           layouter.layoutGraph(currentGraph, useRandomLayout, callback);
 

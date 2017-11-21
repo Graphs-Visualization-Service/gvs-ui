@@ -47,7 +47,7 @@ public class RepulsiveForce {
         force.scaleTo(impact);
       }
       refP.accelerate(force);
-      force.changeOfSign();
+      force.invertXYCoordinates();
       relationP.accelerate(force);
     }
   }

@@ -25,10 +25,6 @@ public interface IVertex {
 
   void setUserPositioned(boolean isUserPositioned);
 
-  boolean isStable();
-
-  void setStable(boolean isStable);
-
   Glyph getIcon();
 
   GVSStyle getStyle();

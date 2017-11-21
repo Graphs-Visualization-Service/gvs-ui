@@ -98,10 +98,12 @@ public class SessionView {
     initializeStepIndicator();
     initializeButtons();
     bindReplayIcons();
-    
+
     graphPane.setAutoRescale(true);
     graphViewModel.setPane(graphPane);
     snapshotDescription.setPromptText("Snapshot description");
+    snapshotDescription.textProperty()
+        .bindBidirectional(graphViewModel.snapshotDescriptionProperty());
   }
 
   private void initializeStepIndicator() {

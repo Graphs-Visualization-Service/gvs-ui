@@ -297,9 +297,6 @@ public class Persistor {
           edges.add(loadEdge(edgeElement, vertices));
         });
 
-        // TODO should we set this graph id?
-        int graphId = Integer
-            .parseInt(graphElement.attributeValue(ATTRIBUTEID));
         String snapShotDescription = graphElement.element(LABEL).getText();
         Graph newGraph = new Graph(snapShotDescription, vertices.values(),
             edges);
@@ -328,9 +325,6 @@ public class Persistor {
         findRoots(vertices);
         Collection<IEdge> edges = buildTreeEdges(vertices);
 
-        // TODO should we set this graph id?
-        int graphId = Integer
-            .parseInt(graphElement.attributeValue(ATTRIBUTEID));
         String snapShotDescription = graphElement.element(LABEL).getText();
         Graph newGraph = new Graph(snapShotDescription, vertices, edges);
         session.addGraph(newGraph);
@@ -392,10 +386,7 @@ public class Persistor {
     vertices.forEach(v -> {
       TreeVertex current = (TreeVertex) v;
       current.getChildren().forEach(child -> {
-        // TODO: what to do with label and style
-        GVSStyle standardStyle = new GVSStyle(GVSColor.STANDARD,
-            GVSLineStyle.THROUGH, GVSLineThickness.STANDARD, null);
-        edges.add(new Edge("", standardStyle, false, current, child));
+        edges.add(new Edge("", child.getStyle(), false, current, child));
       });
     });
     return edges;

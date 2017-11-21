@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,9 +26,6 @@ import gvs.business.logic.ApplicationController;
 import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
 import gvs.business.model.graph.Graph;
-import gvs.business.model.styles.GVSColor;
-import gvs.business.model.styles.GVSLineStyle;
-import gvs.business.model.styles.GVSLineThickness;
 import gvs.business.model.styles.GVSStyle;
 import gvs.business.model.tree.TreeVertex;
 import gvs.interfaces.IEdge;
@@ -122,25 +118,25 @@ public class ModelBuilder {
 
     Element graphElement = pDocRoot.element(GRAPH);
 
-    Collection<IVertex> vertizes = new HashSet<IVertex>();
+    Map<Long, IVertex> vertices = new HashMap<>();
     Element verticesElement = pDocRoot.element(VERTIZES);
     verticesElement.elements().forEach(vertexElement -> {
       IVertex newVertex = buildVertex(vertexElement);
-      vertizes.add(newVertex);
+      vertices.put(newVertex.getId(), newVertex);
     });
 
-    Collection<IEdge> edges = new HashSet<IEdge>();
+    Collection<IEdge> edges = new HashSet<>();
     Element edgesElement = pDocRoot.element(EDGES);
     edgesElement.elements().forEach(edgeElement -> {
       if (edgeElement.attributeValue(ISDIRECTED).equals("true")) {
-        edges.add(buildDirectedEdge(edgeElement, vertizes));
+        edges.add(buildDirectedEdge(edgeElement, vertices));
       } else if (edgeElement.attributeValue(ISDIRECTED).equals("false")) {
-        edges.add(buildUndirectedEdge(edgeElement, vertizes));
+        edges.add(buildUndirectedEdge(edgeElement, vertices));
       }
     });
 
     String snapShotDescription = graphElement.element(LABEL).getText();
-    Graph newGraph = new Graph(snapShotDescription, vertizes, edges);
+    Graph newGraph = new Graph(snapShotDescription, vertices.values(), edges);
 
     logger.debug("Finish build graph from XML");
     long sessionId = Long.parseLong(graphElement.attributeValue(ATTRIBUTEID));
@@ -227,10 +223,7 @@ public class ModelBuilder {
     vertices.forEach(v -> {
       TreeVertex current = (TreeVertex) v;
       current.getChildren().forEach(child -> {
-        // TODO: what to do with label and style
-        GVSStyle standardStyle = new GVSStyle(GVSColor.STANDARD,
-            GVSLineStyle.THROUGH, GVSLineThickness.STANDARD, null);
-        edges.add(new Edge("", standardStyle, false, current, child));
+        edges.add(new Edge("", child.getStyle(), false, current, child));
       });
     });
     return edges;
@@ -323,8 +316,7 @@ public class ModelBuilder {
    *          vertices
    * @return edge
    */
-  private IEdge buildDirectedEdge(Element pEdge,
-      Collection<IVertex> pVertizes) {
+  private IEdge buildDirectedEdge(Element pEdge, Map<Long, IVertex> pVertizes) {
     logger.debug("Build DirectedEdge XML");
     Element eLabel = pEdge.element(LABEL);
     String label = eLabel.getText();
@@ -337,20 +329,12 @@ public class ModelBuilder {
     long toVertexId = Long.parseLong(eToVertex.getText());
     IVertex fromVertex = null;
     IVertex toVertex = null;
+    
+    fromVertex = pVertizes.get(fromVertexId);
+    toVertex = pVertizes.get(toVertexId);
 
-    Iterator<IVertex> searchVertex = pVertizes.iterator();
-    while (searchVertex.hasNext()) {
-      IVertex tmp = (IVertex) (searchVertex.next());
-      if (tmp.getId() == fromVertexId) {
-        fromVertex = tmp;
-      }
-      if (tmp.getId() == toVertexId) {
-        toVertex = tmp;
-      }
-    }
     logger.debug("Finish build DirectedEdge XML");
     return new Edge(label, style, true, fromVertex, toVertex);
-
   }
 
   /**
@@ -363,7 +347,7 @@ public class ModelBuilder {
    * @return edge
    */
   private IEdge buildUndirectedEdge(Element pEdge,
-      Collection<IVertex> pVertizes) {
+      Map<Long, IVertex> pVertizes) {
     logger.debug("Build UndirectedEdge XML");
     int arrowPos = Integer.parseInt(pEdge.attributeValue(ARROWPOS));
 
@@ -376,19 +360,10 @@ public class ModelBuilder {
     long toVertexId = Long.parseLong(eToVertex.getText());
     IVertex fromVertex = null;
     IVertex toVertex = null;
-
-    // TODO: put vertex into map -> access easy over key ID -> no iteration
-    // needed
-    Iterator<IVertex> searchVertex = pVertizes.iterator();
-    while (searchVertex.hasNext()) {
-      IVertex tmp = (IVertex) (searchVertex.next());
-      if (tmp.getId() == fromVertexId) {
-        fromVertex = tmp;
-      }
-      if (tmp.getId() == toVertexId) {
-        toVertex = tmp;
-      }
-    }
+    
+    fromVertex = pVertizes.get(fromVertexId);
+    toVertex = pVertizes.get(toVertexId);
+    
     if (arrowPos == 1) {
       logger.debug("Finsih build UndirectedEdge XML with arrow pos 1");
       return new Edge(label, style, true, toVertex, fromVertex);

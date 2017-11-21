@@ -7,11 +7,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.access.Persistor;
-import gvs.business.logic.graph.Session;
-import gvs.business.logic.graph.SessionFactory;
+import gvs.business.model.Graph;
 import gvs.business.model.SessionHolder;
-import gvs.business.model.graph.Graph;
-import gvs.interfaces.ISession;
 
 /**
  * The Application Controller reacts on events from the user or newly received
@@ -55,7 +52,7 @@ public class ApplicationController {
    * @param session
    *          new current session
    */
-  public synchronized void changeCurrentSession(ISession session) {
+  public synchronized void changeCurrentSession(Session session) {
     sessionHolder.setCurrentSession(session);
   }
 
@@ -67,7 +64,7 @@ public class ApplicationController {
    */
   public synchronized void loadStoredSession(String fileName) {
     logger.info("Load session from filesystem");
-    ISession loadedSession = persistor.loadFile(fileName);
+    Session loadedSession = persistor.loadFile(fileName);
 
     sessionHolder.addSession(loadedSession);
     sessionHolder.setCurrentSession(loadedSession);
@@ -82,7 +79,7 @@ public class ApplicationController {
    * @param pSessionController
    *          SessionController
    */
-  public synchronized void deleteSession(ISession pSessionController) {
+  public synchronized void deleteSession(Session pSessionController) {
     logger.info("Delete session");
 
     sessionHolder.removeSession(pSessionController);
@@ -91,7 +88,7 @@ public class ApplicationController {
       logger.debug("Session controller deleted. Set former graph session");
 
       int size = sessionHolder.getSessions().size();
-      ISession mostRecentSession = sessionHolder.getSessions().get(size - 1);
+      Session mostRecentSession = sessionHolder.getSessions().get(size - 1);
       sessionHolder.setCurrentSession(mostRecentSession);
 
     } else {
@@ -120,7 +117,7 @@ public class ApplicationController {
     logger.info("Received new graph");
 
     boolean isSessionExisting = false;
-    for (ISession session : sessionHolder.getSessions()) {
+    for (Session session : sessionHolder.getSessions()) {
       if (session.getId() == sessionId) {
 
         logger.info("Add graph to exsting session");

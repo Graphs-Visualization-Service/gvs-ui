@@ -1,8 +1,5 @@
 package gvs.business.model.styles;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +9,6 @@ public class GVSStyle {
   private GVSLineStyle lineStyle;
   private GVSLineThickness lineThickness;
   private GVSColor fillColor;
-  private Collection<GVSColor> darkColors;
 
   private static final Logger logger = LoggerFactory.getLogger(GVSStyle.class);
 
@@ -22,15 +18,6 @@ public class GVSStyle {
     this.lineStyle = lineStyle;
     this.lineThickness = lineThickness;
     this.fillColor = fillColor;
-    fillDarkColors();
-  }
-
-  private void fillDarkColors() {
-    darkColors = new HashSet<>();
-    darkColors.add(GVSColor.BLACK);
-    darkColors.add(GVSColor.DARKBLUE);
-    darkColors.add(GVSColor.DARKGREEN);
-    darkColors.add(GVSColor.BLUE);
   }
 
   public GVSStyle(String linecolor, String linestyle, String lineThickness,
@@ -60,8 +47,6 @@ public class GVSStyle {
           lineThickness);
       this.lineThickness = GVSLineThickness.STANDARD;
     }
-
-    fillDarkColors();
   }
 
   public GVSColor getFillColor() {
@@ -94,9 +79,5 @@ public class GVSStyle {
 
   public void setLineThickness(GVSLineThickness lineThickness) {
     this.lineThickness = lineThickness;
-  }
-
-  public Collection<GVSColor> getDarkColors() {
-    return darkColors;
   }
 }

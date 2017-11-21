@@ -5,9 +5,9 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 import gvs.access.ClientConnectionFactory;
 import gvs.access.XmlReaderFactory;
-import gvs.business.logic.graph.SessionFactory;
-import gvs.business.logic.graph.SessionReplayFactory;
-import gvs.business.logic.physics.ticker.AreaTickerFactory;
+import gvs.business.logic.SessionFactory;
+import gvs.business.logic.SessionReplayFactory;
+import gvs.business.logic.layouter.graph.AreaTickerFactory;
 
 /**
  * Base module for guice dependecy injection

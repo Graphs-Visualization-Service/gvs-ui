@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.interfaces.ISession;
+import gvs.business.logic.Session;
 
 /**
  * Holds the model of the current session.
@@ -21,8 +21,8 @@ import gvs.interfaces.ISession;
 @Singleton
 public class SessionHolder extends Observable {
 
-  private ISession currentSession = null;
-  private final List<ISession> sessions;
+  private Session currentSession = null;
+  private final List<Session> sessions;
 
   private static final Logger logger = LoggerFactory
       .getLogger(SessionHolder.class);
@@ -37,7 +37,7 @@ public class SessionHolder extends Observable {
    * 
    * @param newSession
    */
-  public synchronized void setCurrentSession(ISession newSession) {
+  public synchronized void setCurrentSession(Session newSession) {
     logger.info("Setting current session and notify observers.");
 
     this.currentSession = newSession;
@@ -51,7 +51,7 @@ public class SessionHolder extends Observable {
    * 
    * @return session controller
    */
-  public synchronized ISession getCurrentSession() {
+  public synchronized Session getCurrentSession() {
     return currentSession;
   }
 
@@ -61,7 +61,7 @@ public class SessionHolder extends Observable {
    * @param session
    *          new session
    */
-  public synchronized void addSession(ISession session) {
+  public synchronized void addSession(Session session) {
     this.sessions.add(session);
   }
 
@@ -71,7 +71,7 @@ public class SessionHolder extends Observable {
    * @param session
    *          session to delete
    */
-  public synchronized void removeSession(ISession session) {
+  public synchronized void removeSession(Session session) {
     this.sessions.remove(session);
   }
 
@@ -80,7 +80,7 @@ public class SessionHolder extends Observable {
    * 
    * @return sessionControllers
    */
-  public synchronized List<ISession> getSessions() {
+  public synchronized List<Session> getSessions() {
     return sessions;
   }
 }

@@ -8,6 +8,7 @@ import gvs.business.model.styles.GVSStyle;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
+import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -104,7 +105,7 @@ public class EdgeViewModel {
 
     if (edge.isDirected()) {
       arrowPath.getStyleClass().add("line-" + lineColor);
-      arrowPath.getStyleClass().add("thickness" + lineThickness);
+      arrowPath.getStyleClass().add("thickness-" + lineThickness);
     }
   }
 
@@ -138,23 +139,53 @@ public class EdgeViewModel {
         endVertex.getEllipse().getCenterY());
 
     // find intersection points of line and vertices
-    Point2D startPoint = startVertex.findIntersectionPoint(endVertexCenter,
-        startVertexCenter);
-    Point2D endPoint = endVertex.findIntersectionPoint(startVertexCenter,
-        endVertexCenter);
+    if (startVertex.equals(endVertex)) {
+      // creates a pseudoEndpoint to the upper left of the start vertex
+      Point2D pseudoEndpoint = new Point2D(
+          startVertexCenter.getX() - 2 * startVertex.getEllipse().getRadiusX(),
+          startVertexCenter.getY() - 2 * startVertex.getEllipse().getRadiusY());
+      Point2D startPoint = startVertex.findIntersectionPoint(pseudoEndpoint,
+          startVertexCenter);
+      drawSelfReference(startPoint);
+      if (edge.isDirected()) {
+        drawArrowHead(startPoint.getX(), startPoint.getY());
+      }
+    } else {
+      Point2D startPoint = startVertex.findIntersectionPoint(endVertexCenter,
+          startVertexCenter);
+      Point2D endPoint = endVertex.findIntersectionPoint(startVertexCenter,
+          endVertexCenter);
+      drawEdgeLabel(startPoint, endPoint);
 
-    drawEdgeLabel(startPoint, endPoint);
+      double length = startPoint.distance(endPoint);
+      drawHorizontalEdge(startPoint, endPoint, length);
 
-    double length = startPoint.distance(endPoint);
-    drawHorizontalEdge(startPoint, endPoint, length);
+      if (edge.isDirected()) {
+        double pseudoEndX = startPoint.getX() + length;
+        double pseudoEndY = startPoint.getY();
+        drawArrowHead(pseudoEndX, pseudoEndY);
+      }
 
-    if (edge.isDirected()) {
-      double endX = startPoint.getX() + length;
-      double startY = startPoint.getY();
-      drawArrowHead(endX, startY);
+      rotateEdge(startPoint, endPoint);
     }
+  }
 
-    rotateEdge(startPoint, endPoint);
+  private void drawSelfReference(Point2D startPoint) {
+    int selfReferenceLength = 10;
+    Point2D upperRightCorner = new Point2D(startPoint.getX(),
+        startPoint.getY() - selfReferenceLength);
+    Point2D upperLeftCorner = new Point2D(
+        startPoint.getX() - selfReferenceLength,
+        startPoint.getY() - selfReferenceLength);
+    Point2D lowerLeftCorner = new Point2D(
+        startPoint.getX() - selfReferenceLength, startPoint.getY());
+    edgePath.getElements().addAll(
+        new MoveTo(startPoint.getX(), startPoint.getY()),
+        new LineTo(upperRightCorner.getX(), upperRightCorner.getY()),
+        new LineTo(upperLeftCorner.getX(), upperLeftCorner.getY()),
+        new LineTo(lowerLeftCorner.getX(), lowerLeftCorner.getY()),
+        new ClosePath());
+    drawEdgeLabel(upperLeftCorner, upperRightCorner);
   }
 
   /**

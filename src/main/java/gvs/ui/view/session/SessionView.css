@@ -101,19 +101,23 @@ fill-standard {
 /*-- LINESTYLES & THICKNESS--*/
 /* cannot be in seperate classes, because thickness overrides dash-array */
 .dotted-standard{
-	-fx-stroke-dash-array: 1.0 5.0;
+	-fx-stroke-dash-array: 1.0 2.0;
+	-fx-stroke-line-cap : round;
 	-fx-stroke-width: 1.0;
 }
 .dotted-slight{
-	-fx-stroke-dash-array: 1.0 5.0;
+	-fx-stroke-dash-array: 1.0 1.5;
+	-fx-stroke-line-cap : round;
 	-fx-stroke-width: 0.5;
 }
 .dotted-bold{
-	-fx-stroke-dash-array: 1.0 5.0;
+	-fx-stroke-dash-array: 1.0 3.0;
+	-fx-stroke-line-cap : round;
 	-fx-stroke-width: 2.0;
 }
 .dotted-fat{
-	-fx-stroke-dash-array: 1.0 5.0;
+	-fx-stroke-dash-array: 1.0 4.0;
+	-fx-stroke-line-cap : round;
 	-fx-stroke-width: 3.0;
 }
 .dashed-standard{
@@ -121,29 +125,33 @@ fill-standard {
 	-fx-stroke-width: 1.0;
 }
 .dashed-slight{
-	-fx-stroke-dash-array: 4.0 2.0;
+	-fx-stroke-dash-array: 4.0 1.5;
 	-fx-stroke-width: 0.5;
 }
 .dashed-bold{
-	-fx-stroke-dash-array: 4.0 2.0;
+	-fx-stroke-dash-array: 4.0 4.0;
 	-fx-stroke-width: 2.0;
 }
 .dashed-fat{
-	-fx-stroke-dash-array: 4.0 2.0;
+	-fx-stroke-dash-array: 4.0 5.0;
 	-fx-stroke-width: 3.0;
 }
 
 /*-- ARROWHEAD THICKNESS--*/
-thickness-standard {
+.thickness-standard {
 	-fx-stroke-width: 1.0;
+	-fx-stroke-line-cap : round;
 }
-thickness-slight {
+.thickness-slight {
 	-fx-stroke-width: 0.5;
+	-fx-stroke-line-cap : round;
 }
-thickness-bold {
+.thickness-bold {
 	-fx-stroke-width: 2.0;
+	-fx-stroke-line-cap : round;
 }
-thickness-fat {
+.thickness-fat {
 	-fx-stroke-width: 3.0;
+	-fx-stroke-line-cap : round;
 }
 

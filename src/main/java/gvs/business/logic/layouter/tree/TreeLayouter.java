@@ -25,7 +25,7 @@ import gvs.util.Action;
 @Singleton
 public class TreeLayouter implements ILayouter {
 
-  private static final int NODESIZE = 50; //TODO: account for nodeSize
+  private static final int NODESIZE = 50; // TODO: account for nodeSize
   private static final double SIBLING_DISTANCE = 20;
   private static final double LEVEL_DISTANCE = 20;
   private static final Logger logger = LoggerFactory
@@ -43,7 +43,7 @@ public class TreeLayouter implements ILayouter {
     // TODO: support multiple roots
     roots.forEach(root -> {
       firstWalk(root);
-      secondWalk(root, -root.getPrelim());
+      secondWalk(root, -root.getPreliminary());
       centerGraph(root, currentGraph);
     });
 
@@ -58,15 +58,24 @@ public class TreeLayouter implements ILayouter {
     double minX = verticesSorted.get(0).getXPosition();
     if (minX < 0) {
       verticesSorted
-          .forEach(v -> v.setXPosition(v.getXPosition() + Math.abs(minX)+ MARGIN));
+          .forEach(v -> v.setXPosition(v.getXPosition() + Math.abs(minX) + MARGIN));
     }
   }
 
-  private void secondWalk(TreeVertex vertex, double m) {
-    vertex.setXPosition(vertex.getPrelim() + m);
+  /**
+   * Top-down traversal of the tree. Compute all real positions in linear time.
+   * The real position of a vertex is its preliminary position plus the
+   * aggregated modifier given by the sum of all modifiers on the path from the
+   * parent of the vertex to the root.
+   * 
+   * @param vertex
+   * @param modSum
+   */
+  private void secondWalk(TreeVertex vertex, double modSum) {
+    vertex.setXPosition(vertex.getPreliminary() + modSum);
     vertex.setYPosition(getLevel(vertex) * LEVEL_DISTANCE + MARGIN);
     vertex.getChildren()
-        .forEach(child -> secondWalk(child, m + vertex.getMod()));
+        .forEach(child -> secondWalk(child, modSum + vertex.getMod()));
   }
 
   private double getLevel(TreeVertex vertex) {
@@ -77,12 +86,17 @@ public class TreeLayouter implements ILayouter {
     }
   }
 
+  /**
+   * Bottom-up traversal of the tree. The position of each node is preliminary.
+   * 
+   * @param vertex
+   */
   private void firstWalk(TreeVertex vertex) {
     if (vertex.isLeaf()) {
-      vertex.setPrelim(0);
+      vertex.setPreliminary(0);
       TreeVertex leftSibling = getLeftSibling(vertex);
       if (leftSibling != null) {
-        vertex.setPrelim(leftSibling.getPrelim() + SIBLING_DISTANCE);
+        vertex.setPreliminary(leftSibling.getPreliminary() + SIBLING_DISTANCE);
       }
     } else {
       TreeVertex defaultAncestor = vertex.getChildren().get(0);
@@ -95,30 +109,49 @@ public class TreeLayouter implements ILayouter {
       TreeVertex rightMostChild = vertex.getChildren()
           .get(vertex.getChildren().size() - 1);
       double midPoint = 0.5
-          * (leftMostChild.getPrelim() + rightMostChild.getPrelim());
+          * (leftMostChild.getPreliminary() + rightMostChild.getPreliminary());
       TreeVertex leftSibling = getLeftSibling(vertex);
       if (leftSibling != null) {
-        vertex.setPrelim(leftSibling.getPrelim() + SIBLING_DISTANCE);
-        vertex.setMod(leftSibling.getPrelim() - midPoint);
+        vertex.setPreliminary(leftSibling.getPreliminary() + SIBLING_DISTANCE);
+        vertex.setMod(leftSibling.getPreliminary() - midPoint);
       } else {
-        vertex.setPrelim(midPoint);
+        vertex.setPreliminary(midPoint);
       }
     }
   }
 
+  /**
+   * Shifts the current subtree of input vertex. When moving a subtree rooted at
+   * vertex, only its mod and preliminary x-coordinate are adjusted by the
+   * amount of shifting.
+   * 
+   * @param vertex
+   */
   private void executeShifts(TreeVertex vertex) {
     double shift = 0;
     double change = 0;
     List<TreeVertex> children = vertex.getChildren();
     for (int i = children.size() - 1; i == 0; i--) {
       TreeVertex child = children.get(i);
-      child.setPrelim(child.getPrelim() + shift);
+      child.setPreliminary(child.getPreliminary() + shift);
       child.setMod(child.getMod() + shift);
       change += child.getChange();
       shift = shift + child.getShift() + change;
     }
   }
 
+  /**
+   * This method satisfies the 6th aesthetic property required to display trees:
+   * 6) The children of a node should be equally spaced.
+   * 
+   * Mechanism: each child of the current root is placed as close to the right
+   * of its left sibling as possible. Traversing the contours of the subtree
+   * then finds conflicting neighbours. Such conflicts are resolved by shifting
+   * affected subtrees to the right.
+   * 
+   * @param vertex
+   * @param defaultAncestor
+   */
   private void apportion(TreeVertex vertex, TreeVertex defaultAncestor) {
     TreeVertex leftSibling = getLeftSibling(vertex);
     if (leftSibling != null) {
@@ -139,8 +172,8 @@ public class TreeLayouter implements ILayouter {
         insideRightVertex = nextLeft(insideRightVertex);
         outsideLeftVertex = nextLeft(outsideLeftVertex);
         outsideRightVertex = nextRight(outsideRightVertex);
-        double shift = (insideLeftVertex.getPrelim() + insideLeftModSum)
-            - (insideRightVertex.getPrelim() + insideRightModSum)
+        double shift = (insideLeftVertex.getPreliminary() + insideLeftModSum)
+            - (insideRightVertex.getPreliminary() + insideRightModSum)
             + SIBLING_DISTANCE;
         if (shift > 0) {
           moveSubTree(ancestor(insideLeftVertex, vertex, defaultAncestor),
@@ -171,15 +204,15 @@ public class TreeLayouter implements ILayouter {
 
   private void moveSubTree(TreeVertex vertexLeft, TreeVertex vertexRight,
       double shift) {
-    int subtrees = number(vertexRight) - number(vertexLeft);
+    int subtrees = childIndex(vertexRight) - childIndex(vertexLeft);
     vertexRight.setChange(vertexRight.getChange() - shift / subtrees);
     vertexRight.setShift(vertexRight.getShift() + shift);
     vertexLeft.setChange(vertexLeft.getChange() - shift / subtrees);
-    vertexRight.setPrelim(vertexRight.getPrelim() + shift);
+    vertexRight.setPreliminary(vertexRight.getPreliminary() + shift);
     vertexRight.setMod(vertexRight.getMod() + shift);
   }
 
-  private int number(TreeVertex vertexRight) {
+  private int childIndex(TreeVertex vertexRight) {
     return vertexRight.getParent().getChildren().indexOf(vertexRight);
   }
 

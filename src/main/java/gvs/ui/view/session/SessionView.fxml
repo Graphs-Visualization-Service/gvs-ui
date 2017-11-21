@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import org.controlsfx.control.ToggleSwitch?>
 
-<BorderPane stylesheets="@SessionView.css" xmlns="http://javafx.com/javafx/8.0.111"
+<BorderPane fx:id="sessionRoot" stylesheets="@SessionView.css" xmlns="http://javafx.com/javafx/8.0.111"
 	xmlns:fx="http://javafx.com/fxml/1" fx:controller="gvs.ui.view.session.SessionView">
 
 	<center>

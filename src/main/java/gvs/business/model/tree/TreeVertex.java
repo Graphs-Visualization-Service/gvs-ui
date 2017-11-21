@@ -25,7 +25,7 @@ public class TreeVertex extends Observable implements IVertex {
   // values are needed for layouting trees
   private TreeVertex thread;
   private double mod;
-  private double prelim;
+  private double preliminary;
   private double change;
   private double shift;
 
@@ -60,6 +60,11 @@ public class TreeVertex extends Observable implements IVertex {
     return label;
   }
 
+  /**
+   * The real x coordinate of the vertex. It is calculated by the preliminary x
+   * coordinate plus the sum of all modifiers from the parent of this vertex to
+   * the root.
+   */
   @Override
   public double getXPosition() {
     return xPosition;
@@ -158,16 +163,34 @@ public class TreeVertex extends Observable implements IVertex {
     this.parent = parent;
   }
 
+  /**
+   * A thread points to the next vertex in a contour. See Reingold - Tilford
+   * Algorithm.
+   * 
+   * @return reference to the next vertex in a contour
+   */
   public TreeVertex getThread() {
     return thread;
   }
 
-  public double getPrelim() {
-    return prelim;
+  /**
+   * Get the preliminary x coordinate of the vertex.
+   * 
+   * @return
+   */
+  public double getPreliminary() {
+    return preliminary;
   }
 
-  public void setPrelim(double prelim) {
-    this.prelim = prelim;
+  /**
+   * Set the preliminary x coordinate of the vertex. Only this value and the mod
+   * value are adjusted in the bottom-up traversal of the tree, whenever a
+   * subtree is shifted. This is needed so the algorithm works in linear time!
+   * 
+   * @param preliminary
+   */
+  public void setPreliminary(double preliminary) {
+    this.preliminary = preliminary;
   }
 
   public void setThread(TreeVertex thread) {

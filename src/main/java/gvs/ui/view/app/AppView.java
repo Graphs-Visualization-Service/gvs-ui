@@ -91,7 +91,7 @@ public class AppView {
 
   private void initButtonlabels() {
     importSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.UPLOAD));
-    importSessionBtn.setTooltip(new Tooltip("Load Session"));
+    importSessionBtn.setTooltip(new Tooltip("Load existing Session"));
 
     saveSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.SAVE));
     saveSessionBtn.setTooltip(new Tooltip("Store Session"));

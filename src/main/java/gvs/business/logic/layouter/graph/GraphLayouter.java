@@ -41,7 +41,6 @@ public class GraphLayouter implements Tickable, ILayouter {
   private static final int TRACTION_IMPACT = 5;
 
   private static final int SEEDED_MULTIPLIER = 100;
-  private static final int FIXED_MULTIPLIER = 10;
 
   private static final int TICK_RATE_PER_SEC = 26;
   private static final int MAX_LAYOUT_DURATION_MS = 10_000;
@@ -51,7 +50,8 @@ public class GraphLayouter implements Tickable, ILayouter {
 
   private static final int SEED = 4000;
 
-  private static final Logger logger = LoggerFactory.getLogger(GraphLayouter.class);
+  private static final Logger logger = LoggerFactory
+      .getLogger(GraphLayouter.class);
 
   @Inject
   public GraphLayouter(AreaTickerFactory tickerFactory) {
@@ -80,7 +80,9 @@ public class GraphLayouter implements Tickable, ILayouter {
 
       graph.getVertices().forEach(v -> {
         GraphVertex graphVertex = (GraphVertex) v;
-        graphVertex.setStable(false);
+        if (!graphVertex.isUserPositioned()) {
+          graphVertex.setStable(false);
+        }
       });
 
       this.completionCallback = callback;
@@ -90,6 +92,7 @@ public class GraphLayouter implements Tickable, ILayouter {
       resetArea();
 
       calculatLayout(graph, useRandomLayout);
+
     } else if (callback != null) {
       callback.execute();
     }
@@ -185,9 +188,7 @@ public class GraphLayouter implements Tickable, ILayouter {
     Random seededRandom = new Random(SEED);
 
     vertices.forEach(vertex -> {
-
       GraphVertex graphVertex = (GraphVertex) vertex;
-
       if (!graphVertex.isUserPositioned()) {
 
         AreaPoint position = null;
@@ -197,8 +198,6 @@ public class GraphLayouter implements Tickable, ILayouter {
           } else {
             position = generateSeededRandomPoints(seededRandom);
           }
-        } else {
-          position = generateFixedPoints(graphVertex);
         }
 
         Particle newParticle = new Particle(position, graphVertex,
@@ -223,11 +222,10 @@ public class GraphLayouter implements Tickable, ILayouter {
         Particle fromParticle = area.getParticleByVertexId(vertexFrom.getId());
         Particle toParticle = area.getParticleByVertexId(vertexTo.getId());
 
-        Traction t = new Traction(fromParticle, toParticle, TRACTION_IMPACT,
-            TRACTION_DISTANCE);
-        area.addTraction(t);
+        Traction traction = new Traction(fromParticle, toParticle,
+            TRACTION_IMPACT, TRACTION_DISTANCE);
+        area.addTraction(traction);
       }
-
     });
   }
 
@@ -259,20 +257,6 @@ public class GraphLayouter implements Tickable, ILayouter {
     double randomY = seededRandom.nextDouble() * SEEDED_MULTIPLIER;
 
     return new AreaPoint(randomX, randomY);
-  }
-
-  /**
-   * Use existing vertex coordinates as input for engine.
-   * 
-   * @param vertex
-   *          calculation base
-   * @return fixed point
-   */
-  private AreaPoint generateFixedPoints(IVertex vertex) {
-    double fixedX = vertex.getXPosition() * FIXED_MULTIPLIER;
-    double fixedY = vertex.getYPosition() * FIXED_MULTIPLIER;
-
-    return new AreaPoint(fixedX, fixedY);
   }
 
 }

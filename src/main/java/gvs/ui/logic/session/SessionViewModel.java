@@ -10,12 +10,15 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.business.logic.Session;
+import gvs.business.model.Graph;
 import gvs.business.model.SessionHolder;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  * The ViewModel class for the current session. Corresponds to the classical
@@ -30,6 +33,8 @@ public class SessionViewModel implements Observer {
 
   private final SessionHolder sessionHolder;
 
+  private final StringProperty layoutTooltip;
+
   private final BooleanProperty lastBtnDisableProperty;
   private final BooleanProperty firstBtnDisableProperty;
   private final BooleanProperty nextBtnDisableProperty;
@@ -41,6 +46,8 @@ public class SessionViewModel implements Observer {
 
   private final IntegerProperty currentGraphIdProperty;
   private final IntegerProperty totalGraphCountProperty;
+
+  private static final String LAYOUT_INFO_TOOLTIP = "All nodes are user positioned.\nAuto layout not possible.";
 
   private static final Logger logger = LoggerFactory
       .getLogger(SessionViewModel.class);
@@ -64,6 +71,7 @@ public class SessionViewModel implements Observer {
     this.cancelReplayBtnDisableProperty = new SimpleBooleanProperty();
 
     this.autoLayoutBtnDisableProperty = new SimpleBooleanProperty();
+    this.layoutTooltip = new SimpleStringProperty();
 
     updateStepProperties();
 
@@ -174,10 +182,19 @@ public class SessionViewModel implements Observer {
   public void autoLayout(boolean useRandomLayout) {
     if (!sessionHolder.getCurrentSession().isTreeSession()) {
       logger.info("Auto-layouting the current graph model...");
+
       disableAllButtons(true);
-      disableLayoutButton(true); // overwrite explicit!
-      sessionHolder.getCurrentSession().layoutCurrentGraph(useRandomLayout,
-          this::finishAutolayout);
+      Session currentSession = sessionHolder.getCurrentSession();
+      Graph currentGraph = currentSession.getGraphHolder().getCurrentGraph();
+
+      if (!currentSession.isTreeSession() && currentGraph.isLayoutable()) {
+        currentSession.layoutCurrentGraph(useRandomLayout,
+            this::finishAutolayout);
+      } else {
+        layoutTooltip.set(LAYOUT_INFO_TOOLTIP);
+        finishAutolayout();
+        autoLayoutBtnDisableProperty.set(!currentGraph.isLayoutable());
+      }
     }
   }
 
@@ -189,11 +206,6 @@ public class SessionViewModel implements Observer {
     disableStepButtons(disabled, disabled, disabled, disabled);
     disableReplayButtons(disabled, disabled);
     disableLayoutButton(disabled);
-
-    boolean isLayoutable = sessionHolder.getCurrentSession().getGraphHolder()
-        .getCurrentGraph().isLayoutable()
-        && !sessionHolder.getCurrentSession().isTreeSession();
-    autoLayoutBtnDisableProperty.set(!isLayoutable);
   }
 
   private void disableReplayButtons(boolean startStop, boolean cancel) {
@@ -221,35 +233,39 @@ public class SessionViewModel implements Observer {
     return currentGraphIdProperty;
   }
 
-  public BooleanProperty getLastBtnDisableProperty() {
+  public BooleanProperty lastBtnDisableProperty() {
     return lastBtnDisableProperty;
   }
 
-  public BooleanProperty getFirstBtnDisableProperty() {
+  public BooleanProperty firstBtnDisableProperty() {
     return firstBtnDisableProperty;
   }
 
-  public BooleanProperty getNextBtnDisableProperty() {
+  public BooleanProperty nextBtnDisableProperty() {
     return nextBtnDisableProperty;
   }
 
-  public BooleanProperty getPrevBtnDisableProperty() {
+  public BooleanProperty prevBtnDisableProperty() {
     return prevBtnDisableProperty;
   }
 
-  public BooleanProperty getAutoLayoutBtnDisableProperty() {
+  public BooleanProperty autoLayoutBtnDisableProperty() {
     return autoLayoutBtnDisableProperty;
   }
 
-  public BooleanProperty getReplayBtnDisableProperty() {
+  public BooleanProperty replayBtnDisableProperty() {
     return replayBtnDisableProperty;
   }
 
-  public BooleanProperty getCancelReplayBtnDisableProperty() {
+  public BooleanProperty cancelReplayBtnDisableProperty() {
     return cancelReplayBtnDisableProperty;
   }
 
-  public BooleanProperty getIsReplayingProperty() {
+  public BooleanProperty isReplayingProperty() {
     return isReplayingProperty;
+  }
+
+  public StringProperty layoutTooltip() {
+    return layoutTooltip;
   }
 }

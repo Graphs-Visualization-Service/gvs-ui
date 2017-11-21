@@ -12,9 +12,11 @@ import gvs.ui.model.GraphViewModel;
 import gvs.ui.view.controls.StepProgressBar;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
@@ -68,6 +70,8 @@ public class SessionView {
 
   private StepProgressBar stepProgressBar;
 
+  private final Tooltip layoutTooltip;
+
   private final GraphViewModel graphViewModel;
   private final SessionViewModel sessionViewModel;
 
@@ -76,6 +80,17 @@ public class SessionView {
   private static final double SLIDER_MIN = 0.0;
   private static final double SLIDER_DEFAULT = 1.0;
   private static final double SLIDER_MAX = 2.0;
+
+  private static final String DEFAULT_RANDOM_SWITCH_TOOLTIP = "Use Random coordinates";
+  private static final String DEFAULT_CANCEL_BTN_TOOLTIP = "Cancel replay";
+  private static final String DEFAULT_REPLAY_BTN_TOOLTIP = "Replay session";
+  private static final String DEFAULT_LAST_BTN_TOOLTIP = "Show last session";
+  private static final String DEFAULT_NEXT_BTN_TOOLTIP = "Show next session";
+  private static final String DEFAULT_PREV_BTN_TOOLTIP = "Show previous session";
+  private static final String DEFAULT_FIRST_BTN_TOOLTIP = "Show first session";
+  private static final String DEFAULT_LAYOUT_TOOLTIP = "Layout current graph";
+
+  private static final String DEFAULT_SNAPSHOP_PROMPT_TXT = "Snapshot description";
 
   private static final Logger logger = LoggerFactory
       .getLogger(SessionView.class);
@@ -87,6 +102,7 @@ public class SessionView {
     logger.info("Initiating SessionView...");
     this.graphViewModel = graphViewModel;
     this.sessionViewModel = sessionViewModel;
+    this.layoutTooltip = new Tooltip();
   }
 
   /**
@@ -94,6 +110,7 @@ public class SessionView {
    */
   @FXML
   private void initialize() {
+    initializeTooltips();
     initializeReplaySlider();
     initializeStepIndicator();
     initializeButtons();
@@ -101,9 +118,41 @@ public class SessionView {
 
     graphPane.setAutoRescale(true);
     graphViewModel.setPane(graphPane);
-    snapshotDescription.setPromptText("Snapshot description");
+
+    // Snapshot description for graphs
+    snapshotDescription.setPromptText(DEFAULT_SNAPSHOP_PROMPT_TXT);
     snapshotDescription.textProperty()
         .bindBidirectional(graphViewModel.snapshotDescriptionProperty());
+  }
+
+  /**
+   * Triggers if the text changes and show the new tooltip
+   * 
+   * @param observable
+   *          observable
+   * @param oldValue
+   *          old tooltip string
+   * @param newValue
+   *          new tooltip string
+   */
+  private void layoutTooltipListener(
+      ObservableValue<? extends String> observable, String oldValue,
+      String newValue) {
+    
+    if (oldValue != null && newValue != null) {
+      if (!DEFAULT_LAYOUT_TOOLTIP.equals(newValue)) {
+        layoutTooltip.setAutoHide(true);
+        
+        double xPos = autoLayoutBtn.getLayoutX() - 20;
+        double yPos = autoLayoutBtn.getLayoutY() + 5;
+        Point2D point = autoLayoutBtn.localToScreen(xPos, yPos);
+        layoutTooltip.show(autoLayoutBtn, point.getX(), point.getY());
+        layoutTooltip.setOnHiding(e -> {
+          layoutTooltip.getStyleClass().remove("info-tooltip");
+          layoutTooltip.setText(DEFAULT_LAYOUT_TOOLTIP);
+        });
+      }
+    }
   }
 
   private void initializeStepIndicator() {
@@ -132,6 +181,13 @@ public class SessionView {
     speedSlider.setLabelFormatter(new ReplaySliderStringConverter());
   }
 
+  private void initializeTooltips() {
+    layoutTooltip.textProperty()
+        .bindBidirectional(sessionViewModel.layoutTooltip());
+    layoutTooltip.textProperty().addListener(this::layoutTooltipListener);
+    layoutTooltip.setText(DEFAULT_LAYOUT_TOOLTIP);
+  }
+
   private void initializeButtons() {
     setButtonIcons();
     bindButtonDisable();
@@ -139,25 +195,25 @@ public class SessionView {
 
   private void bindButtonDisable() {
     firstBtn.disableProperty()
-        .bindBidirectional(sessionViewModel.getFirstBtnDisableProperty());
+        .bindBidirectional(sessionViewModel.firstBtnDisableProperty());
     lastBtn.disableProperty()
-        .bindBidirectional(sessionViewModel.getLastBtnDisableProperty());
+        .bindBidirectional(sessionViewModel.lastBtnDisableProperty());
     nextBtn.disableProperty()
-        .bindBidirectional(sessionViewModel.getNextBtnDisableProperty());
+        .bindBidirectional(sessionViewModel.nextBtnDisableProperty());
     prevBtn.disableProperty()
-        .bindBidirectional(sessionViewModel.getPrevBtnDisableProperty());
+        .bindBidirectional(sessionViewModel.prevBtnDisableProperty());
 
     replayBtn.disableProperty()
-        .bindBidirectional(sessionViewModel.getReplayBtnDisableProperty());
-    cancelReplayBtn.disableProperty().bindBidirectional(
-        sessionViewModel.getCancelReplayBtnDisableProperty());
+        .bindBidirectional(sessionViewModel.replayBtnDisableProperty());
+    cancelReplayBtn.disableProperty()
+        .bindBidirectional(sessionViewModel.cancelReplayBtnDisableProperty());
 
     autoLayoutBtn.disableProperty()
-        .bindBidirectional(sessionViewModel.getAutoLayoutBtnDisableProperty());
+        .bindBidirectional(sessionViewModel.autoLayoutBtnDisableProperty());
   }
 
   private void bindReplayIcons() {
-    sessionViewModel.getIsReplayingProperty()
+    sessionViewModel.isReplayingProperty()
         .addListener((ObservableValue<? extends Boolean> observable,
             Boolean oldValue, Boolean newValue) -> {
           if (newValue) {
@@ -170,25 +226,27 @@ public class SessionView {
 
   private void setButtonIcons() {
     firstBtn.setGraphic(FontAwesome.createLabel(Glyph.STEP_BACKWARD));
-    firstBtn.setTooltip(new Tooltip("Show first session"));
+    firstBtn.setTooltip(new Tooltip(DEFAULT_FIRST_BTN_TOOLTIP));
 
     prevBtn.setGraphic(FontAwesome.createLabel(Glyph.BACKWARD));
-    prevBtn.setTooltip(new Tooltip("Show previous session"));
+    prevBtn.setTooltip(new Tooltip(DEFAULT_PREV_BTN_TOOLTIP));
 
     nextBtn.setGraphic(FontAwesome.createLabel(Glyph.FORWARD));
-    nextBtn.setTooltip(new Tooltip("Show next session"));
+    nextBtn.setTooltip(new Tooltip(DEFAULT_NEXT_BTN_TOOLTIP));
 
     lastBtn.setGraphic(FontAwesome.createLabel(Glyph.STEP_FORWARD));
-    lastBtn.setTooltip(new Tooltip("Show last session"));
+    lastBtn.setTooltip(new Tooltip(DEFAULT_LAST_BTN_TOOLTIP));
 
     autoLayoutBtn.setGraphic(FontAwesome.createLabel(Glyph.MAGIC));
-    autoLayoutBtn.setTooltip(new Tooltip("Autolayout current graph"));
+    autoLayoutBtn.setTooltip(layoutTooltip);
 
     replayBtn.setGraphic(FontAwesome.createLabel(Glyph.PLAY));
-    replayBtn.setTooltip(new Tooltip("Replay session"));
+    replayBtn.setTooltip(new Tooltip(DEFAULT_REPLAY_BTN_TOOLTIP));
 
     cancelReplayBtn.setGraphic(FontAwesome.createLabel(Glyph.STOP));
-    cancelReplayBtn.setTooltip(new Tooltip("Cancel replay"));
+    cancelReplayBtn.setTooltip(new Tooltip(DEFAULT_CANCEL_BTN_TOOLTIP));
+
+    randomLayoutSwitch.setTooltip(new Tooltip(DEFAULT_RANDOM_SWITCH_TOOLTIP));
   }
 
   @FXML
@@ -213,7 +271,7 @@ public class SessionView {
 
   @FXML
   private void replayGraph() {
-    if (sessionViewModel.getIsReplayingProperty().get()) {
+    if (sessionViewModel.isReplayingProperty().get()) {
       sessionViewModel.pauseReplay();
     } else {
       long sliderDelay = (long) ((SLIDER_MAX + 0.01 - speedSlider.getValue())

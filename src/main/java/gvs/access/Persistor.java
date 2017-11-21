@@ -25,15 +25,15 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.business.logic.graph.Session;
-import gvs.business.logic.graph.SessionFactory;
-import gvs.business.model.graph.Edge;
-import gvs.business.model.graph.Graph;
+import gvs.business.logic.Session;
+import gvs.business.logic.SessionFactory;
+import gvs.business.model.Edge;
+import gvs.business.model.Graph;
+import gvs.business.model.IEdge;
+import gvs.business.model.IVertex;
 import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
 import gvs.business.model.tree.TreeVertex;
-import gvs.interfaces.IEdge;
-import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome.Glyph;
 
 /**

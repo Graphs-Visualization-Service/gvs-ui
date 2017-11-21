@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.business.logic.graph.Session;
+import gvs.business.logic.Session;
 
 /**
  * Holds the model of the current session.

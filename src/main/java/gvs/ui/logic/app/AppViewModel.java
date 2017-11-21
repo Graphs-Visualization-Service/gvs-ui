@@ -13,7 +13,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.business.logic.ApplicationController;
-import gvs.business.logic.graph.Session;
+import gvs.business.logic.Session;
 import gvs.business.model.SessionHolder;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;

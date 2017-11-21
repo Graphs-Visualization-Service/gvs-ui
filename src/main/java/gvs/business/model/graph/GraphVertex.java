@@ -5,8 +5,8 @@ import java.util.Observable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gvs.business.model.IVertex;
 import gvs.business.model.styles.GVSStyle;
-import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome.Glyph;
 
 /**

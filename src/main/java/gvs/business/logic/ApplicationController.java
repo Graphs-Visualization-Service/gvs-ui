@@ -7,10 +7,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.access.Persistor;
-import gvs.business.logic.graph.Session;
-import gvs.business.logic.graph.SessionFactory;
+import gvs.business.model.Graph;
 import gvs.business.model.SessionHolder;
-import gvs.business.model.graph.Graph;
 
 /**
  * The Application Controller reacts on events from the user or newly received

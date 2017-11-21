@@ -104,7 +104,7 @@ public class EdgeViewModel {
 
     if (edge.isDirected()) {
       arrowPath.getStyleClass().add("line-" + lineColor);
-      arrowPath.getStyleClass().add("thickness" + lineThickness);
+      arrowPath.getStyleClass().add("thickness-" + lineThickness);
     }
   }
 

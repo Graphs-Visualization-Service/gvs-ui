@@ -138,16 +138,20 @@ fill-standard {
 }
 
 /*-- ARROWHEAD THICKNESS--*/
-thickness-standard {
+.thickness-standard {
 	-fx-stroke-width: 1.0;
+	-fx-stroke-line-cap : round;
 }
-thickness-slight {
+.thickness-slight {
 	-fx-stroke-width: 0.5;
+	-fx-stroke-line-cap : round;
 }
-thickness-bold {
+.thickness-bold {
 	-fx-stroke-width: 2.0;
+	-fx-stroke-line-cap : round;
 }
-thickness-fat {
+.thickness-fat {
 	-fx-stroke-width: 3.0;
+	-fx-stroke-line-cap : round;
 }
 

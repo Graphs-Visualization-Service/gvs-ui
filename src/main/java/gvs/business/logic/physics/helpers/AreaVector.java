@@ -135,8 +135,7 @@ public class AreaVector {
    * Inverts vector. Used by tractions and forces
    *
    */
-  // TODO refactor name -> eg invert
-  public void changeOfSign() {
+  public void invertXYCoordinates() {
     this.setX(-(this.getX()));
     this.setY(-(this.getY()));
   }
@@ -165,10 +164,9 @@ public class AreaVector {
    * Returns the sum of speed in x and y direction. If this value is small, the
    * particle will be set to fixed
    * 
-   * @return
+   * @return sum of x and y
    */
-  // TODO refactor name -> getSpeedSum
-  public double getSpeedSummary() {
+  public double getSpeedSum() {
     return getX() + getY();
   }
 

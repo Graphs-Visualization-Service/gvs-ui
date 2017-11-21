@@ -43,7 +43,7 @@ public class Traction {
       double dev = (force.getDistance() - distance) / distance;
       force.scaleTo(dev * impact);
       from.accelerate(force);
-      force.changeOfSign();
+      force.invertXYCoordinates();
       to.accelerate(force);
     }
   }

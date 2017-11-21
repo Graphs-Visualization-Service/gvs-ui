@@ -36,6 +36,8 @@ public class SocketServer extends Thread {
 
   private final String hostname;
   private final Integer port;
+
+  private final Configuration configuration;
   private final ClientConnectionFactory connectionFactory;
 
   private static final String THREAD_NAME = "Socket Server Thread";
@@ -46,12 +48,20 @@ public class SocketServer extends Thread {
 
   /**
    * Searches for free port and writes the communication information to a file
+   * 
+   * @param factory
+   *          factory for incomming client connection
+   * @param configuration
+   *          configuration wrapper
    */
   @Inject
-  public SocketServer(ClientConnectionFactory factory) {
+  public SocketServer(ClientConnectionFactory factory,
+      Configuration configuration) {
 
     super(THREAD_NAME);
     this.connectionFactory = factory;
+    this.configuration = configuration;
+
     this.hostname = getLocalHostName();
     this.port = findFreePort();
 
@@ -88,7 +98,7 @@ public class SocketServer extends Thread {
   }
 
   private Integer findFreePort() {
-    String startPortString = Configuration.getInstance().getStartPort();
+    String startPortString = configuration.getStartPort();
     int configuredStartPort = Integer.parseInt(startPortString);
 
     for (int searchPort = configuredStartPort; searchPort <= 60000; searchPort++) {
@@ -106,7 +116,7 @@ public class SocketServer extends Thread {
   }
 
   private void writePortFile() {
-    String filePath = Configuration.getInstance().getCommFilePath();
+    String filePath = configuration.getCommFilePath();
 
     if (filePath != null && !filePath.isEmpty()
         && !DEFAULT_PORT_FILE_NAME.equals(filePath)) {

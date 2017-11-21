@@ -27,16 +27,12 @@ import com.google.inject.Singleton;
 
 import gvs.business.logic.graph.Session;
 import gvs.business.logic.graph.SessionFactory;
-import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
 import gvs.business.model.graph.Graph;
-import gvs.business.model.styles.GVSColor;
-import gvs.business.model.styles.GVSLineStyle;
-import gvs.business.model.styles.GVSLineThickness;
+import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
 import gvs.business.model.tree.TreeVertex;
 import gvs.interfaces.IEdge;
-import gvs.interfaces.ISession;
 import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome.Glyph;
 
@@ -102,12 +98,12 @@ public class Persistor {
     this.writeToDisk(document, session, file);
   }
 
-  public ISession loadFile(String pPath) {
+  public Session loadFile(String pPath) {
     logger.info("Load file: " + pPath);
     File input = new File(pPath);
     Document documentToRead = null;
     SAXReader reader = new SAXReader();
-    ISession session = null;
+    Session session = null;
     try {
       documentToRead = reader.read(input);
     } catch (DocumentException e) {
@@ -130,7 +126,7 @@ public class Persistor {
     return session;
   }
 
-  private void writeToDisk(Document pDocument, ISession pSession, File output) {
+  private void writeToDisk(Document pDocument, Session pSession, File output) {
     try {
       OutputFormat format = OutputFormat.createPrettyPrint();
 
@@ -147,7 +143,7 @@ public class Persistor {
   }
 
   private void addIdAndLabelForSession(Element sessionElement,
-      ISession sessionController) {
+      Session sessionController) {
     sessionElement.addAttribute(ATTRIBUTEID,
         String.valueOf(sessionController.getId()));
     Element sessionNameElement = sessionElement.addElement(LABEL);
@@ -178,7 +174,7 @@ public class Persistor {
 
     Element vertexElements = graphElement.addElement(VERTIZES);
     graph.getVertices().forEach(v -> {
-      saveDefaultVertex((DefaultVertex) v, vertexElements);
+      saveDefaultVertex((GraphVertex) v, vertexElements);
     });
     Element edgeElements = graphElement.addElement(EDGES);
     graph.getEdges().forEach(edge -> saveEdge(edge, edgeElements));
@@ -193,7 +189,7 @@ public class Persistor {
     });
   }
 
-  private void saveDefaultVertex(DefaultVertex pVertex, Element pVertizes) {
+  private void saveDefaultVertex(GraphVertex pVertex, Element pVertizes) {
     String vertexName = null;
 
     if (pVertex.isUserPositioned()) {
@@ -415,7 +411,7 @@ public class Persistor {
     long vertexId = Long.parseLong(vertexElement.attributeValue(ATTRIBUTEID));
 
     logger.info("Finish building DefaultVertex");
-    return new DefaultVertex(vertexId, label, style, xPos, yPos, icon);
+    return new GraphVertex(vertexId, label, style, xPos, yPos, icon);
   }
 
   private GVSStyle loadStyle(Element vertexElement, boolean isVertex) {

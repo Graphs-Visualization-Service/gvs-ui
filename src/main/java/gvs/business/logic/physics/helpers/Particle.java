@@ -1,6 +1,6 @@
 package gvs.business.logic.physics.helpers;
 
-import gvs.business.model.graph.DefaultVertex;
+import gvs.business.model.graph.GraphVertex;
 
 /**
  * Represents an element in the layouting area
@@ -11,7 +11,7 @@ import gvs.business.model.graph.DefaultVertex;
 public class Particle {
 
   private double weight;
-  private DefaultVertex relatedVertex;
+  private GraphVertex relatedVertex;
 
   private AreaVector speed;
   private AreaVector acceleration;
@@ -29,7 +29,7 @@ public class Particle {
    * @param weight
    *          particle weight
    */
-  public Particle(AreaPoint position, DefaultVertex relatedVertex,
+  public Particle(AreaPoint position, GraphVertex relatedVertex,
       double weight) {
     this.particlePosition = position;
     this.relatedVertex = relatedVertex;
@@ -105,7 +105,7 @@ public class Particle {
     return weight;
   }
 
-  public DefaultVertex getRelatedVertex() {
+  public GraphVertex getRelatedVertex() {
     return relatedVertex;
   }
 }

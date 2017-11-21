@@ -13,17 +13,17 @@ import gvs.business.logic.physics.helpers.Area;
  * Once scheduled, this LayoutGuard will set the area to stable, which will stop
  * the calculation.
  * 
- * The {@link Layouter} schedules an instance of this class according to the
+ * The {@link GraphLayouter} schedules an instance of this class according to the
  * default delay.
  * 
  * @author mwieland
  *
  */
-public class LayoutGuard extends TimerTask {
+public class GraphLayoutGuard extends TimerTask {
 
   private Area currentArea = null;
   private static final Logger logger = LoggerFactory
-      .getLogger(LayoutGuard.class);
+      .getLogger(GraphLayoutGuard.class);
 
   /**
    * Constructor.
@@ -31,7 +31,7 @@ public class LayoutGuard extends TimerTask {
    * @param area
    *          area to guard
    */
-  public LayoutGuard(Area area) {
+  public GraphLayoutGuard(Area area) {
     currentArea = area;
   }
 

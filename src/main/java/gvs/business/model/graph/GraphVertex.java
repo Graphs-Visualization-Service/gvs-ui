@@ -15,7 +15,7 @@ import gvs.util.FontAwesome.Glyph;
  * @author aegli
  *
  */
-public class DefaultVertex extends Observable implements IVertex {
+public class GraphVertex extends Observable implements IVertex {
 
   private long id;
   private String label;
@@ -28,9 +28,9 @@ public class DefaultVertex extends Observable implements IVertex {
   private final Glyph icon;
 
   private static final Logger logger = LoggerFactory
-      .getLogger(DefaultVertex.class);
+      .getLogger(GraphVertex.class);
 
-  public DefaultVertex(long id, String label, GVSStyle style, double xPosition,
+  public GraphVertex(long id, String label, GVSStyle style, double xPosition,
       double yPosition, Glyph icon) {
 
     this.id = id;

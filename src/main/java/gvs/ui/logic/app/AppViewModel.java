@@ -13,8 +13,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.business.logic.ApplicationController;
+import gvs.business.logic.graph.Session;
 import gvs.business.model.SessionHolder;
-import gvs.interfaces.ISession;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -38,7 +38,7 @@ public class AppViewModel implements Observer {
   private final BooleanProperty sessionControlVisibilityProperty;
   private final StringProperty currentSessionName;
   private final ObservableList<String> sessionNames;
-  private final Map<String, ISession> controllerMap;
+  private final Map<String, Session> controllerMap;
   private final SessionHolder appModel;
   private final ApplicationController appController;
 
@@ -99,7 +99,7 @@ public class AppViewModel implements Observer {
   public void update(Observable o, Object arg) {
     // Hand updates over to JavaFX Thread
     Platform.runLater(() -> {
-      ISession c = ((SessionHolder) o).getCurrentSession();
+      Session c = ((SessionHolder) o).getCurrentSession();
       String name = c.getSessionName();
       if (name == null || name.isEmpty()) {
         currentSessionName.set(PROMT_MESSAGE);
@@ -115,7 +115,7 @@ public class AppViewModel implements Observer {
 
   public void removeCurrentSession() {
     logger.info("Removing current session...");
-    ISession currentSession = appModel.getCurrentSession();
+    Session currentSession = appModel.getCurrentSession();
     String sessionName = currentSession.getSessionName();
     sessionNames.remove(sessionName);
     controllerMap.remove(sessionName);
@@ -144,7 +144,7 @@ public class AppViewModel implements Observer {
       return;
     }
 
-    ISession c = controllerMap.get(name);
+    Session c = controllerMap.get(name);
     if (appModel.getCurrentSession().getSessionName() != name) {
       appController.changeCurrentSession(c);
       logger.info("Changing current session to {}...", name);

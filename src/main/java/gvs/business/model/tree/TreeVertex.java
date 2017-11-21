@@ -7,7 +7,7 @@ import java.util.Observable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.business.model.graph.DefaultVertex;
+import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
 import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome.Glyph;
@@ -35,7 +35,7 @@ public class TreeVertex extends Observable implements IVertex {
   private final Glyph icon;
 
   private static final Logger logger = LoggerFactory
-      .getLogger(DefaultVertex.class);
+      .getLogger(GraphVertex.class);
 
   public TreeVertex(long id, String label, GVSStyle style,
       boolean isUserPositioned, Glyph icon) {

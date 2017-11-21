@@ -9,15 +9,13 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import gvs.business.logic.graph.Session;
 import gvs.business.model.SessionHolder;
-import gvs.interfaces.ISession;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 /**
  * The ViewModel class for the current session. Corresponds to the classical
@@ -74,28 +72,28 @@ public class SessionViewModel implements Observer {
 
   public void changeCurrentGraphToNext() {
     logger.info("Changing the displayed graph model...");
-    ISession currentSession = sessionHolder.getCurrentSession();
+    Session currentSession = sessionHolder.getCurrentSession();
     currentSession.changeCurrentGraphToNext();
     updateStepProperties();
   }
 
   public void changeCurrentGraphToPrevious() {
     logger.info("Changing the displayed graph model...");
-    ISession currentSession = sessionHolder.getCurrentSession();
+    Session currentSession = sessionHolder.getCurrentSession();
     currentSession.changeCurrentGraphToPrev();
     updateStepProperties();
   }
 
   public void changeCurrentGraphToFirst() {
     logger.info("Changing the displayed graph model...");
-    ISession currentSession = sessionHolder.getCurrentSession();
+    Session currentSession = sessionHolder.getCurrentSession();
     currentSession.changeCurrentGraphToFirst();
     updateStepProperties();
   }
 
   public void changeCurrentGraphToLast() {
     logger.info("Changing the displayed graph model...");
-    ISession currentSession = sessionHolder.getCurrentSession();
+    Session currentSession = sessionHolder.getCurrentSession();
     currentSession.changeCurrentGraphToLast();
     updateStepProperties();
   }
@@ -117,7 +115,7 @@ public class SessionViewModel implements Observer {
   }
 
   public void updateStepProperties() {
-    ISession currentSession = sessionHolder.getCurrentSession();
+    Session currentSession = sessionHolder.getCurrentSession();
 
     Platform.runLater(() -> {
       if (currentSession != null) {

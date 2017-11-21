@@ -18,8 +18,8 @@ import gvs.business.logic.physics.rules.Traction;
 import gvs.business.logic.physics.ticker.AreaTicker;
 import gvs.business.logic.physics.ticker.AreaTickerFactory;
 import gvs.business.logic.physics.ticker.Tickable;
-import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Graph;
+import gvs.business.model.graph.GraphVertex;
 import gvs.interfaces.Action;
 import gvs.interfaces.IEdge;
 import gvs.interfaces.IVertex;
@@ -34,7 +34,7 @@ import gvs.interfaces.IVertex;
  *
  */
 @Singleton
-public class Layouter implements Tickable, ILayouter {
+public class GraphLayouter implements Tickable, ILayouter {
 
   private Action completionCallback;
 
@@ -58,10 +58,10 @@ public class Layouter implements Tickable, ILayouter {
 
   private static final int SEED = 4000;
 
-  private static final Logger logger = LoggerFactory.getLogger(Layouter.class);
+  private static final Logger logger = LoggerFactory.getLogger(GraphLayouter.class);
 
   @Inject
-  public Layouter(AreaTickerFactory tickerFactory) {
+  public GraphLayouter(AreaTickerFactory tickerFactory) {
 
     this.tickerFactory = tickerFactory;
     AreaDimension dimension = new AreaDimension(DEFAULT_AREA_WIDTH,
@@ -86,7 +86,7 @@ public class Layouter implements Tickable, ILayouter {
     if (graph.isLayoutable()) {
 
       graph.getVertices().forEach(v -> {
-        DefaultVertex graphVertex = (DefaultVertex) v;
+        GraphVertex graphVertex = (GraphVertex) v;
         graphVertex.setStable(false);
       });
 
@@ -107,7 +107,7 @@ public class Layouter implements Tickable, ILayouter {
    */
   private void initializeLayoutGuard() {
     Timer guard = new Timer();
-    LayoutGuard layoutGuard = new LayoutGuard(area);
+    GraphLayoutGuard layoutGuard = new GraphLayoutGuard(area);
     guard.schedule(layoutGuard, MAX_LAYOUT_DURATION_MS);
   }
 
@@ -193,7 +193,7 @@ public class Layouter implements Tickable, ILayouter {
 
     vertices.forEach(vertex -> {
 
-      DefaultVertex graphVertex = (DefaultVertex) vertex;
+      GraphVertex graphVertex = (GraphVertex) vertex;
 
       if (!graphVertex.isUserPositioned()) {
 

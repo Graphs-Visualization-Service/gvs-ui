@@ -14,11 +14,11 @@ import com.google.inject.Singleton;
  *
  */
 @Singleton
-public class LayoutMonitor {
+public class GraphLayoutMonitor {
 
   private boolean locked = false;
   private static final Logger logger = LoggerFactory
-      .getLogger(LayoutMonitor.class);
+      .getLogger(GraphLayoutMonitor.class);
 
   /**
    * Locks monitor, so other threads have to wait until former thread releases

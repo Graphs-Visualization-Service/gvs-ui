@@ -15,13 +15,12 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 import gvs.access.Persistor;
+import gvs.business.logic.GraphLayoutMonitor;
 import gvs.business.logic.ILayouter;
-import gvs.business.logic.LayoutMonitor;
 import gvs.business.logic.LayouterProvider;
 import gvs.business.model.graph.Graph;
 import gvs.business.model.graph.GraphHolder;
 import gvs.interfaces.Action;
-import gvs.interfaces.IGraphSessionController;
 import gvs.interfaces.IVertex;
 
 /**
@@ -31,7 +30,7 @@ import gvs.interfaces.IVertex;
  * @author aegli
  *
  */
-public class Session implements IGraphSessionController {
+public class Session {
 
   private SessionReplay currentReplayThread;
 
@@ -43,7 +42,7 @@ public class Session implements IGraphSessionController {
   private final SessionReplayFactory sessionReplayFactory;
   private final ILayouter layouter;
   private final Persistor persistor;
-  private final LayoutMonitor layoutMonitor;
+  private final GraphLayoutMonitor layoutMonitor;
 
   private final boolean isTreeSession;
 
@@ -51,7 +50,7 @@ public class Session implements IGraphSessionController {
 
   @Inject
   public Session(GraphHolder graphHolder, Persistor persistor,
-      LayoutMonitor layoutMonitor, SessionReplayFactory replayFactory,
+      GraphLayoutMonitor layoutMonitor, SessionReplayFactory replayFactory,
       LayouterProvider layouterProvider, @Assisted long sessionId,
       @Assisted String sessionName, @Assisted boolean isTreeSession) {
 
@@ -82,7 +81,6 @@ public class Session implements IGraphSessionController {
    * @param graph
    *          new graph
    */
-  @Override
   public void addGraph(Graph graph) {
 
     int numberOfGraphs = getGraphs().size();
@@ -104,7 +102,6 @@ public class Session implements IGraphSessionController {
     }
   }
 
-  @Override
   public void layoutCurrentGraph(boolean useRandomLayout, Action callback) {
     Graph currentGraph = graphHolder.getCurrentGraph();
 
@@ -132,7 +129,6 @@ public class Session implements IGraphSessionController {
   /**
    * Displays requested model.
    */
-  @Override
   public void replay(long timeout, Action finishedCallback) {
     logger.info("Replaying current session");
     if (currentReplayThread == null || currentReplayThread.isCanceled()) {
@@ -164,7 +160,6 @@ public class Session implements IGraphSessionController {
     changeCurrentGraphToFirst();
   }
 
-  @Override
   public GraphHolder getGraphHolder() {
     return graphHolder;
   }
@@ -174,7 +169,6 @@ public class Session implements IGraphSessionController {
    * 
    * @return sessionName
    */
-  @Override
   public String getSessionName() {
     return sessionName;
   }
@@ -184,7 +178,6 @@ public class Session implements IGraphSessionController {
    * 
    * @return session id
    */
-  @Override
   public long getId() {
     return this.id;
   }
@@ -194,17 +187,14 @@ public class Session implements IGraphSessionController {
    * 
    * @return graphModels
    */
-  @Override
   public List<Graph> getGraphs() {
     return graphs;
   }
 
-  @Override
   public void saveSession(File file) {
     persistor.saveToDisk(this, file);
   }
 
-  @Override
   public void changeCurrentGraphToNext() {
     Graph currentGraph = graphHolder.getCurrentGraph();
     int nextGraphId = currentGraph.getId() + 1;
@@ -219,7 +209,6 @@ public class Session implements IGraphSessionController {
     }
   }
 
-  @Override
   public void changeCurrentGraphToPrev() {
     int prevGraphId = graphHolder.getCurrentGraph().getId() - 1;
     if (validIndex(prevGraphId)) {
@@ -234,7 +223,6 @@ public class Session implements IGraphSessionController {
     }
   }
 
-  @Override
   public void changeCurrentGraphToFirst() {
     if (!getGraphs().isEmpty()) {
       Graph firstGraph = getGraphs().get(0);
@@ -242,7 +230,6 @@ public class Session implements IGraphSessionController {
     }
   }
 
-  @Override
   public void changeCurrentGraphToLast() {
     int newIndex = getGraphs().size() - 1;
     if (validIndex(newIndex)) {
@@ -296,7 +283,6 @@ public class Session implements IGraphSessionController {
     }
   }
 
-  @Override
   public int getTotalGraphCount() {
     return getGraphs().size();
   }

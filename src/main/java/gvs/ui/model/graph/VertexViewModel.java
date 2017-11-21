@@ -6,9 +6,8 @@ import java.util.Observer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.business.model.graph.DefaultVertex;
+import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
-import gvs.business.model.tree.TreeVertex;
 import gvs.interfaces.IVertex;
 import gvs.util.FontAwesome;
 import javafx.application.Platform;
@@ -81,13 +80,10 @@ public class VertexViewModel implements Observer {
     ellipse.getStyleClass().add("line-" + lineColor);
     ellipse.getStyleClass().add(lineStyle + "-" + lineThickness);
 
-    if (style.getDarkColors().contains(style.getFillColor())) {
-      label.textFillProperty().set(Color.WHITE);
-    }
   }
 
   /**
-   * Inform the business logic {@link DefaultVertex} about changes, made in the
+   * Inform the business logic {@link GraphVertex} about changes, made in the
    * UI. (e.g. drag vertex)
    * 
    * @param observable
@@ -106,7 +102,7 @@ public class VertexViewModel implements Observer {
   }
 
   /**
-   * Inform the business logic {@link DefaultVertex} about changes, made in the
+   * Inform the business logic {@link GraphVertex} about changes, made in the
    * UI. (e.g. drag vertex)
    * 
    * @param observable
@@ -125,14 +121,14 @@ public class VertexViewModel implements Observer {
   }
 
   /**
-   * Create the binding from the business logic {@link DefaultVertex} to the
+   * Create the binding from the business logic {@link GraphVertex} to the
    * presentation {@link VertexViewModel} properties.
    * 
-   * As soon as any {@link DefaultVertex} field is updated, the corresponding
+   * As soon as any {@link GraphVertex} field is updated, the corresponding
    * property will be notified.
    * 
    * @param o
-   *          updated {@link DefaultVertex} object
+   *          updated {@link GraphVertex} object
    * @param arg
    *          additional arguments
    */

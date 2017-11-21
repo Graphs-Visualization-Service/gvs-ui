@@ -13,10 +13,10 @@ import gvs.business.logic.tree.TreeLayouter;
 public class LayouterProvider {
 
   private final TreeLayouter treeLayouter;
-  private final Layouter graphLayouter;
+  private final GraphLayouter graphLayouter;
 
   @Inject
-  public LayouterProvider(TreeLayouter treeLayouter, Layouter graphLayouter) {
+  public LayouterProvider(TreeLayouter treeLayouter, GraphLayouter graphLayouter) {
     this.treeLayouter = treeLayouter;
     this.graphLayouter = graphLayouter;
   }
@@ -25,7 +25,7 @@ public class LayouterProvider {
     return treeLayouter;
   }
 
-  public Layouter createGraphLayouter() {
+  public GraphLayouter createGraphLayouter() {
     return graphLayouter;
   }
 }

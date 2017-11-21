@@ -23,9 +23,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.business.logic.ApplicationController;
-import gvs.business.model.graph.DefaultVertex;
 import gvs.business.model.graph.Edge;
 import gvs.business.model.graph.Graph;
+import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
 import gvs.business.model.tree.TreeVertex;
 import gvs.interfaces.IEdge;
@@ -287,7 +287,7 @@ public class ModelBuilder {
     long vertexId = Long.parseLong(vertexElement.attributeValue(ATTRIBUTEID));
 
     logger.info("Finish building DefaultVertex");
-    return new DefaultVertex(vertexId, label, style, xPos, yPos, icon);
+    return new GraphVertex(vertexId, label, style, xPos, yPos, icon);
   }
 
   private GVSStyle buildStyle(Element e, boolean isVertex) {

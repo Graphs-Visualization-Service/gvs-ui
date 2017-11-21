@@ -56,13 +56,23 @@ public class SessionHolder extends Observable {
   }
 
   /**
-   * Add a session.
+   * Add a session to the SessionList if the session is not already contained in
+   * the List.
    * 
    * @param session
    *          new session
+   * @return In the case of a new session, the added session is returned. In the
+   *         case of a duplicated session, the original session is returned.
    */
-  public synchronized void addSession(Session session) {
-    this.sessions.add(session);
+  public synchronized Session addSession(Session session) {
+    if (this.sessions.contains(session)) {
+      int index = this.sessions.indexOf(session);
+      return this.sessions.get(index);
+    } else {
+      this.sessions.add(session);
+      return session;
+    }
+
   }
 
   /**

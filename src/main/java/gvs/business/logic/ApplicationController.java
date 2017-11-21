@@ -1,5 +1,8 @@
 package gvs.business.logic;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,8 +68,8 @@ public class ApplicationController {
   public synchronized void loadStoredSession(String fileName) {
     logger.info("Load session from filesystem");
     Session loadedSession = persistor.loadFile(fileName);
-
-    sessionHolder.addSession(loadedSession);
+    
+    loadedSession = sessionHolder.addSession(loadedSession);
     sessionHolder.setCurrentSession(loadedSession);
     if (!loadedSession.isTreeSession()) {
       loadedSession.layoutCurrentGraph(true, null);

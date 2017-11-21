@@ -161,9 +161,9 @@ public class EdgeViewModel {
       drawHorizontalEdge(startPoint, endPoint, length);
 
       if (edge.isDirected()) {
-        double endX = startPoint.getX() + length;
-        double endY = endPoint.getY();
-        drawArrowHead(endX, endY);
+        double pseudoEndX = startPoint.getX() + length;
+        double pseudoEndY = startPoint.getY();
+        drawArrowHead(pseudoEndX, pseudoEndY);
       }
 
       rotateEdge(startPoint, endPoint);

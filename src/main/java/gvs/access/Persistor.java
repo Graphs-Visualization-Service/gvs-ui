@@ -182,7 +182,8 @@ public class Persistor {
 
   private void saveTreeModel(Graph graph, Element pSession) {
     Element treeElement = pSession.addElement(TREEMODEL);
-    addIdAndLabelForGraph(pSession, graph);
+    addIdAndLabelForGraph(treeElement, graph);
+    
     Element eNodes = treeElement.addElement(NODES);
     graph.getVertices().forEach(n -> {
       saveTreeVertex((TreeVertex) n, eNodes);

@@ -135,8 +135,9 @@ public class ModelBuilder {
       }
     });
 
-    String snapShotDescription = graphElement.element(LABEL).getText();
-    Graph newGraph = new Graph(snapShotDescription, vertices.values(), edges);
+    // GVS 3.0 use snapshot description of input connection
+    String snapshotDescription = new String();
+    Graph newGraph = new Graph(snapshotDescription, vertices.values(), edges);
 
     logger.debug("Finish build graph from XML");
     long sessionId = Long.parseLong(graphElement.attributeValue(ATTRIBUTEID));
@@ -166,8 +167,9 @@ public class ModelBuilder {
 
     Collection<IEdge> edges = buildTreeEdges(vertices);
 
-    String snapShotDescription = treeElement.element(LABEL).getText();
-    Graph tree = new Graph(snapShotDescription, vertices, edges);
+    // GVS 3.0 use snapshot description of input connection
+    String snapshotDescription = new String();
+    Graph tree = new Graph(snapshotDescription, vertices, edges);
     logger.info("Finished build tree from XML.");
     applicationController.addGraphToSession(tree, sessionId, sessionName, true);
   }
@@ -329,7 +331,7 @@ public class ModelBuilder {
     long toVertexId = Long.parseLong(eToVertex.getText());
     IVertex fromVertex = null;
     IVertex toVertex = null;
-    
+
     fromVertex = pVertizes.get(fromVertexId);
     toVertex = pVertizes.get(toVertexId);
 
@@ -360,10 +362,10 @@ public class ModelBuilder {
     long toVertexId = Long.parseLong(eToVertex.getText());
     IVertex fromVertex = null;
     IVertex toVertex = null;
-    
+
     fromVertex = pVertizes.get(fromVertexId);
     toVertex = pVertizes.get(toVertexId);
-    
+
     if (arrowPos == 1) {
       logger.debug("Finsih build UndirectedEdge XML with arrow pos 1");
       return new Edge(label, style, true, toVertex, fromVertex);

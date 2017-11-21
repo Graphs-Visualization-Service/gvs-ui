@@ -79,7 +79,6 @@ public class VertexViewModel implements Observer {
     ellipse.getStyleClass().add("fill-" + fillColor);
     ellipse.getStyleClass().add("line-" + lineColor);
     ellipse.getStyleClass().add(lineStyle + "-" + lineThickness);
-
   }
 
   /**

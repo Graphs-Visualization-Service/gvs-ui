@@ -19,7 +19,7 @@ public class GraphHolder extends Observable {
    * Set Current Graph and notify ui observers.
    * 
    * @param newGraph
-   *          udpated graph
+   *          updated graph
    */
   public synchronized void setCurrentGraph(Graph newGraph) {
     logger.info("Setting current graph and notify observers.");

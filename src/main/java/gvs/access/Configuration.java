@@ -132,7 +132,7 @@ public class Configuration {
    * 
    * @return commFilePath
    */
-  public synchronized String getCommFilePath() {
+  public String getCommFilePath() {
     return commFilePath;
   }
 
@@ -141,7 +141,7 @@ public class Configuration {
    * 
    * @return startPort
    */
-  public synchronized String getStartPort() {
+  public String getStartPort() {
     return startPort;
   }
 
@@ -149,7 +149,7 @@ public class Configuration {
    * 
    * @return the layoutdelay
    */
-  public synchronized int getLayoutDelay() {
+  public int getLayoutDelay() {
     return layoutDelay;
   }
 }

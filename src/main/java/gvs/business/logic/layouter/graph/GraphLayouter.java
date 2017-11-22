@@ -72,11 +72,21 @@ public class GraphLayouter implements Tickable, ILayouter {
    * @param callback
    *          callback function
    */
-  public void layoutGraph(Graph graph, boolean useRandomLayout,
+  public synchronized void layoutGraph(Graph graph, boolean useRandomLayout,
       Action callback) {
     logger.info("Received new data to layout");
 
     if (graph.isLayoutable()) {
+
+      while (currentTicker != null) {
+        try {
+          wait();
+        } catch (InterruptedException e) {
+          logger.error("Unable to passivate thread", e);
+        }
+      }
+
+      this.completionCallback = callback;
 
       graph.getVertices().forEach(v -> {
         GraphVertex graphVertex = (GraphVertex) v;
@@ -85,18 +95,9 @@ public class GraphLayouter implements Tickable, ILayouter {
         }
       });
 
-      this.completionCallback = callback;
+      initializeLayoutGuard();
 
-      // guard will stop layouting process after 10s
-      GraphLayoutGuard layoutGuard = new GraphLayoutGuard(area);
-      guard = new Timer();
-      guard.schedule(layoutGuard, MAX_LAYOUT_DURATION_MS);
-
-      try {
-        startTickerThread();
-      } catch (InterruptedException e) {
-        logger.error("Unable to start area ticker");
-      }
+      startTickerThread();
 
       calculatLayout(graph, useRandomLayout);
 
@@ -129,17 +130,20 @@ public class GraphLayouter implements Tickable, ILayouter {
    * tick method in a defined interval.
    * 
    * As soon as the area is stable, the ticker thread terminates.
-   * 
-   * @throws InterruptedException
    */
-  private synchronized void startTickerThread() throws InterruptedException {
-    while (currentTicker != null) {
-      wait();
-    }
-
+  private void startTickerThread() {
     currentTicker = tickerFactory.create(this, TICK_RATE_PER_SEC);
     logger.debug("Starting thread: {}", currentTicker.getName());
     currentTicker.start();
+  }
+
+  /**
+   * The layoutguard will stop layouting process after 10s.
+   */
+  private void initializeLayoutGuard() {
+    GraphLayoutGuard layoutGuard = new GraphLayoutGuard(area);
+    guard = new Timer();
+    guard.schedule(layoutGuard, MAX_LAYOUT_DURATION_MS);
   }
 
   /**
@@ -186,15 +190,12 @@ public class GraphLayouter implements Tickable, ILayouter {
 
     vertices.forEach(vertex -> {
       GraphVertex graphVertex = (GraphVertex) vertex;
-      if (!graphVertex.isUserPositioned()) {
-
+      if (!graphVertex.isUserPositioned() && !graphVertex.isStable()) {
         AreaPoint position = null;
-        if (!graphVertex.isStable()) {
-          if (useRandomLayout) {
-            position = generateRandomPoints();
-          } else {
-            position = generateSeededRandomPoints(seededRandom);
-          }
+        if (useRandomLayout) {
+          position = generateRandomPoints();
+        } else {
+          position = generateSeededRandomPoints(seededRandom);
         }
 
         Particle newParticle = new Particle(position, graphVertex,
@@ -212,10 +213,12 @@ public class GraphLayouter implements Tickable, ILayouter {
    */
   private void createEdgeTractions(Collection<IEdge> edges) {
     edges.forEach(e -> {
-      IVertex vertexFrom = e.getStartVertex();
-      IVertex vertexTo = e.getEndVertex();
+      GraphVertex vertexFrom = (GraphVertex) e.getStartVertex();
+      GraphVertex vertexTo = (GraphVertex) e.getEndVertex();
 
-      if (!vertexFrom.isUserPositioned() && !vertexTo.isUserPositioned()) {
+      if (!vertexFrom.isUserPositioned() && !vertexTo.isUserPositioned()
+          && !vertexFrom.isStable() && !vertexTo.isStable()) {
+
         Particle fromParticle = area.getParticleByVertexId(vertexFrom.getId());
         Particle toParticle = area.getParticleByVertexId(vertexTo.getId());
 

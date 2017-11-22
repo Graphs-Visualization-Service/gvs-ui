@@ -37,7 +37,7 @@ public class SessionHolder extends Observable {
    * 
    * @param newSession
    */
-  public synchronized void setCurrentSession(Session newSession) {
+  public void setCurrentSession(Session newSession) {
     logger.info("Setting current session and notify observers.");
 
     this.currentSession = newSession;
@@ -51,7 +51,7 @@ public class SessionHolder extends Observable {
    * 
    * @return session controller
    */
-  public synchronized Session getCurrentSession() {
+  public Session getCurrentSession() {
     return currentSession;
   }
 
@@ -64,7 +64,7 @@ public class SessionHolder extends Observable {
    * @return In the case of a new session, the added session is returned. In the
    *         case of a duplicated session, the original session is returned.
    */
-  public synchronized Session addSession(Session session) {
+  public Session addSession(Session session) {
     if (this.sessions.contains(session)) {
       int index = this.sessions.indexOf(session);
       return this.sessions.get(index);
@@ -81,7 +81,7 @@ public class SessionHolder extends Observable {
    * @param session
    *          session to delete
    */
-  public synchronized void removeSession(Session session) {
+  public void removeSession(Session session) {
     this.sessions.remove(session);
   }
 
@@ -90,7 +90,7 @@ public class SessionHolder extends Observable {
    * 
    * @return sessionControllers
    */
-  public synchronized List<Session> getSessions() {
+  public List<Session> getSessions() {
     return sessions;
   }
 }

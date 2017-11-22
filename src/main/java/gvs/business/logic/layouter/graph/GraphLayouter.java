@@ -31,7 +31,8 @@ public class GraphLayouter implements Tickable, ILayouter {
 
   private Action completionCallback;
 
-  private volatile AreaTicker currentTicker;
+  private AreaTicker currentTicker;
+  private Timer guard;
 
   private final AreaTickerFactory tickerFactory;
   private final Area area;
@@ -55,7 +56,6 @@ public class GraphLayouter implements Tickable, ILayouter {
 
   @Inject
   public GraphLayouter(AreaTickerFactory tickerFactory) {
-
     this.tickerFactory = tickerFactory;
     AreaDimension dimension = new AreaDimension(DEFAULT_AREA_WIDTH,
         DEFAULT_AREA_HEIGHT);
@@ -87,32 +87,22 @@ public class GraphLayouter implements Tickable, ILayouter {
 
       this.completionCallback = callback;
 
-      initializeLayoutGuard();
-      handleTickerThread();
-      resetArea();
+      // guard will stop layouting process after 10s
+      GraphLayoutGuard layoutGuard = new GraphLayoutGuard(area);
+      guard = new Timer();
+      guard.schedule(layoutGuard, MAX_LAYOUT_DURATION_MS);
+
+      try {
+        startTickerThread();
+      } catch (InterruptedException e) {
+        logger.error("Unable to start area ticker");
+      }
 
       calculatLayout(graph, useRandomLayout);
 
     } else if (callback != null) {
       callback.execute();
     }
-  }
-
-  /**
-   * Initializes the guard, which protects the layouter from running endlessly.
-   */
-  private void initializeLayoutGuard() {
-    Timer guard = new Timer();
-    GraphLayoutGuard layoutGuard = new GraphLayoutGuard(area);
-    guard.schedule(layoutGuard, MAX_LAYOUT_DURATION_MS);
-  }
-
-  /**
-   * Reverts the state of the area
-   */
-  private void resetArea() {
-    area.setIsStable(false);
-    area.resetArea();
   }
 
   /**
@@ -124,6 +114,10 @@ public class GraphLayouter implements Tickable, ILayouter {
    *          use random points
    */
   private void calculatLayout(Graph graph, boolean useRandomLayout) {
+    // reset
+    area.setIsStable(false);
+    area.resetArea();
+
     createVertexParticles(graph.getVertices(), useRandomLayout);
     createEdgeTractions(graph.getEdges());
   }
@@ -135,41 +129,44 @@ public class GraphLayouter implements Tickable, ILayouter {
    * tick method in a defined interval.
    * 
    * As soon as the area is stable, the ticker thread terminates.
+   * 
+   * @throws InterruptedException
    */
-  private void handleTickerThread() {
-    if (currentTicker != null) {
-      try {
-        logger.debug("Wait for current AreaTicker thread to terminate.");
-        currentTicker.join();
-        logger.debug("AreaTicker thread successfully stopped.");
-      } catch (InterruptedException e) {
-        logger.error("Unable to join Area Ticker thread", e);
-      }
+  private synchronized void startTickerThread() throws InterruptedException {
+    while (currentTicker != null) {
+      wait();
     }
 
     currentTicker = tickerFactory.create(this, TICK_RATE_PER_SEC);
     logger.debug("Starting thread: {}", currentTicker.getName());
     currentTicker.start();
-    logger.debug("Background process successfully started.");
   }
 
   /**
    * Check if particles in area are stable. If stable, stop ticking, otherwise
    * update positions and continue with the next iteration.
    */
-  public void tick() {
+  public synchronized void tick() {
     logger.info("Layout engine iteration completed.");
 
-    if (area.isStable()) {
-      logger.info("Layouting completed. Graph is stable. Stop layout engine.");
-      currentTicker.terminate();
-
-      if (completionCallback != null) {
-        completionCallback.execute();
-      }
-    } else {
+    if (!area.isStable()) {
       logger.info("Continue layouting...");
       area.updateAll();
+
+    } else {
+      try {
+        logger
+            .info("Layouting completed. Graph is stable. Stop layout engine.");
+        guard.cancel();
+        guard = null;
+        currentTicker.terminate();
+        currentTicker = null;
+        notify();
+      } finally {
+        if (completionCallback != null) {
+          completionCallback.execute();
+        }
+      }
     }
   }
 

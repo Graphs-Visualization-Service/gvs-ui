@@ -31,6 +31,7 @@ public class AreaTicker extends Thread {
     this.callbackTickable = tickable;
 
     setPriority(Thread.MIN_PRIORITY);
+    setDaemon(true);
   }
 
   /**

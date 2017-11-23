@@ -69,8 +69,14 @@ public class GraphLayouter implements Tickable, ILayouter {
   @Override
   public void layout(Session session, boolean useRandomLayout,
       Action callback) {
-    // TODO Auto-generated method stub
 
+    Graph firstGraph = session.getGraphs().get(0);
+    layout(firstGraph, useRandomLayout, callback);
+
+    for (int i = 1; i < session.getGraphs().size(); i++) {
+      Graph targetGraph = session.getGraphs().get(i);
+      takeOverVertexPositions(firstGraph, targetGraph);
+    }
   }
 
   /**

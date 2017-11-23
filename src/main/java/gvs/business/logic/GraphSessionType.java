@@ -7,8 +7,12 @@ import gvs.business.logic.layouter.graph.GraphLayouter;
 
 public class GraphSessionType implements ISessionType {
 
+  private final ILayouter graphLayouter;
+
   @Inject
-  private GraphLayouter graphLayouter;
+  public GraphSessionType(GraphLayouter layouter) {
+    this.graphLayouter = layouter;
+  }
 
   @Override
   public ILayouter getLayouter() {

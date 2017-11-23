@@ -186,7 +186,7 @@ public class SessionViewModel implements Observer {
     Session currentSession = sessionHolder.getCurrentSession();
     Graph currentGraph = currentSession.getGraphHolder().getCurrentGraph();
 
-    if (currentSession.getSessionType() instanceof GraphSessionType) {
+    if (currentSession.getSessionType() instanceof GraphSessionType && currentGraph.isLayoutable()) {
       ILayouter layouter = currentSession.getSessionType().getLayouter();
       layouter.layout(currentGraph, useRandomLayout, this::finishAutolayout);
     } else {

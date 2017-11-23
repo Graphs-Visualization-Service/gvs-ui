@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import gvs.business.logic.ApplicationController;
@@ -44,7 +45,9 @@ import gvs.util.FontAwesome.Glyph;
 @Singleton
 public class ModelBuilder {
 
-  private ApplicationController applicationController;
+  private final ApplicationController applicationController;
+  private final Provider<GraphSessionType> graphSessionTypeProvider;
+  private final Provider<TreeSessionType> treeSessionTypeProvider;
 
   // XML Attributes
   private static final String ATTRIBUTEID = "Id";
@@ -81,8 +84,12 @@ public class ModelBuilder {
    * ModelBuilder.
    */
   @Inject
-  public ModelBuilder(ApplicationController appController) {
+  public ModelBuilder(ApplicationController appController,
+      Provider<TreeSessionType> treeSessionTypeProvider,
+      Provider<GraphSessionType> graphSessionTypeProvider) {
     this.applicationController = appController;
+    this.treeSessionTypeProvider = treeSessionTypeProvider;
+    this.graphSessionTypeProvider = graphSessionTypeProvider; 
   }
 
   /**
@@ -145,7 +152,7 @@ public class ModelBuilder {
     long sessionId = Long.parseLong(graphElement.attributeValue(ATTRIBUTEID));
     String sessionName = graphElement.element(LABEL).getText();
 
-    ISessionType type = new GraphSessionType();
+    ISessionType type = graphSessionTypeProvider.get();
     applicationController.addGraphToSession(newGraph, sessionId, sessionName,
         type);
   }
@@ -176,7 +183,7 @@ public class ModelBuilder {
     Graph tree = new Graph(snapshotDescription, vertices, edges);
     logger.info("Finished build tree from XML.");
 
-    ISessionType type = new TreeSessionType();
+    ISessionType type = treeSessionTypeProvider.get();
     applicationController.addGraphToSession(tree, sessionId, sessionName, type);
   }
 

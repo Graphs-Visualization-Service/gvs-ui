@@ -67,7 +67,7 @@ public class GraphLayouter implements Tickable, ILayouter {
   }
 
   @Override
-  public void layout(Session session, boolean useRandomLayout,
+  public synchronized void layout(Session session, boolean useRandomLayout,
       Action callback) {
 
     Graph firstGraph = session.getGraphs().get(0);
@@ -90,7 +90,8 @@ public class GraphLayouter implements Tickable, ILayouter {
    *          callback function
    */
   @Override
-  public void layout(Graph graph, boolean useRandomLayout, Action callback) {
+  public synchronized void layout(Graph graph, boolean useRandomLayout,
+      Action callback) {
     logger.info("Received new data to layout");
 
     if (graph.isLayoutable()) {
@@ -132,7 +133,8 @@ public class GraphLayouter implements Tickable, ILayouter {
    *          target graph
    */
   @Override
-  public void takeOverVertexPositions(Graph sourceGraph, Graph targetGraph) {
+  public synchronized void takeOverVertexPositions(Graph sourceGraph,
+      Graph targetGraph) {
 
     Map<Long, IVertex> formerVertices = sourceGraph.getVertices().stream()
         .collect(Collectors.toMap(IVertex::getId, Function.identity()));

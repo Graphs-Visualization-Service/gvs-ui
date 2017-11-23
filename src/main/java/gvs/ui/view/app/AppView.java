@@ -105,8 +105,11 @@ public class AppView {
     Stage stage = (Stage) rootPane.getScene().getWindow();
     fileChooser.setTitle("Load Session File");
     File file = fileChooser.showOpenDialog(stage);
-    sessionContainer.getStyleClass().remove("logo-bg");
-    appViewModel.loadSession(file);
+
+    if (file.exists()) {
+      appViewModel.loadSession(file);
+      sessionContainer.getStyleClass().remove("logo-bg");
+    }
   }
 
   @FXML
@@ -119,10 +122,12 @@ public class AppView {
 
   @FXML
   private void removeSession() {
-    appViewModel.removeCurrentSession();
-    if (appViewModel.getSessionNames().isEmpty()) {
+    if (appViewModel.getSessionNames().size() == 1) {
       sessionContainer.getStyleClass().add("logo-bg");
     }
+    
+    appViewModel.removeCurrentSession();
+
   }
 
   @FXML

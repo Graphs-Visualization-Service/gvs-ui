@@ -1,6 +1,7 @@
 package gvs.ui.view.app;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -114,6 +115,17 @@ public class AppView {
     Stage stage = (Stage) rootPane.getScene().getWindow();
     fileChooser.setTitle("Save Session File");
     File file = fileChooser.showSaveDialog(stage);
+    // make sure the file extension is set -> this seems to be a problem in
+    // linux
+    String tempPath = file.getPath();
+    if (!tempPath.endsWith(".gvs")) {
+      File fileWithExtension = new File(file.getPath() + ".gvs");
+      if (fileWithExtension.exists()) {
+        file = new File(file.getPath() + "_copy.gvs");
+      } else {
+        file = fileWithExtension;
+      }
+    }
     appViewModel.saveSession(file);
   }
 

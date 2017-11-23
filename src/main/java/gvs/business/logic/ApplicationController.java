@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.access.Persistor;
+import gvs.business.logic.layouter.ILayouter;
 import gvs.business.model.Graph;
 import gvs.business.model.SessionHolder;
 
@@ -58,9 +59,9 @@ public class ApplicationController {
 
     loadedSession = sessionHolder.addSession(loadedSession);
     sessionHolder.setCurrentSession(loadedSession);
-    if (!loadedSession.isTreeSession()) {
-      loadedSession.layoutCurrentGraph(true, null);
-    }
+
+    ILayouter layouter = loadedSession.getSessionType().getLayouter();
+    layouter.layout(loadedSession, true, null);
   }
 
   /**
@@ -80,13 +81,8 @@ public class ApplicationController {
       int size = sessionHolder.getSessions().size();
       Session mostRecentSession = sessionHolder.getSessions().get(size - 1);
       sessionHolder.setCurrentSession(mostRecentSession);
-
     } else {
-      // when the last session is deleted, create empty dummy controller
-      // otherwise session-bindings for UI would have to be unbound etc.
-      logger.debug("Set empty graph session");
-      sessionHolder
-          .setCurrentSession(sessionFactory.createSession(-1, "", false));
+      sessionHolder.setCurrentSession(null);
     }
   }
 
@@ -110,38 +106,33 @@ public class ApplicationController {
    *          Id
    * @param sessionName
    *          sessionName
-   * @param isTreeSession
-   *          isTreeSession
+   * @param sessionType
+   *          session type
    */
   public synchronized void addGraphToSession(Graph graph, long sessionId,
-      String sessionName, boolean isTreeSession) {
+      String sessionName, ISessionType sessionType) {
 
     logger.info("Received new graph");
 
-    boolean isSessionExisting = false;
-    for (Session session : sessionHolder.getSessions()) {
-      if (session.getId() == sessionId) {
-
+    Session session = null;
+    for (Session existingSession : sessionHolder.getSessions()) {
+      if (existingSession.getId() == sessionId) {
         logger.info("Add graph to exsting session");
-        Session existingSession = (Session) session;
-        existingSession.addGraph(graph);
-        existingSession.changeCurrentGraphToLast();
-        existingSession.layoutCurrentGraph(true, null);
-
-        isSessionExisting = true;
+        session = existingSession;
       }
     }
-
-    if (!isSessionExisting) {
+    if (session == null) {
       logger.info("Create new session");
-      Session newSession = sessionFactory.createSession(sessionId, sessionName,
-          isTreeSession);
-      newSession.addGraph(graph);
-      newSession.getGraphHolder().setCurrentGraph(graph);
-      newSession.layoutCurrentGraph(true, null);
-
-      sessionHolder.addSession(newSession);
-      changeCurrentSession(newSession);
+      session = sessionFactory.createSession(sessionType, sessionId,
+          sessionName);
+      sessionHolder.addSession(session);
     }
+
+    sessionHolder.setCurrentSession(session);
+    session.addGraph(graph);
+    session.getGraphHolder().setCurrentGraph(graph);
+
+    ILayouter layouter = session.getSessionType().getLayouter();
+    layouter.layout(session, true, null);
   }
 }

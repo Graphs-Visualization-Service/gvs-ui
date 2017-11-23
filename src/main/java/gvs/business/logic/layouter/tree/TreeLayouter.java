@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Singleton;
 
+import gvs.business.logic.Session;
 import gvs.business.logic.layouter.ILayouter;
 import gvs.business.model.Graph;
 import gvs.business.model.IVertex;
@@ -33,10 +34,16 @@ public class TreeLayouter implements ILayouter {
   private static final double MARGIN = 10;
 
   @Override
-  public void layoutGraph(Graph currentGraph, boolean b, Action callback) {
+  public void layout(Session session, boolean useRandomLayout,
+      Action callback) {
+    session.getGraphs().forEach(g -> layout(g, useRandomLayout, callback));
+  }
+
+  @Override
+  public void layout(Graph graph, boolean useRandomLayout, Action callback) {
     logger.info("Layouting tree...");
 
-    List<TreeVertex> roots = currentGraph.getVertices().stream()
+    List<TreeVertex> roots = graph.getVertices().stream()
         .map(v -> (TreeVertex) v).filter(v -> v.isRoot())
         .collect(Collectors.toList());
 
@@ -44,10 +51,15 @@ public class TreeLayouter implements ILayouter {
     roots.forEach(root -> {
       firstWalk(root);
       secondWalk(root, -root.getPreliminary());
-      centerGraph(root, currentGraph);
+      centerGraph(root, graph);
     });
 
     logger.info("Finished layouting tree.");
+  }
+
+  @Override
+  public void takeOverVertexPositions(Graph source, Graph target) {
+    // do nothing
   }
 
   private void centerGraph(TreeVertex root, Graph currentGraph) {
@@ -57,8 +69,8 @@ public class TreeLayouter implements ILayouter {
         .collect(Collectors.toList());
     double minX = verticesSorted.get(0).getXPosition();
     if (minX < 0) {
-      verticesSorted
-          .forEach(v -> v.setXPosition(v.getXPosition() + Math.abs(minX) + MARGIN));
+      verticesSorted.forEach(
+          v -> v.setXPosition(v.getXPosition() + Math.abs(minX) + MARGIN));
     }
   }
 

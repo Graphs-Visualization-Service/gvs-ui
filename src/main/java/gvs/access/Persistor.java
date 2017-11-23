@@ -25,8 +25,11 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import gvs.business.logic.GraphSessionType;
+import gvs.business.logic.ISessionType;
 import gvs.business.logic.Session;
 import gvs.business.logic.SessionFactory;
+import gvs.business.logic.TreeSessionType;
 import gvs.business.model.Edge;
 import gvs.business.model.Graph;
 import gvs.business.model.IEdge;
@@ -90,10 +93,12 @@ public class Persistor {
   public void saveToDisk(Session session, File file) {
     Document document = DocumentHelper.createDocument();
     Element docRoot = document.addElement(ROOT);
-    if (session.isTreeSession()) {
-      this.saveTreeSession(docRoot, session);
-    } else {
+
+    ISessionType type = session.getSessionType();
+    if (type instanceof GraphSessionType) {
       this.saveGraphSession(docRoot, session);
+    } else {
+      this.saveTreeSession(docRoot, session);
     }
     this.writeToDisk(document, session, file);
   }
@@ -183,7 +188,7 @@ public class Persistor {
   private void saveTreeModel(Graph graph, Element pSession) {
     Element treeElement = pSession.addElement(TREEMODEL);
     addIdAndLabelForGraph(treeElement, graph);
-    
+
     Element eNodes = treeElement.addElement(NODES);
     graph.getVertices().forEach(n -> {
       saveTreeVertex((TreeVertex) n, eNodes);
@@ -275,8 +280,9 @@ public class Persistor {
 
     long sessionId = Long.parseLong(graphElements.attributeValue(ATTRIBUTEID));
     String sessionName = graphElements.element(LABEL).getText();
-    Session session = graphSessionFactory.createSession(sessionId, sessionName,
-        false);
+    ISessionType type = new GraphSessionType();
+    Session session = graphSessionFactory.createSession(type, sessionId,
+        sessionName);
 
     graphElements.elements().forEach(graphElement -> {
 
@@ -309,8 +315,9 @@ public class Persistor {
 
     long sessionId = Long.parseLong(graphElements.attributeValue(ATTRIBUTEID));
     String sessionName = graphElements.element(LABEL).getText();
-    Session session = graphSessionFactory.createSession(sessionId, sessionName,
-        true);
+    ISessionType type = new TreeSessionType();
+    Session session = graphSessionFactory.createSession(type, sessionId,
+        sessionName);
 
     graphElements.elements().forEach(graphElement -> {
 
@@ -327,7 +334,6 @@ public class Persistor {
         session.addGraph(newGraph);
       }
     });
-    session.layoutWholeSession(null);
     return session;
   }
 

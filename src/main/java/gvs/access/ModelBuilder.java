@@ -23,6 +23,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.business.logic.ApplicationController;
+import gvs.business.logic.GraphSessionType;
+import gvs.business.logic.ISessionType;
+import gvs.business.logic.TreeSessionType;
 import gvs.business.model.Edge;
 import gvs.business.model.Graph;
 import gvs.business.model.IEdge;
@@ -141,8 +144,10 @@ public class ModelBuilder {
     logger.debug("Finish build graph from XML");
     long sessionId = Long.parseLong(graphElement.attributeValue(ATTRIBUTEID));
     String sessionName = graphElement.element(LABEL).getText();
+
+    ISessionType type = new GraphSessionType();
     applicationController.addGraphToSession(newGraph, sessionId, sessionName,
-        false);
+        type);
   }
 
   /**
@@ -170,7 +175,9 @@ public class ModelBuilder {
     String snapshotDescription = new String();
     Graph tree = new Graph(snapshotDescription, vertices, edges);
     logger.info("Finished build tree from XML.");
-    applicationController.addGraphToSession(tree, sessionId, sessionName, true);
+
+    ISessionType type = new TreeSessionType();
+    applicationController.addGraphToSession(tree, sessionId, sessionName, type);
   }
 
   private Map<Long, IVertex> buildTreeVertices(Element eVertices) {

@@ -57,9 +57,9 @@ public class Session {
     this.persistor = persistor;
     this.isTreeSession = isTreeSession;
     if (isTreeSession) {
-      this.layouter = layouterProvider.createTreeLayouter();
+      this.layouter = layouterProvider.getTreeLayouter();
     } else {
-      this.layouter = layouterProvider.createGraphLayouter();
+      this.layouter = layouterProvider.getGraphLayouter();
     }
 
     this.id = sessionId;

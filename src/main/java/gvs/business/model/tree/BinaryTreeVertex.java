@@ -9,21 +9,21 @@ public class BinaryTreeVertex extends TreeVertex {
       boolean isUserPositioned, Glyph icon) {
     super(id, label, style, isUserPositioned, icon);
   }
-  
+
   public TreeVertex getLeftChild() {
     return getChildren().get(0);
   }
-  
+
   public TreeVertex getRightChild() {
     return getChildren().get(1);
   }
-  
+
   public void setLeftChild(TreeVertex child) {
-    getChildren().set(0,child);
+    getChildren().set(0, child);
   }
-  
+
   public void setRightChild(TreeVertex child) {
-    getChildren().set(1,child);
+    getChildren().set(1, child);
   }
 
 }

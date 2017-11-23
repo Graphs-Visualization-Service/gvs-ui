@@ -16,9 +16,9 @@ import gvs.business.model.tree.TreeVertexLayoutHelper;
 import gvs.util.Action;
 
 /**
- * Calculates the position of each TreeVertex as specified by the
- * Reingold-Tilford Algorithm. See:
- * https://rachel53461.wordpress.com/2014/04/20/algorithm-for-drawing-trees/
+ * Calculates the position of each TreeVertex as specified by an extension of
+ * the Reingold-Tilford Algorithm. See:
+ * https://dl.acm.org/citation.cfm?id=1133017
  * 
  * @author mtrentini
  *

@@ -22,20 +22,13 @@ public class TreeVertex extends Observable implements IVertex {
 
   private boolean isRoot;
   private TreeVertex parent;
-  // values are needed for layouting trees
-  private TreeVertex thread;
-  private double mod;
-  private double preliminary;
-  private double change;
-  private double shift;
+  // capsulates values needed for layouting trees
+  private final TreeVertexLayoutHelper helper;
 
   private final List<Long> childIds;
   private final List<TreeVertex> children;
 
   private final Glyph icon;
-
-  private static final Logger logger = LoggerFactory
-      .getLogger(GraphVertex.class);
 
   public TreeVertex(long id, String label, GVSStyle style,
       boolean isUserPositioned, Glyph icon) {
@@ -44,6 +37,8 @@ public class TreeVertex extends Observable implements IVertex {
     this.style = style;
     this.isUserPositioned = isUserPositioned;
     this.icon = icon;
+    
+    this.helper = new TreeVertexLayoutHelper();
 
     this.childIds = new ArrayList<>();
     this.children = new ArrayList<>();
@@ -84,20 +79,6 @@ public class TreeVertex extends Observable implements IVertex {
     this.yPosition = yPos;
   }
 
-  /**
-   * This property is used in layouting trees {@see TreeLayouter}. It specifies
-   * by how much child vertices of a vertex need to be shifted on the x axis.
-   * 
-   * @return
-   */
-  public double getMod() {
-    return mod;
-  }
-
-  public void setMod(double mod) {
-    this.mod = mod;
-  }
-
   @Override
   public void updateCoordinates(double xPos, double yPos) {
     this.xPosition = xPos;
@@ -124,6 +105,11 @@ public class TreeVertex extends Observable implements IVertex {
   @Override
   public GVSStyle getStyle() {
     return style;
+  }
+  
+  @Override
+  public boolean isTreeVertex() {
+    return true;
   }
 
   public boolean isLeaf() {
@@ -162,38 +148,8 @@ public class TreeVertex extends Observable implements IVertex {
     this.parent = parent;
   }
 
-  /**
-   * A thread points to the next vertex in a contour. See Reingold - Tilford
-   * Algorithm.
-   * 
-   * @return reference to the next vertex in a contour
-   */
-  public TreeVertex getThread() {
-    return thread;
-  }
-
-  /**
-   * Get the preliminary x coordinate of the vertex.
-   * 
-   * @return
-   */
-  public double getPreliminary() {
-    return preliminary;
-  }
-
-  /**
-   * Set the preliminary x coordinate of the vertex. Only this value and the mod
-   * value are adjusted in the bottom-up traversal of the tree, whenever a
-   * subtree is shifted. This is needed so the algorithm works in linear time!
-   * 
-   * @param preliminary
-   */
-  public void setPreliminary(double preliminary) {
-    this.preliminary = preliminary;
-  }
-
-  public void setThread(TreeVertex thread) {
-    this.thread = thread;
+  public TreeVertexLayoutHelper getHelper() {
+    return helper;
   }
 
   @Override
@@ -201,24 +157,4 @@ public class TreeVertex extends Observable implements IVertex {
     return String.format("TreeVertex(%s [%f,%f])", label, xPosition, yPosition);
   }
 
-  public void setChange(double change) {
-    this.change = change;
-  }
-
-  public double getChange() {
-    return change;
-  }
-
-  public void setShift(double shift) {
-    this.shift = shift;
-  }
-
-  public double getShift() {
-    return shift;
-  }
-
-  @Override
-  public boolean isTreeVertex() {
-    return true;
-  }
 }

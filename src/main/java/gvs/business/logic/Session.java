@@ -17,7 +17,6 @@ import com.google.inject.assistedinject.Assisted;
 import gvs.access.Persistor;
 import gvs.business.logic.layouter.ILayouter;
 import gvs.business.logic.layouter.LayouterProvider;
-import gvs.business.logic.layouter.graph.GraphLayoutMonitor;
 import gvs.business.model.Graph;
 import gvs.business.model.GraphHolder;
 import gvs.business.model.IVertex;
@@ -42,7 +41,6 @@ public class Session {
   private final SessionReplayFactory sessionReplayFactory;
   private final ILayouter layouter;
   private final Persistor persistor;
-  private final GraphLayoutMonitor layoutMonitor;
 
   private final boolean isTreeSession;
 
@@ -50,9 +48,9 @@ public class Session {
 
   @Inject
   public Session(GraphHolder graphHolder, Persistor persistor,
-      GraphLayoutMonitor layoutMonitor, SessionReplayFactory replayFactory,
-      LayouterProvider layouterProvider, @Assisted long sessionId,
-      @Assisted String sessionName, @Assisted boolean isTreeSession) {
+      SessionReplayFactory replayFactory, LayouterProvider layouterProvider,
+      @Assisted long sessionId, @Assisted String sessionName,
+      @Assisted boolean isTreeSession) {
 
     logger.info("Instantiating new graph session.");
     this.sessionReplayFactory = replayFactory;
@@ -63,16 +61,11 @@ public class Session {
     } else {
       this.layouter = layouterProvider.createGraphLayouter();
     }
-    this.layoutMonitor = layoutMonitor;
 
     this.id = sessionId;
     this.sessionName = sessionName;
     this.graphHolder = graphHolder;
     this.graphs = new ArrayList<>();
-  }
-
-  public boolean isTreeSession() {
-    return isTreeSession;
   }
 
   /**
@@ -102,25 +95,12 @@ public class Session {
     }
   }
 
-  public void layoutCurrentGraph(boolean useRandomLayout, Action callback) {
+  public void layoutCurrentGraph(boolean useRandomLayout,
+      Action callback) {
+
     Graph currentGraph = graphHolder.getCurrentGraph();
-
     if (currentGraph.isLayoutable()) {
-      if (isTreeSession) {
-        layouter.layoutGraph(currentGraph, false, callback);
-      } else {
-        try {
-          layoutMonitor.lock();
-          logger.info("Got layout monitor");
-
-          layouter.layoutGraph(currentGraph, useRandomLayout, callback);
-
-        } catch (InterruptedException e) {
-          logger.warn("Unable to get layout monitor", e);
-        } finally {
-          layoutMonitor.unlock();
-        }
-      }
+      layouter.layoutGraph(currentGraph, useRandomLayout, callback);
     } else if (callback != null) {
       callback.execute();
     }
@@ -158,37 +138,6 @@ public class Session {
   public void cancelReplay() {
     pauseReplay();
     changeCurrentGraphToFirst();
-  }
-
-  public GraphHolder getGraphHolder() {
-    return graphHolder;
-  }
-
-  /**
-   * Returns session name.
-   * 
-   * @return sessionName
-   */
-  public String getSessionName() {
-    return sessionName;
-  }
-
-  /**
-   * Returns session id.
-   * 
-   * @return session id
-   */
-  public long getId() {
-    return this.id;
-  }
-
-  /**
-   * Returns list, used for saving option.
-   * 
-   * @return graphModels
-   */
-  public List<Graph> getGraphs() {
-    return graphs;
   }
 
   public void saveSession(File file) {
@@ -291,6 +240,26 @@ public class Session {
 
   public int getTotalGraphCount() {
     return getGraphs().size();
+  }
+
+  public boolean isTreeSession() {
+    return isTreeSession;
+  }
+  
+  public GraphHolder getGraphHolder() {
+    return graphHolder;
+  }
+
+  public String getSessionName() {
+    return sessionName;
+  }
+
+  public long getId() {
+    return this.id;
+  }
+
+  public List<Graph> getGraphs() {
+    return graphs;
   }
 
   @Override

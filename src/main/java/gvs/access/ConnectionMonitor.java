@@ -23,18 +23,17 @@ public class ConnectionMonitor {
    * 
    * @param clientAddress
    *          client address
-   * @return 0 if service was reserved <br>
-   *         -1 if service is busy
    * @throws InterruptedException
+   *           if any thread interrupted the current thread
    */
   public synchronized void reserveService(String clientAddress)
       throws InterruptedException {
+
     while (currentOwnerAddress != null) {
       wait();
     }
 
     currentOwnerAddress = clientAddress;
-    notifyAll();
     logger.info("{} reserved the service.", currentOwnerAddress);
   }
 
@@ -48,6 +47,7 @@ public class ConnectionMonitor {
   public synchronized void releaseService(String clientAddress) {
     if (clientAddress != null && clientAddress.equals(currentOwnerAddress)) {
       currentOwnerAddress = null;
+      notifyAll();
       logger.info("Service released: " + clientAddress);
     }
   }

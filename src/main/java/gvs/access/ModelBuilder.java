@@ -41,10 +41,9 @@ import gvs.util.FontAwesome.Glyph;
 @Singleton
 public class ModelBuilder {
 
-  // Visualization-Service
   private ApplicationController applicationController;
 
-  // Generally
+  // XML Attributes
   private static final String ATTRIBUTEID = "Id";
   private static final String LABEL = "Label";
   private static final String FILLCOLOR = "Fillcolor";
@@ -53,7 +52,7 @@ public class ModelBuilder {
   private static final String LINESTYLE = "Linestyle";
   private static final String LINETHICKNESS = "Linethickness";
 
-  // Graph
+  // Graph XML Fields
   private static final String GRAPH = "Graph";
   private static final String VERTIZES = "Vertizes";
   private static final String RELATIVVERTEX = "RelativVertex";
@@ -65,7 +64,7 @@ public class ModelBuilder {
   private static final String TOVERTEX = "ToVertex";
   private static final String ARROWPOS = "DrawArrowOnPosition";
 
-  // Tree
+  // Tree XML Fields
   private static final String TREE = "Tree";
   private static final String NODES = "Nodes";
   private static final String RIGTHCHILD = "Rigthchild";

@@ -53,7 +53,7 @@ public class Area extends Observable {
    * 
    * @return area dimension
    */
-  public synchronized AreaDimension getUniverseDimension() {
+  public AreaDimension getUniverseDimension() {
     return dimension;
   }
 
@@ -64,7 +64,7 @@ public class Area extends Observable {
    * @param d
    *          viscosity
    */
-  public synchronized void setViscosity(double d) {
+  public void setViscosity(double d) {
     viscosity = d;
   }
 
@@ -74,14 +74,14 @@ public class Area extends Observable {
    * @param p
    *          particle
    */
-  public synchronized void addParticles(Particle p) {
+  public void addParticles(Particle p) {
     particles.add(p);
   }
 
   /**
    * Reset the calculated area
    */
-  public synchronized void resetArea() {
+  public void resetArea() {
     tractions.clear();
     particles.clear();
   }
@@ -91,7 +91,7 @@ public class Area extends Observable {
    * 
    * @return Area Point
    */
-  public synchronized AreaPoint getAreaCenter() {
+  public AreaPoint getAreaCenter() {
     return dimension.getCenter();
   }
 
@@ -101,7 +101,7 @@ public class Area extends Observable {
    * @param t
    *          traction
    */
-  public synchronized void addTraction(Traction t) {
+  public void addTraction(Traction t) {
     tractions.add(t);
   }
 
@@ -112,7 +112,7 @@ public class Area extends Observable {
    *          vertex id
    * @return Particle
    */
-  public synchronized Particle getParticleByVertexId(long vertexId) {
+  public Particle getParticleByVertexId(long vertexId) {
     for (Particle particle : particles) {
       if (vertexId == particle.getRelatedVertex().getId()) {
         return particle;
@@ -127,7 +127,7 @@ public class Area extends Observable {
    * @param state
    *          particle state
    */
-  public synchronized void setIsStable(boolean state) {
+  public void setIsStable(boolean state) {
     isStable = state;
   }
 
@@ -136,7 +136,7 @@ public class Area extends Observable {
    * 
    * @return is area stable
    */
-  public synchronized boolean isStable() {
+  public boolean isStable() {
     return isStable;
   }
 
@@ -145,7 +145,7 @@ public class Area extends Observable {
    * particles are accelerated into claimed direction until they are stable.
    *
    */
-  public synchronized void updateAll() {
+  public void updateAll() {
     logger.info("Update particle positions");
 
     particles.forEach(p -> {

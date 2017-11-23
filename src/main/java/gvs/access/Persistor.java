@@ -87,7 +87,7 @@ public class Persistor {
     this.graphSessionFactory = graphSessionFactory;
   }
 
-  public synchronized void saveToDisk(Session session, File file) {
+  public void saveToDisk(Session session, File file) {
     Document document = DocumentHelper.createDocument();
     Element docRoot = document.addElement(ROOT);
     if (session.isTreeSession()) {

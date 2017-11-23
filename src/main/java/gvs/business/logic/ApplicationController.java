@@ -47,16 +47,6 @@ public class ApplicationController {
   }
 
   /**
-   * Sets session chosen from drop down, informs model and updates view.
-   * 
-   * @param session
-   *          new current session
-   */
-  public synchronized void changeCurrentSession(Session session) {
-    sessionHolder.setCurrentSession(session);
-  }
-
-  /**
    * Loads a session from a specific file.
    * 
    * @param fileName
@@ -65,7 +55,7 @@ public class ApplicationController {
   public synchronized void loadStoredSession(String fileName) {
     logger.info("Load session from filesystem");
     Session loadedSession = persistor.loadFile(fileName);
-    
+
     loadedSession = sessionHolder.addSession(loadedSession);
     sessionHolder.setCurrentSession(loadedSession);
     if (!loadedSession.isTreeSession()) {
@@ -101,6 +91,16 @@ public class ApplicationController {
   }
 
   /**
+   * Set session, informs model and updates view.
+   * 
+   * @param session
+   *          new current session
+   */
+  public synchronized void changeCurrentSession(Session session) {
+    sessionHolder.setCurrentSession(session);
+  }
+
+  /**
    * Adds a new graph model, if an associated session exists, adds model to
    * session. Otherwise, creates a new graph session
    * 
@@ -110,6 +110,8 @@ public class ApplicationController {
    *          Id
    * @param sessionName
    *          sessionName
+   * @param isTreeSession
+   *          isTreeSession
    */
   public synchronized void addGraphToSession(Graph graph, long sessionId,
       String sessionName, boolean isTreeSession) {
@@ -139,7 +141,7 @@ public class ApplicationController {
       newSession.layoutCurrentGraph(true, null);
 
       sessionHolder.addSession(newSession);
-      sessionHolder.setCurrentSession(newSession);
+      changeCurrentSession(newSession);
     }
   }
 }

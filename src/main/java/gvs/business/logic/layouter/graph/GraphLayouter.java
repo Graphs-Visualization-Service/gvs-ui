@@ -31,7 +31,8 @@ public class GraphLayouter implements Tickable, ILayouter {
 
   private Action completionCallback;
 
-  private volatile AreaTicker currentTicker;
+  private AreaTicker currentTicker;
+  private Timer guard;
 
   private final AreaTickerFactory tickerFactory;
   private final Area area;
@@ -55,7 +56,6 @@ public class GraphLayouter implements Tickable, ILayouter {
 
   @Inject
   public GraphLayouter(AreaTickerFactory tickerFactory) {
-
     this.tickerFactory = tickerFactory;
     AreaDimension dimension = new AreaDimension(DEFAULT_AREA_WIDTH,
         DEFAULT_AREA_HEIGHT);
@@ -72,11 +72,21 @@ public class GraphLayouter implements Tickable, ILayouter {
    * @param callback
    *          callback function
    */
-  public void layoutGraph(Graph graph, boolean useRandomLayout,
+  public synchronized void layoutGraph(Graph graph, boolean useRandomLayout,
       Action callback) {
     logger.info("Received new data to layout");
 
     if (graph.isLayoutable()) {
+
+      while (currentTicker != null) {
+        try {
+          wait();
+        } catch (InterruptedException e) {
+          logger.error("Unable to passivate thread", e);
+        }
+      }
+
+      this.completionCallback = callback;
 
       graph.getVertices().forEach(v -> {
         GraphVertex graphVertex = (GraphVertex) v;
@@ -85,34 +95,15 @@ public class GraphLayouter implements Tickable, ILayouter {
         }
       });
 
-      this.completionCallback = callback;
-
+      calculateLayout(graph, useRandomLayout);
+      
       initializeLayoutGuard();
-      handleTickerThread();
-      resetArea();
-
-      calculatLayout(graph, useRandomLayout);
+      
+      startTickerThread();
 
     } else if (callback != null) {
       callback.execute();
     }
-  }
-
-  /**
-   * Initializes the guard, which protects the layouter from running endlessly.
-   */
-  private void initializeLayoutGuard() {
-    Timer guard = new Timer();
-    GraphLayoutGuard layoutGuard = new GraphLayoutGuard(area);
-    guard.schedule(layoutGuard, MAX_LAYOUT_DURATION_MS);
-  }
-
-  /**
-   * Reverts the state of the area
-   */
-  private void resetArea() {
-    area.setIsStable(false);
-    area.resetArea();
   }
 
   /**
@@ -123,7 +114,11 @@ public class GraphLayouter implements Tickable, ILayouter {
    * @param useRandomLayout
    *          use random points
    */
-  private void calculatLayout(Graph graph, boolean useRandomLayout) {
+  private void calculateLayout(Graph graph, boolean useRandomLayout) {
+    // reset
+    area.setIsStable(false);
+    area.resetArea();
+
     createVertexParticles(graph.getVertices(), useRandomLayout);
     createEdgeTractions(graph.getEdges());
   }
@@ -136,40 +131,46 @@ public class GraphLayouter implements Tickable, ILayouter {
    * 
    * As soon as the area is stable, the ticker thread terminates.
    */
-  private void handleTickerThread() {
-    if (currentTicker != null) {
-      try {
-        logger.debug("Wait for current AreaTicker thread to terminate.");
-        currentTicker.join();
-        logger.debug("AreaTicker thread successfully stopped.");
-      } catch (InterruptedException e) {
-        logger.error("Unable to join Area Ticker thread", e);
-      }
-    }
-
+  private void startTickerThread() {
     currentTicker = tickerFactory.create(this, TICK_RATE_PER_SEC);
     logger.debug("Starting thread: {}", currentTicker.getName());
     currentTicker.start();
-    logger.debug("Background process successfully started.");
+  }
+
+  /**
+   * The layoutguard will stop layouting process after 10s.
+   */
+  private void initializeLayoutGuard() {
+    GraphLayoutGuard layoutGuard = new GraphLayoutGuard(area);
+    guard = new Timer();
+    guard.schedule(layoutGuard, MAX_LAYOUT_DURATION_MS);
   }
 
   /**
    * Check if particles in area are stable. If stable, stop ticking, otherwise
    * update positions and continue with the next iteration.
    */
-  public void tick() {
+  public synchronized void tick() {
     logger.info("Layout engine iteration completed.");
 
-    if (area.isStable()) {
-      logger.info("Layouting completed. Graph is stable. Stop layout engine.");
-      currentTicker.terminate();
-
-      if (completionCallback != null) {
-        completionCallback.execute();
-      }
-    } else {
+    if (!area.isStable()) {
       logger.info("Continue layouting...");
       area.updateAll();
+
+    } else {
+      try {
+        logger
+            .info("Layouting completed. Graph is stable. Stop layout engine.");
+        guard.cancel();
+        guard = null;
+        currentTicker.terminate();
+        currentTicker = null;
+        notify();
+      } finally {
+        if (completionCallback != null) {
+          completionCallback.execute();
+        }
+      }
     }
   }
 
@@ -189,15 +190,12 @@ public class GraphLayouter implements Tickable, ILayouter {
 
     vertices.forEach(vertex -> {
       GraphVertex graphVertex = (GraphVertex) vertex;
-      if (!graphVertex.isUserPositioned()) {
-
+      if (!graphVertex.isUserPositioned() && !graphVertex.isStable()) {
         AreaPoint position = null;
-        if (!graphVertex.isStable()) {
-          if (useRandomLayout) {
-            position = generateRandomPoints();
-          } else {
-            position = generateSeededRandomPoints(seededRandom);
-          }
+        if (useRandomLayout) {
+          position = generateRandomPoints();
+        } else {
+          position = generateSeededRandomPoints(seededRandom);
         }
 
         Particle newParticle = new Particle(position, graphVertex,
@@ -215,10 +213,12 @@ public class GraphLayouter implements Tickable, ILayouter {
    */
   private void createEdgeTractions(Collection<IEdge> edges) {
     edges.forEach(e -> {
-      IVertex vertexFrom = e.getStartVertex();
-      IVertex vertexTo = e.getEndVertex();
+      GraphVertex vertexFrom = (GraphVertex) e.getStartVertex();
+      GraphVertex vertexTo = (GraphVertex) e.getEndVertex();
 
-      if (!vertexFrom.isUserPositioned() && !vertexTo.isUserPositioned()) {
+      if (!vertexFrom.isUserPositioned() && !vertexTo.isUserPositioned()
+          && !vertexFrom.isStable() && !vertexTo.isStable()) {
+
         Particle fromParticle = area.getParticleByVertexId(vertexFrom.getId());
         Particle toParticle = area.getParticleByVertexId(vertexTo.getId());
 

@@ -52,7 +52,7 @@ public class ApplicationController {
    * @param fileName
    *          fileName
    */
-  public void loadStoredSession(String fileName) {
+  public synchronized void loadStoredSession(String fileName) {
     logger.info("Load session from filesystem");
     Session loadedSession = persistor.loadFile(fileName);
 
@@ -69,7 +69,7 @@ public class ApplicationController {
    * @param pSessionController
    *          SessionController
    */
-  public void deleteSession(Session pSessionController) {
+  public synchronized void deleteSession(Session pSessionController) {
     logger.info("Delete session");
 
     sessionHolder.removeSession(pSessionController);
@@ -91,7 +91,7 @@ public class ApplicationController {
   }
 
   /**
-   * Sets session chosen from drop down, informs model and updates view.
+   * Set session, informs model and updates view.
    * 
    * @param session
    *          new current session
@@ -141,7 +141,7 @@ public class ApplicationController {
       newSession.layoutCurrentGraph(true, null);
 
       sessionHolder.addSession(newSession);
-      sessionHolder.setCurrentSession(newSession);
+      changeCurrentSession(newSession);
     }
   }
 }

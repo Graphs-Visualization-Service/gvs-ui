@@ -95,11 +95,11 @@ public class GraphLayouter implements Tickable, ILayouter {
         }
       });
 
+      calculateLayout(graph, useRandomLayout);
+      
       initializeLayoutGuard();
-
+      
       startTickerThread();
-
-      calculatLayout(graph, useRandomLayout);
 
     } else if (callback != null) {
       callback.execute();
@@ -114,7 +114,7 @@ public class GraphLayouter implements Tickable, ILayouter {
    * @param useRandomLayout
    *          use random points
    */
-  private void calculatLayout(Graph graph, boolean useRandomLayout) {
+  private void calculateLayout(Graph graph, boolean useRandomLayout) {
     // reset
     area.setIsStable(false);
     area.resetArea();

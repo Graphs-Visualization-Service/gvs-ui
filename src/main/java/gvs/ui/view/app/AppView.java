@@ -17,6 +17,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 /**
@@ -60,16 +61,9 @@ public class AppView {
 
   @FXML
   private void initialize() {
-    sessionView.setVisible(false);
-    sessionView.visibleProperty()
-        .bind(appViewModel.sessionVisibilityProperty());
-    deleteSessionBtn.disableProperty()
-        .bind(appViewModel.sessionVisibilityProperty().not());
-    saveSessionBtn.disableProperty()
-        .bind(appViewModel.sessionVisibilityProperty().not());
-
-    initButtonlabels();
-    initFileChooser();
+    initializeChildView();
+    initializeButtons();
+    initializeFileChooser();
     fillDropDown();
   }
 
@@ -82,22 +76,47 @@ public class AppView {
     chooseSessionBox.valueProperty()
         .bindBidirectional(appViewModel.getCurrentSessionName());
   }
-
-  private void initFileChooser() {
-    FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter(
-        "GVS files (*.gvs)", "*.gvs");
+  /**
+   * Set gvs file extension to file chooser
+   */
+  private void initializeFileChooser() {
+    ExtensionFilter extensionFilter = new ExtensionFilter("GVS files (*.gvs)",
+        "*.gvs");
     fileChooser.getExtensionFilters().add(extensionFilter);
   }
 
-  private void initButtonlabels() {
+  /**
+   * Initialize button label, tooltip and disable property
+   */
+  private void initializeButtons() {
     importSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.UPLOAD));
     importSessionBtn.setTooltip(new Tooltip("Load existing Session"));
 
     saveSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.SAVE));
     saveSessionBtn.setTooltip(new Tooltip("Store Session"));
+    saveSessionBtn.disableProperty()
+        .bind(appViewModel.sessionVisibilityProperty().not());
 
     deleteSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.TRASH));
     deleteSessionBtn.setTooltip(new Tooltip("Delete Session"));
+    deleteSessionBtn.disableProperty()
+        .bind(appViewModel.sessionVisibilityProperty().not());
+  }
+
+  /**
+   * Initialize session view visiblity and handle logo visiblity
+   */
+  private void initializeChildView() {
+    sessionView.setVisible(false);
+    sessionView.visibleProperty()
+        .bind(appViewModel.sessionVisibilityProperty());
+    sessionView.visibleProperty().addListener((o, oldValue, newValue) -> {
+      if (newValue) {
+        sessionContainer.getStyleClass().remove("logo-bg");
+      } else {
+        sessionContainer.getStyleClass().add("logo-bg");
+      }
+    });
   }
 
   @FXML
@@ -105,8 +124,9 @@ public class AppView {
     Stage stage = (Stage) rootPane.getScene().getWindow();
     fileChooser.setTitle("Load Session File");
     File file = fileChooser.showOpenDialog(stage);
-    sessionContainer.getStyleClass().remove("logo-bg");
-    appViewModel.loadSession(file);
+    if (file.exists()) {
+      appViewModel.loadSession(file);
+    }
   }
 
   @FXML
@@ -131,9 +151,6 @@ public class AppView {
   @FXML
   private void removeSession() {
     appViewModel.removeCurrentSession();
-    if (appViewModel.getSessionNames().isEmpty()) {
-      sessionContainer.getStyleClass().add("logo-bg");
-    }
   }
 
   @FXML

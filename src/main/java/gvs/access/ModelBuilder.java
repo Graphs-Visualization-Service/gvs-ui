@@ -222,7 +222,7 @@ public class ModelBuilder {
   }
 
   /**
-   * Set child relations for use in TreeLayouter
+   * Set parent for use in TreeLayouter
    * 
    * @param vertex
    *          parent vertex

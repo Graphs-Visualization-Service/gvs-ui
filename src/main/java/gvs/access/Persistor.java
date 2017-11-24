@@ -37,6 +37,7 @@ import gvs.business.model.IEdge;
 import gvs.business.model.IVertex;
 import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
+import gvs.business.model.tree.DummyTreeVertex;
 import gvs.business.model.tree.TreeVertex;
 import gvs.util.FontAwesome.Glyph;
 
@@ -365,20 +366,23 @@ public class Persistor {
         TreeVertex child = (TreeVertex) vertexMap.get(id);
         if (child != null) {
           current.addChild(child);
+        } else {
+          // this is only needed for layouting
+          current.addChild(new DummyTreeVertex());
         }
       });
-      setChildRelations(current);
+      setParent(current);
     });
     return vertices;
   }
 
   /**
-   * Set child relations for use in TreeLayouter
+   * Set parent for use in TreeLayouter
    * 
    * @param vertex
    *          parent vertex
    */
-  private void setChildRelations(TreeVertex vertex) {
+  private void setParent(TreeVertex vertex) {
     vertex.getChildren().forEach(c -> c.setParent(vertex));
   }
 
@@ -397,7 +401,10 @@ public class Persistor {
     vertices.forEach(v -> {
       TreeVertex current = (TreeVertex) v;
       current.getChildren().forEach(child -> {
-        edges.add(new Edge("", child.getStyle(), false, current, child));
+        // don't create edges for dummy vertices
+        if (child.getId() != -1) {
+          edges.add(new Edge("", child.getStyle(), false, current, child));
+        }
       });
     });
     return edges;

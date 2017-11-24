@@ -23,7 +23,7 @@ public class TreeVertex extends Observable implements IVertex {
   private boolean isRoot;
   private TreeVertex parent;
   // capsulates values needed for layouting trees
-  private final TreeVertexLayoutHelper helper;
+  private final TreeVertexLayoutValues helper;
 
   private final List<Long> childIds;
   private final List<TreeVertex> children;
@@ -38,7 +38,7 @@ public class TreeVertex extends Observable implements IVertex {
     this.isUserPositioned = isUserPositioned;
     this.icon = icon;
     
-    this.helper = new TreeVertexLayoutHelper();
+    this.helper = new TreeVertexLayoutValues();
 
     this.childIds = new ArrayList<>();
     this.children = new ArrayList<>();
@@ -148,7 +148,7 @@ public class TreeVertex extends Observable implements IVertex {
     this.parent = parent;
   }
 
-  public TreeVertexLayoutHelper getHelper() {
+  public TreeVertexLayoutValues getLayoutValues() {
     return helper;
   }
 

@@ -1,6 +1,6 @@
 package gvs.business.model.tree;
 
-public class TreeVertexLayoutHelper {
+public class TreeVertexLayoutValues {
   private TreeVertex thread;
   private double mod;
   private double preliminary;

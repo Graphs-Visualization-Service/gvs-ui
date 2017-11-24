@@ -1,12 +1,18 @@
 package gvs.business.model.styles;
 
 public enum GVSColor {
-  STANDARD("standard"), RED("red"), LIGHTRED("lightred"), GREEN(
-      "green"), LIGHTGREEN("lightgreen"), DARKGREEN("darkgreen"), BLUE(
-          "blue"), LIGHTBLUE("lightblue"), DARKBLUE("darkblue"), YELLOW(
-              "yellow"), ORANGE("orange"), BROWN("brown"), BLACK("black"), GRAY(
-                  "gray"), LIGHTGRAY("lightgray"), LIGHTVIOLET(
-                      "violet"), LIGHTPINK("pink"), LIGHTTURQOISE("turqoise");
+  STANDARD("standard"), 
+  BLACK("black"), 
+  WHITE("white"),
+  DARKGREY("darkgrey"),
+  GREY("grey"), 
+  LIGHTGREY("lightgrey"),
+  BLUE("blue"), 
+  LIGHTBLUE("lightblue"), 
+  RED("red"), 
+  YELLOW("yellow"), 
+  ORANGE("orange"),
+  GREEN("green");
 
   private String color;
 

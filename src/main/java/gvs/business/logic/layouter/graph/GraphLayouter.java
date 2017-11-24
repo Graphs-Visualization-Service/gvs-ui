@@ -1,8 +1,11 @@
 package gvs.business.logic.layouter.graph;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import gvs.business.logic.Session;
 import gvs.business.logic.layouter.ILayouter;
 import gvs.business.model.Graph;
 import gvs.business.model.IEdge;
@@ -62,6 +66,19 @@ public class GraphLayouter implements Tickable, ILayouter {
     this.area = new Area(dimension);
   }
 
+  @Override
+  public synchronized void layout(Session session, boolean useRandomLayout,
+      Action callback) {
+
+    Graph firstGraph = session.getGraphs().get(0);
+    layout(firstGraph, useRandomLayout, callback);
+
+    for (int i = 1; i < session.getGraphs().size(); i++) {
+      Graph targetGraph = session.getGraphs().get(i);
+      takeOverVertexPositions(firstGraph, targetGraph);
+    }
+  }
+
   /**
    * Layout the received vertices
    * 
@@ -72,7 +89,8 @@ public class GraphLayouter implements Tickable, ILayouter {
    * @param callback
    *          callback function
    */
-  public synchronized void layoutGraph(Graph graph, boolean useRandomLayout,
+  @Override
+  public synchronized void layout(Graph graph, boolean useRandomLayout,
       Action callback) {
     logger.info("Received new data to layout");
 
@@ -96,13 +114,46 @@ public class GraphLayouter implements Tickable, ILayouter {
       });
 
       calculateLayout(graph, useRandomLayout);
-      
+
       initializeLayoutGuard();
-      
+
       startTickerThread();
 
     } else if (callback != null) {
       callback.execute();
+    }
+  }
+
+  /**
+   * Reuse vertex coordinates of former graph.
+   * 
+   * @param sourceGraph
+   *          source graph
+   * @param targetGraph
+   *          target graph
+   */
+  @Override
+  public synchronized void takeOverVertexPositions(Graph sourceGraph,
+      Graph targetGraph) {
+
+    Map<Long, IVertex> formerVertices = sourceGraph.getVertices().stream()
+        .collect(Collectors.toMap(IVertex::getId, Function.identity()));
+
+    boolean verticesToLayout = false;
+
+    for (IVertex currentVertex : targetGraph.getVertices()) {
+      IVertex formerVertex = formerVertices.get(currentVertex.getId());
+      if (formerVertex != null) {
+        currentVertex.setXPosition(formerVertex.getXPosition());
+        currentVertex.setYPosition(formerVertex.getYPosition());
+        currentVertex.setUserPositioned(formerVertex.isUserPositioned());
+      } else {
+        verticesToLayout = true;
+      }
+    }
+
+    if (verticesToLayout) {
+      layout(targetGraph, true, null);
     }
   }
 

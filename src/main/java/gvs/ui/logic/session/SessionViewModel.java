@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import gvs.business.logic.GraphSessionType;
 import gvs.business.logic.Session;
+import gvs.business.logic.layouter.ILayouter;
 import gvs.business.model.Graph;
 import gvs.business.model.SessionHolder;
 import javafx.application.Platform;
@@ -180,21 +182,17 @@ public class SessionViewModel implements Observer {
   }
 
   public void autoLayout(boolean useRandomLayout) {
-    if (!sessionHolder.getCurrentSession().isTreeSession()) {
-      logger.info("Auto-layouting the current graph model...");
+    disableAllButtons(true);
+    Session currentSession = sessionHolder.getCurrentSession();
+    Graph currentGraph = currentSession.getGraphHolder().getCurrentGraph();
 
-      disableAllButtons(true);
-      Session currentSession = sessionHolder.getCurrentSession();
-      Graph currentGraph = currentSession.getGraphHolder().getCurrentGraph();
-
-      if (!currentSession.isTreeSession() && currentGraph.isLayoutable()) {
-        currentSession.layoutCurrentGraph(useRandomLayout,
-            this::finishAutolayout);
-      } else {
-        layoutTooltip.set(LAYOUT_INFO_TOOLTIP);
-        finishAutolayout();
-        autoLayoutBtnDisableProperty.set(!currentGraph.isLayoutable());
-      }
+    if (currentSession.getSessionType() instanceof GraphSessionType && currentGraph.isLayoutable()) {
+      ILayouter layouter = currentSession.getSessionType().getLayouter();
+      layouter.layout(currentGraph, useRandomLayout, this::finishAutolayout);
+    } else {
+      layoutTooltip.set(LAYOUT_INFO_TOOLTIP);
+      autoLayoutBtnDisableProperty.set(true);
+      finishAutolayout();
     }
   }
 

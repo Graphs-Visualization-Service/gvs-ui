@@ -38,28 +38,28 @@ public class AppViewModel implements Observer {
   private final BooleanProperty sessionControlVisibilityProperty;
   private final StringProperty currentSessionName;
   private final ObservableList<String> sessionNames;
-  private final Map<String, Session> controllerMap;
-  private final SessionHolder appModel;
+  private final Map<String, Session> sessionMap;
+  private final SessionHolder sessionHolder;
   private final ApplicationController appController;
 
-  private static final String PROMT_MESSAGE = "No active session";
+  private static final String NO_SESSIONS_MSG = "No active session";
   private static final Logger logger = LoggerFactory
       .getLogger(AppViewModel.class);
 
   @Inject
   public AppViewModel(SessionHolder appModel,
       ApplicationController appController) {
-    // context.init();
-    this.appModel = appModel;
+
+    this.sessionHolder = appModel;
     this.appController = appController;
 
     this.sessionControlVisibilityProperty = new SimpleBooleanProperty();
     this.currentSessionName = new SimpleStringProperty();
     this.sessionNames = FXCollections.observableArrayList();
-    this.controllerMap = new HashMap<>();
+    this.sessionMap = new HashMap<>();
 
-    this.appModel.addObserver(this);
-    this.currentSessionName.set(PROMT_MESSAGE);
+    this.sessionHolder.addObserver(this);
+    this.currentSessionName.set(NO_SESSIONS_MSG);
 
     sessionNames.addListener(this::changeSessionVisibility);
   }
@@ -83,14 +83,6 @@ public class AppViewModel implements Observer {
     sessionControlVisibilityProperty.set(true);
   }
 
-  public ObservableList<String> getSessionNames() {
-    return sessionNames;
-  }
-
-  public StringProperty getCurrentSessionName() {
-    return currentSessionName;
-  }
-
   /**
    * This method is invoked whenever a new current session is set in the
    * ApplicationModel.
@@ -99,13 +91,13 @@ public class AppViewModel implements Observer {
   public void update(Observable o, Object arg) {
     // Hand updates over to JavaFX Thread
     Platform.runLater(() -> {
-      Session c = ((SessionHolder) o).getCurrentSession();
-      String name = c.getSessionName();
-      if (name == null || name.isEmpty()) {
-        currentSessionName.set(PROMT_MESSAGE);
+      Session currentSession = ((SessionHolder) o).getCurrentSession();
+      if (currentSession == null) {
+        currentSessionName.set(NO_SESSIONS_MSG);
       } else {
+        String name = currentSession.getSessionName();
         currentSessionName.set(name);
-        controllerMap.put(name, c);
+        sessionMap.put(name, currentSession);
         if (!sessionNames.contains(name)) {
           sessionNames.add(name);
         }
@@ -115,10 +107,15 @@ public class AppViewModel implements Observer {
 
   public void removeCurrentSession() {
     logger.info("Removing current session...");
-    Session currentSession = appModel.getCurrentSession();
+    Session currentSession = sessionHolder.getCurrentSession();
     String sessionName = currentSession.getSessionName();
     sessionNames.remove(sessionName);
-    controllerMap.remove(sessionName);
+    sessionMap.remove(sessionName);
+    
+    if (sessionNames.isEmpty()) {
+      currentSessionName.set(NO_SESSIONS_MSG);
+    }
+    
     appController.deleteSession(currentSession);
   }
 
@@ -134,7 +131,7 @@ public class AppViewModel implements Observer {
     // clicking cancel sets file to null
     if (file != null) {
       logger.info("Saving session to file...");
-      appModel.getCurrentSession().saveSession(file);
+      sessionHolder.getCurrentSession().saveSession(file);
     }
   }
 
@@ -144,18 +141,26 @@ public class AppViewModel implements Observer {
       return;
     }
 
-    Session c = controllerMap.get(name);
-    if (appModel.getCurrentSession().getSessionName() != name) {
+    Session c = sessionMap.get(name);
+    if (sessionHolder.getCurrentSession().getSessionName() != name) {
       appController.changeCurrentSession(c);
       logger.info("Changing current session to {}...", name);
     }
   }
 
   private boolean isInvalidSessionName(String name) {
-    return name == null || name.isEmpty() || PROMT_MESSAGE.equals(name);
+    return name == null || name.isEmpty() || NO_SESSIONS_MSG.equals(name);
   }
 
   public BooleanProperty sessionVisibilityProperty() {
     return sessionControlVisibilityProperty;
+  }
+
+  public ObservableList<String> getSessionNames() {
+    return sessionNames;
+  }
+
+  public StringProperty getCurrentSessionName() {
+    return currentSessionName;
   }
 }

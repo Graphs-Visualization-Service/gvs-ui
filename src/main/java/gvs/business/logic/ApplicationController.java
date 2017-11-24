@@ -1,5 +1,7 @@
 package gvs.business.logic;
 
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +64,15 @@ public class ApplicationController {
 
     ILayouter layouter = loadedSession.getSessionType().getLayouter();
     layouter.layout(loadedSession, true, null);
+  }
+  /**
+   * Save a session to a specific file.
+   * 
+   * @param file
+   *          file
+   */
+  public void saveSession(Session session, File file) {
+    persistor.saveToDisk(session, file);
   }
 
   /**

@@ -17,10 +17,10 @@ import gvs.business.model.GraphHolder;
 import gvs.util.Action;
 
 /**
- * The session controller reacts on user input events and implements most of the
- * visualization logic. It observes the LayoutController.
+ * A session represents a collection of graphs. It contains logic to navigate
+ * through its graphs, which included the replay functionality.
  * 
- * @author aegli
+ * @author mtrentini
  *
  */
 public class Session {
@@ -33,18 +33,16 @@ public class Session {
   private final GraphHolder graphHolder;
   private final List<Graph> graphs;
   private final SessionReplayFactory sessionReplayFactory;
-  private final Persistor persistor;
 
   private static final Logger logger = LoggerFactory.getLogger(Session.class);
 
   @Inject
-  public Session(GraphHolder graphHolder, Persistor persistor,
+  public Session(GraphHolder graphHolder,
       SessionReplayFactory replayFactory, @Assisted ISessionType sessionType,
       @Assisted long sessionId, @Assisted String sessionName) {
 
     logger.info("Instantiating new graph session.");
     this.sessionReplayFactory = replayFactory;
-    this.persistor = persistor;
     this.sessionType = sessionType;
 
     this.id = sessionId;
@@ -106,10 +104,6 @@ public class Session {
   public void cancelReplay() {
     pauseReplay();
     changeCurrentGraphToFirst();
-  }
-
-  public void saveSession(File file) {
-    persistor.saveToDisk(this, file);
   }
 
   public void changeCurrentGraphToNext() {

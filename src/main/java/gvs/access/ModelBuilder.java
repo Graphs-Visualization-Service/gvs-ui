@@ -1,9 +1,3 @@
-/*
- * Created on 23.11.2005
- *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
- */
 package gvs.access;
 
 import java.util.ArrayList;
@@ -12,7 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.dom4j.Document;
@@ -25,7 +18,6 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import gvs.business.logic.ApplicationController;
-import gvs.business.logic.BinaryTreeSessionType;
 import gvs.business.logic.GraphSessionType;
 import gvs.business.logic.ISessionType;
 import gvs.business.logic.TreeSessionType;
@@ -35,7 +27,7 @@ import gvs.business.model.IEdge;
 import gvs.business.model.IVertex;
 import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
-import gvs.business.model.tree.BinaryTreeVertex;
+import gvs.business.model.tree.DummyTreeVertex;
 import gvs.business.model.tree.TreeVertex;
 import gvs.util.FontAwesome.Glyph;
 
@@ -51,7 +43,6 @@ public class ModelBuilder {
   private final ApplicationController applicationController;
   private final Provider<GraphSessionType> graphSessionTypeProvider;
   private final Provider<TreeSessionType> treeSessionTypeProvider;
-  private final Provider<BinaryTreeSessionType> binaryTreeSessionTypeProvider;
 
   // XML Attributes
   private static final String ATTRIBUTEID = "Id";
@@ -77,8 +68,6 @@ public class ModelBuilder {
   // Tree XML Fields
   private static final String TREE = "Tree";
   private static final String NODES = "Nodes";
-  private final String DEFAULTNODE = "DefaultNode";
-  private final String BINARYNODE = "BinaryNode";
   private static final String RIGTHCHILD = "Rigthchild";
   private static final String LEFTCHILD = "Leftchild";
 
@@ -92,11 +81,9 @@ public class ModelBuilder {
   @Inject
   public ModelBuilder(ApplicationController appController,
       Provider<TreeSessionType> treeSessionTypeProvider,
-      Provider<BinaryTreeSessionType> binaryTreeSessionTypeProvider,
       Provider<GraphSessionType> graphSessionTypeProvider) {
     this.applicationController = appController;
     this.treeSessionTypeProvider = treeSessionTypeProvider;
-    this.binaryTreeSessionTypeProvider = binaryTreeSessionTypeProvider;
     this.graphSessionTypeProvider = graphSessionTypeProvider;
   }
 
@@ -181,23 +168,17 @@ public class ModelBuilder {
 
     // uses a map for easy access to vertices over their id
     Map<Long, IVertex> vertexMap = buildTreeVertices(eVertices);
-
     Collection<IVertex> vertices = resolveChildReferences(vertexMap);
-    Collection<IEdge> edges = buildTreeEdges(vertices);
     findRoots(vertices);
 
-    // GVS 3.0: use snapshot description of input connection
+    Collection<IEdge> edges = buildTreeEdges(vertices);
+
+    // GVS 3.0 use snapshot description of input connection
     String snapshotDescription = new String();
     Graph tree = new Graph(snapshotDescription, vertices, edges);
     logger.info("Finished build tree from XML.");
-    ISessionType type = null;
-    Optional<TreeVertex> firstVertex = vertices.stream().findFirst()
-        .map(v -> (TreeVertex) v);
-    if (firstVertex.orElse(null) instanceof BinaryTreeVertex) {
-      type = binaryTreeSessionTypeProvider.get();
-    } else if (firstVertex.orElse(null) instanceof TreeVertex) {
-      type = treeSessionTypeProvider.get();
-    }
+
+    ISessionType type = treeSessionTypeProvider.get();
     applicationController.addGraphToSession(tree, sessionId, sessionName, type);
   }
 
@@ -230,9 +211,12 @@ public class ModelBuilder {
         TreeVertex child = (TreeVertex) vertexMap.get(id);
         if (child != null) {
           current.addChild(child);
+        } else {
+          // this is only needed for layouting
+          current.addChild(new DummyTreeVertex());
         }
       });
-      setChildRelations(current);
+      setParent(current);
     });
     return vertices;
   }
@@ -243,7 +227,7 @@ public class ModelBuilder {
    * @param vertex
    *          parent vertex
    */
-  private void setChildRelations(TreeVertex vertex) {
+  private void setParent(TreeVertex vertex) {
     vertex.getChildren().forEach(c -> c.setParent(vertex));
   }
 
@@ -252,7 +236,8 @@ public class ModelBuilder {
     vertices.forEach(v -> {
       TreeVertex current = (TreeVertex) v;
       current.getChildren().forEach(child -> {
-        if (child.getId() != -1) { //TODO: needed because binarytree has "dummy children"
+        // don't create edges for dummy vertices
+        if (child.getId() != -1) {
           edges.add(new Edge("", child.getStyle(), false, current, child));
         }
       });
@@ -279,36 +264,9 @@ public class ModelBuilder {
       rigthchildId = Long.parseLong(eRigthChild.getText());
     }
     logger.info("Finish build TreeVertex from XML.");
-
-    TreeVertex newVertex = null;
-
-    if (pVertex.getName().equals(DEFAULTNODE)) {
-      newVertex = buildDefaultTreeVertex(vertexId, label, style, leftchildId,
-          rigthchildId);
-    } else if (pVertex.getName().equals(BINARYNODE)) {
-      newVertex = buildBinaryTreeVertex(vertexId, label, style, false, null,
-          leftchildId, rigthchildId);
-    } else {
-      logger.warn("Unknown TreeVertex Type.");
-    }
-    return newVertex;
-  }
-
-  private TreeVertex buildDefaultTreeVertex(long vertexId, String label,
-      GVSStyle style, long leftchildId, long rigthchildId) {
     TreeVertex newVertex = new TreeVertex(vertexId, label, style, false, null);
     newVertex.addChildId(leftchildId);
     newVertex.addChildId(rigthchildId);
-    return newVertex;
-  }
-
-  private TreeVertex buildBinaryTreeVertex(long id, String label,
-      GVSStyle style, boolean isUserPositioned, Glyph icon, long leftChildId,
-      long rightChildId) {
-    BinaryTreeVertex newVertex = new BinaryTreeVertex(id, label, style,
-        isUserPositioned, icon);
-    newVertex.setLeftChildId(leftChildId);
-    newVertex.setRightChildId(rightChildId);
     return newVertex;
   }
 

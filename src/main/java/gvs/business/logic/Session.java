@@ -12,7 +12,6 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 import gvs.access.Persistor;
-import gvs.business.logic.layouter.LayouterProvider;
 import gvs.business.model.Graph;
 import gvs.business.model.GraphHolder;
 import gvs.util.Action;
@@ -40,9 +39,8 @@ public class Session {
 
   @Inject
   public Session(GraphHolder graphHolder, Persistor persistor,
-      SessionReplayFactory replayFactory, LayouterProvider layouterProvider,
-      @Assisted ISessionType sessionType, @Assisted long sessionId,
-      @Assisted String sessionName) {
+      SessionReplayFactory replayFactory, @Assisted ISessionType sessionType,
+      @Assisted long sessionId, @Assisted String sessionName) {
 
     logger.info("Instantiating new graph session.");
     this.sessionReplayFactory = replayFactory;

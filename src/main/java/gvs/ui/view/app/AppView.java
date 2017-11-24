@@ -1,7 +1,6 @@
 package gvs.ui.view.app;
 
 import java.io.File;
-import java.io.IOException;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

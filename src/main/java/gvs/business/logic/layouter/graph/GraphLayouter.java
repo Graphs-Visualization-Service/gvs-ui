@@ -37,7 +37,7 @@ public class GraphLayouter implements Tickable, ILayouter {
 
   private AreaTicker currentTicker;
   private Timer guard;
-
+  
   private final AreaTickerFactory tickerFactory;
   private final Area area;
 
@@ -72,13 +72,14 @@ public class GraphLayouter implements Tickable, ILayouter {
 
     Graph firstGraph = session.getGraphs().get(0);
     layout(firstGraph, useRandomLayout, callback);
-
+    firstGraph.setLayouted(true);
+    
     for (int i = 1; i < session.getGraphs().size(); i++) {
       Graph targetGraph = session.getGraphs().get(i);
       takeOverVertexPositions(firstGraph, targetGraph);
     }
   }
-
+  
   /**
    * Layout the received vertices
    * 
@@ -136,24 +137,21 @@ public class GraphLayouter implements Tickable, ILayouter {
   public synchronized void takeOverVertexPositions(Graph sourceGraph,
       Graph targetGraph) {
 
-    Map<Long, IVertex> formerVertices = sourceGraph.getVertices().stream()
-        .collect(Collectors.toMap(IVertex::getId, Function.identity()));
+    if (targetGraph.isLayoutable()) {
 
-    boolean verticesToLayout = false;
+      Map<Long, IVertex> formerVertices = sourceGraph.getVertices().stream()
+          .collect(Collectors.toMap(IVertex::getId, Function.identity()));
 
-    for (IVertex currentVertex : targetGraph.getVertices()) {
-      IVertex formerVertex = formerVertices.get(currentVertex.getId());
-      if (formerVertex != null) {
-        currentVertex.setXPosition(formerVertex.getXPosition());
-        currentVertex.setYPosition(formerVertex.getYPosition());
-        currentVertex.setUserPositioned(formerVertex.isUserPositioned());
-      } else {
-        verticesToLayout = true;
+      for (IVertex currentVertex : targetGraph.getVertices()) {
+        IVertex formerVertex = formerVertices.get(currentVertex.getId());
+        if (formerVertex != null) {
+          currentVertex.setXPosition(formerVertex.getXPosition());
+          currentVertex.setYPosition(formerVertex.getYPosition());
+          currentVertex.setUserPositioned(formerVertex.isUserPositioned());
+        }
       }
-    }
-
-    if (verticesToLayout) {
-      layout(targetGraph, true, null);
+      
+      targetGraph.setLayouted(true);
     }
   }
 

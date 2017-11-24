@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 public class Graph {
 
   private int id;
+  private boolean isLayouted;
   private String snapshotDescription;
   private Collection<IVertex> vertices;
   private Collection<IEdge> edges;
@@ -36,10 +37,6 @@ public class Graph {
     this.vertices = vertices;
     this.edges = edges;
     this.snapshotDescription = snapshotDescription;
-  }
-
-  public boolean isLayoutable() {
-    return !getVertices().stream().allMatch(v -> v.isUserPositioned());
   }
 
   public Collection<IVertex> getVertices() {
@@ -85,6 +82,15 @@ public class Graph {
     }
     return String.format("%d \t Vertices: [%s], Edges: [%s]", id,
         verticesString, edgesString);
+  }
+
+  public boolean isLayoutable() {
+    return !isLayouted
+        && !getVertices().stream().allMatch(v -> v.isUserPositioned());
+  }
+
+  public void setLayouted(boolean isLayouted) {
+    this.isLayouted = isLayouted;
   }
 
 }

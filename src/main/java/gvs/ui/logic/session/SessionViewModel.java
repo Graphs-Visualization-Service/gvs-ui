@@ -181,12 +181,20 @@ public class SessionViewModel implements Observer {
     });
   }
 
+  /**
+   * Request auto layout of the layout engine.
+   * 
+   * @param useRandomLayout
+   *          use random positions
+   */
   public void autoLayout(boolean useRandomLayout) {
     disableAllButtons(true);
     Session currentSession = sessionHolder.getCurrentSession();
     Graph currentGraph = currentSession.getGraphHolder().getCurrentGraph();
+    currentGraph.setLayouted(false);
 
-    if (currentSession.getSessionType() instanceof GraphSessionType && currentGraph.isLayoutable()) {
+    if (currentSession.getSessionType() instanceof GraphSessionType
+        && currentGraph.isLayoutable()) {
       ILayouter layouter = currentSession.getSessionType().getLayouter();
       layouter.layout(currentGraph, useRandomLayout, this::finishAutolayout);
     } else {
@@ -196,6 +204,9 @@ public class SessionViewModel implements Observer {
     }
   }
 
+  /**
+   * Auto layout callback function
+   */
   public void finishAutolayout() {
     disableAllButtons(false);
   }

@@ -75,8 +75,6 @@ public class SessionViewModel implements Observer {
     this.autoLayoutBtnDisableProperty = new SimpleBooleanProperty();
     this.layoutTooltip = new SimpleStringProperty();
 
-    updateStepProperties();
-
     currentSessionHolder.addObserver(this);
   }
 

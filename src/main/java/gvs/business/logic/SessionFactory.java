@@ -10,14 +10,17 @@ package gvs.business.logic;
 public interface SessionFactory {
 
   /**
-   * Construct a graph session with dependencies, which are not
-   * automatically injectable.
+   * Construct a graph session with dependencies, which are not automatically
+   * injectable.
    * 
+   * @param sessionType
+   *          type of the session (graph, tree, binary tree)
    * @param sessionId
    *          id of the session
    * @param sessionName
    *          name of the session
    * @return new instance
    */
-  Session createSession(long sessionId, String sessionName, boolean isTreeSession);
+  Session createSession(ISessionType sessionType, long sessionId,
+      String sessionName);
 }

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.google.inject.Singleton;
 
+import gvs.business.logic.Session;
 import gvs.business.logic.layouter.ILayouter;
 import gvs.business.model.Graph;
 import gvs.business.model.tree.BinaryTreeVertex;
@@ -28,9 +29,15 @@ public class BinaryTreeLayouter implements ILayouter {
   private static final double LEVEL_DISTANCE = 20;
 
   @Override
-  public void layoutGraph(Graph currentGraph, boolean useRandomLayout,
+  public void layout(Session session, boolean useRandomLayout,
       Action callback) {
-    List<BinaryTreeVertex> roots = currentGraph.getVertices().stream()
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void layout(Graph graph, boolean useRandomLayout, Action callback) {
+    List<BinaryTreeVertex> roots = graph.getVertices().stream()
         .map(v -> (BinaryTreeVertex) v).filter(v -> v.isRoot())
         .collect(Collectors.toList());
 
@@ -39,6 +46,12 @@ public class BinaryTreeLayouter implements ILayouter {
       setup(root, 0, null, null);
       addMods(root);
     });
+  }
+
+  @Override
+  public void takeOverVertexPositions(Graph source, Graph target) {
+    // TODO Auto-generated method stub
+
   }
 
   private void setup(BinaryTreeVertex vertex, int depth,

@@ -36,14 +36,18 @@ public class SessionHolder extends Observable {
    * Sets currently requested session.
    * 
    * @param newSession
+   *          new current session
    */
   public void setCurrentSession(Session newSession) {
     logger.info("Setting current session and notify observers.");
 
-    this.currentSession = newSession;
-    currentSession.changeCurrentGraphToFirst();
-    setChanged();
-    notifyObservers();
+    currentSession = newSession;
+
+    if (currentSession != null) {
+      currentSession.changeCurrentGraphToFirst();
+      setChanged();
+      notifyObservers();
+    }
   }
 
   /**

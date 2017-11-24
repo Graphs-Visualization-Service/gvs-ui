@@ -3,10 +3,7 @@ package gvs.business.logic;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +12,9 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 import gvs.access.Persistor;
-import gvs.business.logic.layouter.ILayouter;
 import gvs.business.logic.layouter.LayouterProvider;
 import gvs.business.model.Graph;
 import gvs.business.model.GraphHolder;
-import gvs.business.model.IVertex;
 import gvs.util.Action;
 
 /**
@@ -33,34 +28,26 @@ public class Session {
 
   private SessionReplay currentReplayThread;
 
+  private final ISessionType sessionType;
   private final long id;
   private final String sessionName;
   private final GraphHolder graphHolder;
   private final List<Graph> graphs;
-
   private final SessionReplayFactory sessionReplayFactory;
-  private final ILayouter layouter;
   private final Persistor persistor;
-
-  private final boolean isTreeSession;
 
   private static final Logger logger = LoggerFactory.getLogger(Session.class);
 
   @Inject
   public Session(GraphHolder graphHolder, Persistor persistor,
       SessionReplayFactory replayFactory, LayouterProvider layouterProvider,
-      @Assisted long sessionId, @Assisted String sessionName,
-      @Assisted boolean isTreeSession) {
+      @Assisted ISessionType sessionType, @Assisted long sessionId,
+      @Assisted String sessionName) {
 
     logger.info("Instantiating new graph session.");
     this.sessionReplayFactory = replayFactory;
     this.persistor = persistor;
-    this.isTreeSession = isTreeSession;
-    if (isTreeSession) {
-      this.layouter = layouterProvider.getTreeLayouter();
-    } else {
-      this.layouter = layouterProvider.getGraphLayouter();
-    }
+    this.sessionType = sessionType;
 
     this.id = sessionId;
     this.sessionName = sessionName;
@@ -87,23 +74,6 @@ public class Session {
     logger.info("Add new graph with id {} to session {}", graph.getId(),
         getId());
     graphs.add(graph);
-  }
-
-  public void layoutWholeSession(Action callback) {
-    if (isTreeSession) {
-      graphs.forEach(t -> layouter.layoutGraph(t, false, callback));
-    }
-  }
-
-  public void layoutCurrentGraph(boolean useRandomLayout,
-      Action callback) {
-
-    Graph currentGraph = graphHolder.getCurrentGraph();
-    if (currentGraph.isLayoutable()) {
-      layouter.layoutGraph(currentGraph, useRandomLayout, callback);
-    } else if (callback != null) {
-      callback.execute();
-    }
   }
 
   /**
@@ -149,26 +119,20 @@ public class Session {
     int nextGraphId = currentGraph.getId() + 1;
     if (validIndex(nextGraphId)) {
       Graph nextGraph = getGraphs().get(nextGraphId - 1);
-      if (!isTreeSession) {
-        takeOverPreviousVertexPositions(graphHolder.getCurrentGraph(),
-            nextGraph);
-      } else {
-        graphHolder.setCurrentGraph(nextGraph);
-      }
+      getSessionType().getLayouter().takeOverVertexPositions(currentGraph,
+          nextGraph);
+      graphHolder.setCurrentGraph(nextGraph);
     }
   }
 
   public void changeCurrentGraphToPrev() {
-    int prevGraphId = graphHolder.getCurrentGraph().getId() - 1;
+    Graph currentGraph = graphHolder.getCurrentGraph();
+    int prevGraphId = currentGraph.getId() - 1;
     if (validIndex(prevGraphId)) {
       Graph previousGraph = getGraphs().get(prevGraphId - 1);
-
-      if (!isTreeSession) {
-        takeOverPreviousVertexPositions(graphHolder.getCurrentGraph(),
-            previousGraph);
-      } else {
-        graphHolder.setCurrentGraph(previousGraph);
-      }
+      getSessionType().getLayouter().takeOverVertexPositions(currentGraph,
+          previousGraph);
+      graphHolder.setCurrentGraph(previousGraph);
     }
   }
 
@@ -180,16 +144,13 @@ public class Session {
   }
 
   public void changeCurrentGraphToLast() {
+    Graph currentGraph = graphHolder.getCurrentGraph();
     int newIndex = getGraphs().size() - 1;
     if (validIndex(newIndex)) {
       Graph lastGraph = getGraphs().get(newIndex);
-
-      if (!isTreeSession) {
-        takeOverPreviousVertexPositions(graphHolder.getCurrentGraph(),
-            lastGraph);
-      } else {
-        graphHolder.setCurrentGraph(lastGraph);
-      }
+      getSessionType().getLayouter().takeOverVertexPositions(currentGraph,
+          lastGraph);
+      graphHolder.setCurrentGraph(lastGraph);
     }
   }
 
@@ -204,54 +165,20 @@ public class Session {
     return i > 0 && i <= getGraphs().size();
   }
 
-  /**
-   * Reuse vertex coordinates of former graph.
-   * 
-   * @param sourceGraph
-   *          source graph
-   * @param targetGraph
-   *          target graph
-   */
-  private void takeOverPreviousVertexPositions(Graph sourceGraph,
-      Graph targetGraph) {
-
-    Map<Long, IVertex> formerVertices = sourceGraph.getVertices().stream()
-        .collect(Collectors.toMap(IVertex::getId, Function.identity()));
-
-    boolean verticesToLayout = false;
-
-    for (IVertex currentVertex : targetGraph.getVertices()) {
-      IVertex formerVertex = formerVertices.get(currentVertex.getId());
-      if (formerVertex != null) {
-        currentVertex.setXPosition(formerVertex.getXPosition());
-        currentVertex.setYPosition(formerVertex.getYPosition());
-        currentVertex.setUserPositioned(formerVertex.isUserPositioned());
-      } else {
-        verticesToLayout = true;
-      }
-    }
-
-    graphHolder.setCurrentGraph(targetGraph);
-
-    if (verticesToLayout) {
-      layoutCurrentGraph(true, null);
-    }
-  }
-
   public int getTotalGraphCount() {
     return getGraphs().size();
   }
 
-  public boolean isTreeSession() {
-    return isTreeSession;
-  }
-  
   public GraphHolder getGraphHolder() {
     return graphHolder;
   }
 
   public String getSessionName() {
     return sessionName;
+  }
+
+  public ISessionType getSessionType() {
+    return sessionType;
   }
 
   public long getId() {

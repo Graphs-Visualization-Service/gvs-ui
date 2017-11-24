@@ -23,10 +23,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import gvs.business.logic.GraphSessionType;
+import gvs.business.logic.ISessionType;
 import gvs.business.logic.Session;
 import gvs.business.logic.SessionFactory;
+import gvs.business.logic.TreeSessionType;
 import gvs.business.model.Edge;
 import gvs.business.model.Graph;
 import gvs.business.model.IEdge;
@@ -45,6 +49,10 @@ import gvs.util.FontAwesome.Glyph;
  */
 @Singleton
 public class Persistor {
+
+  private final SessionFactory graphSessionFactory;
+  private final Provider<GraphSessionType> graphSessionTypeProvider;
+  private final Provider<TreeSessionType> treeSessionTypeProvider;
 
   // Generally
   private static final String ROOT = "Data";
@@ -78,22 +86,27 @@ public class Persistor {
   private static final String RIGTHCHILD = "Rigthchild";
   private static final String LEFTCHILD = "Leftchild";
 
-  private final SessionFactory graphSessionFactory;
-
   private static final Logger logger = LoggerFactory.getLogger(Persistor.class);
 
   @Inject
-  public Persistor(SessionFactory graphSessionFactory) {
+  public Persistor(SessionFactory graphSessionFactory,
+      Provider<TreeSessionType> treeSessionTypeProvider,
+      Provider<GraphSessionType> graphSessionTypeProvider) {
+
     this.graphSessionFactory = graphSessionFactory;
+    this.treeSessionTypeProvider = treeSessionTypeProvider;
+    this.graphSessionTypeProvider = graphSessionTypeProvider;
   }
 
   public void saveToDisk(Session session, File file) {
     Document document = DocumentHelper.createDocument();
     Element docRoot = document.addElement(ROOT);
-    if (session.isTreeSession()) {
-      this.saveTreeSession(docRoot, session);
-    } else {
+
+    ISessionType type = session.getSessionType();
+    if (type instanceof GraphSessionType) {
       this.saveGraphSession(docRoot, session);
+    } else {
+      this.saveTreeSession(docRoot, session);
     }
     this.writeToDisk(document, session, file);
   }
@@ -183,7 +196,7 @@ public class Persistor {
   private void saveTreeModel(Graph graph, Element pSession) {
     Element treeElement = pSession.addElement(TREEMODEL);
     addIdAndLabelForGraph(treeElement, graph);
-    
+
     Element eNodes = treeElement.addElement(NODES);
     graph.getVertices().forEach(n -> {
       saveTreeVertex((TreeVertex) n, eNodes);
@@ -275,8 +288,9 @@ public class Persistor {
 
     long sessionId = Long.parseLong(graphElements.attributeValue(ATTRIBUTEID));
     String sessionName = graphElements.element(LABEL).getText();
-    Session session = graphSessionFactory.createSession(sessionId, sessionName,
-        false);
+    ISessionType type = graphSessionTypeProvider.get();
+    Session session = graphSessionFactory.createSession(type, sessionId,
+        sessionName);
 
     graphElements.elements().forEach(graphElement -> {
 
@@ -309,8 +323,9 @@ public class Persistor {
 
     long sessionId = Long.parseLong(graphElements.attributeValue(ATTRIBUTEID));
     String sessionName = graphElements.element(LABEL).getText();
-    Session session = graphSessionFactory.createSession(sessionId, sessionName,
-        true);
+    ISessionType type = treeSessionTypeProvider.get();
+    Session session = graphSessionFactory.createSession(type, sessionId,
+        sessionName);
 
     graphElements.elements().forEach(graphElement -> {
 
@@ -327,7 +342,6 @@ public class Persistor {
         session.addGraph(newGraph);
       }
     });
-    session.layoutWholeSession(null);
     return session;
   }
 

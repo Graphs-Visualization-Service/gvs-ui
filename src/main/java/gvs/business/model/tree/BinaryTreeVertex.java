@@ -10,6 +10,10 @@ public class BinaryTreeVertex extends TreeVertex {
   public BinaryTreeVertex(long id, String label, GVSStyle style,
       boolean isUserPositioned, Glyph icon) {
     super(id, label, style, isUserPositioned, icon);
+    getChildren().add(new TreeVertex(-1, label, style, isUserPositioned, icon));
+    getChildren().add(new TreeVertex(-1, label, style, isUserPositioned, icon));
+    getChildIds().add(-1l);
+    getChildIds().add(-1l);
   }
 
   public TreeVertex getLeftChild() {
@@ -24,6 +28,30 @@ public class BinaryTreeVertex extends TreeVertex {
       return getChildren().get(1);
     }
     return null;
+  }
+
+  public void setLeftChildId(long id) {
+    getChildIds().set(0, id);
+    hasLeftChild = true;
+  }
+
+  public void setRightChildId(long id) {
+    getChildIds().set(1, id);
+    hasRightChild = true;
+  }
+
+  public long getLeftChildId() {
+    if (hasLeftChild) {
+      return getChildIds().get(0);
+    }
+    return -1;
+  }
+
+  public long getRightChildId() {
+    if (hasRightChild) {
+      return getChildIds().get(1);
+    }
+    return -1;
   }
 
   public void setLeftChild(TreeVertex child) {

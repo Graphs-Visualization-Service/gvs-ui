@@ -16,12 +16,15 @@ import gvs.util.Action;
 public class TreeLayouter implements ILayouter {
 
   private static final double GAP_BETWEEN_VERTICES = 10;
+  private static final double GAP_BETWEEN_FORESTS = 20;
   private static final double GAP_BETWEEN_LEVEL = 5;
   private static final double VERTEX_HEIGHT = 12;
   private static final int VERTEX_LABEL_MARGIN = 2;
 
   private final TreeLayouterValues values;
   private int treeHeight;
+  private Bounds bounds;
+  private Bounds prevBounds;
 
   public TreeLayouter() {
     this.values = new TreeLayouterValues();
@@ -41,22 +44,25 @@ public class TreeLayouter implements ILayouter {
 
     // TODO: support multiple roots
     roots.forEach(r -> {
+      this.bounds = new Bounds();
       treeHeight = computeHeight(r);
       firstWalk(r, null);
       secondWalk(r, -values.getPreliminary(r), 0, 0);
+      this.prevBounds = bounds;
     });
 
     graph.getVertices().forEach(vertex -> setFinalPosition());
   }
 
   /**
-   * Calculates the final position of the vertices. This is needed, becuase the
+   * Calculates the final position of the vertices. This is needed, because the
    * algorithm sets the root at 0,0. Therefore many vertices in the left subtree
    * have negative x coordinates. This method shift the tree so the left most
    * vertex is at x=0.
    */
   private void setFinalPosition() {
-    for (Entry<TreeVertex, NormalizedPosition> entry : values.getPositions().entrySet()) {
+    for (Entry<TreeVertex, NormalizedPosition> entry : values.getPositions()
+        .entrySet()) {
       TreeVertex vertex = entry.getKey();
       NormalizedPosition pos = entry.getValue();
       double w = vertex.getLabel().length();
@@ -89,7 +95,6 @@ public class TreeLayouter implements ILayouter {
     // Do nothing. Only lrelevant for graphs
   }
 
- 
   /**
    * The distance of two vertices is the distance of the centers of both
    * vertices.
@@ -149,7 +154,8 @@ public class TreeLayouter implements ILayouter {
 
   private void moveSubtree(TreeVertex v, TreeVertex w, TreeVertex parent,
       double currentShift) {
-    int subtrees = values.getChildNumber(w, parent) - values.getChildNumber(v, parent);
+    int subtrees = values.getChildNumber(w, parent)
+        - values.getChildNumber(v, parent);
     values.setChange(w, values.getChange(w) - currentShift / subtrees);
     values.setShift(w, values.getShift(w) + currentShift);
     values.setChange(v, values.getChange(v) + currentShift / subtrees);
@@ -223,7 +229,8 @@ public class TreeLayouter implements ILayouter {
       insideLeftModSum = insideLeftModSum + values.getMod(insideLeftVertex);
       insideRightModSum = insideRightModSum + values.getMod(insideRightVertex);
       outsideLeftModSum = outsideLeftModSum + values.getMod(outsideLeftVertex);
-      outsideRightModSum = outsideRightModSum + values.getMod(outsideRightVertex);
+      outsideRightModSum = outsideRightModSum
+          + values.getMod(outsideRightVertex);
 
       nextRight = nextRight(insideLeftVertex);
       nextLeft = nextLeft(insideRightVertex);
@@ -231,14 +238,14 @@ public class TreeLayouter implements ILayouter {
 
     if (nextRight != null && nextRight(outsideRightVertex) == null) {
       values.setThread(outsideRightVertex, nextRight);
-      values.setMod(outsideRightVertex,
-          values.getMod(outsideRightVertex) + insideLeftModSum - outsideRightModSum);
+      values.setMod(outsideRightVertex, values.getMod(outsideRightVertex)
+          + insideLeftModSum - outsideRightModSum);
     }
 
     if (nextLeft != null && nextLeft(outsideLeftVertex) == null) {
       values.setThread(outsideLeftVertex, nextLeft);
-      values.setMod(outsideLeftVertex,
-          values.getMod(outsideLeftVertex) + insideRightModSum - outsideLeftModSum);
+      values.setMod(outsideLeftVertex, values.getMod(outsideLeftVertex)
+          + insideRightModSum - outsideLeftModSum);
       defaultAncestor = v;
     }
     return defaultAncestor;
@@ -286,8 +293,8 @@ public class TreeLayouter implements ILayouter {
         previousChild = w;
       }
       executeShifts(v);
-      double midpoint = (values.getPreliminary(v.getChildren().get(0))
-          + values.getPreliminary(v.getChildren().get(v.getChildren().size() - 1)))
+      double midpoint = (values.getPreliminary(v.getChildren().get(0)) + values
+          .getPreliminary(v.getChildren().get(v.getChildren().size() - 1)))
           / 2.0;
       if (leftSibling != null) {
         values.setMod(v, values.getPreliminary(v) - midpoint);
@@ -311,12 +318,16 @@ public class TreeLayouter implements ILayouter {
    */
   private void secondWalk(TreeVertex v, double modSum, int level,
       double levelStart) {
-    double x = values.getPreliminary(v) + modSum;
+    // account for neighbouring forest
+    double prevBoundRight = 0;
+    if (prevBounds != null) {
+      prevBoundRight = prevBounds.getBoundsRight() + GAP_BETWEEN_FORESTS;
+    }
+    double x = values.getPreliminary(v) + modSum + prevBoundRight;
     double y = levelStart + (VERTEX_HEIGHT / 2);
-    values.getPositions().put(v, new NormalizedPosition(x, y));
+    values.getPositions().put(v, new NormalizedPosition(x, y, bounds));
 
-    // update the bounds
-    Bounds.updateBounds(v, x, y);
+    bounds.updateBounds(v, x, y);
 
     if (!v.isLeaf()) {
       double nextLevelStart = levelStart + (VERTEX_HEIGHT + GAP_BETWEEN_LEVEL);

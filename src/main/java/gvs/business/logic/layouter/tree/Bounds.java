@@ -4,12 +4,12 @@ import gvs.business.model.tree.TreeVertex;
 import javafx.geometry.Rectangle2D;
 
 public class Bounds {
-  public static double boundsLeft = Double.MAX_VALUE;
-  public static double boundsRight = Double.MIN_VALUE;
-  public static double boundsTop = Double.MAX_VALUE;
-  public static double boundsBottom = Double.MIN_VALUE;
+  private double boundsLeft = Double.MAX_VALUE;
+  private double boundsRight = Double.MIN_VALUE;
+  private double boundsTop = Double.MAX_VALUE;
+  private double boundsBottom = Double.MIN_VALUE;
 
-  public static void updateBounds(TreeVertex node, double centerX,
+  public void updateBounds(TreeVertex node, double centerX,
       double centerY) {
     double width = node.getLabel().length();
     double height = 12;
@@ -31,16 +31,35 @@ public class Bounds {
     }
   }
 
-  /**
-   * Returns the bounds of the tree layout.
-   * <p>
-   * The bounds of a TreeLayout is the smallest rectangle containing the bounds
-   * of all nodes in the layout. It always starts at (0,0).
-   * 
-   * @return the bounds of the tree layout
-   */
-  public Rectangle2D getBounds() {
-    return new Rectangle2D(0, 0, boundsRight - boundsLeft,
-        boundsBottom - boundsTop);
+  public double getBoundsLeft() {
+    return boundsLeft;
+  }
+
+  public void setBoundsLeft(double boundsLeft) {
+    this.boundsLeft = boundsLeft;
+  }
+
+  public double getBoundsRight() {
+    return boundsRight;
+  }
+
+  public void setBoundsRight(double boundsRight) {
+    this.boundsRight = boundsRight;
+  }
+
+  public double getBoundsTop() {
+    return boundsTop;
+  }
+
+  public void setBoundsTop(double boundsTop) {
+    this.boundsTop = boundsTop;
+  }
+
+  public double getBoundsBottom() {
+    return boundsBottom;
+  }
+
+  public void setBoundsBottom(double boundsBottom) {
+    this.boundsBottom = boundsBottom;
   }
 }

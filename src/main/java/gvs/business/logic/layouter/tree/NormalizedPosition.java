@@ -12,18 +12,20 @@ package gvs.business.logic.layouter.tree;
 public class NormalizedPosition {
   private double x_relativeToRoot;
   private double y_relativeToRoot;
+  private Bounds bounds;
   
 
-  public NormalizedPosition(double x_relativeToRoot, double y_relativeToRoot) {
+  public NormalizedPosition(double x_relativeToRoot, double y_relativeToRoot, Bounds bounds) {
     setLocation(x_relativeToRoot, y_relativeToRoot);
+    this.bounds = bounds;
   }
 
   public double getX() {
-    return x_relativeToRoot - Bounds.boundsLeft;
+    return x_relativeToRoot - bounds.getBoundsLeft();
   }
 
   public double getY() {
-    return y_relativeToRoot - Bounds.boundsTop;
+    return y_relativeToRoot - bounds.getBoundsTop();
   }
 
   public void setLocation(double x_relativeToRoot, double y_relativeToRoot) {
@@ -31,5 +33,9 @@ public class NormalizedPosition {
     this.y_relativeToRoot = y_relativeToRoot;
   }
 
+    @Override
+    public String toString() {
+      return x_relativeToRoot + "," + y_relativeToRoot;
+    }
   
 }

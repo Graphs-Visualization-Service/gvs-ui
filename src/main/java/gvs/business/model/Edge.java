@@ -54,4 +54,8 @@ public class Edge implements IEdge {
     return startVertex;
   }
 
+  @Override
+  public String toString() {
+    return startVertex.getLabel() + "--" + endVertex.getLabel();
+  }
 }

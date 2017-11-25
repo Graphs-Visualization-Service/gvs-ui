@@ -27,7 +27,7 @@ import gvs.business.model.IEdge;
 import gvs.business.model.IVertex;
 import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
-import gvs.business.model.tree.DummyTreeVertex;
+import gvs.business.model.tree.LeafVertex;
 import gvs.business.model.tree.TreeVertex;
 import gvs.util.FontAwesome.Glyph;
 
@@ -213,7 +213,7 @@ public class ModelBuilder {
           current.addChild(child);
         } else {
           // this is only needed for layouting
-          current.addChild(new DummyTreeVertex());
+          current.addChild(new LeafVertex());
         }
       });
       setParent(current);

@@ -21,9 +21,8 @@ public class TreeVertex extends Observable implements IVertex {
   private boolean isUserPositioned;
 
   private boolean isRoot;
+  private boolean isLeaf;
   private TreeVertex parent;
-  // capsulates values needed for layouting trees
-  private final TreeVertexLayoutValues helper;
 
   private final List<Long> childIds;
   private final List<TreeVertex> children;
@@ -37,8 +36,6 @@ public class TreeVertex extends Observable implements IVertex {
     this.style = style;
     this.isUserPositioned = isUserPositioned;
     this.icon = icon;
-    
-    this.helper = new TreeVertexLayoutValues();
 
     this.childIds = new ArrayList<>();
     this.children = new ArrayList<>();
@@ -106,14 +103,16 @@ public class TreeVertex extends Observable implements IVertex {
   public GVSStyle getStyle() {
     return style;
   }
-  
+
   @Override
   public boolean isTreeVertex() {
     return true;
   }
-
+  
+  
+  // A TreeVertex is never a leaf. Only LeafVertices are leafs.
   public boolean isLeaf() {
-    return getChildren().isEmpty();
+    return false;
   }
 
   public List<Long> getChildIds() {
@@ -146,10 +145,6 @@ public class TreeVertex extends Observable implements IVertex {
 
   public void setParent(TreeVertex parent) {
     this.parent = parent;
-  }
-
-  public TreeVertexLayoutValues getLayoutValues() {
-    return helper;
   }
 
   @Override

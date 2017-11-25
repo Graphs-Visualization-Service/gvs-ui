@@ -18,11 +18,10 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.StackPane;
 
 /**
- * A modified Progressbar that indicates a step count. E.g. 5/10. It fills it's
+ * A modified progress bar that indicates a step count. E.g. 5/10. It fills it's
  * underlying ProgressBar accordingly.
  * 
  * @author mtrentini
- *
  */
 public class StepProgressBar extends StackPane {
 
@@ -35,60 +34,54 @@ public class StepProgressBar extends StackPane {
   @FXML
   private Label totalStepLabel;
 
-  private int totalStepCount;
   private static final Logger logger = LoggerFactory
       .getLogger(StepProgressBar.class);
+
   private GuiceContext context = new GuiceContext(this,
       () -> Arrays.asList(new GuiceBaseModule()));
-  
+
   @Inject
   private FXMLLoader fxmlLoader;
 
   public StepProgressBar() {
+    logger.info("Initializing StepProgresssBar");
     context.init();
-
-   fxmlLoader.setLocation(
+    fxmlLoader.setLocation(
         getClass().getResource("/gvs/ui/view/controls/StepProgressBar.fxml"));
     try {
-
       fxmlLoader.setRoot(this);
       fxmlLoader.setController(this);
-      // set a save inital value, otherwise div by 0!
-      totalStepCount = 1;
       fxmlLoader.load();
-      currentStepProperty().addListener((observable, oldValue,
-          newValue) -> updateProgressBar(Integer.parseInt(newValue)));
-      logger.info("Initializing StepProgressBar");
     } catch (IOException e) {
       logger.error("Could not load StepProgressBar", e);
     }
+  }
 
+  @FXML
+  private void initialize() {
+    currentStepProperty().addListener((o, oldValue, newValue) -> {
+      updateProgressBar();
+    });
+  }
+
+  /**
+   * Update current progress bars.
+   */
+  private void updateProgressBar() {
+    double currentIndex = Double.parseDouble(currentStepProperty().get());
+    double totalStepCount = Double.parseDouble(totalStepProperty().get());
+    double progress = currentIndex / totalStepCount;
+    stepIndicator.progressProperty().set(progress);
+    logger.info("Update progress bar: step {} of {}", currentIndex,
+        totalStepCount);
   }
 
   public StringProperty currentStepProperty() {
     return currentStepLabel.textProperty();
   }
 
-  public String getCurrentStep() {
-    return currentStepProperty().get();
-  }
-
-  public void setCurrentStep(int step) {
-    currentStepProperty().set(step + "");
-  }
-
   public StringProperty totalStepProperty() {
     return totalStepLabel.textProperty();
-  }
-
-  public String getTotalStep() {
-    return totalStepProperty().get();
-  }
-
-  private void updateProgressBar(int step) {
-    double totalStepCount = Double.parseDouble(totalStepProperty().get());
-    double progress = ((double)step) / (double) totalStepCount;
-    stepIndicator.progressProperty().set(progress);
   }
 
 }

@@ -49,7 +49,8 @@ public class SessionViewModel implements Observer {
   private final IntegerProperty currentGraphIdProperty;
   private final IntegerProperty totalGraphCountProperty;
 
-  private static final String LAYOUT_INFO_TOOLTIP = "All nodes are user positioned.\nAuto layout not possible.";
+  private static final String LAYOUT_INFO_TOOLTIP = "All nodes are user "
+      + "positioned.\nAuto layout not possible.";
 
   private static final Logger logger = LoggerFactory
       .getLogger(SessionViewModel.class);
@@ -124,34 +125,37 @@ public class SessionViewModel implements Observer {
     });
   }
 
+  /**
+   * Update step progress bar with correct max index and correct current index.
+   * Disable step buttons correctly.
+   */
   public void updateStepProperties() {
+
     Session currentSession = sessionHolder.getCurrentSession();
 
-    Platform.runLater(() -> {
-      if (currentSession != null) {
-        int currentPosition = currentSession.getGraphHolder().getCurrentGraph()
-            .getId();
-        int maxPosition = currentSession.getTotalGraphCount();
-        totalGraphCountProperty.set(maxPosition);
-        currentGraphIdProperty.set(currentPosition);
-        if (!isReplayingProperty.get()) {
-          if (currentPosition == 1 && maxPosition == 1) {
-            disableStepButtons(true, true, true, true);
-            disableReplayButtons(true, true);
-          } else if (currentPosition <= 1) {
-            disableStepButtons(true, true, false, false);
-          } else if (currentPosition == maxPosition) {
-            disableStepButtons(false, false, true, true);
-          } else {
-            disableStepButtons(false, false, false, false);
-          }
+    if (currentSession != null) {
+
+      Graph currentGraph = currentSession.getGraphHolder().getCurrentGraph();
+
+      int maxIndex = currentSession.getTotalGraphCount();
+      totalGraphCountProperty.set(maxIndex);
+      
+      int currentIndex = currentGraph.getId();
+      currentGraphIdProperty.set(currentIndex);
+
+      if (!isReplayingProperty.get()) {
+        if (currentIndex == 1 && maxIndex == 1) {
+          disableStepButtons(true, true, true, true);
+          disableReplayButtons(true, true);
+        } else if (currentIndex <= 1) {
+          disableStepButtons(true, true, false, false);
+        } else if (currentIndex == maxIndex) {
+          disableStepButtons(false, false, true, true);
+        } else {
+          disableStepButtons(false, false, false, false);
         }
-      } else {
-        totalGraphCountProperty.set(0);
-        currentGraphIdProperty.set(0);
-        disableStepButtons(true, true, true, true);
       }
-    });
+    }
   }
 
   public void replayGraph(long timeout) {

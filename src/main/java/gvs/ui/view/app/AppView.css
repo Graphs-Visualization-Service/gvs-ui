@@ -1,4 +1,6 @@
 .root {
+	-black: #000000;
+	-white: #ffffff;
 	-grey-dark: #17181a;
 	-grey: #2f3337;
 	-grey-light: #27292d;
@@ -6,10 +8,9 @@
 	-blue-light: #25d6f5;
 	-red: #d7422c;
 	-orange: #ff8e05;
+	-yellow: #ffff00;
 	-green: #51bd84;
-	-white: #ffffff;
-	-black: #000000;
-	
+
 	-fx-base: -grey;
 	-fx-background: -grey;
     	-fx-control-inner-background: -grey;

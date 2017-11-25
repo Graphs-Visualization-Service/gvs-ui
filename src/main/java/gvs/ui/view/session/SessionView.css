@@ -13,20 +13,20 @@
 .line-standard {
 	-fx-stroke: -black;
 }
-.line-red {
-	-fx-stroke: -red;
+.line-black {
+	-fx-stroke: -black;
 }
-.line-lightred {
-	-fx-stroke: -red;
+.line-white {
+	-fx-stroke: -white;
 }
-.line-green {
-	-fx-stroke: -green;
+.line-darkgrey {
+	-fx-stroke: -grey-dark;
 }
-.line-lightgreen {
-	-fx-stroke: -green;
+.line-grey {
+	-fx-stroke: -grey;
 }
-.line-darkgreen {
-	-fx-stroke: -green;
+.line-lightgray {
+	-fx-stroke: -grey-light;
 }
 .line-blue {
 	-fx-stroke: -blue;
@@ -34,61 +34,31 @@
 .line-lightblue {
 	-fx-stroke: -blue-light;
 }
-.line-darkblue {
-	-fx-stroke: -blue;
+.line-red {
+	-fx-stroke: -red;
 }
 .line-yellow {
-	-fx-stroke: -orange;
+	-fx-stroke: -yellow;
 }
 .line-orange {
 	-fx-stroke: -orange;
 }
-.line-black {
-	-fx-stroke: -black;
-}
-.line-gray {
-	-fx-stroke: -grey-light;
-}
-.line-lightgray {
-	-fx-stroke: -grey-light;
+.line-green {
+	-fx-stroke: -green;
 }
 
 /*-- VERTEX FILL COLOR --*/
-fill-standard {
+.fill-standard {
 	-fx-fill: -black;
-}
-.fill-red {
-	-fx-fill: -red;
-}
-.fill-lightred {
-	-fx-fill: -red;
-}
-.fill-green {
-	-fx-fill: -green;
-}
-.fill-lightgreen {
-	-fx-fill: -green;
-}
-.fill-darkgreen {
-	-fx-fill: -green;
-}
-.fill-blue {
-	-fx-fill: -blue;
-}
-.fill-lightblue {
-	-fx-fill: -blue-light;
-}
-.fill-darkblue {
-	-fx-fill: -blue;
-}
-.fill-yellow {
-	-fx-fill: -orange;
-}
-.fill-orange {
-	-fx-fill: -orange;
 }
 .fill-black {
 	-fx-fill: -black;
+}
+.fill-white {
+	-fx-fill: -white;
+}
+.fill-darkgray {
+	-fx-fill: -grey-dark;
 }
 .fill-gray {
 	-fx-fill: -grey;
@@ -96,7 +66,24 @@ fill-standard {
 .fill-lightgray {
 	-fx-fill: -grey-light;
 }
-
+.fill-blue {
+	-fx-fill: -blue;
+}
+.fill-lightblue {
+	-fx-fill: -blue-light;
+}
+.fill-red {
+	-fx-fill: -red;
+}
+.fill-yellow {
+	-fx-fill: -yellow;
+}
+.fill-orange {
+	-fx-fill: -orange;
+}
+.fill-green {
+	-fx-fill: -green;
+}
 
 /*-- LINESTYLES & THICKNESS--*/
 /* cannot be in seperate classes, because thickness overrides dash-array */

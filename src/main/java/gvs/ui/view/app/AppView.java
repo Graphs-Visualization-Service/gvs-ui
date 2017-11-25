@@ -123,7 +123,7 @@ public class AppView {
     Stage stage = (Stage) rootPane.getScene().getWindow();
     fileChooser.setTitle("Load Session File");
     File file = fileChooser.showOpenDialog(stage);
-    if (file.exists()) {
+    if (file != null) {
       appViewModel.loadSession(file);
     }
   }

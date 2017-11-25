@@ -128,9 +128,9 @@ public class ApplicationController {
       sessionHolder.addSession(session);
     }
 
-    sessionHolder.setCurrentSession(session);
     session.addGraph(graph);
     session.getGraphHolder().setCurrentGraph(graph);
+    sessionHolder.setCurrentSession(session);
 
     ILayouter layouter = session.getSessionType().getLayouter();
     layouter.layout(session, true, null);

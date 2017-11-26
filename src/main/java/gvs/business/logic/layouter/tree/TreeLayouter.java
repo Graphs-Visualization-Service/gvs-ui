@@ -21,14 +21,10 @@ public class TreeLayouter implements ILayouter {
   private static final double VERTEX_HEIGHT = 12;
   private static final int VERTEX_LABEL_MARGIN = 2;
 
-  private final TreeLayouterValues values;
   private int treeHeight;
+  private TreeLayouterValues values;
   private Bounds bounds;
   private Bounds prevBounds;
-
-  public TreeLayouter() {
-    this.values = new TreeLayouterValues();
-  }
 
   @Override
   public void layout(Session session, boolean useRandomLayout,
@@ -45,13 +41,23 @@ public class TreeLayouter implements ILayouter {
     // TODO: support multiple roots
     roots.forEach(r -> {
       this.bounds = new Bounds();
+      this.values = new TreeLayouterValues();
       treeHeight = computeHeight(r);
       firstWalk(r, null);
       secondWalk(r, -values.getPreliminary(r), 0, 0);
+      setFinalPosition();
       this.prevBounds = bounds;
+      updateBounds();
     });
+  }
 
-    graph.getVertices().forEach(vertex -> setFinalPosition());
+  private void updateBounds() {
+    for (Entry<TreeVertex, NormalizedPosition> entry : values.getPositions()
+        .entrySet()) {
+      TreeVertex vertex = entry.getKey();
+      prevBounds.updateBounds(vertex, vertex.getXPosition(),
+          vertex.getYPosition());
+    }
   }
 
   /**

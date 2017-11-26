@@ -1,6 +1,5 @@
 package gvs.business.logic;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -11,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
-import gvs.access.Persistor;
 import gvs.business.model.Graph;
 import gvs.business.model.GraphHolder;
 import gvs.util.Action;

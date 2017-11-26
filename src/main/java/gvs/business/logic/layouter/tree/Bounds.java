@@ -1,7 +1,6 @@
 package gvs.business.logic.layouter.tree;
 
 import gvs.business.model.tree.TreeVertex;
-import javafx.geometry.Rectangle2D;
 
 public class Bounds {
   private double boundsLeft = Double.MAX_VALUE;

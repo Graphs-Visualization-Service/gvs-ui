@@ -71,11 +71,13 @@ public class GraphLayouter implements Tickable, ILayouter {
       Action callback) {
 
     Graph firstGraph = session.getGraphs().get(0);
-    layout(firstGraph, useRandomLayout, callback);
+    if (firstGraph != null) {
+      layout(firstGraph, useRandomLayout, callback);
+      firstGraph.setLayouted(true);
 
-    for (int i = 1; i < session.getGraphs().size(); i++) {
-      Graph targetGraph = session.getGraphs().get(i);
-      takeOverVertexPositions(firstGraph, targetGraph);
+      session.getGraphs().stream().filter(g -> g.isLayoutable()).forEach(g -> {
+        takeOverVertexPositions(firstGraph, g);
+      });
     }
   }
 
@@ -92,9 +94,10 @@ public class GraphLayouter implements Tickable, ILayouter {
   @Override
   public synchronized void layout(Graph graph, boolean useRandomLayout,
       Action callback) {
-    logger.info("Received new data to layout");
 
     if (graph.isLayoutable()) {
+
+      logger.info("Compute layout for graph {}", graph.getId());
 
       while (currentTicker != null) {
         try {
@@ -136,10 +139,11 @@ public class GraphLayouter implements Tickable, ILayouter {
   public synchronized void takeOverVertexPositions(Graph sourceGraph,
       Graph targetGraph) {
 
+    logger.info("Take over vertex position from graph {} to {}",
+        sourceGraph.getId(), targetGraph.getId());
+
     Map<Long, IVertex> formerVertices = sourceGraph.getVertices().stream()
         .collect(Collectors.toMap(IVertex::getId, Function.identity()));
-
-    boolean verticesToLayout = false;
 
     for (IVertex currentVertex : targetGraph.getVertices()) {
       IVertex formerVertex = formerVertices.get(currentVertex.getId());
@@ -147,13 +151,7 @@ public class GraphLayouter implements Tickable, ILayouter {
         currentVertex.setXPosition(formerVertex.getXPosition());
         currentVertex.setYPosition(formerVertex.getYPosition());
         currentVertex.setUserPositioned(formerVertex.isUserPositioned());
-      } else {
-        verticesToLayout = true;
       }
-    }
-
-    if (verticesToLayout) {
-      layout(targetGraph, true, null);
     }
   }
 

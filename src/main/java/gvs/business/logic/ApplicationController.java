@@ -127,12 +127,13 @@ public class ApplicationController {
           sessionName);
       sessionHolder.addSession(session);
     }
-
-    sessionHolder.setCurrentSession(session);
+    
     session.addGraph(graph);
     session.getGraphHolder().setCurrentGraph(graph);
-
+    
     ILayouter layouter = session.getSessionType().getLayouter();
     layouter.layout(session, true, null);
+
+    sessionHolder.setCurrentSession(session);
   }
 }

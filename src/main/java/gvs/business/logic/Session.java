@@ -137,10 +137,11 @@ public class Session {
   }
 
   public void changeCurrentGraphToFirst() {
-    if (!getGraphs().isEmpty()) {
-      Graph firstGraph = getGraphs().get(0);
-      graphHolder.setCurrentGraph(firstGraph);
-    }
+    Graph currentGraph = graphHolder.getCurrentGraph();
+    Graph firstGraph = getGraphs().get(0);
+    getSessionType().getLayouter().takeOverVertexPositions(currentGraph,
+        firstGraph);
+    graphHolder.setCurrentGraph(firstGraph);
   }
 
   public void changeCurrentGraphToLast() {

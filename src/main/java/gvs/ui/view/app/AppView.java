@@ -1,7 +1,6 @@
 package gvs.ui.view.app;
 
 import java.io.File;
-import java.io.IOException;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -124,7 +123,7 @@ public class AppView {
     Stage stage = (Stage) rootPane.getScene().getWindow();
     fileChooser.setTitle("Load Session File");
     File file = fileChooser.showOpenDialog(stage);
-    if (file.exists()) {
+    if (file != null) {
       appViewModel.loadSession(file);
     }
   }

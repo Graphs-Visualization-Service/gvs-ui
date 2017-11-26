@@ -131,7 +131,7 @@ public class AppViewModel implements Observer {
     // clicking cancel sets file to null
     if (file != null) {
       logger.info("Saving session to file...");
-      sessionHolder.getCurrentSession().saveSession(file);
+      appController.saveSession(sessionHolder.getCurrentSession(),file);
     }
   }
 

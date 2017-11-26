@@ -75,6 +75,7 @@ public class AppView {
     chooseSessionBox.valueProperty()
         .bindBidirectional(appViewModel.getCurrentSessionName());
   }
+
   /**
    * Set gvs file extension to file chooser
    */
@@ -123,6 +124,7 @@ public class AppView {
     Stage stage = (Stage) rootPane.getScene().getWindow();
     fileChooser.setTitle("Load Session File");
     File file = fileChooser.showOpenDialog(stage);
+    // don't change this! file is null, when cancel is clicked!
     if (file != null) {
       appViewModel.loadSession(file);
     }

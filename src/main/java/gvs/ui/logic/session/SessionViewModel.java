@@ -137,7 +137,7 @@ public class SessionViewModel implements Observer {
 
       int maxIndex = currentSession.getTotalGraphCount();
       totalGraphCountProperty.set(maxIndex);
-      
+
       int currentIndex = currentGraph.getId();
       currentGraphIdProperty.set(currentIndex);
 
@@ -193,10 +193,12 @@ public class SessionViewModel implements Observer {
     disableAllButtons(true);
     Session currentSession = sessionHolder.getCurrentSession();
     Graph currentGraph = currentSession.getGraphHolder().getCurrentGraph();
-    currentGraph.setLayouted(false);
 
-    if (currentSession.getSessionType() instanceof GraphSessionType
-        && currentGraph.isLayoutable()) {
+    // reset
+    currentGraph.setLayouted(false);
+    currentGraph.getVertices().forEach(v -> v.setUserPositioned(false));
+
+    if (currentSession.getSessionType() instanceof GraphSessionType) {
       ILayouter layouter = currentSession.getSessionType().getLayouter();
       layouter.layout(currentGraph, useRandomLayout, this::finishAutolayout);
     } else {

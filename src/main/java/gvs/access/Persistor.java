@@ -312,6 +312,9 @@ public class Persistor {
         String snapShotDescription = graphElement.element(LABEL).getText();
         Graph newGraph = new Graph(snapShotDescription, vertices.values(),
             edges);
+        if (vertices.values().stream().anyMatch(v -> v.isUserPositioned())) {
+          newGraph.setLayouted(true);
+        }
 
         session.addGraph(newGraph);
       }
@@ -413,12 +416,10 @@ public class Persistor {
   private IVertex loadVertex(Element vertexElement) {
     double xPos = 0;
     double yPos = 0;
-    if (vertexElement.getName().equals(RELATIVVERTEX)) {
-      Element xPositionElement = vertexElement.element(XPOS);
-      xPos = Double.parseDouble(xPositionElement.getText());
-      Element yPositionElement = vertexElement.element(YPOS);
-      yPos = Double.parseDouble(yPositionElement.getText());
-    }
+    Element xPositionElement = vertexElement.element(XPOS);
+    xPos = Double.parseDouble(xPositionElement.getText());
+    Element yPositionElement = vertexElement.element(YPOS);
+    yPos = Double.parseDouble(yPositionElement.getText());
 
     Element labelElement = vertexElement.element(LABEL);
     String label = labelElement.getText();

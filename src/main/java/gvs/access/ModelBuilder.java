@@ -146,6 +146,9 @@ public class ModelBuilder {
     // GVS 3.0 use snapshot description of input connection
     String snapshotDescription = new String();
     Graph newGraph = new Graph(snapshotDescription, vertices.values(), edges);
+    if (vertices.values().stream().anyMatch(v -> v.isUserPositioned())) {
+      newGraph.setLayouted(true);
+    }
 
     logger.debug("Finish build graph from XML");
     long sessionId = Long.parseLong(graphElement.attributeValue(ATTRIBUTEID));

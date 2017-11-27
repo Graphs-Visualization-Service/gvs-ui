@@ -56,6 +56,9 @@ public class StepProgressBar extends StackPane {
     currentStepProperty().addListener((o, oldValue, newValue) -> {
       updateProgressBar();
     });
+    totalStepProperty().addListener((o, oldValue, newValue) -> {
+      updateProgressBar();
+    });
   }
 
   /**
@@ -64,7 +67,10 @@ public class StepProgressBar extends StackPane {
   private void updateProgressBar() {
     double currentIndex = Double.parseDouble(currentStepProperty().get());
     double totalStepCount = Double.parseDouble(totalStepProperty().get());
-    double progress = currentIndex / totalStepCount;
+    double progress = 1;
+    if (totalStepCount != 0) {
+      progress = currentIndex / totalStepCount;
+    }
     stepIndicator.progressProperty().set(progress);
     logger.info("Update progress bar: step {} of {}", currentIndex,
         totalStepCount);

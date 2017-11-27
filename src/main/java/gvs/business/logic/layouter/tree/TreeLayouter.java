@@ -72,6 +72,9 @@ public class TreeLayouter implements ILayouter {
       NormalizedPosition pos = entry.getValue();
       double width = vertex.getLabel().length();
       double x = pos.getX() - width / 2;
+      if (prevBounds != null) {
+        x += prevBounds.getBoundsRight();
+      }
       double y = pos.getY() - VERTEX_HEIGHT / 2;
       vertex.setXPosition(x);
       vertex.setYPosition(y);
@@ -313,12 +316,7 @@ public class TreeLayouter implements ILayouter {
    */
   private void secondWalk(TreeVertex v, double modSum, int level,
       double levelStart) {
-    // account for neighbouring forest
-    double prevBoundRight = 0;
-    if (prevBounds != null) {
-      prevBoundRight = prevBounds.getBoundsRight() + GAP_BETWEEN_FORESTS;
-    }
-    double x = values.getPreliminary(v) + modSum + prevBoundRight;
+    double x = values.getPreliminary(v) + modSum;
     double y = levelStart + (VERTEX_HEIGHT / 2);
     values.getPositions().put(v, new NormalizedPosition(x, y, bounds));
 

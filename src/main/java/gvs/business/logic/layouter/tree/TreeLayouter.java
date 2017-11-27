@@ -1,6 +1,5 @@
 package gvs.business.logic.layouter.tree;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -85,15 +84,6 @@ public class TreeLayouter implements ILayouter {
       height = Math.max(height, 1 + computeHeight(child));
     }
     return height;
-  }
-
-  /**
-   * Returns the number of levels of the tree i.e. its height.
-   * 
-   * @return treeHeight
-   */
-  public int getTreeHeight() {
-    return treeHeight;
   }
 
   @Override

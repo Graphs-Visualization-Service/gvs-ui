@@ -37,15 +37,9 @@ public class StepProgressBar extends StackPane {
   private static final Logger logger = LoggerFactory
       .getLogger(StepProgressBar.class);
 
-  private GuiceContext context = new GuiceContext(this,
-      () -> Arrays.asList(new GuiceBaseModule()));
-
   @Inject
-  private FXMLLoader fxmlLoader;
-
-  public StepProgressBar() {
+  public StepProgressBar(FXMLLoader fxmlLoader) {
     logger.info("Initializing StepProgresssBar");
-    context.init();
     fxmlLoader.setLocation(
         getClass().getResource("/gvs/ui/view/controls/StepProgressBar.fxml"));
     try {

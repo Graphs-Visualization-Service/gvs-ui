@@ -71,12 +71,10 @@ public class SessionView {
   @FXML
   private TextArea snapshotDescription;
 
-  private StepProgressBar stepProgressBar;
-
   private final Tooltip layoutTooltip;
-
   private final GraphViewModel graphViewModel;
   private final SessionViewModel sessionViewModel;
+  private final StepProgressBar progressBarComponent;
 
   private static final int INITIAL_CLIP_DIMENSION = 800;
   private static final int ONE_SECOND_MS = 1000;
@@ -100,11 +98,12 @@ public class SessionView {
 
   @Inject
   public SessionView(GraphViewModel graphViewModel,
-      SessionViewModel sessionViewModel) {
+      SessionViewModel sessionViewModel, StepProgressBar progressBarComponent) {
 
     logger.info("Initiating SessionView...");
     this.graphViewModel = graphViewModel;
     this.sessionViewModel = sessionViewModel;
+    this.progressBarComponent = progressBarComponent;
     this.layoutTooltip = new Tooltip();
   }
 
@@ -142,11 +141,11 @@ public class SessionView {
   private void layoutTooltipListener(
       ObservableValue<? extends String> observable, String oldValue,
       String newValue) {
-    
+
     if (oldValue != null && newValue != null) {
       if (!DEFAULT_LAYOUT_TOOLTIP.equals(newValue)) {
         layoutTooltip.setAutoHide(true);
-        
+
         double xPos = autoLayoutBtn.getLayoutX() - 20;
         double yPos = autoLayoutBtn.getLayoutY() + 5;
         Point2D point = autoLayoutBtn.localToScreen(xPos, yPos);
@@ -175,16 +174,15 @@ public class SessionView {
   }
 
   private void initializeStepIndicator() {
-    stepProgressBar = new StepProgressBar();
-    leftPanel.getChildren().add(stepProgressBar);
+    leftPanel.getChildren().add(progressBarComponent);
     double margin = 5.0;
-    AnchorPane.setBottomAnchor(stepProgressBar, margin);
-    AnchorPane.setLeftAnchor(stepProgressBar, margin);
-    AnchorPane.setRightAnchor(stepProgressBar, margin);
+    AnchorPane.setBottomAnchor(progressBarComponent, margin);
+    AnchorPane.setLeftAnchor(progressBarComponent, margin);
+    AnchorPane.setRightAnchor(progressBarComponent, margin);
 
-    stepProgressBar.totalStepProperty()
+    progressBarComponent.totalStepProperty()
         .bind(Bindings.convert(sessionViewModel.totalGraphCountProperty()));
-    stepProgressBar.currentStepProperty()
+    progressBarComponent.currentStepProperty()
         .bind(Bindings.convert(sessionViewModel.currentGraphIdProperty()));
   }
 

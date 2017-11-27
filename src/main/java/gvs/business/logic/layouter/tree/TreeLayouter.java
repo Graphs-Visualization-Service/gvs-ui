@@ -48,6 +48,8 @@ public class TreeLayouter implements ILayouter {
       this.prevBounds = bounds;
       updateBounds();
     });
+
+    prevBounds = new Bounds(); // reset bounds for next tree
   }
 
   private void updateBounds() {
@@ -73,7 +75,7 @@ public class TreeLayouter implements ILayouter {
       double width = vertex.getLabel().length();
       double x = pos.getX() - width / 2;
       if (prevBounds != null) {
-        x += prevBounds.getBoundsRight();
+        x += prevBounds.getBoundsRight() + GAP_BETWEEN_FORESTS;
       }
       double y = pos.getY() - VERTEX_HEIGHT / 2;
       vertex.setXPosition(x);

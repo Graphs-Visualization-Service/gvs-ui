@@ -14,9 +14,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane fx:id="rootPane" prefHeight="600" prefWidth="800"
-	stylesheets="@AppView.css" xmlns="http://javafx.com/javafx/8.0.111"
-	xmlns:fx="http://javafx.com/fxml/1" fx:controller="gvs.ui.view.app.AppView">
+<BorderPane fx:id="rootPane" stylesheets="@AppView.css"
+	xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="gvs.ui.view.app.AppView">
 	<top>
 		<GridPane GridPane.rowIndex="1" styleClass="toolbar">
 			<padding>
@@ -51,7 +51,8 @@
 		</GridPane>
 	</top>
 	<center>
-		<AnchorPane fx:id="sessionContainer" BorderPane.alignment="CENTER" styleClass="logo-bg">
+		<AnchorPane fx:id="sessionContainer" BorderPane.alignment="CENTER"
+			styleClass="logo-bg">
 			<children>
 				<fx:include fx:id="sessionView" source="../session/SessionView.fxml"
 					AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"

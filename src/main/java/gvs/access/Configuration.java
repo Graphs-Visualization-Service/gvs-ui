@@ -20,6 +20,11 @@ import com.google.inject.Singleton;
 @Singleton
 public class Configuration {
 
+  // UI
+  private static final int WINDOW_WIDTH = 800;
+  private static final int WINDOW_HEIGHT = 600;
+  private static final int CONTENT_PANE_HEIGHT = 400;
+
   // Document
   private static final String LAYOUTDELAY = "LayoutDelay";
 
@@ -52,7 +57,7 @@ public class Configuration {
 
     try {
       logger.info("Build configuration");
-      
+
       Document configurationXML = reader.read(config);
       Element docRoot = configurationXML.getRootElement();
       Element eServer = docRoot.element(SERVER);
@@ -66,7 +71,6 @@ public class Configuration {
       System.exit(0);
     }
   }
-  
 
   /**
    * Load Layout Delay.
@@ -151,5 +155,17 @@ public class Configuration {
    */
   public int getLayoutDelay() {
     return layoutDelay;
+  }
+
+  public static int getContentPaneHeight() {
+    return CONTENT_PANE_HEIGHT;
+  }
+
+  public static int getWindowWidth() {
+    return WINDOW_WIDTH;
+  }
+  
+  public static int getWindowHeight() {
+    return WINDOW_HEIGHT;
   }
 }

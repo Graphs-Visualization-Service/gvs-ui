@@ -9,6 +9,7 @@ import com.google.inject.Singleton;
 import com.sun.prism.paint.Color;
 
 import gvs.ScalablePane;
+import gvs.access.Configuration;
 import gvs.ui.logic.session.SessionViewModel;
 import gvs.ui.model.GraphViewModel;
 import gvs.ui.view.controls.StepProgressBar;
@@ -81,7 +82,6 @@ public class SessionView {
   private final SessionViewModel sessionViewModel;
   private final StepProgressBar progressBarComponent;
 
-  private static final int INITIAL_CLIP_DIMENSION = 800;
   private static final int ONE_SECOND_MS = 1000;
   private static final double SLIDER_MIN = 0.0;
   private static final double SLIDER_DEFAULT = 1.0;
@@ -170,8 +170,8 @@ public class SessionView {
    */
   private void clipRootPane() {
     final Rectangle clip = new Rectangle();
-    clip.setWidth(INITIAL_CLIP_DIMENSION);
-    clip.setHeight(INITIAL_CLIP_DIMENSION);
+    clip.setWidth(Configuration.getWindowWidth());
+    clip.setHeight(Configuration.getContentPaneHeight());
     sessionRoot.setClip(clip);
 
     sessionRoot.layoutBoundsProperty().addListener((ov, oldValue, newValue) -> {

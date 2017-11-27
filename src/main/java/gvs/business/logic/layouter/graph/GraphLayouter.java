@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import gvs.access.Configuration;
 import gvs.business.logic.Session;
 import gvs.business.logic.layouter.ILayouter;
 import gvs.business.model.Graph;
@@ -50,9 +51,6 @@ public class GraphLayouter implements Tickable, ILayouter {
   private static final int TICK_RATE_PER_SEC = 26;
   private static final int MAX_LAYOUT_DURATION_MS = 10_000;
 
-  private static final int DEFAULT_AREA_HEIGHT = 450;
-  private static final int DEFAULT_AREA_WIDTH = 800;
-
   private static final int SEED = 4000;
 
   private static final Logger logger = LoggerFactory
@@ -61,8 +59,9 @@ public class GraphLayouter implements Tickable, ILayouter {
   @Inject
   public GraphLayouter(AreaTickerFactory tickerFactory) {
     this.tickerFactory = tickerFactory;
-    AreaDimension dimension = new AreaDimension(DEFAULT_AREA_WIDTH,
-        DEFAULT_AREA_HEIGHT);
+    AreaDimension dimension = new AreaDimension(
+        Configuration.getWindowWidth(),
+        Configuration.getContentPaneHeight());
     this.area = new Area(dimension);
   }
 

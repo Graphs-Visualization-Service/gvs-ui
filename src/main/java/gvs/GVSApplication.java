@@ -10,6 +10,7 @@ import com.gluonhq.ignite.guice.GuiceContext;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import gvs.access.Configuration;
 import gvs.access.SocketServer;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -44,8 +45,6 @@ public class GVSApplication extends Application {
       .getLogger(GVSApplication.class);
 
   private static final String APP_NAME = "Graph Visualization Service";
-  private static final int MIN_WIDTH = 800;
-  private static final int MIN_HEIGHT = 600;
 
   /**
    * Main method.
@@ -82,8 +81,8 @@ public class GVSApplication extends Application {
 
   public void setUpFrame(Stage mainStage) {
     primaryStage = mainStage;
-    primaryStage.setMinHeight(MIN_HEIGHT);
-    primaryStage.setMinWidth(MIN_WIDTH);
+    primaryStage.setMinHeight(Configuration.getWindowHeight());
+    primaryStage.setMinWidth(Configuration.getWindowWidth());
     primaryStage.setTitle(APP_NAME);
     primaryStage.getIcons().add(new Image(
         getClass().getClassLoader().getResourceAsStream("images/logo.png")));

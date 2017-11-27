@@ -258,10 +258,10 @@ public class TreeLayouter implements ILayouter {
     double currentShift = 0;
     double currentChange = 0;
     for (TreeVertex w : getChildrenReverse(v)) {
-      currentChange = currentChange + values.getChange(w);
+      currentChange += values.getChange(w);
       values.setPreliminary(w, values.getPreliminary(w) + currentShift);
       values.setMod(w, values.getMod(w) + currentShift);
-      currentShift = currentShift + values.getShift(w) + currentChange;
+      currentShift += values.getShift(w) + currentChange;
     }
   }
 
@@ -293,6 +293,7 @@ public class TreeLayouter implements ILayouter {
           .getPreliminary(v.getChildren().get(v.getChildren().size() - 1)))
           / 2.0;
       if (leftSibling != null) {
+        values.setPreliminary(v, values.getPreliminary(leftSibling) + getDistance(v, leftSibling));
         values.setMod(v, values.getPreliminary(v) - midpoint);
 
       } else {

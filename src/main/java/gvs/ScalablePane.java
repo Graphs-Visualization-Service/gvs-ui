@@ -105,7 +105,7 @@ public class ScalablePane extends Pane {
    */
   public final void setContentPane(Pane contentPane) {
     contentPaneProperty.setValue(contentPane);
-    contentPane.setManaged(false);
+    contentPane.setManaged(true);
     initContentPaneListener();
     // contentPane.setStyle("-fx-border-color: rgb(0,0,0);");
 
@@ -113,6 +113,7 @@ public class ScalablePane extends Pane {
     getContentScaleTransform().setPivotX(0);
     getContentScaleTransform().setPivotY(0);
     getContentScaleTransform().setPivotZ(0);
+
     getContentPane().getTransforms().add(getContentScaleTransform());
 
     getChildren().add(contentPane);
@@ -176,24 +177,18 @@ public class ScalablePane extends Pane {
       getContentScaleTransform().setX(scale);
       getContentScaleTransform().setY(scale);
 
-      getContentPane().resize(contentWidth / scale, contentHeight / scale);
-
       // System.out.println("scale: " + scale);
     } else {
       getContentScaleTransform().setX(contentScaleWidth);
       getContentScaleTransform().setY(contentScaleHeight);
-
-      getContentPane().resize(contentWidth / contentScaleWidth,
-          contentHeight / contentScaleHeight);
     }
 
+    getContentPane().resize(contentWidth / getContentScaleTransform().getX(),
+        contentHeight / getContentScaleTransform().getY());
+
     getContentPane().relocate(
-        (contentWidth
-            - getContentPane().getWidth())
-            / 2 + getInsets().getLeft(),
-        (contentHeight
-            - getContentPane().getHeight() * getContentScaleTransform().getY())
-            / 2 + getInsets().getTop());
+        (contentWidth - realWidth * getContentScaleTransform().getX()) / 2,
+        (contentHeight - realHeigh * getContentScaleTransform().getY()) / 2);
 
   }
 
@@ -219,7 +214,6 @@ public class ScalablePane extends Pane {
 
   @Override
   protected double computePrefWidth(double d) {
-
     double result = 1;
 
     return result;
@@ -227,7 +221,6 @@ public class ScalablePane extends Pane {
 
   @Override
   protected double computePrefHeight(double d) {
-
     double result = 1;
 
     return result;

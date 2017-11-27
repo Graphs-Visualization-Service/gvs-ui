@@ -20,7 +20,6 @@ public class TreeLayouter implements ILayouter {
   private static final double VERTEX_HEIGHT = 12;
   private static final int VERTEX_LABEL_MARGIN = 2;
 
-  private int treeHeight;
   private TreeLayouterValues values;
   private Bounds bounds;
   private Bounds prevBounds;
@@ -41,7 +40,6 @@ public class TreeLayouter implements ILayouter {
     roots.forEach(r -> {
       this.bounds = new Bounds();
       this.values = new TreeLayouterValues();
-      treeHeight = computeHeight(r);
       firstWalk(r, null);
       secondWalk(r, -values.getPreliminary(r), 0, 0);
       setFinalPosition();
@@ -81,14 +79,6 @@ public class TreeLayouter implements ILayouter {
       vertex.setXPosition(x);
       vertex.setYPosition(y);
     }
-  }
-
-  private int computeHeight(TreeVertex vertex) {
-    int height = 0;
-    for (TreeVertex child : vertex.getChildren()) {
-      height = Math.max(height, 1 + computeHeight(child));
-    }
-    return height;
   }
 
   @Override
@@ -325,7 +315,7 @@ public class TreeLayouter implements ILayouter {
     bounds.updateBounds(v, x, y);
 
     if (!v.isLeaf()) {
-      double nextLevelStart = levelStart + (VERTEX_HEIGHT + GAP_BETWEEN_LEVEL);
+      double nextLevelStart = levelStart + VERTEX_HEIGHT + GAP_BETWEEN_LEVEL;
       for (TreeVertex w : v.getChildren()) {
         secondWalk(w, modSum + values.getMod(v), level + 1, nextLevelStart);
       }

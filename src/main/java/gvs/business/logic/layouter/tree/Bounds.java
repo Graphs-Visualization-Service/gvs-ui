@@ -3,13 +3,12 @@ package gvs.business.logic.layouter.tree;
 import gvs.business.model.tree.TreeVertex;
 
 public class Bounds {
-  private double boundsLeft = Double.MAX_VALUE;
-  private double boundsRight = Double.MIN_VALUE;
   private double boundsTop = Double.MAX_VALUE;
+  private double boundsRight = Double.MIN_VALUE;
   private double boundsBottom = Double.MIN_VALUE;
+  private double boundsLeft = Double.MAX_VALUE;
 
-  public void updateBounds(TreeVertex node, double centerX,
-      double centerY) {
+  public void updateBounds(TreeVertex node, double centerX, double centerY) {
     double width = node.getLabel().length();
     double height = 12;
     double left = centerX - width / 2;

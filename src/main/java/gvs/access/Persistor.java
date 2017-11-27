@@ -368,7 +368,7 @@ public class Persistor {
           current.addChild(child);
         } else {
           // this is only needed for layouting
-          current.addChild(new LeafVertex());
+          current.addChild(new LeafVertex(current.getLabel()));
         }
       });
       setParent(current);

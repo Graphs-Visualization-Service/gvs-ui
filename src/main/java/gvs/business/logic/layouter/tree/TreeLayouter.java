@@ -70,8 +70,8 @@ public class TreeLayouter implements ILayouter {
         .entrySet()) {
       TreeVertex vertex = entry.getKey();
       NormalizedPosition pos = entry.getValue();
-      double w = vertex.getLabel().length();
-      double x = pos.getX() - w / 2;
+      double width = vertex.getLabel().length();
+      double x = pos.getX() - width / 2;
       double y = pos.getY() - VERTEX_HEIGHT / 2;
       vertex.setXPosition(x);
       vertex.setYPosition(y);
@@ -86,26 +86,14 @@ public class TreeLayouter implements ILayouter {
     return height;
   }
 
-  /**
-   * Returns the number of levels of the tree i.e. its height.
-   * 
-   * @return treeHeight
-   */
-  public int getTreeHeight() {
-    return treeHeight;
-  }
-
   @Override
   public void takeOverVertexPositions(Graph source, Graph target) {
     // Do nothing. Only lrelevant for graphs
   }
 
   /**
-   * The distance of two vertices is the distance of the centers of both
-   * vertices.
-   * <p>
-   * I.e. the distance includes the gap between the vertices and half of the
-   * sizes of the vertices.
+   * The distance between two vertices includes the gap between the vertices and
+   * half of the sizes of the vertices.
    * 
    * @param v
    * @param w
@@ -146,10 +134,10 @@ public class TreeLayouter implements ILayouter {
     return v.getChildren().get(v.getChildren().size() - 1);
   }
 
-  private TreeVertex ancestor(TreeVertex insideLeftVertex, TreeVertex v,
-      TreeVertex parentOfV, TreeVertex defaultAncestor) {
+  private TreeVertex ancestor(TreeVertex insideLeftVertex, TreeVertex parent,
+      TreeVertex defaultAncestor) {
     TreeVertex ancestorVertex = values.getAncestor(insideLeftVertex);
-    return isChildOfParent(ancestorVertex, parentOfV) ? ancestorVertex
+    return isChildOfParent(ancestorVertex, parent) ? ancestorVertex
         : defaultAncestor;
   }
 
@@ -226,8 +214,8 @@ public class TreeLayouter implements ILayouter {
           + getDistance(insideLeftVertex, insideRightVertex);
 
       if (currentShift > 0) {
-        moveSubtree(ancestor(insideLeftVertex, v, parentOfV, defaultAncestor),
-            v, parentOfV, currentShift);
+        moveSubtree(ancestor(insideLeftVertex, parentOfV, defaultAncestor), v,
+            parentOfV, currentShift);
         insideRightModSum = insideRightModSum + currentShift;
         outsideRightModSum = outsideRightModSum + currentShift;
       }
@@ -267,10 +255,10 @@ public class TreeLayouter implements ILayouter {
     double currentShift = 0;
     double currentChange = 0;
     for (TreeVertex w : getChildrenReverse(v)) {
-      currentChange = currentChange + values.getChange(w);
+      currentChange += values.getChange(w);
       values.setPreliminary(w, values.getPreliminary(w) + currentShift);
       values.setMod(w, values.getMod(w) + currentShift);
-      currentShift = currentShift + values.getShift(w) + currentChange;
+      currentShift += values.getShift(w) + currentChange;
     }
   }
 
@@ -302,6 +290,8 @@ public class TreeLayouter implements ILayouter {
           .getPreliminary(v.getChildren().get(v.getChildren().size() - 1)))
           / 2.0;
       if (leftSibling != null) {
+        values.setPreliminary(v,
+            values.getPreliminary(leftSibling) + getDistance(v, leftSibling));
         values.setMod(v, values.getPreliminary(v) - midpoint);
 
       } else {

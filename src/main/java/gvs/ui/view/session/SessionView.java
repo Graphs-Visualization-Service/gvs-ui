@@ -170,8 +170,8 @@ public class SessionView {
    */
   private void clipRootPane() {
     final Rectangle clip = new Rectangle();
-    clip.setWidth(Configuration.getWindowWidth());
-    clip.setHeight(Configuration.getContentPaneHeight());
+    clip.setWidth(graphPane.getWidth());
+    clip.setHeight(graphPane.getHeight());
     sessionRoot.setClip(clip);
 
     sessionRoot.layoutBoundsProperty().addListener((ov, oldValue, newValue) -> {

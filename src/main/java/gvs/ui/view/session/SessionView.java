@@ -207,26 +207,26 @@ public class SessionView {
 
   private void initializeButtons() {
     setButtonIcons();
-    bindButtonDisable();
+    bindDisableProperties();
   }
 
-  private void bindButtonDisable() {
+  private void bindDisableProperties() {
     firstBtn.disableProperty()
-        .bindBidirectional(sessionViewModel.firstBtnDisableProperty());
+        .bind(sessionViewModel.firstBtnDisableProperty());
     lastBtn.disableProperty()
-        .bindBidirectional(sessionViewModel.lastBtnDisableProperty());
+        .bind(sessionViewModel.lastBtnDisableProperty());
     nextBtn.disableProperty()
-        .bindBidirectional(sessionViewModel.nextBtnDisableProperty());
+        .bind(sessionViewModel.nextBtnDisableProperty());
     prevBtn.disableProperty()
-        .bindBidirectional(sessionViewModel.prevBtnDisableProperty());
+        .bind(sessionViewModel.prevBtnDisableProperty());
 
     replayBtn.disableProperty()
-        .bindBidirectional(sessionViewModel.replayBtnDisableProperty());
+        .bind(sessionViewModel.replayBtnDisableProperty());
     cancelReplayBtn.disableProperty()
-        .bindBidirectional(sessionViewModel.cancelReplayBtnDisableProperty());
-
+        .bind(sessionViewModel.cancelReplayBtnDisableProperty());
+    speedSlider.disableProperty().bind(sessionViewModel.speedSliderDisableProperty());
     autoLayoutBtn.disableProperty()
-        .bindBidirectional(sessionViewModel.autoLayoutBtnDisableProperty());
+        .bind(sessionViewModel.autoLayoutBtnDisableProperty());
   }
 
   private void bindReplayIcons() {

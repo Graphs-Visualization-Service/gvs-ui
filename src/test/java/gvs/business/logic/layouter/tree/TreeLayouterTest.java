@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import gvs.business.model.Graph;
 import gvs.business.model.IEdge;
@@ -30,7 +31,8 @@ class TreeLayouterTest {
 
   @Test
   void testLayoutGraph() {
-    buildTree();
+    TreeVertex root = buildTree();
+    root.setRoot(true);
     layouter.layout(tree, false, null);
     Map<Long, TreeVertex> layoutedVertices = new HashMap<>();
     tree.getVertices()
@@ -44,9 +46,17 @@ class TreeLayouterTest {
         - layoutedVertices.get(5L).getXPosition() > 2);
   }
 
-  private void buildTree() {
+  @Test
+  void testLayoutWithNoRoots() {
+    buildTree();
+    Executable layoutTreeWithoutRoot = () -> layouter.layout(tree, false, null);
+    assertThrows(IllegalArgumentException.class, layoutTreeWithoutRoot);
+    assertTrue(tree.getVertices().stream()
+        .allMatch(v -> v.getXPosition() == 0 && v.getYPosition() == 0));
+  }
+
+  private TreeVertex buildTree() {
     TreeVertex one = new TreeVertex(1, "1", null, false, null);
-    one.setRoot(true);
     TreeVertex two = new TreeVertex(2, "2", null, false, null);
     TreeVertex three = new TreeVertex(3, "3", null, false, null);
     TreeVertex four = new TreeVertex(4, "4", null, false, null);
@@ -72,6 +82,7 @@ class TreeLayouterTest {
     setParentChildRelations(four, l4);
     setParentChildRelations(five, l5);
     setParentChildRelations(five, l6);
+    return one;
   }
 
   private void setParentChildRelations(TreeVertex parent, TreeVertex child) {

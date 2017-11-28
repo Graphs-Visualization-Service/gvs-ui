@@ -38,6 +38,10 @@ public class TreeLayouter implements ILayouter {
         .map(v -> (TreeVertex) v).filter(v -> v.isRoot())
         .collect(Collectors.toList());
 
+    if (roots.isEmpty()) {
+      throw new IllegalArgumentException(
+          "No Root found. Check ModelBuilder and Persistor!");
+    }
     // TODO: support multiple roots
     roots.forEach(r -> {
       this.bounds = new Bounds();

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import gvs.ScalablePane;
 import gvs.business.model.Graph;
 import gvs.business.model.GraphHolder;
 import gvs.business.model.IEdge;
@@ -23,7 +24,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
-import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
  * Represents one snapshot of a graph visualization. Observes the
@@ -36,7 +36,7 @@ import jfxtras.labs.scene.layout.ScalableContentPane;
 public class GraphViewModel extends Observable implements Observer {
 
   private GraphHolder graphHolder;
-  private ScalableContentPane graphPane;
+  private ScalablePane graphPane;
 
   private final StringProperty snapshotDescriptionProperty;
 
@@ -91,6 +91,7 @@ public class GraphViewModel extends Observable implements Observer {
         Graph currentGraph = graphHolder.getCurrentGraph();
         draw(currentGraph);
         sessionViewModel.updateButtonStates();
+        graphPane.requestScale();
       } else {
         logger.warn("GraphPane has not been set before drawing!");
       }
@@ -153,7 +154,7 @@ public class GraphViewModel extends Observable implements Observer {
    * @param newGraphPane
    *          the pane on which all graph elements are drawn.
    */
-  public void setPane(ScalableContentPane newGraphPane) {
+  public void setPane(ScalablePane newGraphPane) {
     this.graphPane = newGraphPane;
   }
 

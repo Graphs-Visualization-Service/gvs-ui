@@ -6,6 +6,7 @@ import java.util.Observer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gvs.ScalablePane;
 import gvs.business.model.IVertex;
 import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
@@ -16,7 +17,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Ellipse;
-import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
  * Contains JavaFX Properties which are used for bidirectional bindings.
@@ -161,7 +161,7 @@ public class VertexViewModel implements Observer {
    * @param contentPane
    *          given scaleable content pane
    */
-  public void draw(ScalableContentPane contentPane) {
+  public void draw(ScalablePane contentPane) {
     logger.info("Drawing VertexViewModel.");
     contentPane.getContentPane().getChildren().addAll(ellipse, label);
 
@@ -185,7 +185,7 @@ public class VertexViewModel implements Observer {
    * @param graphPane
    *          parent pane
    */
-  private void dragSupport(ScalableContentPane graphPane) {
+  private void dragSupport(ScalablePane graphPane) {
 
     if (!vertex.isTreeVertex()) {
 
@@ -235,7 +235,7 @@ public class VertexViewModel implements Observer {
    *          parent
    * @return x coordinate within range
    */
-  private double checkXBoundaries(double newX, ScalableContentPane graphPane) {
+  private double checkXBoundaries(double newX, ScalablePane graphPane) {
     newX = Math.max(newX, ellipse.getRadiusX());
     newX = Math.min(newX, graphPane.getBoundsInLocal().getWidth());
     return newX;
@@ -250,7 +250,7 @@ public class VertexViewModel implements Observer {
    *          parent
    * @return y coordinate within range
    */
-  private double checkYBoundaries(double newY, ScalableContentPane graphPane) {
+  private double checkYBoundaries(double newY, ScalablePane graphPane) {
     newY = Math.max(newY, ellipse.getRadiusY());
     newY = Math.min(newY, graphPane.getBoundsInLocal().getHeight());
     return newY;

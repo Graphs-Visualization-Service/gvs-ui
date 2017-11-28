@@ -5,6 +5,7 @@ import java.io.File;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import gvs.access.Configuration;
 import gvs.ui.logic.app.AppViewModel;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
@@ -60,6 +61,9 @@ public class AppView {
 
   @FXML
   private void initialize() {
+    rootPane.setPrefWidth(Configuration.getWindowWidth());
+    rootPane.setPrefHeight(Configuration.getWindowHeight());
+
     initializeChildView();
     initializeButtons();
     initializeFileChooser();

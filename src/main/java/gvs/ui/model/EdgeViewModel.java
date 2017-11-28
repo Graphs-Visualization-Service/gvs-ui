@@ -3,6 +3,7 @@ package gvs.ui.model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gvs.ScalablePane;
 import gvs.business.model.IEdge;
 import gvs.business.model.styles.GVSStyle;
 import javafx.beans.value.ObservableValue;
@@ -13,7 +14,6 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.transform.Rotate;
-import jfxtras.labs.scene.layout.ScalableContentPane;
 
 /**
  * Contains JavaFX Properties which are used for bidirectional bindings.
@@ -115,7 +115,7 @@ public class EdgeViewModel {
    * @param graphPane
    *          scaleable graph pane
    */
-  public void draw(ScalableContentPane graphPane) {
+  public void draw(ScalablePane graphPane) {
     logger.info("Drawing EdgeViewModel");
     computeCoordinates();
     graphPane.getContentPane().getChildren().addAll(edgePath, arrowPath, label);

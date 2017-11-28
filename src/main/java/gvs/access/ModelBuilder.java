@@ -74,7 +74,7 @@ public class ModelBuilder {
   private static final int PANE_HEIGHT = 450;
   private static final int PANE_WIDTH = 800;
   private static final int SCALE_FACTOR = 2;
-  
+
   // Logger
   private static final Logger logger = LoggerFactory
       .getLogger(ModelBuilder.class);
@@ -146,6 +146,12 @@ public class ModelBuilder {
     // GVS 3.0 use snapshot description of input connection
     String snapshotDescription = new String();
     Graph newGraph = new Graph(snapshotDescription, vertices.values(), edges);
+
+    if (vertices.values().stream().allMatch(v -> {
+      return v.getXPosition() > 0 && v.getYPosition() > 0;
+    })) {
+      newGraph.setLayouted(true);
+    }
 
     logger.debug("Finish build graph from XML");
     long sessionId = Long.parseLong(graphElement.attributeValue(ATTRIBUTEID));

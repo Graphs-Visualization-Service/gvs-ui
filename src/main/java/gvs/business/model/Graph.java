@@ -85,8 +85,7 @@ public class Graph {
   }
 
   public boolean isLayoutable() {
-    return !isLayouted
-        && !getVertices().stream().allMatch(v -> v.isUserPositioned());
+    return !isLayouted;
   }
 
   public void setLayouted(boolean isLayouted) {

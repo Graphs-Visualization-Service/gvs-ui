@@ -69,7 +69,6 @@ public class Persistor {
   private static final String GRAPH = "GraphSession";
   private static final String GRAPHMODEL = "GraphModel";
   private static final String VERTIZES = "Vertizes";
-  private static final String RELATIVVERTEX = "RelativVertex";
   private static final String DEFAULTVERTEX = "DefaultVertex";
   private static final String XPOS = "XPos";
   private static final String YPOS = "YPos";
@@ -207,11 +206,7 @@ public class Persistor {
   private void saveDefaultVertex(GraphVertex pVertex, Element pVertizes) {
     String vertexName = null;
 
-    if (pVertex.isUserPositioned()) {
-      vertexName = RELATIVVERTEX;
-    } else {
-      vertexName = DEFAULTVERTEX;
-    }
+    vertexName = DEFAULTVERTEX;
     Element eVertex = pVertizes.addElement(vertexName);
     eVertex.addAttribute(ATTRIBUTEID, String.valueOf(pVertex.getId()));
 
@@ -313,6 +308,12 @@ public class Persistor {
         Graph newGraph = new Graph(snapShotDescription, vertices.values(),
             edges);
 
+        if (vertices.values().stream().allMatch(v -> {
+          return v.getXPosition() > 0 && v.getYPosition() > 0;
+        })) {
+          newGraph.setLayouted(true);
+        }
+
         session.addGraph(newGraph);
       }
     });
@@ -413,12 +414,10 @@ public class Persistor {
   private IVertex loadVertex(Element vertexElement) {
     double xPos = 0;
     double yPos = 0;
-    if (vertexElement.getName().equals(RELATIVVERTEX)) {
-      Element xPositionElement = vertexElement.element(XPOS);
-      xPos = Double.parseDouble(xPositionElement.getText());
-      Element yPositionElement = vertexElement.element(YPOS);
-      yPos = Double.parseDouble(yPositionElement.getText());
-    }
+    Element xPositionElement = vertexElement.element(XPOS);
+    xPos = Double.parseDouble(xPositionElement.getText());
+    Element yPositionElement = vertexElement.element(YPOS);
+    yPos = Double.parseDouble(yPositionElement.getText());
 
     Element labelElement = vertexElement.element(LABEL);
     String label = labelElement.getText();

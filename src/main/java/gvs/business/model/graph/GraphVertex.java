@@ -34,11 +34,6 @@ public class GraphVertex extends Observable implements IVertex {
     this.isStable = false;
     this.icon = icon;
     this.style = style;
-
-    if (xPosition > 0 && yPosition > 0) {
-      this.isUserPositioned = true;
-      this.isStable = true;
-    }
   }
 
   public double getXPosition() {

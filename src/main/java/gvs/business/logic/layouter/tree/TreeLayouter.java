@@ -12,6 +12,19 @@ import gvs.business.model.Graph;
 import gvs.business.model.tree.TreeVertex;
 import gvs.util.Action;
 
+/**
+ * Layouts a tree according to the Reingold-Tilford Algorithm which was improved
+ * by Walker et al. to accomodate for n-ary trees and by Buchheim et al. to
+ * still run in linear time.
+ * 
+ * For the original algorithm see:
+ * {@link https://dl.acm.org/citation.cfm?id=1133017}<br>
+ * Our implementation is inspired by:
+ * {@link https://github.com/abego/treelayout/blob/master/org.abego.treelayout/src/main/java/org/abego/treelayout/TreeLayout.java}
+ * 
+ * @author muriele
+ *
+ */
 public class TreeLayouter implements ILayouter {
 
   private static final double GAP_BETWEEN_VERTICES = 10;

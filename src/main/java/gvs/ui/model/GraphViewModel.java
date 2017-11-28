@@ -90,7 +90,8 @@ public class GraphViewModel extends Observable implements Observer {
       if (graphPane != null) {
         Graph currentGraph = graphHolder.getCurrentGraph();
         draw(currentGraph);
-        sessionViewModel.updateStepProperties();
+//        sessionViewModel.updateStepProperties();
+        sessionViewModel.updateButtonStates();
       } else {
         logger.warn("GraphPane has not been set before drawing!");
       }

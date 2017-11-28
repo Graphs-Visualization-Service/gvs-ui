@@ -207,10 +207,11 @@ public class SessionView {
 
   private void initializeButtons() {
     setButtonIcons();
-    bindButtonDisable();
+    bindDisableProperties();
   }
 
-  private void bindButtonDisable() {
+  private void bindDisableProperties() {
+    //TODO: why are all these bidirectional?
     firstBtn.disableProperty()
         .bindBidirectional(sessionViewModel.firstBtnDisableProperty());
     lastBtn.disableProperty()
@@ -224,7 +225,7 @@ public class SessionView {
         .bindBidirectional(sessionViewModel.replayBtnDisableProperty());
     cancelReplayBtn.disableProperty()
         .bindBidirectional(sessionViewModel.cancelReplayBtnDisableProperty());
-
+    speedSlider.disableProperty().bind(sessionViewModel.speedSliderDisableProperty());
     autoLayoutBtn.disableProperty()
         .bindBidirectional(sessionViewModel.autoLayoutBtnDisableProperty());
   }

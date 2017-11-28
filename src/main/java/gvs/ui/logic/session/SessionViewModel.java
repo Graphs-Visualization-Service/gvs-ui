@@ -11,6 +11,7 @@ import com.google.inject.Singleton;
 
 import gvs.business.logic.GraphSessionType;
 import gvs.business.logic.Session;
+import gvs.business.logic.TreeSessionType;
 import gvs.business.logic.layouter.ILayouter;
 import gvs.business.model.Graph;
 import gvs.business.model.SessionHolder;
@@ -21,6 +22,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.WritableBooleanValue;
 
 /**
  * The ViewModel class for the current session. Corresponds to the classical
@@ -31,7 +33,7 @@ import javafx.beans.property.StringProperty;
  *
  */
 @Singleton
-public class SessionViewModel implements Observer {
+public class SessionViewModel {
 
   private final SessionHolder sessionHolder;
 
@@ -44,6 +46,7 @@ public class SessionViewModel implements Observer {
   private final BooleanProperty autoLayoutBtnDisableProperty;
   private final BooleanProperty replayBtnDisableProperty;
   private final BooleanProperty cancelReplayBtnDisableProperty;
+  private final BooleanProperty speedSliderDisableProperty;
   private final BooleanProperty isReplayingProperty;
 
   private final IntegerProperty currentGraphIdProperty;
@@ -65,62 +68,54 @@ public class SessionViewModel implements Observer {
     this.firstBtnDisableProperty = new SimpleBooleanProperty();
     this.nextBtnDisableProperty = new SimpleBooleanProperty();
     this.prevBtnDisableProperty = new SimpleBooleanProperty();
+    this.replayBtnDisableProperty = new SimpleBooleanProperty();
+    this.cancelReplayBtnDisableProperty = new SimpleBooleanProperty();
+    this.speedSliderDisableProperty = new SimpleBooleanProperty();
+    this.autoLayoutBtnDisableProperty = new SimpleBooleanProperty();
 
     this.currentGraphIdProperty = new SimpleIntegerProperty();
     this.totalGraphCountProperty = new SimpleIntegerProperty();
 
     this.isReplayingProperty = new SimpleBooleanProperty();
-    this.replayBtnDisableProperty = new SimpleBooleanProperty();
-    this.cancelReplayBtnDisableProperty = new SimpleBooleanProperty();
-
-    this.autoLayoutBtnDisableProperty = new SimpleBooleanProperty();
     this.layoutTooltip = new SimpleStringProperty();
-
-    currentSessionHolder.addObserver(this);
   }
 
   public void changeCurrentGraphToNext() {
     logger.info("Changing the displayed graph model...");
     Session currentSession = sessionHolder.getCurrentSession();
     currentSession.changeCurrentGraphToNext();
-    updateStepProperties();
   }
 
   public void changeCurrentGraphToPrevious() {
     logger.info("Changing the displayed graph model...");
     Session currentSession = sessionHolder.getCurrentSession();
     currentSession.changeCurrentGraphToPrev();
-    updateStepProperties();
   }
 
   public void changeCurrentGraphToFirst() {
     logger.info("Changing the displayed graph model...");
     Session currentSession = sessionHolder.getCurrentSession();
     currentSession.changeCurrentGraphToFirst();
-    updateStepProperties();
   }
 
   public void changeCurrentGraphToLast() {
     logger.info("Changing the displayed graph model...");
     Session currentSession = sessionHolder.getCurrentSession();
     currentSession.changeCurrentGraphToLast();
-    updateStepProperties();
   }
 
-  /**
-   * This method is invoked whenever a new current session is set in the
-   * {@link SessionHolder}.
-   */
-  @Override
-  public void update(Observable o, Object arg) {
-    // Hand updates over to JavaFX Thread
-    Platform.runLater(() -> {
-      logger.info("Current session changed...");
-      updateStepProperties();
-
-      // reset buttons
+  public void updateButtonStates() {
+    Session currentSession = sessionHolder.getCurrentSession();
+    if (currentSession != null) {
       disableAllButtons(false);
-    });
+      disableSpeedSlider(false);
+      boolean isTreeSession = currentSession
+          .getSessionType() instanceof TreeSessionType;
+      if (isTreeSession) {
+        disableLayoutButton(true);
+      }
+      updateStepProperties();
+    }
   }
 
   /**
@@ -137,7 +132,7 @@ public class SessionViewModel implements Observer {
 
       int maxIndex = currentSession.getTotalGraphCount();
       totalGraphCountProperty.set(maxIndex);
-      
+
       int currentIndex = currentGraph.getId();
       currentGraphIdProperty.set(currentIndex);
 
@@ -163,16 +158,19 @@ public class SessionViewModel implements Observer {
     boolean disable = true;
     disableStepButtons(disable, disable, disable, disable);
     disableLayoutButton(disable);
+    disableSpeedSlider(disable);
     sessionHolder.getCurrentSession().replay(timeout, this::finishReplay);
   }
 
   public void pauseReplay() {
     isReplayingProperty.set(false);
+    disableSpeedSlider(false);
     sessionHolder.getCurrentSession().pauseReplay();
   }
 
   public void cancelReplay() {
     isReplayingProperty.set(false);
+    disableSpeedSlider(false);
     sessionHolder.getCurrentSession().cancelReplay();
   }
 
@@ -180,6 +178,7 @@ public class SessionViewModel implements Observer {
     Platform.runLater(() -> {
       isReplayingProperty.set(false);
       disableAllButtons(false);
+      disableSpeedSlider(false);
     });
   }
 
@@ -213,10 +212,10 @@ public class SessionViewModel implements Observer {
     disableAllButtons(false);
   }
 
-  private void disableAllButtons(boolean disabled) {
-    disableStepButtons(disabled, disabled, disabled, disabled);
-    disableReplayButtons(disabled, disabled);
-    disableLayoutButton(disabled);
+  private void disableAllButtons(boolean disable) {
+    disableStepButtons(disable, disable, disable, disable);
+    disableReplayButtons(disable, disable);
+    disableLayoutButton(disable);
   }
 
   private void disableReplayButtons(boolean startStop, boolean cancel) {
@@ -232,8 +231,12 @@ public class SessionViewModel implements Observer {
     nextBtnDisableProperty.set(next);
   }
 
-  private void disableLayoutButton(boolean layout) {
-    autoLayoutBtnDisableProperty.set(layout);
+  private void disableLayoutButton(boolean disable) {
+    autoLayoutBtnDisableProperty.set(disable);
+  }
+
+  private void disableSpeedSlider(boolean disable) {
+    speedSliderDisableProperty.set(disable);
   }
 
   public IntegerProperty totalGraphCountProperty() {
@@ -270,6 +273,10 @@ public class SessionViewModel implements Observer {
 
   public BooleanProperty cancelReplayBtnDisableProperty() {
     return cancelReplayBtnDisableProperty;
+  }
+
+  public BooleanProperty speedSliderDisableProperty() {
+    return speedSliderDisableProperty;
   }
 
   public BooleanProperty isReplayingProperty() {

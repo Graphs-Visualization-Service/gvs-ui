@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gvs.ScalablePane;
+import gvs.access.Configuration;
 import gvs.business.model.IVertex;
 import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
@@ -16,6 +17,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.shape.Ellipse;
 
 /**
@@ -45,6 +47,10 @@ public class VertexViewModel implements Observer {
     this.vertex = vertex;
     this.ellipse = new Ellipse();
     this.label = new Label();
+
+    // label constraints
+    label.setMaxWidth(Configuration.getMaxLabelLength());
+    label.setTextOverrun(OverrunStyle.CENTER_ELLIPSIS);
 
     // bidirectional connection
     this.vertex.addObserver(this);
@@ -167,7 +173,8 @@ public class VertexViewModel implements Observer {
 
     // this hack forces the label to compute its height and width
     label.applyCss();
-    double xRadius = label.prefWidth(-1) / 2;
+    double xRadius = Math.min(label.prefWidth(-1),
+        Configuration.getMaxLabelLength()) / 2;
     double yRadius = label.prefHeight(-1) / 2;
 
     ellipse.setRadiusX(xRadius);

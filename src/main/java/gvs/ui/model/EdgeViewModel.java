@@ -8,7 +8,9 @@ import gvs.business.model.IEdge;
 import gvs.business.model.styles.GVSStyle;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -117,15 +119,15 @@ public class EdgeViewModel {
    */
   public void draw(ScalablePane graphPane) {
     logger.info("Drawing EdgeViewModel");
-    computeCoordinates();
     graphPane.getContentPane().getChildren().addAll(edgePath, arrowPath, label);
+    computeCoordinates();
   }
 
   /**
    * Compute x and y position of the edge.
    * 
    * Finds the intersection points of the line with the start and end vertex.
-   * Once found, a arrow head is added (if needed)
+   * Once found, an arrow head is added (if needed)
    */
   private void computeCoordinates() {
     // clear previously drawn lines/arrows
@@ -197,9 +199,13 @@ public class EdgeViewModel {
    *          end intersection point
    */
   private void drawEdgeLabel(Point2D startPoint, Point2D endPoint) {
+    // this hack forces the label to compute its height and width
+    label.applyCss();
+    double xRadius = label.prefWidth(-1) / 2;
+    double yRadius = label.prefHeight(-1) / 2;
     Point2D middle = startPoint.midpoint(endPoint);
-    label.setLayoutX(middle.getX());
-    label.setLayoutY(middle.getY());
+    label.setLayoutX(middle.getX()-xRadius);
+    label.setLayoutY(middle.getY()-yRadius);
   }
 
   /**

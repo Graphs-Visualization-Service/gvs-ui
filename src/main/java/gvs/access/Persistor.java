@@ -69,7 +69,6 @@ public class Persistor {
   private static final String GRAPH = "GraphSession";
   private static final String GRAPHMODEL = "GraphModel";
   private static final String VERTIZES = "Vertizes";
-  private static final String RELATIVVERTEX = "RelativVertex";
   private static final String DEFAULTVERTEX = "DefaultVertex";
   private static final String XPOS = "XPos";
   private static final String YPOS = "YPos";
@@ -207,11 +206,7 @@ public class Persistor {
   private void saveDefaultVertex(GraphVertex pVertex, Element pVertizes) {
     String vertexName = null;
 
-    if (pVertex.isUserPositioned()) {
-      vertexName = RELATIVVERTEX;
-    } else {
-      vertexName = DEFAULTVERTEX;
-    }
+    vertexName = DEFAULTVERTEX;
     Element eVertex = pVertizes.addElement(vertexName);
     eVertex.addAttribute(ATTRIBUTEID, String.valueOf(pVertex.getId()));
 

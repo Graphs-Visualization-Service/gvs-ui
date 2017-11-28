@@ -35,8 +35,6 @@ class TreeLayouterTest {
     Map<Long, TreeVertex> layoutedVertices = new HashMap<>();
     tree.getVertices()
         .forEach(v -> layoutedVertices.put(v.getId(), (TreeVertex) v));
-    System.out.println(layoutedVertices.values());
-    assertEquals(14.375, layoutedVertices.get(1L).getXPosition(), 0.001);
     // Vertex 2 is right child of Vertex 1 i.e. should be positions to the right
     assertTrue(layoutedVertices.get(2L).getXPosition()
         - layoutedVertices.get(1L).getXPosition() > 2);

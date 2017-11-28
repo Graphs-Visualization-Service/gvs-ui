@@ -10,12 +10,15 @@ import gvs.ScalablePane;
 import gvs.business.model.IVertex;
 import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
+import gvs.util.ContrastColor;
 import gvs.util.FontAwesome;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 
 /**
@@ -158,12 +161,12 @@ public class VertexViewModel implements Observer {
   /**
    * Draw vertex on given ScaleableContentPane
    * 
-   * @param contentPane
-   *          given scaleable content pane
+   * @param graphPane
+   *          given scaleable pane
    */
-  public void draw(ScalablePane contentPane) {
+  public void draw(ScalablePane graphPane) {
     logger.info("Drawing VertexViewModel.");
-    contentPane.getContentPane().getChildren().addAll(ellipse, label);
+    graphPane.getContentPane().getChildren().addAll(ellipse, label);
 
     // this hack forces the label to compute its height and width
     label.applyCss();
@@ -176,7 +179,19 @@ public class VertexViewModel implements Observer {
     label.layoutXProperty().bind(ellipse.centerXProperty().subtract(xRadius));
     label.layoutYProperty().bind(ellipse.centerYProperty().subtract(yRadius));
 
-    dragSupport(contentPane);
+    dragSupport(graphPane);
+
+    correctLabelColor();
+  }
+
+  /**
+   * Choose a label color with enough contrast to the background color.
+   */
+  private void correctLabelColor() {
+    ellipse.applyCss();
+    Color labelColor = ContrastColor
+        .getContrastColor((Color) ellipse.getFill());
+    label.setTextFill(labelColor);
   }
 
   /**

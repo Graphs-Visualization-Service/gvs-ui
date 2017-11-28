@@ -312,7 +312,10 @@ public class Persistor {
         String snapShotDescription = graphElement.element(LABEL).getText();
         Graph newGraph = new Graph(snapShotDescription, vertices.values(),
             edges);
-        if (vertices.values().stream().anyMatch(v -> v.isUserPositioned())) {
+
+        if (vertices.values().stream().allMatch(v -> {
+          return v.getXPosition() > 0 && v.getYPosition() > 0;
+        })) {
           newGraph.setLayouted(true);
         }
 

@@ -109,6 +109,7 @@ public class GraphLayouter implements Tickable, ILayouter {
 
       this.completionCallback = callback;
 
+      // reset
       graph.getVertices().forEach(v -> {
         GraphVertex graphVertex = (GraphVertex) v;
         if (!graphVertex.isUserPositioned()) {

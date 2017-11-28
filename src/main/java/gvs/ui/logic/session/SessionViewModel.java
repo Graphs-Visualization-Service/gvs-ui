@@ -196,9 +196,11 @@ public class SessionViewModel implements Observer {
 
     // reset
     currentGraph.setLayouted(false);
-    currentGraph.getVertices().forEach(v -> v.setUserPositioned(false));
 
-    if (currentSession.getSessionType() instanceof GraphSessionType) {
+    if (currentSession.getSessionType() instanceof GraphSessionType
+        && currentGraph.getVertices().stream()
+            .anyMatch(v -> !v.isUserPositioned())) {
+      
       ILayouter layouter = currentSession.getSessionType().getLayouter();
       layouter.layout(currentGraph, useRandomLayout, this::finishAutolayout);
     } else {

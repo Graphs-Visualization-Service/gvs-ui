@@ -13,7 +13,6 @@
                  <xs:sequence minOccurs="1" maxOccurs="1">
                     <xs:element name="Tree" type="Tree"></xs:element>
                     <xs:element name="Nodes" type="Nodes"></xs:element>
-                    
                 </xs:sequence>
             </xs:choice>
           </xs:sequence>          
@@ -22,6 +21,8 @@
     <xs:complexType name="Graph">
         <xs:sequence minOccurs="1" maxOccurs="1">
             <xs:element name="Label" type="xs:string"></xs:element>
+            <xs:element name="Background" type="xs:string" minOccurs="0" maxOccurs="1"></xs:element>
+            <xs:element name="MaxLabelLength" type="xs:int" minOccurs="0" maxOccurs="1"></xs:element>
         </xs:sequence>
         <xs:attribute name="Id" type="xs:long"></xs:attribute>
     </xs:complexType>
@@ -92,6 +93,7 @@
     <xs:complexType name="Tree">
         <xs:sequence minOccurs="1" maxOccurs="1">
             <xs:element name="Label" type="xs:string"></xs:element>
+            <xs:element name="MaxLabelLength" type="xs:int" minOccurs="0" maxOccurs="1"></xs:element>
             <xs:sequence minOccurs="0" maxOccurs="1">
                 <xs:element name="TreeRootId" type="xs:long"></xs:element>
             </xs:sequence>

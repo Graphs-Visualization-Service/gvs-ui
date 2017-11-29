@@ -41,7 +41,6 @@ public class SocketServer extends Thread {
   private final ClientConnectionFactory connectionFactory;
 
   private static final String THREAD_NAME = "Socket Server Thread";
-  private static final String DEFAULT_PORT_FILE_NAME = "GVSComm.xml";
 
   private static final Logger logger = LoggerFactory
       .getLogger(SocketServer.class);;
@@ -64,8 +63,6 @@ public class SocketServer extends Thread {
 
     this.hostname = getLocalHostName();
     this.port = findFreePort();
-
-    writePortFile();
   }
 
   /**
@@ -113,21 +110,6 @@ public class SocketServer extends Thread {
       }
     }
     return null;
-  }
-
-  private void writePortFile() {
-    String filePath = configuration.getCommFilePath();
-
-    if (filePath != null && !filePath.isEmpty()
-        && !DEFAULT_PORT_FILE_NAME.equals(filePath)) {
-
-      logger.info("Write file to configured location");
-      writeFile(new File(filePath));
-    } else {
-
-      logger.info("Write file to current directory");
-      writeFile(new File(DEFAULT_PORT_FILE_NAME));
-    }
   }
 
   private void writeFile(File portFile) {

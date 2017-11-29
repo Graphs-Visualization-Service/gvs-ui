@@ -62,51 +62,10 @@ public class Configuration {
       Element docRoot = configurationXML.getRootElement();
       Element eServer = docRoot.element(SERVER);
 
-      loadLayoutDelay(docRoot);
-
-      loadCommFilePath(eServer);
       loadStartPort(eServer);
     } catch (DocumentException e) {
       logger.error("No configuration found. System exit");
       System.exit(0);
-    }
-  }
-
-  /**
-   * Load Layout Delay.
-   * 
-   * @param pRoot
-   *          root element
-   */
-  private void loadLayoutDelay(Element pRoot) {
-    Element eLayoutDelay = pRoot.element(LAYOUTDELAY);
-    if (eLayoutDelay != null) {
-      try {
-        layoutDelay = Integer.parseInt(eLayoutDelay.getText());
-        logger.debug("Delay loaded " + layoutDelay);
-      } catch (Exception ex) {
-        logger.warn("Load LayoutDelay failed. Set default: 1500ms");
-      }
-    } else {
-      logger.warn("Load LayoutDelay failed. Set default: 1500ms");
-    }
-  }
-
-  /**
-   * Load communication file path.
-   * 
-   * @param pServer
-   *          sever element
-   */
-  private void loadCommFilePath(Element pServer) {
-
-    Element ePortFile = pServer.element(COMMUFILE);
-    if (ePortFile != null) {
-      commFilePath = ePortFile.getText();
-    } else {
-      commFilePath = "GVSComm.xml";
-      logger.warn("Load communication file from path failed");
-      logger.info("Write Communication file to current directory");
     }
   }
 

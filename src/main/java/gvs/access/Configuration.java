@@ -24,7 +24,10 @@ public class Configuration {
   private static final int WINDOW_WIDTH = 800;
   private static final int WINDOW_HEIGHT = 600;
   private static final int CONTENT_PANE_HEIGHT = 400;
+  private static final int AVG_PIXEL_PER_LETTER = 4;
   private static final int MAX_LABEL_LENGTH = 40;
+  private static final int MAX_LABEL_LETTERS = MAX_LABEL_LENGTH
+      / AVG_PIXEL_PER_LETTER;
 
   // Document
   private static final String LAYOUTDELAY = "LayoutDelay";
@@ -177,12 +180,12 @@ public class Configuration {
   public static int getMaxLabelLength() {
     return MAX_LABEL_LENGTH;
   }
-  
+
   /**
    * 
    * @return the maximum amount of letters in a label
    */
   public static int getMaxLabelLetters() {
-    return MAX_LABEL_LENGTH / 4;
+    return MAX_LABEL_LETTERS;
   }
 }

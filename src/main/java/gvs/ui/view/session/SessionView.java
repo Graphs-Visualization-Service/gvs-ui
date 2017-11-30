@@ -6,10 +6,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.sun.prism.paint.Color;
 
 import gvs.ScalablePane;
-import gvs.access.Configuration;
 import gvs.ui.logic.session.SessionViewModel;
 import gvs.ui.model.GraphViewModel;
 import gvs.ui.view.controls.StepProgressBar;
@@ -18,17 +16,13 @@ import gvs.util.FontAwesome.Glyph;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -127,7 +121,6 @@ public class SessionView {
     graphPane.setAutoRescale(false);
 
     graphViewModel.setPane(graphPane);
-    graphPane.getContentPane().setStyle("-fx-background-color: #FF0000;");
 
     // Snapshot description for graphs
     snapshotDescription.setPromptText(DEFAULT_SNAPSHOP_PROMPT_TXT);

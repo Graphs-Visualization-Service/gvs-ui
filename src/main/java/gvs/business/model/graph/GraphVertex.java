@@ -2,6 +2,7 @@ package gvs.business.model.graph;
 
 import java.util.Observable;
 
+import gvs.access.Configuration;
 import gvs.business.model.IVertex;
 import gvs.business.model.styles.GVSStyle;
 import gvs.util.FontAwesome.Glyph;
@@ -23,6 +24,7 @@ public class GraphVertex extends Observable implements IVertex {
   private boolean isUserPositioned;
 
   private final Glyph icon;
+  private final int maxLabelLength;
 
   public GraphVertex(long id, String label, GVSStyle style, double xPosition,
       double yPosition, Glyph icon) {
@@ -34,6 +36,7 @@ public class GraphVertex extends Observable implements IVertex {
     this.isStable = false;
     this.icon = icon;
     this.style = style;
+    this.maxLabelLength = Configuration.getMaxLabelLengthForGraph();
   }
 
   public double getXPosition() {
@@ -89,6 +92,10 @@ public class GraphVertex extends Observable implements IVertex {
 
   public Glyph getIcon() {
     return icon;
+  }
+
+  public int getMaxLabelLength() {
+    return maxLabelLength;
   }
 
   @Override

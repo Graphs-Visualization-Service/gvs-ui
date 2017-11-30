@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import gvs.ScalablePane;
 import gvs.business.model.IVertex;
-import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
 import gvs.util.ContrastColor;
 import gvs.util.FontAwesome;
@@ -16,8 +15,8 @@ import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 
@@ -49,6 +48,8 @@ public class VertexViewModel implements Observer {
     this.ellipse = new Ellipse();
     this.label = new Label();
 
+    setLabelConstraints();
+
     // bidirectional connection
     this.vertex.addObserver(this);
     ellipse.centerXProperty().addListener(this::xPropertyListener);
@@ -67,6 +68,11 @@ public class VertexViewModel implements Observer {
     updateCoordinates(vertex.getXPosition(), vertex.getYPosition());
 
     setStyles();
+  }
+
+  private void setLabelConstraints() {
+    label.setMaxWidth(vertex.getMaxLabelLength());
+    label.setTextOverrun(OverrunStyle.CENTER_ELLIPSIS);
   }
 
   /**
@@ -170,7 +176,8 @@ public class VertexViewModel implements Observer {
 
     // this hack forces the label to compute its height and width
     label.applyCss();
-    double xRadius = label.prefWidth(-1) / 2;
+    double xRadius = Math.min(label.prefWidth(-1),
+        label.getMaxWidth()) / 2;
     double yRadius = label.prefHeight(-1) / 2;
 
     ellipse.setRadiusX(xRadius);

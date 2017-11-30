@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 
+import gvs.access.Configuration;
 import gvs.business.logic.Session;
 import gvs.business.logic.layouter.ILayouter;
 import gvs.business.model.Graph;
@@ -29,9 +30,10 @@ public class TreeLayouter implements ILayouter {
 
   private static final double GAP_BETWEEN_VERTICES = 10;
   private static final double GAP_BETWEEN_FORESTS = 20;
-  private static final double GAP_BETWEEN_LEVEL = 5;
-  private static final double VERTEX_HEIGHT = 12;
-  private static final int VERTEX_LABEL_MARGIN = 2;
+  private static final double GAP_BETWEEN_LEVEL = 10;
+  private static final double VERTEX_HEIGHT = 15;
+  private static final int VERTEX_LABEL_MARGIN = 4;
+  private static final double UPPER_MARGIN = 10;
 
   private TreeLayouterValues values;
   private Bounds bounds;
@@ -49,6 +51,10 @@ public class TreeLayouter implements ILayouter {
         .map(v -> (TreeVertex) v).filter(v -> v.isRoot())
         .collect(Collectors.toList());
 
+    if (roots.isEmpty()) {
+      throw new IllegalArgumentException(
+          "No Root found. Check ModelBuilder and Persistor!");
+    }
     // TODO: support multiple roots
     roots.forEach(r -> {
       this.bounds = new Bounds();
@@ -61,6 +67,67 @@ public class TreeLayouter implements ILayouter {
     });
 
     prevBounds = new Bounds(); // reset bounds for next tree
+  }
+
+  /**
+   * Bottom-up traversal of the tree. The position of each node is preliminary.
+   * 
+   * @param vertex
+   */
+  private void firstWalk(TreeVertex v, TreeVertex leftSibling) {
+    if (v.isLeaf()) {
+      if (leftSibling != null) {
+        values.setPreliminary(v,
+            values.getPreliminary(leftSibling) + getDistance(v, leftSibling));
+      }
+    } else {
+      TreeVertex defaultAncestor = v.getChildren().get(0);
+      TreeVertex previousChild = null;
+      for (TreeVertex w : v.getChildren()) {
+        firstWalk(w, previousChild);
+        defaultAncestor = apportion(w, defaultAncestor, previousChild, v);
+        previousChild = w;
+      }
+      executeShifts(v);
+      double midpoint = (values.getPreliminary(v.getChildren().get(0)) + values
+          .getPreliminary(v.getChildren().get(v.getChildren().size() - 1)))
+          / 2.0;
+      if (leftSibling != null) {
+        values.setPreliminary(v,
+            values.getPreliminary(leftSibling) + getDistance(v, leftSibling));
+        values.setMod(v, values.getPreliminary(v) - midpoint);
+
+      } else {
+        values.setPreliminary(v, midpoint);
+      }
+    }
+  }
+
+  /**
+   * Top-down traversal of the tree. Compute all real positions in linear time.
+   * The real position of a vertex is its preliminary position plus the
+   * aggregated modifier given by the sum of all modifiers on the path from the
+   * parent of the vertex to the root.
+   * 
+   * @param v
+   * @param modSum
+   * @param depth
+   * @param startDepth
+   */
+  private void secondWalk(TreeVertex v, double modSum, int depth,
+      double startDepth) {
+    double x = values.getPreliminary(v) + modSum;
+    double y = startDepth + (VERTEX_HEIGHT / 2) + UPPER_MARGIN;
+    values.getPositions().put(v, new NormalizedPosition(x, y, bounds));
+
+    bounds.updateBounds(v, x, y);
+
+    if (!v.isLeaf()) {
+      double nextDepthStart = startDepth + VERTEX_HEIGHT + GAP_BETWEEN_LEVEL;
+      for (TreeVertex w : v.getChildren()) {
+        secondWalk(w, modSum + values.getMod(v), depth + 1, nextDepthStart);
+      }
+    }
   }
 
   private void updateBounds() {
@@ -92,28 +159,6 @@ public class TreeLayouter implements ILayouter {
       vertex.setXPosition(x);
       vertex.setYPosition(y);
     }
-  }
-
-  @Override
-  public void takeOverVertexPositions(Graph source, Graph target) {
-    // Do nothing. Only lrelevant for graphs
-  }
-
-  /**
-   * The distance between two vertices includes the gap between the vertices and
-   * half of the sizes of the vertices.
-   * 
-   * @param v
-   * @param w
-   * @return the distance between vertex v and w
-   */
-  private double getDistance(TreeVertex v, TreeVertex w) {
-    double vertexSize = getVertexWidth(v) + getVertexWidth(w);
-    return vertexSize / 2 + GAP_BETWEEN_VERTICES;
-  }
-
-  private int getVertexWidth(TreeVertex v) {
-    return v.getLabel().length() + VERTEX_LABEL_MARGIN;
   }
 
   /**
@@ -270,68 +315,30 @@ public class TreeLayouter implements ILayouter {
     }
   }
 
+  /**
+   * The distance between two vertices includes the gap between the vertices and
+   * half of the sizes of the vertices.
+   * 
+   * @param v
+   * @param w
+   * @return the distance between vertex v and w
+   */
+  private double getDistance(TreeVertex v, TreeVertex w) {
+    double vertexSize = getVertexWidth(v) + getVertexWidth(w);
+    return vertexSize / 2 + GAP_BETWEEN_VERTICES;
+  }
+
+  private int getVertexWidth(TreeVertex v) {
+    return Math.min(v.getLabel().length() + VERTEX_LABEL_MARGIN,
+        Configuration.getMaxLabelLettersForTree());
+  }
+
   private List<TreeVertex> getChildrenReverse(TreeVertex v) {
     return Lists.reverse(v.getChildren());
   }
 
-  /**
-   * Bottom-up traversal of the tree. The position of each node is preliminary.
-   * 
-   * @param vertex
-   */
-  private void firstWalk(TreeVertex v, TreeVertex leftSibling) {
-    if (v.isLeaf()) {
-      if (leftSibling != null) {
-        values.setPreliminary(v,
-            values.getPreliminary(leftSibling) + getDistance(v, leftSibling));
-      }
-    } else {
-      TreeVertex defaultAncestor = v.getChildren().get(0);
-      TreeVertex previousChild = null;
-      for (TreeVertex w : v.getChildren()) {
-        firstWalk(w, previousChild);
-        defaultAncestor = apportion(w, defaultAncestor, previousChild, v);
-        previousChild = w;
-      }
-      executeShifts(v);
-      double midpoint = (values.getPreliminary(v.getChildren().get(0)) + values
-          .getPreliminary(v.getChildren().get(v.getChildren().size() - 1)))
-          / 2.0;
-      if (leftSibling != null) {
-        values.setPreliminary(v,
-            values.getPreliminary(leftSibling) + getDistance(v, leftSibling));
-        values.setMod(v, values.getPreliminary(v) - midpoint);
-
-      } else {
-        values.setPreliminary(v, midpoint);
-      }
-    }
-  }
-
-  /**
-   * Top-down traversal of the tree. Compute all real positions in linear time.
-   * The real position of a vertex is its preliminary position plus the
-   * aggregated modifier given by the sum of all modifiers on the path from the
-   * parent of the vertex to the root.
-   * 
-   * @param v
-   * @param modSum
-   * @param level
-   * @param levelStart
-   */
-  private void secondWalk(TreeVertex v, double modSum, int level,
-      double levelStart) {
-    double x = values.getPreliminary(v) + modSum;
-    double y = levelStart + (VERTEX_HEIGHT / 2);
-    values.getPositions().put(v, new NormalizedPosition(x, y, bounds));
-
-    bounds.updateBounds(v, x, y);
-
-    if (!v.isLeaf()) {
-      double nextLevelStart = levelStart + VERTEX_HEIGHT + GAP_BETWEEN_LEVEL;
-      for (TreeVertex w : v.getChildren()) {
-        secondWalk(w, modSum + values.getMod(v), level + 1, nextLevelStart);
-      }
-    }
+  @Override
+  public void takeOverVertexPositions(Graph source, Graph target) {
+    // Do nothing. Only relevant for graphs
   }
 }

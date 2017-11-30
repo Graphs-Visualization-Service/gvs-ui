@@ -88,6 +88,7 @@ public class GraphViewModel extends Observable implements Observer {
       // don't start drawing process, if graphPane hasn't already been set by
       // the SessionView.
       if (graphPane != null) {
+        sessionViewModel.setMaxScale(graphPane);
         Graph currentGraph = graphHolder.getCurrentGraph();
         draw(currentGraph);
         sessionViewModel.updateButtonStates();
@@ -106,7 +107,7 @@ public class GraphViewModel extends Observable implements Observer {
     graphPane.getContentPane().getChildren().clear();
 
     snapshotDescriptionProperty.set(graph.getSnapshotDescription());
-
+    
     drawVertices(graph.getVertices());
     drawEdges(graph.getEdges());
     correctZOrder();

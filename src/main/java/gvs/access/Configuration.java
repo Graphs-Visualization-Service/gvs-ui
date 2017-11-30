@@ -25,8 +25,11 @@ public class Configuration {
   private static final int WINDOW_HEIGHT = 600;
   private static final int CONTENT_PANE_HEIGHT = 400;
   private static final int AVG_PIXEL_PER_LETTER = 4;
-  private static final int MAX_LABEL_LENGTH = 40;
-  private static final int MAX_LABEL_LETTERS = MAX_LABEL_LENGTH
+  private static final int MAX_LABEL_LENGTH_TREE = 40;
+  private static final int MAX_LABEL_LETTERS_TREE = MAX_LABEL_LENGTH_TREE
+      / AVG_PIXEL_PER_LETTER;
+  private static final int MAX_LABEL_LENGTH_GRAPH = 80;
+  private static final int MAX_LABEL_LETTERS_GRAPH = MAX_LABEL_LENGTH_TREE
       / AVG_PIXEL_PER_LETTER;
 
   // Document
@@ -175,17 +178,33 @@ public class Configuration {
 
   /**
    * 
-   * @return the maximum length of a label
+   * @return the maximum length of a tree label
    */
-  public static int getMaxLabelLength() {
-    return MAX_LABEL_LENGTH;
+  public static int getMaxLabelLengthForTree() {
+    return MAX_LABEL_LENGTH_TREE;
   }
 
   /**
    * 
-   * @return the maximum amount of letters in a label
+   * @return the maximum amount of letters in a tree label
    */
-  public static int getMaxLabelLetters() {
-    return MAX_LABEL_LETTERS;
+  public static int getMaxLabelLettersForTree() {
+    return MAX_LABEL_LETTERS_TREE;
+  }
+  
+  /**
+   * 
+   * @return the maximum length of a tree label
+   */
+  public static int getMaxLabelLengthForGraph() {
+    return MAX_LABEL_LENGTH_GRAPH;
+  }
+
+  /**
+   * 
+   * @return the maximum amount of letters in a tree label
+   */
+  public static int getMaxLabelLettersForGraph() {
+    return MAX_LABEL_LETTERS_GRAPH;
   }
 }

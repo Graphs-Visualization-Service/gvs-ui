@@ -48,9 +48,7 @@ public class VertexViewModel implements Observer {
     this.ellipse = new Ellipse();
     this.label = new Label();
 
-    // label constraints
-    label.setMaxWidth(Configuration.getMaxLabelLength());
-    label.setTextOverrun(OverrunStyle.CENTER_ELLIPSIS);
+    setLabelConstraints();
 
     // bidirectional connection
     this.vertex.addObserver(this);
@@ -70,6 +68,11 @@ public class VertexViewModel implements Observer {
     updateCoordinates(vertex.getXPosition(), vertex.getYPosition());
 
     setStyles();
+  }
+
+  private void setLabelConstraints() {
+    label.setMaxWidth(vertex.getMaxLabelLength());
+    label.setTextOverrun(OverrunStyle.CENTER_ELLIPSIS);
   }
 
   /**
@@ -174,7 +177,7 @@ public class VertexViewModel implements Observer {
     // this hack forces the label to compute its height and width
     label.applyCss();
     double xRadius = Math.min(label.prefWidth(-1),
-        Configuration.getMaxLabelLength()) / 2;
+        label.getMaxWidth()) / 2;
     double yRadius = label.prefHeight(-1) / 2;
 
     ellipse.setRadiusX(xRadius);

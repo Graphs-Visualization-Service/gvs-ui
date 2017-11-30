@@ -66,7 +66,7 @@ public class Bounds {
   
   private int getVertexWidth(TreeVertex v) {
     int labelWidth = v.getLabel().length() + VERTEX_LABEL_MARGIN;
-    int maxWidth = Configuration.getMaxLabelLength();
+    int maxWidth = Configuration.getMaxLabelLengthForTree();
     return Math.min(labelWidth, maxWidth);
   }
 }

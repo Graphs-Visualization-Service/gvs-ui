@@ -317,7 +317,7 @@ public class TreeLayouter implements ILayouter {
 
   private int getVertexWidth(TreeVertex v) {
     return Math.min(v.getLabel().length() + VERTEX_LABEL_MARGIN,
-        Configuration.getMaxLabelLetters());
+        Configuration.getMaxLabelLettersForTree());
   }
 
   private List<TreeVertex> getChildrenReverse(TreeVertex v) {
@@ -326,6 +326,6 @@ public class TreeLayouter implements ILayouter {
 
   @Override
   public void takeOverVertexPositions(Graph source, Graph target) {
-    // Do nothing. Only lrelevant for graphs
+    // Do nothing. Only relevant for graphs
   }
 }

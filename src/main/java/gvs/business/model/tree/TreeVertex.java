@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
+import gvs.access.Configuration;
 import gvs.business.model.IVertex;
 import gvs.business.model.styles.GVSStyle;
 import gvs.util.FontAwesome.Glyph;
@@ -17,13 +18,13 @@ public class TreeVertex extends Observable implements IVertex {
   private boolean isUserPositioned;
 
   private boolean isRoot;
-  private boolean isLeaf;
   private TreeVertex parent;
 
   private final List<Long> childIds;
   private final List<TreeVertex> children;
 
   private final Glyph icon;
+  private final int maxLabelLength;
 
   public TreeVertex(long id, String label, GVSStyle style,
       boolean isUserPositioned, Glyph icon) {
@@ -32,6 +33,7 @@ public class TreeVertex extends Observable implements IVertex {
     this.style = style;
     this.isUserPositioned = isUserPositioned;
     this.icon = icon;
+    this.maxLabelLength = Configuration.getMaxLabelLengthForTree();
 
     this.childIds = new ArrayList<>();
     this.children = new ArrayList<>();
@@ -98,6 +100,10 @@ public class TreeVertex extends Observable implements IVertex {
   @Override
   public GVSStyle getStyle() {
     return style;
+  }
+
+  public int getMaxLabelLength() {
+    return maxLabelLength;
   }
 
   @Override

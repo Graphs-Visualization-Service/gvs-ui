@@ -140,11 +140,11 @@ public class ApplicationController {
     }
     
     session.addGraph(graph);
-    session.getGraphHolder().setCurrentGraph(graph);
     
     ILayouter layouter = session.getSessionType().getLayouter();
     layouter.layout(session, true, null);
 
     sessionHolder.setCurrentSession(session);
+    session.getGraphHolder().setCurrentGraph(graph);
   }
 }

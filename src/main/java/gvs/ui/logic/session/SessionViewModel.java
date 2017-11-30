@@ -107,46 +107,44 @@ public class SessionViewModel {
   public void updateButtonStates() {
     Session currentSession = sessionHolder.getCurrentSession();
     if (currentSession != null) {
-      disableAllButtons(false);
-      disableSpeedSlider(false);
-      boolean isTreeSession = currentSession
-          .getSessionType() instanceof TreeSessionType;
-      if (isTreeSession) {
-        disableLayoutButton(true);
+      if (!isReplayingProperty().get()) {
+        disableAllButtons(false);
+        disableSpeedSlider(false);
+        boolean isTreeSession = currentSession
+            .getSessionType() instanceof TreeSessionType;
+        if (isTreeSession) {
+          disableLayoutButton(true);
+        }
       }
-      updateStepProperties();
+      updateStepProperties(currentSession);
     }
   }
 
   /**
    * Update step progress bar with correct max index and correct current index.
    * Disable step buttons correctly.
+   * 
+   * @param currentSession
    */
-  public void updateStepProperties() {
+  public void updateStepProperties(Session currentSession) {
+    Graph currentGraph = currentSession.getGraphHolder().getCurrentGraph();
 
-    Session currentSession = sessionHolder.getCurrentSession();
+    int maxIndex = currentSession.getTotalGraphCount();
+    totalGraphCountProperty.set(maxIndex);
 
-    if (currentSession != null) {
+    int currentIndex = currentGraph.getId();
+    currentGraphIdProperty.set(currentIndex);
 
-      Graph currentGraph = currentSession.getGraphHolder().getCurrentGraph();
-
-      int maxIndex = currentSession.getTotalGraphCount();
-      totalGraphCountProperty.set(maxIndex);
-
-      int currentIndex = currentGraph.getId();
-      currentGraphIdProperty.set(currentIndex);
-
-      if (!isReplayingProperty.get()) {
-        if (currentIndex == 1 && maxIndex == 1) {
-          disableStepButtons(true, true, true, true);
-          disableReplayButtons(true, true);
-        } else if (currentIndex <= 1) {
-          disableStepButtons(true, true, false, false);
-        } else if (currentIndex == maxIndex) {
-          disableStepButtons(false, false, true, true);
-        } else {
-          disableStepButtons(false, false, false, false);
-        }
+    if (!isReplayingProperty.get()) {
+      if (currentIndex == 1 && maxIndex == 1) {
+        disableStepButtons(true, true, true, true);
+        disableReplayButtons(true, true);
+      } else if (currentIndex <= 1) {
+        disableStepButtons(true, true, false, false);
+      } else if (currentIndex == maxIndex) {
+        disableStepButtons(false, false, true, true);
+      } else {
+        disableStepButtons(false, false, false, false);
       }
     }
   }
@@ -163,22 +161,23 @@ public class SessionViewModel {
   }
 
   public void pauseReplay() {
-    isReplayingProperty.set(false);
-    disableSpeedSlider(false);
     sessionHolder.getCurrentSession().pauseReplay();
+    isReplayingProperty.set(false);
+    updateButtonStates();
   }
 
   public void cancelReplay() {
+    // no need to call updateButtonState here
+    // that call is made when switching to the first graph after canceling
+    // replay
     isReplayingProperty.set(false);
-    disableSpeedSlider(false);
     sessionHolder.getCurrentSession().cancelReplay();
   }
 
   public void finishReplay() {
     Platform.runLater(() -> {
       isReplayingProperty.set(false);
-      disableAllButtons(false);
-      disableSpeedSlider(false);
+      updateButtonStates();
     });
   }
 
@@ -199,7 +198,7 @@ public class SessionViewModel {
     if (currentSession.getSessionType() instanceof GraphSessionType
         && currentGraph.getVertices().stream()
             .anyMatch(v -> !v.isUserPositioned())) {
-      
+
       ILayouter layouter = currentSession.getSessionType().getLayouter();
       layouter.layout(currentGraph, useRandomLayout, this::finishAutolayout);
     } else {

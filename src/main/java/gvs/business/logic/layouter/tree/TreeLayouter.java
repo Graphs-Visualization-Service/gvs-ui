@@ -51,7 +51,7 @@ public class TreeLayouter implements ILayouter {
         .map(v -> (TreeVertex) v).filter(v -> v.isRoot())
         .collect(Collectors.toList());
 
-    if (roots.isEmpty()) {
+    if (!graph.getVertices().isEmpty() && roots.isEmpty()) {
       throw new IllegalArgumentException(
           "No Root found. Check ModelBuilder and Persistor!");
     }

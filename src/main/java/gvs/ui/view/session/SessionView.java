@@ -14,6 +14,7 @@ import gvs.ui.view.controls.StepProgressBar;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
@@ -307,5 +308,9 @@ public class SessionView {
   private void autoLayout() {
     boolean useRandomLayout = randomLayoutSwitch.isSelected();
     sessionViewModel.autoLayout(useRandomLayout);
+  }
+  
+  public BooleanProperty isReplayingProperty() {
+    return sessionViewModel.isReplayingProperty();
   }
 }

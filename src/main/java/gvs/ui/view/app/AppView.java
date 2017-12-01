@@ -7,6 +7,7 @@ import com.google.inject.Singleton;
 
 import gvs.access.Configuration;
 import gvs.ui.logic.app.AppViewModel;
+import gvs.ui.view.session.SessionView;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
 import javafx.fxml.FXML;
@@ -50,6 +51,9 @@ public class AppView {
   @FXML
   private Parent sessionView;
 
+  @FXML
+  private SessionView sessionViewController;
+
   private final FileChooser fileChooser;
   private final AppViewModel appViewModel;
 
@@ -64,7 +68,7 @@ public class AppView {
     rootPane.setPrefWidth(Configuration.getWindowWidth());
     rootPane.setPrefHeight(Configuration.getWindowHeight());
 
-    initializeChildView();
+    initializeSessionView();
     initializeButtons();
     initializeFileChooser();
     fillDropDown();
@@ -99,18 +103,20 @@ public class AppView {
     saveSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.SAVE));
     saveSessionBtn.setTooltip(new Tooltip("Store Session"));
     saveSessionBtn.disableProperty()
-        .bind(appViewModel.sessionVisibilityProperty().not());
+        .bind(appViewModel.sessionVisibilityProperty().not()
+            .or(sessionViewController.isReplayingProperty()));
 
     deleteSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.TRASH));
     deleteSessionBtn.setTooltip(new Tooltip("Delete Session"));
     deleteSessionBtn.disableProperty()
-        .bind(appViewModel.sessionVisibilityProperty().not());
+        .bind(appViewModel.sessionVisibilityProperty().not()
+            .or(sessionViewController.isReplayingProperty()));
   }
 
   /**
    * Initialize session view visiblity and handle logo visiblity
    */
-  private void initializeChildView() {
+  private void initializeSessionView() {
     sessionView.setVisible(false);
     sessionView.visibleProperty()
         .bind(appViewModel.sessionVisibilityProperty());

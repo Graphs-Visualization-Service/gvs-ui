@@ -47,10 +47,10 @@ public class AppViewModel implements Observer {
       .getLogger(AppViewModel.class);
 
   @Inject
-  public AppViewModel(SessionHolder appModel,
+  public AppViewModel(SessionHolder sessionHolder,
       ApplicationController appController) {
 
-    this.sessionHolder = appModel;
+    this.sessionHolder = sessionHolder;
     this.appController = appController;
 
     this.sessionControlVisibilityProperty = new SimpleBooleanProperty();
@@ -115,7 +115,6 @@ public class AppViewModel implements Observer {
     if (sessionNames.isEmpty()) {
       currentSessionName.set(NO_SESSIONS_MSG);
     }
-    
     appController.deleteSession(currentSession);
   }
 
@@ -138,6 +137,7 @@ public class AppViewModel implements Observer {
   public void changeSession(String name) {
     logger.info("Detecting change in combobox.");
     if (isInvalidSessionName(name)) {
+      logger.warn("No valid session name");
       return;
     }
 

@@ -10,14 +10,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import gvs.business.logic.ApplicationController;
+import gvs.business.logic.GraphSessionType;
 import gvs.business.logic.Session;
+import gvs.business.logic.SessionFactory;
 import gvs.business.model.SessionHolder;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -36,39 +41,40 @@ import javafx.collections.ObservableList;
 public class AppViewModel implements Observer {
 
   private final BooleanProperty sessionControlVisibilityProperty;
-  private final StringProperty currentSessionName;
-  private final ObservableList<String> sessionNames;
-  private final Map<String, Session> sessionMap;
+  private final ObjectProperty<Session> currentSession;
+  private final ObservableList<Session> sessions;
   private final SessionHolder sessionHolder;
   private final ApplicationController appController;
 
-  private static final String NO_SESSIONS_MSG = "No active session";
+  private final Session sessionPlaceHolder;
   private static final Logger logger = LoggerFactory
       .getLogger(AppViewModel.class);
 
   @Inject
   public AppViewModel(SessionHolder sessionHolder,
-      ApplicationController appController) {
+      ApplicationController appController, SessionFactory sessionFactory,
+      Provider<GraphSessionType> graphSessionTypeProvider) {
 
     this.sessionHolder = sessionHolder;
     this.appController = appController;
 
     this.sessionControlVisibilityProperty = new SimpleBooleanProperty();
-    this.currentSessionName = new SimpleStringProperty();
-    this.sessionNames = FXCollections.observableArrayList();
-    this.sessionMap = new HashMap<>();
+    this.currentSession = new SimpleObjectProperty<>();
+    this.sessions = FXCollections.observableArrayList();
 
     this.sessionHolder.addObserver(this);
-    this.currentSessionName.set(NO_SESSIONS_MSG);
+    sessionPlaceHolder = sessionFactory.createSession(graphSessionTypeProvider.get(),
+        -1, "-- no active session --");
+    this.currentSession.set(sessionPlaceHolder);
 
-    sessionNames.addListener(this::changeSessionVisibility);
+    sessions.addListener(this::changeSessionVisibility);
   }
 
   private void changeSessionVisibility(
-      ListChangeListener.Change<? extends String> c) {
-    if (sessionNames.size() == 1) {
+      ListChangeListener.Change<? extends Session> c) {
+    if (sessions.size() == 1) {
       displaySession();
-    } else if (sessionNames.isEmpty()) {
+    } else if (sessions.isEmpty()) {
       hideSession();
     }
   }
@@ -93,13 +99,11 @@ public class AppViewModel implements Observer {
     Platform.runLater(() -> {
       Session currentSession = ((SessionHolder) o).getCurrentSession();
       if (currentSession == null) {
-        currentSessionName.set(NO_SESSIONS_MSG);
+        this.currentSession.set(sessionPlaceHolder);
       } else {
-        String name = currentSession.getSessionName();
-        currentSessionName.set(name);
-        sessionMap.put(name, currentSession);
-        if (!sessionNames.contains(name)) {
-          sessionNames.add(name);
+        this.currentSession.set(currentSession);
+        if (!sessions.contains(currentSession)) {
+          sessions.add(currentSession);
         }
       }
     });
@@ -108,12 +112,10 @@ public class AppViewModel implements Observer {
   public void removeCurrentSession() {
     logger.info("Removing current session...");
     Session currentSession = sessionHolder.getCurrentSession();
-    String sessionName = currentSession.getSessionName();
-    sessionNames.remove(sessionName);
-    sessionMap.remove(sessionName);
-    
-    if (sessionNames.isEmpty()) {
-      currentSessionName.set(NO_SESSIONS_MSG);
+    sessions.remove(currentSession);
+
+    if (sessions.isEmpty()) {
+      this.currentSession.set(sessionPlaceHolder);
     }
     appController.deleteSession(currentSession);
   }
@@ -130,37 +132,28 @@ public class AppViewModel implements Observer {
     // clicking cancel sets file to null
     if (file != null) {
       logger.info("Saving session to file...");
-      appController.saveSession(sessionHolder.getCurrentSession(),file);
+      appController.saveSession(sessionHolder.getCurrentSession(), file);
     }
   }
 
-  public void changeSession(String name) {
+  public void changeSession(Session session) {
     logger.info("Detecting change in combobox.");
-    if (isInvalidSessionName(name)) {
-      logger.warn("No valid session name");
-      return;
+    if (!sessionHolder.getCurrentSession().equals(session)) {
+      appController.changeCurrentSession(session);
+      logger.info("Changing current session to {}...",
+          session.getSessionName());
     }
-
-    Session c = sessionMap.get(name);
-    if (sessionHolder.getCurrentSession().getSessionName() != name) {
-      appController.changeCurrentSession(c);
-      logger.info("Changing current session to {}...", name);
-    }
-  }
-
-  private boolean isInvalidSessionName(String name) {
-    return name == null || name.isEmpty() || NO_SESSIONS_MSG.equals(name);
   }
 
   public BooleanProperty sessionVisibilityProperty() {
     return sessionControlVisibilityProperty;
   }
 
-  public ObservableList<String> getSessionNames() {
-    return sessionNames;
+  public ObservableList<Session> getSessions() {
+    return sessions;
   }
 
-  public StringProperty getCurrentSessionName() {
-    return currentSessionName;
+  public ObjectProperty<Session> getCurrentSession() {
+    return currentSession;
   }
 }

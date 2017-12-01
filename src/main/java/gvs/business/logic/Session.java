@@ -205,4 +205,9 @@ public class Session {
     }
     return true;
   }
+  
+  @Override
+  public String toString() {
+    return sessionName;
+  }
 }

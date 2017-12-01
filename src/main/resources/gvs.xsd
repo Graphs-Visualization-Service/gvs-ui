@@ -45,8 +45,8 @@
                 <xs:element name="Linecolor" type="xs:string"></xs:element>
                 <xs:element name="Linestyle" type="xs:string"></xs:element>
                 <xs:element name="Linethickness" type="xs:string"></xs:element>
-                <xs:element name="Fillcolor" type="xs:string"></xs:element>
-                <xs:element name="Icon" type="xs:string"></xs:element>
+                <xs:element name="Fillcolor" type="xs:string" minOccurs="0" maxOccurs="1"></xs:element>
+                <xs:element name="Icon" type="xs:string" minOccurs="0" maxOccurs="1"></xs:element>
             </xs:sequence>
         <xs:attribute name="Id" type="xs:long"></xs:attribute>
     </xs:complexType>
@@ -57,10 +57,8 @@
             <xs:element name="Linecolor" type="xs:string"></xs:element>
             <xs:element name="Linestyle" type="xs:string"></xs:element>
             <xs:element name="Linethickness" type="xs:string"></xs:element>
-            <xs:choice>
-                <xs:element name="Fillcolor" type="xs:string"></xs:element>
-                <xs:element name="Icon" type="xs:string"></xs:element>
-            </xs:choice>
+            <xs:element name="Fillcolor" type="xs:string" minOccurs="0" maxOccurs="1"></xs:element>
+            <xs:element name="Icon" type="xs:string" minOccurs="0" maxOccurs="1"></xs:element>
             <xs:element name="XPos" type="xs:double"></xs:element>
             <xs:element name="YPos" type="xs:double"></xs:element>
         </xs:sequence>

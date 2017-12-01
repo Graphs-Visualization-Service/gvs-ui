@@ -34,6 +34,8 @@ public class VertexViewModel implements Observer {
   private final Label label;
   private final Ellipse ellipse;
 
+  private static final int ICON_FONT_SIZE = 8;
+
   private static final Logger logger = LoggerFactory
       .getLogger(VertexViewModel.class);
 
@@ -58,7 +60,8 @@ public class VertexViewModel implements Observer {
     // setup label text and optional icon
     if (vertex.getIcon() != null) {
       logger.info("Creating VertexViewModel with an icon");
-      label.setGraphic(FontAwesome.createLabel(vertex.getIcon()));
+      label.setGraphic(
+          FontAwesome.createLabel(vertex.getIcon(), ICON_FONT_SIZE));
     }
     label.setText(vertex.getLabel());
     if (!vertex.isTreeVertex()) {
@@ -176,8 +179,7 @@ public class VertexViewModel implements Observer {
 
     // this hack forces the label to compute its height and width
     label.applyCss();
-    double xRadius = Math.min(label.prefWidth(-1),
-        label.getMaxWidth()) / 2;
+    double xRadius = Math.min(label.prefWidth(-1), label.getMaxWidth()) / 2;
     double yRadius = label.prefHeight(-1) / 2;
 
     ellipse.setRadiusX(xRadius);
@@ -199,6 +201,10 @@ public class VertexViewModel implements Observer {
     Color labelColor = ContrastColor
         .getContrastColor((Color) ellipse.getFill());
     label.setTextFill(labelColor);
+    if (label.getGraphic() != null) {
+      Label icon = (Label) label.getGraphic();
+      icon.setTextFill(labelColor);
+    }
   }
 
   /**

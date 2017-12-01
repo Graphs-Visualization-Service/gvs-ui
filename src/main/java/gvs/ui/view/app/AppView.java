@@ -71,14 +71,17 @@ public class AppView {
     initializeSessionView();
     initializeButtons();
     initializeFileChooser();
-    fillDropDown();
+    initializeSessionDropdown();
   }
 
   /**
    * Bind dropdown menu to active sessions. Bind selected dropdown menu item to
    * current session.
    */
-  private void fillDropDown() {
+  private void initializeSessionDropdown() {
+    chooseSessionBox.disableProperty()
+        .bind(sessionViewController.isReplayingProperty());
+
     chooseSessionBox.setItems(appViewModel.getSessionNames());
     chooseSessionBox.valueProperty()
         .bindBidirectional(appViewModel.getCurrentSessionName());

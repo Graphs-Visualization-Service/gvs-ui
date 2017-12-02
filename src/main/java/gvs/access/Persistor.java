@@ -255,14 +255,16 @@ public class Persistor {
     Element eYPos = eBinaryNode.addElement(YPOS);
     eYPos.addText(String.valueOf(pNode.getYPosition()));
 
-    // TODO: to truly make tree more general than binarytree: make changes here.
-    List<TreeVertex> children = pNode.getChildren();
-    if (children.size() > 0) {
+    List<Long> childIds = pNode.getChildIds();
+    long leftChildId = childIds.get(0);
+    long rightChildId = childIds.get(1);
+    if (leftChildId != -1) {
       Element eLeftChild = eBinaryNode.addElement(LEFTCHILD);
-      eLeftChild.addText(String.valueOf(children.get(0).getId()));
-    } else if (children.size() > 1) {
+      eLeftChild.addText(String.valueOf(leftChildId));
+    }
+    if (rightChildId != -1) {
       Element eRigthChild = eBinaryNode.addElement(RIGTHCHILD);
-      eRigthChild.addText(String.valueOf(children.get(1).getId()));
+      eRigthChild.addText(String.valueOf(rightChildId));
     }
   }
 

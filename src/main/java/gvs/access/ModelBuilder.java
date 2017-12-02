@@ -17,6 +17,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import gvs.Configuration;
 import gvs.business.logic.ApplicationController;
 import gvs.business.logic.GraphSessionType;
 import gvs.business.logic.ISessionType;

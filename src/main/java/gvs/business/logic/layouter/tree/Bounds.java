@@ -1,6 +1,6 @@
 package gvs.business.logic.layouter.tree;
 
-import gvs.access.Configuration;
+import gvs.Configuration;
 import gvs.business.model.tree.TreeVertex;
 
 public class Bounds {

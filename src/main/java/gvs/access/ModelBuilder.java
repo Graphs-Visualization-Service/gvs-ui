@@ -127,7 +127,7 @@ public class ModelBuilder {
     Map<Long, IVertex> vertices = new HashMap<>();
     Element verticesElement = pDocRoot.element(VERTIZES);
     verticesElement.elements().forEach(vertexElement -> {
-      IVertex newVertex = buildVertex(vertexElement);
+      IVertex newVertex = buildGraphVertex(vertexElement);
       vertices.put(newVertex.getId(), newVertex);
     });
 
@@ -278,15 +278,8 @@ public class ModelBuilder {
     return newVertex;
   }
 
-  /**
-   * Default Vertex Builder.
-   * 
-   * @param vertexElement
-   *          vertex
-   * @return vertex
-   */
-  private IVertex buildVertex(Element vertexElement) {
-    logger.debug("Build DefaultVertex XML");
+  private IVertex buildGraphVertex(Element vertexElement) {
+    logger.info("Build GraphVertex from XML");
 
     double xPos = 0;
     double yPos = 0;
@@ -313,7 +306,7 @@ public class ModelBuilder {
 
     long vertexId = Long.parseLong(vertexElement.attributeValue(ATTRIBUTEID));
 
-    logger.info("Finish building DefaultVertex");
+    logger.info("Finish building GraphVertex");
     return new GraphVertex(vertexId, label, style, xPos, yPos, icon);
   }
 

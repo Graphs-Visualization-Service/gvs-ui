@@ -37,16 +37,16 @@ public class ApplicationController {
    *          wrapper for the current session
    * @param persistor
    *          persistor
-   * @param graphSessionFactory
+   * @param sessionFactory
    *          factory for new sessions
    */
   @Inject
   public ApplicationController(SessionHolder sessionHolder, Persistor persistor,
-      SessionFactory graphSessionFactory) {
+      SessionFactory sessionFactory) {
 
     this.sessionHolder = sessionHolder;
     this.persistor = persistor;
-    this.sessionFactory = graphSessionFactory;
+    this.sessionFactory = sessionFactory;
   }
 
   /**

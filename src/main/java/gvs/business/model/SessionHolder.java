@@ -43,10 +43,10 @@ public class SessionHolder extends Observable {
 
     currentSession = newSession;
 
-    if (currentSession != null) {
-      Graph firstGraph = newSession.getGraphs().get(0);
-      newSession.getGraphHolder().setCurrentGraph(firstGraph);
-      
+    if (currentSession != null && currentSession.getGraphs().size() > 0) {
+      Graph firstGraph = currentSession.getGraphs().get(0);
+      currentSession.getGraphHolder().setCurrentGraph(firstGraph);
+
       setChanged();
       notifyObservers();
     }

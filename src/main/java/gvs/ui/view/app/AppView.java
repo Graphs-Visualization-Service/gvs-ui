@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import gvs.access.Configuration;
+import gvs.business.logic.Session;
 import gvs.ui.logic.app.AppViewModel;
 import gvs.ui.view.session.SessionView;
 import gvs.util.FontAwesome;
@@ -40,7 +41,7 @@ public class AppView {
   private Button deleteSessionBtn;
 
   @FXML
-  private ComboBox<String> chooseSessionBox;
+  private ComboBox<Session> chooseSessionBox;
 
   @FXML
   private BorderPane rootPane;
@@ -82,9 +83,9 @@ public class AppView {
     chooseSessionBox.disableProperty()
         .bind(sessionViewController.isReplayingProperty());
 
-    chooseSessionBox.setItems(appViewModel.getSessionNames());
+    chooseSessionBox.setItems(appViewModel.getSessions());
     chooseSessionBox.valueProperty()
-        .bindBidirectional(appViewModel.getCurrentSessionName());
+        .bindBidirectional(appViewModel.getCurrentSession());
   }
 
   /**
@@ -171,7 +172,8 @@ public class AppView {
 
   @FXML
   private void changeSession() {
-    String name = chooseSessionBox.getValue();
-    appViewModel.changeSession(name);
+    if (chooseSessionBox.getValue() != null) {
+      appViewModel.changeSession(chooseSessionBox.getValue());
+    }
   }
 }

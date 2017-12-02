@@ -172,6 +172,8 @@ public class AppView {
 
   @FXML
   private void changeSession() {
-    appViewModel.changeSession(chooseSessionBox.getValue());
+    if (chooseSessionBox.getValue() != null) {
+      appViewModel.changeSession(chooseSessionBox.getValue());
+    }
   }
 }

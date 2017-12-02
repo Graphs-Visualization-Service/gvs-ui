@@ -47,6 +47,9 @@ public class AppViewModel implements Observer {
   private final ApplicationController appController;
 
   private final Session sessionPlaceHolder;
+  private static final int PLACEHOLDER_SESSION_ID = -1;
+  private static final String PLACEHOLDER_SESSION_NAME = "-- no active session --";
+
   private static final Logger logger = LoggerFactory
       .getLogger(AppViewModel.class);
 
@@ -63,8 +66,9 @@ public class AppViewModel implements Observer {
     this.sessions = FXCollections.observableArrayList();
 
     this.sessionHolder.addObserver(this);
-    sessionPlaceHolder = sessionFactory.createSession(graphSessionTypeProvider.get(),
-        -1, "-- no active session --");
+    sessionPlaceHolder = sessionFactory.createSession(
+        graphSessionTypeProvider.get(), PLACEHOLDER_SESSION_ID,
+        PLACEHOLDER_SESSION_NAME);
     this.currentSession.set(sessionPlaceHolder);
 
     sessions.addListener(this::changeSessionVisibility);
@@ -139,9 +143,10 @@ public class AppViewModel implements Observer {
   public void changeSession(Session session) {
     logger.info("Detecting change in combobox.");
     if (!sessionHolder.getCurrentSession().equals(session)) {
-      appController.changeCurrentSession(session);
+
       logger.info("Changing current session to {}...",
           session.getSessionName());
+      appController.changeCurrentSession(session);
     }
   }
 

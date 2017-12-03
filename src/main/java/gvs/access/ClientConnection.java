@@ -31,9 +31,11 @@ public class ClientConnection extends Thread {
 
   private final Socket socketClient;
   private final ConnectionMonitor monitor;
+  private final Watchdog watchdog;
   private final ModelBuilder modelBuilder;
 
   private final GvsXmlReader xmlReader;
+  private Thread watchdogThread;
 
   // protocol messages
   private static final String OK = "OK";
@@ -59,12 +61,14 @@ public class ClientConnection extends Thread {
    */
   @Inject
   public ClientConnection(ConnectionMonitor monitor, ModelBuilder modelBuilder,
-      XmlReaderFactory xmlReaderFactory, @Assisted Socket client) {
+      Watchdog watchdog, XmlReaderFactory xmlReaderFactory,
+      @Assisted Socket client) {
 
     super(THREAD_NAME);
 
     this.modelBuilder = modelBuilder;
     this.socketClient = client;
+    this.watchdog = watchdog;
     this.monitor = monitor;
 
     this.xmlReader = xmlReaderFactory.create(DEFAULT_FILE_NAME);
@@ -92,14 +96,21 @@ public class ClientConnection extends Thread {
       StringBuffer data = new StringBuffer();
       String line;
       while ((line = inputReader.readLine()) != null) {
-
+        if (watchdog.isWatching()) {
+          watchdog.feed();
+        } 
+        
         int endCharIndex = line.indexOf(ProtocolCommand.DATA_END.toString());
 
         if (line.equals(ProtocolCommand.RESERVE_GVS.toString())) {
           logger.info("Reserve command detected.");
+          watchdogThread = new Thread(watchdog);
+          watchdogThread.start();
           reserveService();
         } else if (line.equals(ProtocolCommand.RELEASE_GVS.toString())) {
           logger.info("Release command detected.");
+          watchdog.stopWatching();
+          watchdogThread.join();
           releaseService();
           break;
         } else if (endCharIndex != -1) {
@@ -113,7 +124,7 @@ public class ClientConnection extends Thread {
           data.append(line);
         }
       }
-    } catch (IOException e) {
+    } catch (IOException | InterruptedException e) {
       logger.error("Unable to read incoming message of client {}",
           socketClient.getInetAddress(), e);
     }

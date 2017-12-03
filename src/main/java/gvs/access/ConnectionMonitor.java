@@ -18,6 +18,8 @@ public class ConnectionMonitor {
   private static final Logger logger = LoggerFactory
       .getLogger(ConnectionMonitor.class);
 
+  private static final String WATCHDOG = "watchdog";
+
   /**
    * Reserves the service for a client address.
    * 
@@ -45,10 +47,12 @@ public class ConnectionMonitor {
    *          client address
    */
   public synchronized void releaseService(String clientAddress) {
-    if (clientAddress != null && clientAddress.equals(currentOwnerAddress)) {
-      currentOwnerAddress = null;
-      notifyAll();
-      logger.info("Service released: " + clientAddress);
+    if (clientAddress != null) {
+      if (clientAddress.equals(currentOwnerAddress) || clientAddress.equals(WATCHDOG)) {
+        currentOwnerAddress = null;
+        notifyAll();
+        logger.info("Service released: " + clientAddress);
+      }
     }
   }
 

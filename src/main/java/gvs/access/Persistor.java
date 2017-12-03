@@ -187,7 +187,7 @@ public class Persistor {
 
     Element vertexElements = graphElement.addElement(VERTIZES);
     graph.getVertices().forEach(v -> {
-      saveDefaultVertex((GraphVertex) v, vertexElements);
+      saveGraphVertex((GraphVertex) v, vertexElements);
     });
     Element edgeElements = graphElement.addElement(EDGES);
     graph.getEdges().forEach(edge -> saveEdge(edge, edgeElements));
@@ -203,7 +203,7 @@ public class Persistor {
     });
   }
 
-  private void saveDefaultVertex(GraphVertex pVertex, Element pVertizes) {
+  private void saveGraphVertex(GraphVertex pVertex, Element pVertizes) {
     String vertexName = null;
 
     vertexName = DEFAULTVERTEX;
@@ -214,18 +214,21 @@ public class Persistor {
     String vertexLabel = pVertex.getLabel();
 
     eLabel.addText(vertexLabel);
-
-    saveStyle(eVertex, pVertex.getStyle(), true);
-
+    
     Element eXPos = eVertex.addElement(XPOS);
     eXPos.addText(String.valueOf(pVertex.getXPosition()));
     Element eYPos = eVertex.addElement(YPOS);
     eYPos.addText(String.valueOf(pVertex.getYPosition()));
+
+    saveStyle(eVertex, pVertex.getStyle(), true);
+
+    Glyph icon = pVertex.getIcon();
+    if ( icon != null) {
+      Element eIcon = eVertex.addElement(ICON);
+      eIcon.addText(icon.name());
+    }
   }
 
-  /*
-   * Creates the Edge element
-   */
   private void saveEdge(IEdge pEdge, Element edgesElement) {
     Element edgeElement = edgesElement.addElement(EDGE);
     edgeElement.addAttribute(ISDIRECTED, String.valueOf(pEdge.isDirected()));
@@ -431,7 +434,7 @@ public class Persistor {
     }
     long vertexId = Long.parseLong(vertexElement.attributeValue(ATTRIBUTEID));
 
-    logger.info("Finish building DefaultVertex");
+    logger.info("Finish building GraphVertex");
     return new GraphVertex(vertexId, label, style, xPos, yPos, icon);
   }
 

@@ -1,5 +1,5 @@
 
-package gvs.access;
+package gvs;
 
 import java.io.InputStream;
 
@@ -24,6 +24,7 @@ public class Configuration {
   private static final int WINDOW_WIDTH = 800;
   private static final int WINDOW_HEIGHT = 600;
   private static final int CONTENT_PANE_HEIGHT = 400;
+  private static final int ICON_FONT_SIZE = 8;
   private static final int AVG_PIXEL_PER_LETTER = 4;
   private static final int MAX_LABEL_LENGTH_TREE = 40;
   private static final int MAX_LABEL_LETTERS_TREE = MAX_LABEL_LENGTH_TREE
@@ -32,13 +33,9 @@ public class Configuration {
   private static final int MAX_LABEL_LETTERS_GRAPH = MAX_LABEL_LENGTH_TREE
       / AVG_PIXEL_PER_LETTER;
 
-  // Document
-  private static final String LAYOUTDELAY = "LayoutDelay";
-
   // Server
   private static final String SERVER = "Server";
   private static final String STARTPORT = "StartPort";
-  private static final String COMMUFILE = "CommunicationFile";
 
   // Communication
   private String commFilePath = "";
@@ -165,5 +162,9 @@ public class Configuration {
    */
   public static int getMaxLabelLettersForGraph() {
     return MAX_LABEL_LETTERS_GRAPH;
+  }
+  
+  public static int getIconFontSize() {
+    return ICON_FONT_SIZE;
   }
 }

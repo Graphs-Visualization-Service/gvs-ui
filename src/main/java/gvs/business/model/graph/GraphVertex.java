@@ -2,7 +2,7 @@ package gvs.business.model.graph;
 
 import java.util.Observable;
 
-import gvs.access.Configuration;
+import gvs.Configuration;
 import gvs.business.model.IVertex;
 import gvs.business.model.styles.GVSStyle;
 import gvs.util.FontAwesome.Glyph;

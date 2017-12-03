@@ -5,7 +5,7 @@ import java.io.File;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.access.Configuration;
+import gvs.Configuration;
 import gvs.business.logic.Session;
 import gvs.ui.logic.app.AppViewModel;
 import gvs.ui.view.session.SessionView;

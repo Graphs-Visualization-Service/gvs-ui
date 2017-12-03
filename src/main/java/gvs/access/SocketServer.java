@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
+import gvs.Configuration;
+
 /**
  * Socket Endpoint of GVS UI. The server is running in its own thread.
  * 

@@ -10,7 +10,6 @@ import com.gluonhq.ignite.guice.GuiceContext;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.access.Configuration;
 import gvs.access.SocketServer;
 import javafx.application.Application;
 import javafx.application.Platform;

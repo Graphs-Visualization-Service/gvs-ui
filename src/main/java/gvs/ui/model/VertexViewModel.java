@@ -6,6 +6,7 @@ import java.util.Observer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gvs.Configuration;
 import gvs.ScalablePane;
 import gvs.business.model.IVertex;
 import gvs.business.model.styles.GVSStyle;
@@ -58,7 +59,8 @@ public class VertexViewModel implements Observer {
     // setup label text and optional icon
     if (vertex.getIcon() != null) {
       logger.info("Creating VertexViewModel with an icon");
-      label.setGraphic(FontAwesome.createLabel(vertex.getIcon()));
+      label.setGraphic(FontAwesome.createLabel(vertex.getIcon(),
+          Configuration.getIconFontSize()));
     }
     label.setText(vertex.getLabel());
     if (!vertex.isTreeVertex()) {
@@ -176,8 +178,7 @@ public class VertexViewModel implements Observer {
 
     // this hack forces the label to compute its height and width
     label.applyCss();
-    double xRadius = Math.min(label.prefWidth(-1),
-        label.getMaxWidth()) / 2;
+    double xRadius = Math.min(label.prefWidth(-1), label.getMaxWidth()) / 2;
     double yRadius = label.prefHeight(-1) / 2;
 
     ellipse.setRadiusX(xRadius);
@@ -199,6 +200,10 @@ public class VertexViewModel implements Observer {
     Color labelColor = ContrastColor
         .getContrastColor((Color) ellipse.getFill());
     label.setTextFill(labelColor);
+    if (label.getGraphic() != null) {
+      Label icon = (Label) label.getGraphic();
+      icon.setTextFill(labelColor);
+    }
   }
 
   /**

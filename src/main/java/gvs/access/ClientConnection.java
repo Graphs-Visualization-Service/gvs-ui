@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
+import gvs.Configuration;
+
 /**
  * This class is the endpoint for each incoming connection.
  * 

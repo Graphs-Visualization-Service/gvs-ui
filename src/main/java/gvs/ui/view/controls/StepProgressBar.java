@@ -1,15 +1,12 @@
 package gvs.ui.view.controls;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gluonhq.ignite.guice.GuiceContext;
 import com.google.inject.Inject;
 
-import gvs.GuiceBaseModule;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

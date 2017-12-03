@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Singleton;
 
+import gvs.Configuration;
+
 /**
  * Guarantees that only one client can communicate with the service at a time.
  * 

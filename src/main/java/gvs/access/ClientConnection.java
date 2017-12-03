@@ -105,6 +105,7 @@ public class ClientConnection extends Thread {
         if (line.equals(ProtocolCommand.RESERVE_GVS.toString())) {
           logger.info("Reserve command detected.");
           watchdogThread = new Thread(watchdog);
+          watchdogThread.setName(Configuration.getWatchdog());
           watchdogThread.start();
           reserveService();
         } else if (line.equals(ProtocolCommand.RELEASE_GVS.toString())) {

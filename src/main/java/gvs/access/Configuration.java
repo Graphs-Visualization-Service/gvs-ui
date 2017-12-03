@@ -38,6 +38,7 @@ public class Configuration {
   // Server
   private static final String SERVER = "Server";
   private static final String STARTPORT = "StartPort";
+  private static final String WATCHDOG = "Watchdog";
   private static final String COMMUFILE = "CommunicationFile";
 
   // Communication
@@ -133,6 +134,10 @@ public class Configuration {
 
   public static int getWindowHeight() {
     return WINDOW_HEIGHT;
+  }
+
+  public static String getWatchdog() {
+    return WATCHDOG;
   }
 
   /**

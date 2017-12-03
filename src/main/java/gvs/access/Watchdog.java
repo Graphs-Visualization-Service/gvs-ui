@@ -23,7 +23,6 @@ public class Watchdog implements Runnable{
 
   private static final int WATCH_TIME = 1000;
   private static final int INTERVAL = 100;
-  private static final String WATCHDOG = "watchdog";
   private static final Logger logger = LoggerFactory.getLogger(Watchdog.class);
 
   @Inject
@@ -46,7 +45,7 @@ public class Watchdog implements Runnable{
     }
     if (isWatching) {
       logger.info("Watchdog forcefully releases service");
-      monitor.releaseService(WATCHDOG);
+      monitor.releaseService(Configuration.getWatchdog());
     }
     logger.info("Watchdog goes to sleep");
   }

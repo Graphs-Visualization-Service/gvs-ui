@@ -30,6 +30,7 @@ public class ConnectionMonitor {
       throws InterruptedException {
 
     while (currentOwnerAddress != null) {
+      logger.info("Client {} waits for service", clientAddress);
       wait();
     }
 
@@ -45,10 +46,13 @@ public class ConnectionMonitor {
    *          client address
    */
   public synchronized void releaseService(String clientAddress) {
-    if (clientAddress != null && clientAddress.equals(currentOwnerAddress)) {
-      currentOwnerAddress = null;
-      notifyAll();
-      logger.info("Service released: " + clientAddress);
+    if (clientAddress != null) {
+      if (clientAddress.equals(currentOwnerAddress)
+          || clientAddress.equals(Configuration.getWatchdog())) {
+        currentOwnerAddress = null;
+        notifyAll();
+        logger.info("Service released: " + clientAddress);
+      }
     }
   }
 

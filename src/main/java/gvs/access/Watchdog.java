@@ -9,12 +9,18 @@ import com.google.inject.Singleton;
 import gvs.Configuration;
 
 /**
+ * The Watchdog is responsible for severing stale client connections. Whenever a
+ * client connection is established, the watchdog is started in a new thread.
+ * During the connection the watchdog is being ''fed'' by the creater thread. If
+ * the connection goes stale, i.e. if no new data is received for a certain time
+ * interval, the watchdog goes hungry and forcefully severs the client
+ * connection, so the service is accessible for another client.
  * 
- * @author muriele
+ * @author mtrentini
  *
  */
 @Singleton
-public class Watchdog implements Runnable{
+public class Watchdog implements Runnable {
   private int stopwatch;
   private boolean isWatching;
 
@@ -29,6 +35,9 @@ public class Watchdog implements Runnable{
     this.monitor = monitor;
   }
 
+  /**
+   * Forcefully sever client connections, if the watchdog is not being fed.
+   */
   @Override
   public void run() {
     stopwatch = WATCH_TIME;
@@ -49,15 +58,25 @@ public class Watchdog implements Runnable{
     logger.info("Watchdog goes to sleep");
   }
 
+  /**
+   * Set the watchdog's timer back.
+   */
   public void feed() {
     logger.info("Watchdog is beeing fed.");
     stopwatch = WATCH_TIME;
   }
 
+  /**
+   * Informs the watchdog, that its service is no longer required.
+   */
   public void stopWatching() {
     isWatching = false;
   }
-  
+
+  /**
+   * 
+   * @return wheter the watchdog is active.
+   */
   public boolean isWatching() {
     return isWatching;
   }

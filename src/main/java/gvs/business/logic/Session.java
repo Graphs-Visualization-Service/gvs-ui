@@ -50,7 +50,7 @@ public class Session {
   }
 
   /**
-   * Adds a new graph session to an existing session.
+   * Adds a new graph to an existing session.
    * 
    * @param graph
    *          new graph

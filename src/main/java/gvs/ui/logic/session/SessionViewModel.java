@@ -197,19 +197,12 @@ public class SessionViewModel {
             .anyMatch(v -> !v.isUserPositioned())) {
 
       ILayouter layouter = currentSession.getSessionType().getLayouter();
-      layouter.layout(currentGraph, useRandomLayout, this::finishAutolayout);
+      layouter.layout(currentGraph, useRandomLayout, this::updateButtonStates);
     } else {
       layoutTooltip.set(LAYOUT_INFO_TOOLTIP);
       autoLayoutBtnDisableProperty.set(true);
-      finishAutolayout();
+      updateButtonStates();
     }
-  }
-
-  /**
-   * Auto layout callback function
-   */
-  public void finishAutolayout() {
-    disableAllButtons(false);
   }
 
   private void disableAllButtons(boolean disable) {

@@ -10,6 +10,11 @@
 	-orange: #ff8e05;
 	-yellow: #ffff00;
 	-green: #51bd84;
+	
+	-slight: 0.5;
+	-standard: 1.0;
+	-bold: 2.0;
+	-fat:3.0;
 
 	-fx-base: -grey;
 	-fx-background: -grey;
@@ -21,7 +26,7 @@
     	-fx-background-image: url("../../../../images/logo.png");
     	-fx-background-position: center;
     	-fx-background-repeat: no-repeat no-repeat;
-    	-fx-background-size: 200, 200;
+    	-fx-background-size: 200.0, 200.0;
 }
 
 .icon-button{

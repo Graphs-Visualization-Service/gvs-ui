@@ -6,9 +6,11 @@ import org.slf4j.LoggerFactory;
 import gvs.ScalablePane;
 import gvs.business.model.IEdge;
 import gvs.business.model.styles.GVSStyle;
+import gvs.util.ContrastColor;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -119,6 +121,17 @@ public class EdgeViewModel {
     logger.info("Drawing EdgeViewModel");
     graphPane.getContentPane().getChildren().addAll(edgePath, arrowPath, label);
     computeCoordinates();
+    correctLabelColor();
+  }
+  
+  /**
+   * Choose a label color with enough contrast to the line stroke color.
+   */
+  private void correctLabelColor() {
+    edgePath.applyCss();
+    Color labelColor = ContrastColor
+        .getContrastColor((Color) edgePath.getStroke());
+    label.setTextFill(labelColor);
   }
 
   /**

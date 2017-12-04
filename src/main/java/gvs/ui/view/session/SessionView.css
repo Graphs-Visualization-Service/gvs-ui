@@ -90,55 +90,67 @@
 .dotted-standard{
 	-fx-stroke-dash-array: 1.0 2.0;
 	-fx-stroke-line-cap : round;
-	-fx-stroke-width: 1.0;
+	-fx-stroke-width: -standard;
 }
 .dotted-slight{
 	-fx-stroke-dash-array: 1.0 1.5;
 	-fx-stroke-line-cap : round;
-	-fx-stroke-width: 0.5;
+	-fx-stroke-width: -slight;
 }
 .dotted-bold{
 	-fx-stroke-dash-array: 1.0 3.0;
 	-fx-stroke-line-cap : round;
-	-fx-stroke-width: 2.0;
+	-fx-stroke-width: -bold;
 }
 .dotted-fat{
 	-fx-stroke-dash-array: 1.0 4.0;
 	-fx-stroke-line-cap : round;
-	-fx-stroke-width: 3.0;
+	-fx-stroke-width: -fat;
 }
 .dashed-standard{
 	-fx-stroke-dash-array: 4.0 2.0;
-	-fx-stroke-width: 1.0;
+	-fx-stroke-width: -standard;
 }
 .dashed-slight{
 	-fx-stroke-dash-array: 4.0 1.5;
-	-fx-stroke-width: 0.5;
+	-fx-stroke-width: -slight;
 }
 .dashed-bold{
 	-fx-stroke-dash-array: 4.0 4.0;
-	-fx-stroke-width: 2.0;
+	-fx-stroke-width: -bold;
 }
 .dashed-fat{
 	-fx-stroke-dash-array: 4.0 5.0;
-	-fx-stroke-width: 3.0;
+	-fx-stroke-width: -fat;
+}
+.through-standard{
+	-fx-stroke-width: -standard;
+}
+.through-slight{
+	-fx-stroke-width: -slight;
+}
+.through-bold{
+	-fx-stroke-width: -bold;
+}
+.through-fat{
+	-fx-stroke-width: -fat;
 }
 
 /*-- ARROWHEAD THICKNESS--*/
 .thickness-standard {
-	-fx-stroke-width: 1.0;
+	-fx-stroke-width: -standard;
 	-fx-stroke-line-cap : round;
 }
 .thickness-slight {
-	-fx-stroke-width: 0.5;
+	-fx-stroke-width: -slight;
 	-fx-stroke-line-cap : round;
 }
 .thickness-bold {
-	-fx-stroke-width: 2.0;
+	-fx-stroke-width: -bold;
 	-fx-stroke-line-cap : round;
 }
 .thickness-fat {
-	-fx-stroke-width: 3.0;
+	-fx-stroke-width: -fat;
 	-fx-stroke-line-cap : round;
 }
 

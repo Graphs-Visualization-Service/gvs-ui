@@ -4,7 +4,7 @@ import gvs.Configuration;
 import gvs.business.model.tree.TreeVertex;
 
 public class Bounds {
-  private static final int VERTEX_LABEL_MARGIN = 20;
+  private static final int VERTEX_LABEL_MARGIN = 30;
   private static final int VERTEX_HEIGHT = 60;
   private double boundsTop = Double.MAX_VALUE;
   private double boundsRight = Double.MIN_VALUE;

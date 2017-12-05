@@ -32,7 +32,7 @@ public class TreeLayouter implements ILayouter {
   private static final double GAP_BETWEEN_FORESTS = 80;
   private static final double GAP_BETWEEN_LEVEL = 40;
   private static final double VERTEX_HEIGHT = 60;
-  private static final int VERTEX_LABEL_MARGIN = 20;
+  private static final int VERTEX_LABEL_MARGIN = 10;
   private static final double UPPER_MARGIN = 20;
 
   private TreeLayouterValues values;
@@ -329,8 +329,11 @@ public class TreeLayouter implements ILayouter {
   }
 
   private int getVertexWidth(TreeVertex v) {
-    return Math.min(v.getLabel().length() + VERTEX_LABEL_MARGIN,
-        Configuration.getMaxLabelLettersForTree());
+    int acctualWidth = v.getLabel().length() * Configuration.getAvgPixelPerLetter()
+        + VERTEX_LABEL_MARGIN;
+    int maxWidth = Configuration.getMaxLabelLengthForTree();
+    System.out.println(acctualWidth + " , "+ maxWidth);
+    return Math.min(acctualWidth, maxWidth);
   }
 
   private List<TreeVertex> getChildrenReverse(TreeVertex v) {

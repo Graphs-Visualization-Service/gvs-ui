@@ -1,12 +1,12 @@
 /*-- LABEL FONT --*/
 .edge-label {
-	-fx-font-size: 6.0px;
+	-fx-font-size: 24.0px;
     -fx-font-family: "Verdana";	
 }
 .vertex {
-	-fx-font-size: 8.0px;
+	-fx-font-size: 40.0px;
     -fx-font-family: "Verdana";	
-    	-fx-padding: 3.0px;
+    	-fx-padding: 12.0px;
 }
 
 /*-- EDGE LINE COLOR / VERTEX BORDER COLOR --*/
@@ -88,39 +88,39 @@
 /*-- LINESTYLES & THICKNESS--*/
 /* cannot be in seperate classes, because thickness overrides dash-array */
 .dotted-standard{
-	-fx-stroke-dash-array: 1.0 2.0;
+	-fx-stroke-dash-array: 4.0 8.0;
 	-fx-stroke-line-cap : round;
 	-fx-stroke-width: -standard;
 }
 .dotted-slight{
-	-fx-stroke-dash-array: 1.0 1.5;
+	-fx-stroke-dash-array: 4.0 6.0;
 	-fx-stroke-line-cap : round;
 	-fx-stroke-width: -slight;
 }
 .dotted-bold{
-	-fx-stroke-dash-array: 1.0 3.0;
+	-fx-stroke-dash-array: 4.0 12.0;
 	-fx-stroke-line-cap : round;
 	-fx-stroke-width: -bold;
 }
 .dotted-fat{
-	-fx-stroke-dash-array: 1.0 4.0;
+	-fx-stroke-dash-array: 4.0 16.0;
 	-fx-stroke-line-cap : round;
 	-fx-stroke-width: -fat;
 }
 .dashed-standard{
-	-fx-stroke-dash-array: 4.0 2.0;
+	-fx-stroke-dash-array: 16.0 8.0;
 	-fx-stroke-width: -standard;
 }
 .dashed-slight{
-	-fx-stroke-dash-array: 4.0 1.5;
+	-fx-stroke-dash-array: 16.0 6.0;
 	-fx-stroke-width: -slight;
 }
 .dashed-bold{
-	-fx-stroke-dash-array: 4.0 4.0;
+	-fx-stroke-dash-array: 16.0 16.0;
 	-fx-stroke-width: -bold;
 }
 .dashed-fat{
-	-fx-stroke-dash-array: 4.0 5.0;
+	-fx-stroke-dash-array: 16.0 20.0;
 	-fx-stroke-width: -fat;
 }
 .through-standard{

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import gvs.business.model.IEdge;
 import gvs.business.model.styles.GVSStyle;
 import gvs.ui.view.ScalablePane;
+import gvs.ui.view.ScalableScrollPane;
 import gvs.util.ContrastColor;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
@@ -117,13 +118,13 @@ public class EdgeViewModel {
    * @param graphPane
    *          scaleable graph pane
    */
-  public void draw(ScalablePane graphPane) {
+  public void draw(ScalableScrollPane graphPane) {
     logger.info("Drawing EdgeViewModel");
-    graphPane.getContentPane().getChildren().addAll(edgePath, arrowPath, label);
+    graphPane.addNodes(edgePath, arrowPath, label);
     computeCoordinates();
     correctLabelColor();
   }
-  
+
   /**
    * Choose a label color with enough contrast to the line stroke color.
    */
@@ -215,8 +216,8 @@ public class EdgeViewModel {
     double xRadius = label.prefWidth(-1) / 2;
     double yRadius = label.prefHeight(-1) / 2;
     Point2D middle = startPoint.midpoint(endPoint);
-    label.setLayoutX(middle.getX()-xRadius);
-    label.setLayoutY(middle.getY()-yRadius);
+    label.setLayoutX(middle.getX() - xRadius);
+    label.setLayoutY(middle.getY() - yRadius);
   }
 
   /**
@@ -247,8 +248,8 @@ public class EdgeViewModel {
    */
   private void drawArrowHead(double startX, double startY) {
     arrowPath.getElements().addAll(new MoveTo(startX, startY),
-        new LineTo(startX - 5, startY + 2), new MoveTo(startX, startY),
-        new LineTo(startX - 5, startY - 2));
+        new LineTo(startX - 20, startY + 8), new MoveTo(startX, startY),
+        new LineTo(startX - 20, startY - 8));
   }
 
   /**

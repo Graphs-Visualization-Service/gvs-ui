@@ -279,18 +279,4 @@ public class SessionViewModel {
   public StringProperty layoutTooltip() {
     return layoutTooltip;
   }
-
-  public void setMaxScale(ScalablePane graphPane) {
-    Session current = sessionHolder.getCurrentSession();
-    if (current != null) {
-      boolean isTreeSession = sessionHolder.getCurrentSession().getSessionType() instanceof TreeSessionType;
-      if (isTreeSession) {
-        graphPane.setMaxScaleX(2);
-        graphPane.setMaxScaleY(2);
-      } else {
-        graphPane.setMaxScaleX(Double.MAX_VALUE);
-        graphPane.setMaxScaleY(Double.MAX_VALUE);
-      }
-    }
-  }
 }

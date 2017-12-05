@@ -23,12 +23,12 @@ public class Configuration {
   private static final int WINDOW_WIDTH = 1000;
   private static final int WINDOW_HEIGHT = 700;
   private static final int CONTENT_PANE_HEIGHT = 500;
-  private static final int ICON_FONT_SIZE = 8;
-  private static final int AVG_PIXEL_PER_LETTER = 4;
-  private static final int MAX_LABEL_LENGTH_TREE = 40;
+  private static final int ICON_FONT_SIZE = 32;
+  private static final int AVG_PIXEL_PER_LETTER = 16;
+  private static final int MAX_LABEL_LENGTH_TREE = 160;
   private static final int MAX_LABEL_LETTERS_TREE = MAX_LABEL_LENGTH_TREE
       / AVG_PIXEL_PER_LETTER;
-  private static final int MAX_LABEL_LENGTH_GRAPH = 80;
+  private static final int MAX_LABEL_LENGTH_GRAPH = 320;
   private static final int MAX_LABEL_LETTERS_GRAPH = MAX_LABEL_LENGTH_TREE
       / AVG_PIXEL_PER_LETTER;
 

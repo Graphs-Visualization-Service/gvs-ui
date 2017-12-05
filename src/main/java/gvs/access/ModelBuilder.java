@@ -72,7 +72,7 @@ public class ModelBuilder {
   private static final String RIGTHCHILD = "Rigthchild";
   private static final String LEFTCHILD = "Leftchild";
 
-  private static final int SCALE_FACTOR = 2;
+  private static final int SCALE_FACTOR = 1;
 
   // Logger
   private static final Logger logger = LoggerFactory

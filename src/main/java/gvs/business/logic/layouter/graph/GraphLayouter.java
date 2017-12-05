@@ -42,9 +42,9 @@ public class GraphLayouter implements Tickable, ILayouter {
   private final AreaTickerFactory tickerFactory;
   private final Area area;
 
-  private static final int PARTICLE_WEIGHT = 10;
-  private static final int TRACTION_DISTANCE = 40;
-  private static final int TRACTION_IMPACT = 5;
+  private static final int PARTICLE_WEIGHT = 40;
+  private static final int TRACTION_DISTANCE = 160;
+  private static final int TRACTION_IMPACT = 20;
 
   private static final int SEEDED_MULTIPLIER = 100;
 

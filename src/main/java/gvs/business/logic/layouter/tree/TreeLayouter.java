@@ -28,12 +28,12 @@ import gvs.util.Action;
  */
 public class TreeLayouter implements ILayouter {
 
-  private static final double GAP_BETWEEN_VERTICES = 10;
-  private static final double GAP_BETWEEN_FORESTS = 20;
-  private static final double GAP_BETWEEN_LEVEL = 10;
-  private static final double VERTEX_HEIGHT = 15;
-  private static final int VERTEX_LABEL_MARGIN = 4;
-  private static final double UPPER_MARGIN = 10;
+  private static final double GAP_BETWEEN_VERTICES = 40;
+  private static final double GAP_BETWEEN_FORESTS = 80;
+  private static final double GAP_BETWEEN_LEVEL = 40;
+  private static final double VERTEX_HEIGHT = 60;
+  private static final int VERTEX_LABEL_MARGIN = 20;
+  private static final double UPPER_MARGIN = 20;
 
   private TreeLayouterValues values;
   private Bounds bounds;

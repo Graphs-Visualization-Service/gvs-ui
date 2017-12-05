@@ -10,6 +10,7 @@ import com.google.inject.Singleton;
 import gvs.ui.logic.session.SessionViewModel;
 import gvs.ui.model.GraphViewModel;
 import gvs.ui.view.ScalablePane;
+import gvs.ui.view.ScalableScrollPane;
 import gvs.ui.view.controls.StepProgressBar;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
@@ -37,7 +38,7 @@ public class SessionView {
   private BorderPane sessionRoot;
 
   @FXML
-  private ScalablePane graphPane;
+  private ScalableScrollPane graphPane;
 
   @FXML
   private Button autoLayoutBtn;
@@ -118,8 +119,6 @@ public class SessionView {
     initializeStepIndicator();
     initializeButtons();
     bindReplayIcons();
-
-    graphPane.setAutoRescale(false);
 
     graphViewModel.setPane(graphPane);
 

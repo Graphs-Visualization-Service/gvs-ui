@@ -11,6 +11,7 @@ import gvs.business.model.IVertex;
 import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
 import gvs.ui.view.ScalablePane;
+import gvs.ui.view.ScalableScrollPane;
 import gvs.util.ContrastColor;
 import gvs.util.FontAwesome;
 import javafx.application.Platform;
@@ -173,9 +174,9 @@ public class VertexViewModel implements Observer {
    * @param graphPane
    *          given scaleable pane
    */
-  public void draw(ScalablePane graphPane) {
+  public void draw(ScalableScrollPane graphPane) {
     logger.info("Drawing VertexViewModel.");
-    graphPane.getContentPane().getChildren().addAll(ellipse, label);
+    graphPane.addNodes(ellipse, label);
 
     // this hack forces the label to compute its height and width
     label.applyCss();
@@ -213,7 +214,7 @@ public class VertexViewModel implements Observer {
    * @param graphPane
    *          parent pane
    */
-  private void dragSupport(ScalablePane graphPane) {
+  private void dragSupport(ScalableScrollPane graphPane) {
 
     if (!vertex.isTreeVertex()) {
 
@@ -221,9 +222,9 @@ public class VertexViewModel implements Observer {
 
       label.setOnMousePressed(e -> {
         dragOriginalSceneX = e.getSceneX()
-            / graphPane.getContentScaleTransform().getX();
+            / graphPane.getScaleValue();
         dragOriginalSceneY = e.getSceneY()
-            / graphPane.getContentScaleTransform().getY();
+            / graphPane.getScaleValue();
       });
 
       label.setOnMouseDragged(e -> {
@@ -231,15 +232,15 @@ public class VertexViewModel implements Observer {
         logger.debug("Mouse drag on VertexViewModel detected.");
 
         double offsetX = (e.getSceneX()
-            / graphPane.getContentScaleTransform().getX()) - dragOriginalSceneX;
+            / graphPane.getScaleValue()) - dragOriginalSceneX;
         double offsetY = (e.getSceneY()
-            / graphPane.getContentScaleTransform().getY()) - dragOriginalSceneY;
+            / graphPane.getScaleValue()) - dragOriginalSceneY;
 
         double newX = ellipse.getCenterX() + offsetX;
         double newY = ellipse.getCenterY() + offsetY;
 
-        newX = checkXBoundaries(newX, graphPane);
-        newY = checkYBoundaries(newY, graphPane);
+//        newX = checkXBoundaries(newX, graphPane);
+//        newY = checkYBoundaries(newY, graphPane);
 
         updateCoordinates(newX, newY);
 
@@ -247,9 +248,9 @@ public class VertexViewModel implements Observer {
 
         // remember last coordinates
         dragOriginalSceneX = e.getSceneX()
-            / graphPane.getContentScaleTransform().getX();
+            / graphPane.getScaleValue();
         dragOriginalSceneY = e.getSceneY()
-            / graphPane.getContentScaleTransform().getY();
+            / graphPane.getScaleValue();
       });
     }
   }
@@ -263,7 +264,7 @@ public class VertexViewModel implements Observer {
    *          parent
    * @return x coordinate within range
    */
-  private double checkXBoundaries(double newX, ScalablePane graphPane) {
+  private double checkXBoundaries(double newX, ScalableScrollPane graphPane) {
     newX = Math.max(newX, ellipse.getRadiusX());
     newX = Math.min(newX, graphPane.getBoundsInLocal().getWidth());
     return newX;
@@ -278,7 +279,7 @@ public class VertexViewModel implements Observer {
    *          parent
    * @return y coordinate within range
    */
-  private double checkYBoundaries(double newY, ScalablePane graphPane) {
+  private double checkYBoundaries(double newY, ScalableScrollPane graphPane) {
     newY = Math.max(newY, ellipse.getRadiusY());
     newY = Math.min(newY, graphPane.getBoundsInLocal().getHeight());
     return newY;

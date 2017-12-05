@@ -17,7 +17,6 @@ public class ScalableScrollPane extends ScrollPane {
   private final Group contentGroup;
   private final Scale scale;
 
-
   public ScalableScrollPane() {
 
     setPadding(new Insets(20));
@@ -34,7 +33,7 @@ public class ScalableScrollPane extends ScrollPane {
     contentGroup.scaleYProperty().bind(scale.yProperty());
     contentGroup.boundsInParentProperty().addListener((o, old, newVal) -> {
       zoomToContent();
-  }); 
+    });
     setContent(contentGroup);
   }
 
@@ -45,8 +44,7 @@ public class ScalableScrollPane extends ScrollPane {
     double viewPortWidth = getViewportBounds().getWidth();
     double viewPortHeight = getViewportBounds().getHeight();
 
-    if ((contentWidth > 0 && contentHeight > 0)
-        && !(contentWidth < viewPortWidth && contentHeight < viewPortHeight)) {
+    if (contentWidth > 0 && contentHeight > 0) {
 
       double scaleX = viewPortWidth / contentWidth;
       double scaleY = viewPortHeight / contentHeight;
@@ -54,10 +52,8 @@ public class ScalableScrollPane extends ScrollPane {
       double minScale = Math.min(scaleX, scaleY);
       scale.setX(minScale);
       scale.setY(minScale);
-      setVvalue(0.5);
-      setHvalue(0.5);
-    } else {
-      contentGroup.relocate((viewPortWidth-contentWidth)/2, (viewPortHeight-contentHeight)/2);
+      contentGroup.relocate((viewPortWidth - contentWidth) / 2,
+          (viewPortHeight - contentHeight) / 2);
     }
   }
 

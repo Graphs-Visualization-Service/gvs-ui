@@ -329,10 +329,9 @@ public class TreeLayouter implements ILayouter {
   }
 
   private int getVertexWidth(TreeVertex v) {
-    int acctualWidth = v.getLabel().length() * Configuration.getAvgPixelPerLetter()
-        + VERTEX_LABEL_MARGIN;
+    int acctualWidth = v.getLabel().length()
+        * Configuration.getAvgPixelPerLetter() + VERTEX_LABEL_MARGIN;
     int maxWidth = Configuration.getMaxLabelLengthForTree();
-    System.out.println(acctualWidth + " , "+ maxWidth);
     return Math.min(acctualWidth, maxWidth);
   }
 

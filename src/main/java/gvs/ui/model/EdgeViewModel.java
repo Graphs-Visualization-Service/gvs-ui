@@ -185,7 +185,7 @@ public class EdgeViewModel {
   }
 
   private void drawSelfReference(Point2D startPoint) {
-    int selfReferenceLength = 10;
+    int selfReferenceLength = 40;
     Point2D upperRightCorner = new Point2D(startPoint.getX(),
         startPoint.getY() - selfReferenceLength);
     Point2D upperLeftCorner = new Point2D(

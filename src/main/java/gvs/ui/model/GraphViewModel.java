@@ -91,7 +91,6 @@ public class GraphViewModel extends Observable implements Observer {
       if (graphPane != null) {
         Graph currentGraph = graphHolder.getCurrentGraph();
         draw(currentGraph);
-        graphPane.zoomToContent();
         sessionViewModel.updateButtonStates();
       } else {
         logger.warn("GraphPane has not been set before drawing!");

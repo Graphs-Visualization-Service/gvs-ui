@@ -3,9 +3,9 @@ package gvs.ui.model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.ScalablePane;
 import gvs.business.model.IEdge;
 import gvs.business.model.styles.GVSStyle;
+import gvs.ui.view.ScalablePane;
 import gvs.util.ContrastColor;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;

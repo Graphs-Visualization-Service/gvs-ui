@@ -9,19 +9,16 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import gvs.ScalablePane?>
+<?import gvs.ui.view.ScalablePane?>
 <?import javafx.scene.layout.HBox?>
 <?import org.controlsfx.control.ToggleSwitch?>
 
-<BorderPane fx:id="sessionRoot" stylesheets="@SessionView.css" xmlns="http://javafx.com/javafx/8.0.111"
-	xmlns:fx="http://javafx.com/fxml/1" fx:controller="gvs.ui.view.session.SessionView">
+<BorderPane fx:id="sessionRoot" stylesheets="@SessionView.css"
+	xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="gvs.ui.view.session.SessionView">
 
 	<center>
-		<ScalablePane fx:id="graphPane">
-			<padding>
-				<Insets top="20" right="10" bottom="20" left="10" />
-			</padding>
-		</ScalablePane>
+		<ScalablePane fx:id="graphPane" />
 	</center>
 
 	<bottom>

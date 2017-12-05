@@ -14,12 +14,12 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.ScalablePane;
 import gvs.business.model.Graph;
 import gvs.business.model.GraphHolder;
 import gvs.business.model.IEdge;
 import gvs.business.model.IVertex;
 import gvs.ui.logic.session.SessionViewModel;
+import gvs.ui.view.ScalablePane;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

@@ -1,4 +1,4 @@
-package gvs;
+package gvs.ui.view;
 
 /**
  * ScalableContentPane.java

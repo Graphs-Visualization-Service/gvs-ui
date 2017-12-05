@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.ScalablePane;
 import gvs.ui.logic.session.SessionViewModel;
 import gvs.ui.model.GraphViewModel;
+import gvs.ui.view.ScalablePane;
 import gvs.ui.view.controls.StepProgressBar;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;

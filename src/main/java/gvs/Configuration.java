@@ -20,10 +20,9 @@ import com.google.inject.Singleton;
 @Singleton
 public class Configuration {
 
-  // UI
-  private static final int WINDOW_WIDTH = 800;
-  private static final int WINDOW_HEIGHT = 600;
-  private static final int CONTENT_PANE_HEIGHT = 400;
+  private static final int WINDOW_WIDTH = 1000;
+  private static final int WINDOW_HEIGHT = 700;
+  private static final int CONTENT_PANE_HEIGHT = 500;
   private static final int ICON_FONT_SIZE = 8;
   private static final int AVG_PIXEL_PER_LETTER = 4;
   private static final int MAX_LABEL_LENGTH_TREE = 40;
@@ -37,15 +36,9 @@ public class Configuration {
   private static final String SERVER = "Server";
   private static final String STARTPORT = "StartPort";
   private static final String WATCHDOG = "Watchdog";
-  private static final String COMMUFILE = "CommunicationFile";
 
   // Communication
-  private String commFilePath = "";
   private String startPort = "";
-
-  // Layouter
-  private int layoutDelay = DEFAULT_LAYOUT_DELAY;
-  private static final int DEFAULT_LAYOUT_DELAY = 1500;
 
   // Logger
   private static final Logger logger = LoggerFactory
@@ -97,29 +90,12 @@ public class Configuration {
   }
 
   /**
-   * Returns the path, where the communicationfile have been written.
-   * 
-   * @return commFilePath
-   */
-  public String getCommFilePath() {
-    return commFilePath;
-  }
-
-  /**
    * Returns the port.
    * 
    * @return startPort
    */
   public String getStartPort() {
     return startPort;
-  }
-
-  /**
-   * 
-   * @return the layoutdelay
-   */
-  public int getLayoutDelay() {
-    return layoutDelay;
   }
 
   public static int getContentPaneHeight() {
@@ -153,7 +129,7 @@ public class Configuration {
   public static int getMaxLabelLettersForTree() {
     return MAX_LABEL_LETTERS_TREE;
   }
-  
+
   /**
    * 
    * @return the maximum length of a tree label
@@ -169,7 +145,7 @@ public class Configuration {
   public static int getMaxLabelLettersForGraph() {
     return MAX_LABEL_LETTERS_GRAPH;
   }
-  
+
   public static int getIconFontSize() {
     return ICON_FONT_SIZE;
   }

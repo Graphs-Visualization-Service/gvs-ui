@@ -10,7 +10,6 @@ import gvs.Configuration;
 import gvs.business.model.IVertex;
 import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
-import gvs.ui.view.ScalablePane;
 import gvs.ui.view.ScalableScrollPane;
 import gvs.util.ContrastColor;
 import gvs.util.FontAwesome;

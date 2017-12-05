@@ -19,7 +19,6 @@ import gvs.business.model.GraphHolder;
 import gvs.business.model.IEdge;
 import gvs.business.model.IVertex;
 import gvs.ui.logic.session.SessionViewModel;
-import gvs.ui.view.ScalablePane;
 import gvs.ui.view.ScalableScrollPane;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;

@@ -4,7 +4,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Scale;
 
 /**
@@ -14,14 +13,14 @@ import javafx.scene.transform.Scale;
  */
 public class ScalableScrollPane extends ScrollPane {
 
-  private final int MAX_SCALE = 1;
   private final Group contentGroup;
   private final Scale scale;
+
+  private static final int MAX_SCALE = 1;
 
   public ScalableScrollPane() {
 
     setPadding(new Insets(20));
-    setStyle("-fx-background-color: red");
     setPannable(false);
     setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -51,8 +50,10 @@ public class ScalableScrollPane extends ScrollPane {
 
       double minScale = Math.min(scaleX, scaleY);
       minScale = Math.min(MAX_SCALE, minScale);
+
       scale.setX(minScale);
       scale.setY(minScale);
+
       contentGroup.relocate((viewPortWidth - contentWidth) / 2,
           (viewPortHeight - contentHeight) / 2);
     }

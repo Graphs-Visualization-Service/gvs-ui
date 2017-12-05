@@ -12,7 +12,6 @@ import gvs.business.logic.TreeSessionType;
 import gvs.business.logic.layouter.ILayouter;
 import gvs.business.model.Graph;
 import gvs.business.model.SessionHolder;
-import gvs.ui.view.ScalablePane;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;

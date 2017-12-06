@@ -1,6 +1,7 @@
 package gvs.access;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.sql.rowset.spi.XmlWriter;
@@ -60,15 +61,15 @@ public class GvsXmlReader {
 
   /**
    * Read the input file and pass the XML document to the {@link ModelBuilder}.
+   * @param input 
    * 
    * @return parsed document
    */
-  public Document read() {
-    File inputFile = new File(fileName);
+  public Document read(InputStream input) {
     try {
-      return xmlReader.read(inputFile);
+      return xmlReader.read(input);
     } catch (Exception e) {
-      logger.error("Cannot read file {}", inputFile.getName(), e);
+      logger.error("Cannot read input stream", e);
       return null;
     }
   }

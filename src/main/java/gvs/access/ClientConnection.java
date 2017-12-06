@@ -1,16 +1,12 @@
 package gvs.access;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 import org.dom4j.Document;
 import org.slf4j.Logger;
@@ -58,6 +54,8 @@ public class ClientConnection extends Thread {
    *          modelbuilder which processes the parsed xml.
    * @param monitor
    *          monitor to reserve the GVS service
+   * @param watchdog
+   *          connection watchdog
    * @param xmlReaderFactory
    *          xml reader used to read the created xml
    */
@@ -100,8 +98,8 @@ public class ClientConnection extends Thread {
       while ((line = inputReader.readLine()) != null) {
         if (watchdog.isWatching()) {
           watchdog.feed();
-        } 
-        
+        }
+
         int endCharIndex = line.indexOf(ProtocolCommand.DATA_END.toString());
 
         if (line.equals(ProtocolCommand.RESERVE_GVS.toString())) {
@@ -119,8 +117,8 @@ public class ClientConnection extends Thread {
         } else if (endCharIndex != -1) {
           logger.info("End of data detected.");
           data.append(line.substring(0, endCharIndex));
-          storeDataOnFilesystem(data.toString());
-          readAndTransformModel();
+          readAndTransformModel(
+              new ByteArrayInputStream(data.toString().getBytes()));
           data.setLength(0);
         } else {
           logger.info("Data detected");
@@ -175,31 +173,11 @@ public class ClientConnection extends Thread {
   }
 
   /**
-   * Store the incoming data locally.
-   * 
-   * @param line
-   *          data line
-   * @throws IOException
-   *           io exception
-   */
-  private void storeDataOnFilesystem(String line) throws IOException {
-
-    Path path = Paths.get(DEFAULT_FILE_NAME);
-    try (BufferedWriter writer = Files.newBufferedWriter(path,
-        StandardCharsets.UTF_8, StandardOpenOption.WRITE,
-        StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
-
-      writer.write(line);
-      writer.flush();
-    }
-  }
-
-  /**
    * Read the just written xml file and transform to graph model.
    */
-  private void readAndTransformModel() {
+  private void readAndTransformModel(InputStream input) {
     logger.info("Build model from parsed xml");
-    Document document = xmlReader.read();
+    Document document = xmlReader.read(input);
     if (document != null) {
       modelBuilder.buildModelFromXML(document);
     } else {

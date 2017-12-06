@@ -55,13 +55,12 @@ public class ClientConnection extends Thread {
    *          monitor to reserve the GVS service
    * @param watchdog
    *          connection watchdog
-   * @param xmlReaderFactory
-   *          xml reader used to read the created xml
+   * @param gvsXmlReader
+   *          xml reader used to read the created xml stream
    */
   @Inject
   public ClientConnection(ConnectionMonitor monitor, ModelBuilder modelBuilder,
-      Watchdog watchdog, GvsXmlReader gvsXmlReader,
-      @Assisted Socket client) {
+      Watchdog watchdog, GvsXmlReader gvsXmlReader, @Assisted Socket client) {
 
     super(THREAD_NAME);
 
@@ -115,8 +114,8 @@ public class ClientConnection extends Thread {
         } else if (endCharIndex != -1) {
           logger.info("End of data detected.");
           data.append(line.substring(0, endCharIndex));
-          readAndTransformModel(
-              new ByteArrayInputStream(data.toString().getBytes()));
+          byte[] fullGraph = data.toString().getBytes();
+          readAndTransformModel(new ByteArrayInputStream(fullGraph));
           data.setLength(0);
         } else {
           logger.info("Data detected");

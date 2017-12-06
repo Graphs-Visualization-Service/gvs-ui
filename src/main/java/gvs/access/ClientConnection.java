@@ -39,7 +39,6 @@ public class ClientConnection extends Thread {
   private static final String OK = "OK";
   private static final String FAILED = "FAILED";
 
-  private static final String DEFAULT_FILE_NAME = "input.xml";
   private static final String THREAD_NAME = "Client Connection Thread";
 
   private static final Logger logger = LoggerFactory
@@ -61,7 +60,7 @@ public class ClientConnection extends Thread {
    */
   @Inject
   public ClientConnection(ConnectionMonitor monitor, ModelBuilder modelBuilder,
-      Watchdog watchdog, XmlReaderFactory xmlReaderFactory,
+      Watchdog watchdog, GvsXmlReader gvsXmlReader,
       @Assisted Socket client) {
 
     super(THREAD_NAME);
@@ -70,8 +69,7 @@ public class ClientConnection extends Thread {
     this.socketClient = client;
     this.watchdog = watchdog;
     this.monitor = monitor;
-
-    this.xmlReader = xmlReaderFactory.create(DEFAULT_FILE_NAME);
+    this.xmlReader = gvsXmlReader;
   }
 
   /**

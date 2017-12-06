@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 
 /**
  * Reads input XML of a {@link XmlWriter} and passes the document to the
@@ -24,7 +23,6 @@ import com.google.inject.assistedinject.Assisted;
  */
 public class GvsXmlReader {
 
-  private final String fileName;
   private final SAXReader xmlReader;
 
   private static final String SCHEMA = "gvs.xsd";
@@ -36,11 +34,8 @@ public class GvsXmlReader {
       .getLogger(GvsXmlReader.class);
 
   @Inject
-  public GvsXmlReader(SAXReader reader, @Assisted String fileName) {
-
+  public GvsXmlReader(SAXReader reader) {
     this.xmlReader = reader;
-    this.fileName = fileName;
-
     applySchema();
   }
 

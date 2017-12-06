@@ -1,6 +1,7 @@
 package gvs.access;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.sql.rowset.spi.XmlWriter;
@@ -11,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 
 /**
  * Reads input XML of a {@link XmlWriter} and passes the document to the
@@ -23,7 +23,6 @@ import com.google.inject.assistedinject.Assisted;
  */
 public class GvsXmlReader {
 
-  private final String fileName;
   private final SAXReader xmlReader;
 
   private static final String SCHEMA = "gvs.xsd";
@@ -35,11 +34,8 @@ public class GvsXmlReader {
       .getLogger(GvsXmlReader.class);
 
   @Inject
-  public GvsXmlReader(SAXReader reader, @Assisted String fileName) {
-
+  public GvsXmlReader(SAXReader reader) {
     this.xmlReader = reader;
-    this.fileName = fileName;
-
     applySchema();
   }
 
@@ -60,15 +56,15 @@ public class GvsXmlReader {
 
   /**
    * Read the input file and pass the XML document to the {@link ModelBuilder}.
+   * @param input 
    * 
    * @return parsed document
    */
-  public Document read() {
-    File inputFile = new File(fileName);
+  public Document read(InputStream input) {
     try {
-      return xmlReader.read(inputFile);
+      return xmlReader.read(input);
     } catch (Exception e) {
-      logger.error("Cannot read file {}", inputFile.getName(), e);
+      logger.error("Cannot read input stream", e);
       return null;
     }
   }

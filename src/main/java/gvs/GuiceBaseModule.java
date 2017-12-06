@@ -4,7 +4,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 import gvs.access.ClientConnectionFactory;
-import gvs.access.XmlReaderFactory;
 import gvs.business.logic.SessionFactory;
 import gvs.business.logic.SessionReplayFactory;
 import gvs.business.logic.layouter.graph.AreaTickerFactory;
@@ -22,7 +21,6 @@ public class GuiceBaseModule extends AbstractModule {
     install(new FactoryModuleBuilder().build(ClientConnectionFactory.class));
     install(new FactoryModuleBuilder().build(SessionFactory.class));
     install(new FactoryModuleBuilder().build(SessionReplayFactory.class));
-    install(new FactoryModuleBuilder().build(XmlReaderFactory.class));
     install(new FactoryModuleBuilder().build(AreaTickerFactory.class));
   }
 

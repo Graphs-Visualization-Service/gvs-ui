@@ -115,7 +115,7 @@ public class EdgeViewModel {
    * Draw the edge on given graph pane
    * 
    * @param graphPane
-   *          scaleable graph pane
+   *          scalable graph pane
    */
   public void draw(ScalableScrollPane graphPane) {
     logger.info("Drawing EdgeViewModel");
@@ -153,21 +153,28 @@ public class EdgeViewModel {
 
     // find intersection points of line and vertices
     if (startVertex.equals(endVertex)) {
+
+      // self reference
       // creates a pseudoEndpoint to the upper left of the start vertex
       Point2D pseudoEndpoint = new Point2D(
           startVertexCenter.getX() - 2 * startVertex.getEllipse().getRadiusX(),
           startVertexCenter.getY() - 2 * startVertex.getEllipse().getRadiusY());
       Point2D startPoint = startVertex.findIntersectionPoint(pseudoEndpoint,
           startVertexCenter);
+
       drawSelfReference(startPoint);
+
       if (edge.isDirected()) {
         drawArrowHead(startPoint.getX(), startPoint.getY());
       }
+
     } else {
+
       Point2D startPoint = startVertex.findIntersectionPoint(endVertexCenter,
           startVertexCenter);
       Point2D endPoint = endVertex.findIntersectionPoint(startVertexCenter,
           endVertexCenter);
+
       drawEdgeLabel(startPoint, endPoint);
 
       double length = startPoint.distance(endPoint);
@@ -232,6 +239,7 @@ public class EdgeViewModel {
    */
   private void drawHorizontalEdge(Point2D startPoint, Point2D endPoint,
       double length) {
+
     edgePath.getElements().addAll(
         new MoveTo(startPoint.getX(), startPoint.getY()),
         new LineTo(startPoint.getX() + length, startPoint.getY()));
@@ -260,13 +268,19 @@ public class EdgeViewModel {
    *          end intersection point
    */
   private void rotateEdge(Point2D startPoint, Point2D endPoint) {
+    edgePath.getTransforms().clear();
+    arrowPath.getTransforms().clear();
+
     // compute rotation angle
     double angle = Math.atan2(endPoint.getY() - startPoint.getY(),
         endPoint.getX() - startPoint.getX());
+
     angle = Math.toDegrees(angle);
 
-    edgePath.getTransforms().clear();
-    arrowPath.getTransforms().clear();
+    // prevents that the ScalableScrollPane jumps around
+    if (Math.abs(angle) == 180 || Math.abs(angle) == 90) {
+      angle += 0.01;
+    }
 
     // rotates the drawn line and arrow into the correct position
     edgePath.getTransforms()

@@ -6,7 +6,7 @@ import gvs.util.Action;
  * Factory interface for Guice
  * 
  * @see https://github.com/google/guice/wiki/AssistedInject
- * @author Michi
+ * @author mwieland
  *
  */
 public interface SessionReplayFactory {

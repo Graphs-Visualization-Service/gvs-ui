@@ -9,6 +9,14 @@ import gvs.business.model.IVertex;
 import gvs.business.model.styles.GVSStyle;
 import gvs.util.FontAwesome.Glyph;
 
+/**
+ * Model of a tree vertex. It represents a parent or a child of a tree. For
+ * non-existing child vertices use {@link LeafVertex}.
+ * 
+ * @author mtrentini
+ *
+ */
+
 public class TreeVertex extends Observable implements IVertex {
   private long id;
   private String label;
@@ -110,8 +118,7 @@ public class TreeVertex extends Observable implements IVertex {
   public boolean isTreeVertex() {
     return true;
   }
-  
-  
+
   // A TreeVertex is never a leaf. Only LeafVertices are leafs.
   public boolean isLeaf() {
     return false;

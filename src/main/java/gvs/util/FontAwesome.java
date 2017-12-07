@@ -8,7 +8,7 @@ import javafx.scene.text.Font;
 /**
  * Util class to integrate FontAwesome support.
  * 
- * @author muriele
+ * @author mtrentini
  *
  */
 public class FontAwesome {

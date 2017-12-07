@@ -19,7 +19,7 @@ import com.google.inject.Inject;
  * 
  * Uses the GVS specific xml schema for custom tags.
  * 
- * @author Michi
+ * @author mwieland
  */
 public class GvsXmlReader {
 

@@ -30,7 +30,7 @@ import javafx.collections.ObservableList;
  * ViewModel of the MVVM Pattern. It observes the ApplicationModel and handles
  * the GUI logic.
  * 
- * @author muriele
+ * @author mtrentini
  *
  */
 @Singleton

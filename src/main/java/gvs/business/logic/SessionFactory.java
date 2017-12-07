@@ -4,7 +4,7 @@ package gvs.business.logic;
  * Factory interface for Guice
  * 
  * @see https://github.com/google/guice/wiki/AssistedInject
- * @author Michi
+ * @author mwieland
  *
  */
 public interface SessionFactory {

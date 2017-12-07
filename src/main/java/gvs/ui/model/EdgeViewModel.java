@@ -20,7 +20,7 @@ import javafx.scene.transform.Rotate;
 /**
  * Contains JavaFX Properties which are used for bidirectional bindings.
  * 
- * @author Michi
+ * @author mwieland
  */
 public class EdgeViewModel {
 

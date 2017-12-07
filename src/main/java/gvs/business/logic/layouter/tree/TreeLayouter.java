@@ -23,7 +23,7 @@ import gvs.util.Action;
  * Our implementation is inspired by:
  * {@link https://github.com/abego/treelayout/blob/master/org.abego.treelayout/src/main/java/org/abego/treelayout/TreeLayout.java}
  * 
- * @author muriele
+ * @author mtrentini
  *
  */
 public class TreeLayouter implements ILayouter {

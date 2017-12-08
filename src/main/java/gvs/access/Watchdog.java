@@ -11,7 +11,7 @@ import gvs.Configuration;
 /**
  * The Watchdog is responsible for severing stale client connections. Whenever a
  * client connection is established, the watchdog is started in a new thread.
- * During the connection the watchdog is being ''fed'' by the creater thread. If
+ * During the connection the watchdog is being ''fed'' by the creator thread. If
  * the connection goes stale, i.e. if no new data is received for a certain time
  * interval, the watchdog goes hungry and forcefully severs the client
  * connection, so the service is accessible for another client.

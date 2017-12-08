@@ -42,15 +42,16 @@ public class GraphLayouter implements Tickable, ILayouter {
   private final AreaTickerFactory tickerFactory;
   private final Area area;
 
-  private static final int PARTICLE_WEIGHT = 10;
-  private static final int TRACTION_DISTANCE = 40;
-  private static final int TRACTION_IMPACT = 5;
+  private static final int PARTICLE_WEIGHT = 50;
+  private static final int TRACTION_IMPACT = 50;
+  private static final int TRACTION_DISTANCE = 150;
 
   private static final int SEEDED_MULTIPLIER = 100;
 
   private static final int TICK_RATE_PER_SEC = 26;
   private static final int MAX_LAYOUT_DURATION_MS = 10_000;
 
+  private static final int LAYOUT_AREA_FACTOR = 3;
   private static final int SEED = 4000;
 
   private static final Logger logger = LoggerFactory
@@ -59,9 +60,11 @@ public class GraphLayouter implements Tickable, ILayouter {
   @Inject
   public GraphLayouter(AreaTickerFactory tickerFactory) {
     this.tickerFactory = tickerFactory;
-    AreaDimension dimension = new AreaDimension(
-        Configuration.getWindowWidth(),
-        Configuration.getContentPaneHeight());
+
+    double layouterWidth = Configuration.getWindowWidth() * LAYOUT_AREA_FACTOR;
+    double layouterHeight = Configuration.getContentPaneHeight() * LAYOUT_AREA_FACTOR;
+
+    AreaDimension dimension = new AreaDimension(layouterWidth, layouterHeight);
     this.area = new Area(dimension);
   }
 

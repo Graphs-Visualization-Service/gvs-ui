@@ -17,8 +17,6 @@ public class Particle {
   private AreaVector acceleration;
   private AreaPoint particlePosition;
 
-  private static final double ZOOM_FACTOR = 1.8;
-
   /**
    * Builds an instance of a particle.
    * 
@@ -88,8 +86,8 @@ public class Particle {
    *
    */
   public void updateRelatedVertex() {
-    double newX = particlePosition.getX() / ZOOM_FACTOR;
-    double newY = particlePosition.getY() / ZOOM_FACTOR;
+    double newX = particlePosition.getX();
+    double newY = particlePosition.getY();
     relatedVertex.updateCoordinates(newX, newY);
   }
 

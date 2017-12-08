@@ -19,7 +19,7 @@ import gvs.business.model.GraphHolder;
 import gvs.business.model.IEdge;
 import gvs.business.model.IVertex;
 import gvs.ui.logic.session.SessionViewModel;
-import gvs.ui.view.ScalablePane;
+import gvs.ui.view.ScalableScrollPane;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -36,7 +36,7 @@ import javafx.beans.value.ObservableValue;
 public class GraphViewModel extends Observable implements Observer {
 
   private GraphHolder graphHolder;
-  private ScalablePane graphPane;
+  private ScalableScrollPane graphPane;
 
   private final StringProperty snapshotDescriptionProperty;
 
@@ -88,11 +88,9 @@ public class GraphViewModel extends Observable implements Observer {
       // don't start drawing process, if graphPane hasn't already been set by
       // the SessionView.
       if (graphPane != null) {
-        sessionViewModel.setMaxScale(graphPane);
         Graph currentGraph = graphHolder.getCurrentGraph();
         draw(currentGraph);
         sessionViewModel.updateButtonStates();
-        graphPane.requestScale();
       } else {
         logger.warn("GraphPane has not been set before drawing!");
       }
@@ -104,7 +102,7 @@ public class GraphViewModel extends Observable implements Observer {
     logger.info("Drawing graph...");
     vertexViewModels.clear();
     edgeViewModels.clear();
-    graphPane.getContentPane().getChildren().clear();
+    graphPane.clear();
 
     snapshotDescriptionProperty.set(graph.getSnapshotDescription());
     
@@ -155,7 +153,7 @@ public class GraphViewModel extends Observable implements Observer {
    * @param newGraphPane
    *          the pane on which all graph elements are drawn.
    */
-  public void setPane(ScalablePane newGraphPane) {
+  public void setPane(ScalableScrollPane newGraphPane) {
     this.graphPane = newGraphPane;
   }
 

@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import gvs.ui.view.ScalablePane?>
+<?import gvs.ui.view.ScalableScrollPane?>
 <?import javafx.scene.layout.HBox?>
 <?import org.controlsfx.control.ToggleSwitch?>
 
@@ -18,7 +18,7 @@
 	fx:controller="gvs.ui.view.session.SessionView">
 
 	<center>
-		<ScalablePane fx:id="graphPane" />
+		<ScalableScrollPane fx:id="graphPane" />
 	</center>
 
 	<bottom>

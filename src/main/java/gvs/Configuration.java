@@ -23,14 +23,10 @@ public class Configuration {
   private static final int WINDOW_WIDTH = 1000;
   private static final int WINDOW_HEIGHT = 700;
   private static final int CONTENT_PANE_HEIGHT = 500;
-  private static final int ICON_FONT_SIZE = 8;
-  private static final int AVG_PIXEL_PER_LETTER = 4;
-  private static final int MAX_LABEL_LENGTH_TREE = 40;
-  private static final int MAX_LABEL_LETTERS_TREE = MAX_LABEL_LENGTH_TREE
-      / AVG_PIXEL_PER_LETTER;
-  private static final int MAX_LABEL_LENGTH_GRAPH = 80;
-  private static final int MAX_LABEL_LETTERS_GRAPH = MAX_LABEL_LENGTH_TREE
-      / AVG_PIXEL_PER_LETTER;
+  private static final int ICON_FONT_SIZE = 32;
+  private static final int AVG_PIXEL_PER_LETTER = 7;
+  private static final int MAX_LABEL_LENGTH_TREE = 180;
+  private static final int MAX_LABEL_LENGTH_GRAPH = 320;
 
   // Server
   private static final String SERVER = "Server";
@@ -124,29 +120,17 @@ public class Configuration {
 
   /**
    * 
-   * @return the maximum amount of letters in a tree label
-   */
-  public static int getMaxLabelLettersForTree() {
-    return MAX_LABEL_LETTERS_TREE;
-  }
-
-  /**
-   * 
    * @return the maximum length of a tree label
    */
   public static int getMaxLabelLengthForGraph() {
     return MAX_LABEL_LENGTH_GRAPH;
   }
 
-  /**
-   * 
-   * @return the maximum amount of letters in a tree label
-   */
-  public static int getMaxLabelLettersForGraph() {
-    return MAX_LABEL_LETTERS_GRAPH;
-  }
-
   public static int getIconFontSize() {
     return ICON_FONT_SIZE;
+  }
+
+  public static int getAvgPixelPerLetter() {
+    return AVG_PIXEL_PER_LETTER;
   }
 }

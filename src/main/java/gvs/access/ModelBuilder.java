@@ -72,8 +72,6 @@ public class ModelBuilder {
   private static final String RIGTHCHILD = "Rigthchild";
   private static final String LEFTCHILD = "Leftchild";
 
-  private static final int SCALE_FACTOR = 2;
-
   // Logger
   private static final Logger logger = LoggerFactory
       .getLogger(ModelBuilder.class);
@@ -287,11 +285,10 @@ public class ModelBuilder {
     if (vertexElement.getName().equals(RELATIVVERTEX)) {
       Element xPositionElement = vertexElement.element(XPOS);
       xPos = Double.parseDouble(xPositionElement.getText());
-      xPos = (xPos * Configuration.getWindowWidth()) / (100 * SCALE_FACTOR);
+      xPos = xPos * Configuration.getWindowWidth() / 100;
       Element yPositionElement = vertexElement.element(YPOS);
       yPos = Double.parseDouble(yPositionElement.getText());
-      yPos = (yPos * Configuration.getContentPaneHeight())
-          / (100 * SCALE_FACTOR);
+      yPos = yPos * Configuration.getContentPaneHeight() / 100;
     }
 
     Element labelElement = vertexElement.element(LABEL);

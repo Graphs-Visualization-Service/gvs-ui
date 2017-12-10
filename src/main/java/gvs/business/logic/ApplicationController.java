@@ -41,8 +41,8 @@ public class ApplicationController {
    *          factory for new sessions
    */
   @Inject
-  public ApplicationController(SessionHolder sessionHolder,
-      Persistor persistor, SessionFactory sessionFactory) {
+  public ApplicationController(SessionHolder sessionHolder, Persistor persistor,
+      SessionFactory sessionFactory) {
 
     this.sessionHolder = sessionHolder;
     this.persistor = persistor;
@@ -82,15 +82,15 @@ public class ApplicationController {
   }
 
   /**
-   * Deletes a chosen session.
+   * Deletes an active session.
    * 
-   * @param pSessionController
-   *          SessionController
+   * @param session
+   *          the session to be deleted
    */
-  public synchronized void deleteSession(Session pSessionController) {
+  public synchronized void deleteSession(Session session) {
     logger.info("Delete session");
 
-    sessionHolder.removeSession(pSessionController);
+    sessionHolder.removeSession(session);
 
     if (sessionHolder.getSessions().size() > 0) {
       logger.debug("Session controller deleted. Set former graph session");

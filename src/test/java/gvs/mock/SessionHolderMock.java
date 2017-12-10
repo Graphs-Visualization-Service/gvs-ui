@@ -18,6 +18,27 @@ public class SessionHolderMock extends SessionHolder {
     }
   }
   
+
+  /**
+   * Remove a session.
+   * 
+   * @param session
+   *          session to delete
+   */
+  public void removeSession(Session session) {
+    this.sessions.remove(session);
+  }
+
+  /**
+   * Returns available session for displaying in combobox.
+   * 
+   * @return sessionControllers
+   */
+  public List<Session> getSessions() {
+    return sessions;
+  }
+  
+  @Override
   public String toString() {
     return "GVS Mock of SessionHolder";
   }

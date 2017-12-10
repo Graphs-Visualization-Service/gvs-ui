@@ -1,9 +1,12 @@
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
 import static org.mockito.Mockito.verify;
+
+import java.io.File;
 
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
@@ -25,7 +28,7 @@ import gvs.mock.SessionHolderMock;
 import gvs.mock.SessionMock;
 
 @RunWith(JukitoRunner.class)
-public class ApplicationPresenterTest {
+public class ApplicationControllerTest {
   public static class Module extends JukitoModule {
     @Inject
     private SessionFactory factory;
@@ -58,20 +61,24 @@ public class ApplicationPresenterTest {
   private SessionHolder holder;
   private Persistor persistor;
 
-  @Before
-  public void setUp(SessionHolder holder, Persistor persistor,
-      Session session) {
-    this.session = session;
-    this.holder = holder;
-    this.persistor = persistor;
-    ((PersistorMock) persistor).setTestSession(session);
-  }
-
   /**
    * 
-   * @param holder
+   * @param holderMock
+   *          A mock. The same instance is shared by appController
+   * @param persistorMock
+   *          A mock. The same instance is shared by appController
+   * @param sessionMock
    *          A mock. The same instance is shared by appController
    */
+  @Before
+  public void setUp(SessionHolder holderMock, Persistor persistorMock,
+      Session sessionMock) {
+    this.session = sessionMock;
+    this.holder = holderMock;
+    this.persistor = persistorMock;
+    ((PersistorMock) persistorMock).setTestSession(sessionMock);
+  }
+
   @Test
   public void setUpAppControllerTest() {
     assertTrue(appController != null);
@@ -86,5 +93,27 @@ public class ApplicationPresenterTest {
     appController.loadStoredSession(fileName);
     verify(persistor).loadFile(fileName);
     assertEquals(session, holder.getCurrentSession());
+    assertTrue(holder.getSessions().contains(session));
+  }
+
+  @Test
+  public void savesSpecifiedSession() {
+    String fileName = "session.gvs";
+    File file = new File(fileName);
+    appController.saveSession(session, file);
+    verify(persistor).saveToDisk(session, file);
+  }
+
+  @Test
+  public void deleteSpecifiedSession() {
+    appController.deleteSession(session);
+    assertFalse(holder.getSessions().contains(session));
+    assertEquals(null, holder.getCurrentSession());
+  }
+
+  @Test
+  public void transferChangingCurrentSessionToSessionHolder() {
+    appController.changeCurrentSession(session);
+    verify(holder).setCurrentSession(session);
   }
 }

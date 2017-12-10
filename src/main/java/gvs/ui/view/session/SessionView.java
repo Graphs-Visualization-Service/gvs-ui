@@ -85,10 +85,10 @@ public class SessionView {
   private static final String DEFAULT_RANDOM_SWITCH_TOOLTIP = "Use Random coordinates";
   private static final String DEFAULT_CANCEL_BTN_TOOLTIP = "Cancel replay";
   private static final String DEFAULT_REPLAY_BTN_TOOLTIP = "Replay session";
-  private static final String DEFAULT_LAST_BTN_TOOLTIP = "Show last session";
-  private static final String DEFAULT_NEXT_BTN_TOOLTIP = "Show next session";
-  private static final String DEFAULT_PREV_BTN_TOOLTIP = "Show previous session";
-  private static final String DEFAULT_FIRST_BTN_TOOLTIP = "Show first session";
+  private static final String DEFAULT_LAST_BTN_TOOLTIP = "Show last snapshot";
+  private static final String DEFAULT_NEXT_BTN_TOOLTIP = "Show next snapshot";
+  private static final String DEFAULT_PREV_BTN_TOOLTIP = "Show previous snapshot";
+  private static final String DEFAULT_FIRST_BTN_TOOLTIP = "Show first snapshot";
   private static final String DEFAULT_LAYOUT_TOOLTIP = "Layout current graph";
 
   private static final String DEFAULT_SNAPSHOP_PROMPT_TXT = "Snapshot description";
@@ -210,20 +210,17 @@ public class SessionView {
   }
 
   private void bindDisableProperties() {
-    firstBtn.disableProperty()
-        .bind(sessionViewModel.firstBtnDisableProperty());
-    lastBtn.disableProperty()
-        .bind(sessionViewModel.lastBtnDisableProperty());
-    nextBtn.disableProperty()
-        .bind(sessionViewModel.nextBtnDisableProperty());
-    prevBtn.disableProperty()
-        .bind(sessionViewModel.prevBtnDisableProperty());
+    firstBtn.disableProperty().bind(sessionViewModel.firstBtnDisableProperty());
+    lastBtn.disableProperty().bind(sessionViewModel.lastBtnDisableProperty());
+    nextBtn.disableProperty().bind(sessionViewModel.nextBtnDisableProperty());
+    prevBtn.disableProperty().bind(sessionViewModel.prevBtnDisableProperty());
 
     replayBtn.disableProperty()
         .bind(sessionViewModel.replayBtnDisableProperty());
     cancelReplayBtn.disableProperty()
         .bind(sessionViewModel.cancelReplayBtnDisableProperty());
-    speedSlider.disableProperty().bind(sessionViewModel.speedSliderDisableProperty());
+    speedSlider.disableProperty()
+        .bind(sessionViewModel.speedSliderDisableProperty());
     autoLayoutBtn.disableProperty()
         .bind(sessionViewModel.autoLayoutBtnDisableProperty());
   }
@@ -307,7 +304,7 @@ public class SessionView {
     boolean useRandomLayout = randomLayoutSwitch.isSelected();
     sessionViewModel.autoLayout(useRandomLayout);
   }
-  
+
   public BooleanProperty isReplayingProperty() {
     return sessionViewModel.isReplayingProperty();
   }

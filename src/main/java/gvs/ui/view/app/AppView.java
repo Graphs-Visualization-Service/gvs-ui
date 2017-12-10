@@ -58,6 +58,11 @@ public class AppView {
   private final FileChooser fileChooser;
   private final AppViewModel appViewModel;
 
+  private static final String DELETE_SESSION_TOOLTIP = "Delete Session";
+  private static final String STORE_SESSION_TOOLTIP = "Store Session";
+  private static final String LOAD_SESSION_TOOLTIP = "Load existing Session";
+  private static final String CHOOSE_SESSION_TOOLTIP = "Choose active session";
+
   @Inject
   public AppView(AppViewModel appViewModel) {
     this.appViewModel = appViewModel;
@@ -102,21 +107,23 @@ public class AppView {
    */
   private void initializeButtons() {
     importSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.UPLOAD));
-    importSessionBtn.setTooltip(new Tooltip("Load existing Session"));
+    importSessionBtn.setTooltip(new Tooltip(LOAD_SESSION_TOOLTIP));
     importSessionBtn.disableProperty()
         .bind(sessionViewController.isReplayingProperty());
 
     saveSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.SAVE));
-    saveSessionBtn.setTooltip(new Tooltip("Store Session"));
+    saveSessionBtn.setTooltip(new Tooltip(STORE_SESSION_TOOLTIP));
     saveSessionBtn.disableProperty()
         .bind(appViewModel.sessionVisibilityProperty().not()
             .or(sessionViewController.isReplayingProperty()));
 
     deleteSessionBtn.setGraphic(FontAwesome.createLabel(Glyph.TRASH));
-    deleteSessionBtn.setTooltip(new Tooltip("Delete Session"));
+    deleteSessionBtn.setTooltip(new Tooltip(DELETE_SESSION_TOOLTIP));
     deleteSessionBtn.disableProperty()
         .bind(appViewModel.sessionVisibilityProperty().not()
             .or(sessionViewController.isReplayingProperty()));
+
+    chooseSessionBox.setTooltip(new Tooltip(CHOOSE_SESSION_TOOLTIP));
   }
 
   /**

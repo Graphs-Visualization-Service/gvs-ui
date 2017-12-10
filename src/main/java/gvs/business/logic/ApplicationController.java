@@ -41,8 +41,8 @@ public class ApplicationController {
    *          factory for new sessions
    */
   @Inject
-  public ApplicationController(SessionHolder sessionHolder, Persistor persistor,
-      SessionFactory sessionFactory) {
+  public ApplicationController(SessionHolder sessionHolder,
+      Persistor persistor, SessionFactory sessionFactory) {
 
     this.sessionHolder = sessionHolder;
     this.persistor = persistor;
@@ -56,15 +56,21 @@ public class ApplicationController {
    *          fileName
    */
   public synchronized void loadStoredSession(String fileName) {
-    logger.info("Load session from filesystem");
+    logger.info("Loading session from filesystem...");
     Session loadedSession = persistor.loadFile(fileName);
 
-    loadedSession = sessionHolder.addSession(loadedSession);
-    sessionHolder.setCurrentSession(loadedSession);
+    if (loadedSession != null) {
+      logger.info("Set loaded session as current session");
+      loadedSession = sessionHolder.addSession(loadedSession);
+      sessionHolder.setCurrentSession(loadedSession);
 
-    ILayouter layouter = loadedSession.getSessionType().getLayouter();
-    layouter.layout(loadedSession, true, null);
+      logger.info("Layouting loaded session...");
+      ILayouter layouter = loadedSession.getSessionType().getLayouter();
+      layouter.layout(loadedSession, true, null);
+    }
+
   }
+
   /**
    * Save a session to a specific file.
    * 
@@ -138,9 +144,9 @@ public class ApplicationController {
           sessionName);
       sessionHolder.addSession(session);
     }
-    
+
     session.addGraph(graph);
-    
+
     ILayouter layouter = session.getSessionType().getLayouter();
     layouter.layout(session, true, null);
 

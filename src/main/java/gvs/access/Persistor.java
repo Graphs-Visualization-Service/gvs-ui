@@ -49,7 +49,7 @@ import gvs.util.FontAwesome.Glyph;
  * @author mkoller
  */
 @Singleton
-public class Persistor {
+public class Persistor{
 
   private final SessionFactory graphSessionFactory;
   private final Provider<GraphSessionType> graphSessionTypeProvider;

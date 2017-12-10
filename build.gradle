@@ -34,8 +34,15 @@ dependencies {
 	compile group: 'com.gluonhq', name: 'ignite-guice', version: '1.0.2'
 	compile group: 'com.google.inject.extensions', name: 'guice-assistedinject', version: '4.1.0'	
 	
-	testCompile("org.junit.jupiter:junit-jupiter-api:5.0.1")
-    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.1")	
+	testCompile('org.junit.jupiter:junit-jupiter-api:5.0.1',
+				'org.jukito:jukito:1.5',
+				'org.mockito:mockito-all:1.10.19')
+    testRuntime(
+            'org.junit.jupiter:junit-jupiter-engine:5.0.1',
+            'org.junit.vintage:junit-vintage-engine:4.12.1',
+            'org.junit.platform:junit-platform-launcher:1.0.1',
+            'org.junit.platform:junit-platform-runner:1.0.1'
+    )
 }
 
 buildscript {
@@ -45,7 +52,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "net.saliman:gradle-cobertura-plugin:2.5.0"
+    classpath 'net.saliman:gradle-cobertura-plugin:2.5.0'
     	classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.1'
   }
 }

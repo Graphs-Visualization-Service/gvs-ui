@@ -105,7 +105,7 @@ public class GraphViewModel extends Observable implements Observer {
     graphPane.clear();
 
     snapshotDescriptionProperty.set(graph.getSnapshotDescription());
-    
+
     drawVertices(graph.getVertices());
     drawEdges(graph.getEdges());
     correctZOrder();

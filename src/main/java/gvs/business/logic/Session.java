@@ -35,9 +35,9 @@ public class Session {
   private static final Logger logger = LoggerFactory.getLogger(Session.class);
 
   @Inject
-  public Session(GraphHolder graphHolder,
-      SessionReplayFactory replayFactory, @Assisted ISessionType sessionType,
-      @Assisted long sessionId, @Assisted String sessionName) {
+  public Session(GraphHolder graphHolder, SessionReplayFactory replayFactory,
+      @Assisted ISessionType sessionType, @Assisted long sessionId,
+      @Assisted String sessionName) {
 
     logger.info("Instantiating new graph session.");
     this.sessionReplayFactory = replayFactory;
@@ -205,7 +205,7 @@ public class Session {
     }
     return true;
   }
-  
+
   @Override
   public String toString() {
     return sessionName;

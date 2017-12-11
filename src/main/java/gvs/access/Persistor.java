@@ -214,7 +214,7 @@ public class Persistor {
     String vertexLabel = pVertex.getLabel();
 
     eLabel.addText(vertexLabel);
-    
+
     Element eXPos = eVertex.addElement(XPOS);
     eXPos.addText(String.valueOf(pVertex.getXPosition()));
     Element eYPos = eVertex.addElement(YPOS);
@@ -223,7 +223,7 @@ public class Persistor {
     saveStyle(eVertex, pVertex.getStyle(), true);
 
     Glyph icon = pVertex.getIcon();
-    if ( icon != null) {
+    if (icon != null) {
       Element eIcon = eVertex.addElement(ICON);
       eIcon.addText(icon.name());
     }

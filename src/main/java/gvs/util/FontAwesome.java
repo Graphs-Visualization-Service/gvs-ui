@@ -30,7 +30,7 @@ public class FontAwesome {
     label.setText(String.valueOf(character.getChar()));
     return label;
   }
-  
+
   public static Label createLabel(Glyph character, int size) {
     Label label = new Label();
     label.setFont(loadFontResource(size));

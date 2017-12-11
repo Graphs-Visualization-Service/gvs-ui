@@ -220,36 +220,32 @@ public class VertexViewModel implements Observer {
       logger.info("Adding drag support on VertexViewModel.");
 
       label.setOnMousePressed(e -> {
-        dragOriginalSceneX = e.getSceneX()
-            / graphPane.getScaleValue();
-        dragOriginalSceneY = e.getSceneY()
-            / graphPane.getScaleValue();
+        dragOriginalSceneX = e.getSceneX() / graphPane.getScaleValue();
+        dragOriginalSceneY = e.getSceneY() / graphPane.getScaleValue();
       });
 
       label.setOnMouseDragged(e -> {
         // logger level debug, because this will happen very often
         logger.debug("Mouse drag on VertexViewModel detected.");
 
-        double offsetX = (e.getSceneX()
-            / graphPane.getScaleValue()) - dragOriginalSceneX;
-        double offsetY = (e.getSceneY()
-            / graphPane.getScaleValue()) - dragOriginalSceneY;
+        double offsetX = (e.getSceneX() / graphPane.getScaleValue())
+            - dragOriginalSceneX;
+        double offsetY = (e.getSceneY() / graphPane.getScaleValue())
+            - dragOriginalSceneY;
 
         double newX = ellipse.getCenterX() + offsetX;
         double newY = ellipse.getCenterY() + offsetY;
 
-//        newX = checkXBoundaries(newX, graphPane);
-//        newY = checkYBoundaries(newY, graphPane);
+        // newX = checkXBoundaries(newX, graphPane);
+        // newY = checkYBoundaries(newY, graphPane);
 
         updateCoordinates(newX, newY);
 
         vertex.setUserPositioned(true);
 
         // remember last coordinates
-        dragOriginalSceneX = e.getSceneX()
-            / graphPane.getScaleValue();
-        dragOriginalSceneY = e.getSceneY()
-            / graphPane.getScaleValue();
+        dragOriginalSceneX = e.getSceneX() / graphPane.getScaleValue();
+        dragOriginalSceneY = e.getSceneY() / graphPane.getScaleValue();
       });
     }
   }

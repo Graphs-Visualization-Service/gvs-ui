@@ -8,8 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Singleton;
 
 /**
- * Holds the current graph. State class for all observers of the current
- * graph.
+ * Holds the current graph. State class for all observers of the current graph.
  * 
  * @author mwieland
  *

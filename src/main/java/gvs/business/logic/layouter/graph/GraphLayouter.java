@@ -62,7 +62,8 @@ public class GraphLayouter implements Tickable, ILayouter {
     this.tickerFactory = tickerFactory;
 
     double layouterWidth = Configuration.getWindowWidth() * LAYOUT_AREA_FACTOR;
-    double layouterHeight = Configuration.getContentPaneHeight() * LAYOUT_AREA_FACTOR;
+    double layouterHeight = Configuration.getContentPaneHeight()
+        * LAYOUT_AREA_FACTOR;
 
     AreaDimension dimension = new AreaDimension(layouterWidth, layouterHeight);
     this.area = new Area(dimension);

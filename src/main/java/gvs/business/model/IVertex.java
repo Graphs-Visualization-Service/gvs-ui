@@ -26,13 +26,13 @@ public interface IVertex {
   void setUserPositioned(boolean isUserPositioned);
 
   Glyph getIcon();
-  
+
   int getMaxLabelLength();
 
   GVSStyle getStyle();
 
   void addObserver(Observer o);
-  
+
   boolean isTreeVertex();
 
 }

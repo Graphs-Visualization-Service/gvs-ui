@@ -65,6 +65,7 @@ public class ApplicationController {
     ILayouter layouter = loadedSession.getSessionType().getLayouter();
     layouter.layout(loadedSession, true, null);
   }
+
   /**
    * Save a session to a specific file.
    * 
@@ -138,9 +139,9 @@ public class ApplicationController {
           sessionName);
       sessionHolder.addSession(session);
     }
-    
+
     session.addGraph(graph);
-    
+
     ILayouter layouter = session.getSessionType().getLayouter();
     layouter.layout(session, true, null);
 

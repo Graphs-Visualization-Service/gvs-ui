@@ -1,6 +1,5 @@
 package gvs.access;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -56,7 +55,8 @@ public class GvsXmlReader {
 
   /**
    * Read the input file and pass the XML document to the {@link ModelBuilder}.
-   * @param input 
+   * 
+   * @param input
    * 
    * @return parsed document
    */

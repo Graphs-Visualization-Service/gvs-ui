@@ -72,6 +72,9 @@ public class VertexViewModel implements Observer {
     setStyles();
   }
 
+  /**
+   * Set text overrun.
+   */
   private void setLabelConstraints() {
     label.setMaxWidth(vertex.getMaxLabelLength());
     label.setTextOverrun(OverrunStyle.CENTER_ELLIPSIS);
@@ -197,12 +200,13 @@ public class VertexViewModel implements Observer {
    */
   private void correctLabelColor() {
     ellipse.applyCss();
-    Color labelColor = ContrastColor
-        .getContrastColor((Color) ellipse.getFill());
-    label.setTextFill(labelColor);
+    Color ellipseColor = (Color) ellipse.getFill();
+    String colorClass = ContrastColor.getContrastColorClass(ellipseColor);
+    label.getStyleClass().add(colorClass);
+
     if (label.getGraphic() != null) {
       Label icon = (Label) label.getGraphic();
-      icon.setTextFill(labelColor);
+      icon.getStyleClass().add(colorClass);
     }
   }
 

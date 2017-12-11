@@ -129,9 +129,9 @@ public class EdgeViewModel {
    */
   private void correctLabelColor() {
     edgePath.applyCss();
-    Color labelColor = ContrastColor
-        .getContrastColor((Color) edgePath.getStroke());
-    label.setTextFill(labelColor);
+    Color edgeColor = (Color) edgePath.getStroke();
+    String colorClass = ContrastColor.getContrastColorClass(edgeColor);
+    label.getStyleClass().add(colorClass);
   }
 
   /**
@@ -190,6 +190,12 @@ public class EdgeViewModel {
     }
   }
 
+  /**
+   * Draw a self reference from the given start, back to the vertex.
+   * 
+   * @param startPoint
+   *          given start point
+   */
   private void drawSelfReference(Point2D startPoint) {
     int selfReferenceLength = 40;
     Point2D upperRightCorner = new Point2D(startPoint.getX(),

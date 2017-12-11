@@ -85,6 +85,14 @@
 	-fx-fill: -green;
 }
 
+/*-- TEXT FILL COLOR --*/
+.text-fill-white {
+    -fx-text-fill: -white;
+}
+.text-fill-black {
+    -fx-text-fill: -black;
+}
+
 /*-- LINESTYLES & THICKNESS--*/
 /* cannot be in seperate classes, because thickness overrides dash-array */
 .dotted-standard{

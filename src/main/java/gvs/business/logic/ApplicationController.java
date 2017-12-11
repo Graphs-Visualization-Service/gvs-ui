@@ -56,14 +56,19 @@ public class ApplicationController {
    *          fileName
    */
   public synchronized void loadStoredSession(String fileName) {
-    logger.info("Load session from filesystem");
+    logger.info("Loading session from filesystem...");
     Session loadedSession = persistor.loadFile(fileName);
 
-    loadedSession = sessionHolder.addSession(loadedSession);
-    sessionHolder.setCurrentSession(loadedSession);
+    if (loadedSession != null) {
+      logger.info("Set loaded session as current session");
+      loadedSession = sessionHolder.addSession(loadedSession);
+      sessionHolder.setCurrentSession(loadedSession);
 
-    ILayouter layouter = loadedSession.getSessionType().getLayouter();
-    layouter.layout(loadedSession, true, null);
+      logger.info("Layouting loaded session...");
+      ILayouter layouter = loadedSession.getSessionType().getLayouter();
+      layouter.layout(loadedSession, true, null);
+    }
+
   }
 
   /**
@@ -77,15 +82,15 @@ public class ApplicationController {
   }
 
   /**
-   * Deletes a chosen session.
+   * Deletes an active session.
    * 
-   * @param pSessionController
-   *          SessionController
+   * @param session
+   *          the session to be deleted
    */
-  public synchronized void deleteSession(Session pSessionController) {
+  public synchronized void deleteSession(Session session) {
     logger.info("Delete session");
 
-    sessionHolder.removeSession(pSessionController);
+    sessionHolder.removeSession(session);
 
     if (sessionHolder.getSessions().size() > 0) {
       logger.debug("Session controller deleted. Set former graph session");

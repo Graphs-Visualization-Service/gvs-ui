@@ -1,12 +1,11 @@
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import javax.inject.Inject;
-
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
+
+import javax.inject.Inject;
 
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;

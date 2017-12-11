@@ -3,8 +3,6 @@ package gvs.access;
 import java.io.InputStream;
 import java.net.URL;
 
-import javax.sql.rowset.spi.XmlWriter;
-
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;

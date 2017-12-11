@@ -32,7 +32,11 @@ public class TreeLayouterValues {
 
   double getMod(TreeVertex vertex) {
     Double d = mod.get(vertex);
-    return d != null ? d : 0;
+    if (d != null) {
+      return d;
+    } else {
+      return 0;
+    }
   }
 
   void setMod(TreeVertex vertex, double d) {
@@ -41,7 +45,11 @@ public class TreeLayouterValues {
 
   TreeVertex getThread(TreeVertex vertex) {
     TreeVertex n = thread.get(vertex);
-    return n != null ? n : null;
+    if (n != null) {
+      return n;
+    } else {
+      return null;
+    }
   }
 
   void setThread(TreeVertex vertex, TreeVertex threadVertex) {
@@ -50,7 +58,11 @@ public class TreeLayouterValues {
 
   TreeVertex getAncestor(TreeVertex vertex) {
     TreeVertex n = ancestor.get(vertex);
-    return n != null ? n : vertex;
+    if (n != null) {
+      return n;
+    } else {
+      return vertex;
+    }
   }
 
   void setAncestor(TreeVertex vertex, TreeVertex ancestorVertex) {
@@ -59,7 +71,11 @@ public class TreeLayouterValues {
 
   double getPreliminary(TreeVertex vertex) {
     Double d = preliminary.get(vertex);
-    return d != null ? d : 0;
+    if (d != null) {
+      return d;
+    } else {
+      return 0;
+    }
   }
 
   void setPreliminary(TreeVertex vertex, double d) {
@@ -68,7 +84,11 @@ public class TreeLayouterValues {
 
   double getChange(TreeVertex vertex) {
     Double d = change.get(vertex);
-    return d != null ? d : 0;
+    if (d != null) {
+      return d;
+    } else {
+      return 0;
+    }
   }
 
   void setChange(TreeVertex vertex, double d) {
@@ -77,7 +97,11 @@ public class TreeLayouterValues {
 
   double getShift(TreeVertex vertex) {
     Double d = shift.get(vertex);
-    return d != null ? d : 0;
+    if (d != null) {
+      return d;
+    } else {
+      return 0;
+    }
   }
 
   void setShift(TreeVertex vertex, double d) {

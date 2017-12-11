@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import gvs.Configuration;
 import gvs.business.model.IVertex;
-import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
 import gvs.ui.view.ScalableScrollPane;
 import gvs.util.ContrastColor;
@@ -248,36 +247,6 @@ public class VertexViewModel implements Observer {
         dragOriginalSceneY = e.getSceneY() / graphPane.getScaleValue();
       });
     }
-  }
-
-  /**
-   * Check whether new x coordinate is within the boundaries of the parent.
-   * 
-   * @param newX
-   *          x coordinate to check
-   * @param graphPane
-   *          parent
-   * @return x coordinate within range
-   */
-  private double checkXBoundaries(double newX, ScalableScrollPane graphPane) {
-    newX = Math.max(newX, ellipse.getRadiusX());
-    newX = Math.min(newX, graphPane.getBoundsInLocal().getWidth());
-    return newX;
-  }
-
-  /**
-   * Check whether new y coordinate is within the boundaries of the parent.
-   * 
-   * @param newY
-   *          y coordinate to check
-   * @param graphPane
-   *          parent
-   * @return y coordinate within range
-   */
-  private double checkYBoundaries(double newY, ScalableScrollPane graphPane) {
-    newY = Math.max(newY, ellipse.getRadiusY());
-    newY = Math.min(newY, graphPane.getBoundsInLocal().getHeight());
-    return newY;
   }
 
   /**

@@ -9,32 +9,32 @@ package gvs.business.logic.layouter.tree;
  * most node bounds will start at x = 0, the top most node bounds at y = 0.
  */
 public class NormalizedPosition {
-  private double x_relativeToRoot;
-  private double y_relativeToRoot;
+  private double xRelativeToRoot;
+  private double yRelativeToRoot;
   private Bounds bounds;
 
-  public NormalizedPosition(double x_relativeToRoot, double y_relativeToRoot,
+  public NormalizedPosition(double relativeToRootX, double relativeToRootY,
       Bounds bounds) {
-    setLocation(x_relativeToRoot, y_relativeToRoot);
+    setLocation(relativeToRootX, relativeToRootY);
     this.bounds = bounds;
   }
 
   public double getX() {
-    return x_relativeToRoot - bounds.getBoundsLeft();
+    return xRelativeToRoot - bounds.getBoundsLeft();
   }
 
   public double getY() {
-    return y_relativeToRoot - bounds.getBoundsTop();
+    return yRelativeToRoot - bounds.getBoundsTop();
   }
 
-  public void setLocation(double x_relativeToRoot, double y_relativeToRoot) {
-    this.x_relativeToRoot = x_relativeToRoot;
-    this.y_relativeToRoot = y_relativeToRoot;
+  public void setLocation(double relativeToRootX, double relativeToRootY) {
+    this.xRelativeToRoot = relativeToRootX;
+    this.yRelativeToRoot = relativeToRootY;
   }
 
   @Override
   public String toString() {
-    return x_relativeToRoot + "," + y_relativeToRoot;
+    return xRelativeToRoot + "," + yRelativeToRoot;
   }
 
 }

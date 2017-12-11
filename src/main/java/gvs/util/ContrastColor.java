@@ -13,6 +13,10 @@ public class ContrastColor {
    */
   public static Color getContrastColor(Color color) {
     double brightness = color.getBrightness();
-    return brightness >= 0.95 ? Color.BLACK : Color.WHITE;
+    if (brightness >= 0.95) {
+      return Color.BLACK;
+    } else {
+      return Color.WHITE;
+    }
   }
 }

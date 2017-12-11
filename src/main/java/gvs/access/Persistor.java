@@ -49,7 +49,7 @@ import gvs.util.FontAwesome.Glyph;
  * @author mkoller
  */
 @Singleton
-public class Persistor{
+public class Persistor {
 
   private final SessionFactory graphSessionFactory;
   private final Provider<GraphSessionType> graphSessionTypeProvider;
@@ -119,23 +119,25 @@ public class Persistor{
     Session session = null;
     try {
       documentToRead = reader.read(input);
+
+      Element docRoot = documentToRead.getRootElement();
+      Iterator<Element> contentIt = docRoot.elementIterator();
+      while (contentIt.hasNext()) {
+        Element eTag = (contentIt.next());
+        if (GRAPH.equals(eTag.getName())) {
+          logger.info("It's a graph");
+          session = loadGraphSession(eTag);
+          break;
+        } else if (eTag.getName().equals(TREE)) {
+          logger.info("It's a tree");
+          session = loadTreeSession(eTag);
+          break;
+        }
+      }
     } catch (DocumentException e) {
       logger.error("Unable to read file {}", pPath);
     }
-    Element docRoot = documentToRead.getRootElement();
-    Iterator<Element> contentIt = docRoot.elementIterator();
-    while (contentIt.hasNext()) {
-      Element eTag = (contentIt.next());
-      if (GRAPH.equals(eTag.getName())) {
-        logger.info("It's a graph");
-        session = loadGraphSession(eTag);
-        break;
-      } else if (eTag.getName().equals(TREE)) {
-        logger.info("It's a tree");
-        session = loadTreeSession(eTag);
-        break;
-      }
-    }
+
     return session;
   }
 

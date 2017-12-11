@@ -60,7 +60,9 @@ public class GVSApplication extends Application {
    * Launch the JavaFX application within UI thread.
    */
   @Override
-  public void start(Stage primaryStage) throws Exception {
+  public void start(Stage stage) throws Exception {
+    this.primaryStage = stage;
+
     logger.info("Initialize Guice injector");
     context.init();
 
@@ -68,7 +70,7 @@ public class GVSApplication extends Application {
     socketServer.start();
 
     logger.info("Start GVS UI 2.0...");
-    setUpFrame(primaryStage);
+    setUpFrame();
   }
 
   /**
@@ -78,8 +80,7 @@ public class GVSApplication extends Application {
    *          main stage
    */
 
-  public void setUpFrame(Stage mainStage) {
-    primaryStage = mainStage;
+  public void setUpFrame() {
     primaryStage.setMinHeight(Configuration.getWindowHeight());
     primaryStage.setMinWidth(Configuration.getWindowWidth());
     primaryStage.setTitle(APP_NAME);

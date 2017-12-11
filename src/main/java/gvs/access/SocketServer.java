@@ -6,8 +6,6 @@
  */
 package gvs.access;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -15,11 +13,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,24 +105,5 @@ public class SocketServer extends Thread {
       }
     }
     return null;
-  }
-
-  private void writeFile(File portFile) {
-    Document document = DocumentHelper.createDocument();
-    Element docRoot = document.addElement("GVSServer");
-    Element ePort = docRoot.addElement("Port");
-    Element eHost = docRoot.addElement("Host");
-    ePort.addText(String.valueOf(port));
-    eHost.addText(hostname);
-
-    OutputFormat format = OutputFormat.createPrettyPrint();
-    XMLWriter writerCurrent;
-    try {
-      writerCurrent = new XMLWriter(new FileOutputStream(portFile), format);
-      writerCurrent.write(document);
-      logger.info("File {} successfully written. ", portFile);
-    } catch (IOException e) {
-      logger.info("Unable to write file {}", portFile, e);
-    }
   }
 }

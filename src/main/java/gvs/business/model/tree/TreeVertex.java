@@ -96,8 +96,8 @@ public class TreeVertex extends Observable implements IVertex {
   }
 
   @Override
-  public void setUserPositioned(boolean isUserPositioned) {
-    this.isUserPositioned = isUserPositioned;
+  public void setUserPositioned(boolean userPositioned) {
+    this.isUserPositioned = userPositioned;
   }
 
   @Override
@@ -136,8 +136,8 @@ public class TreeVertex extends Observable implements IVertex {
     return isRoot;
   }
 
-  public void setRoot(boolean isRoot) {
-    this.isRoot = isRoot;
+  public void setRoot(boolean root) {
+    this.isRoot = root;
   }
 
   public void addChildId(long childId) {

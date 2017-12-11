@@ -88,8 +88,8 @@ public class Graph {
     return !isLayouted;
   }
 
-  public void setLayouted(boolean isLayouted) {
-    this.isLayouted = isLayouted;
+  public void setLayouted(boolean layouted) {
+    this.isLayouted = layouted;
   }
 
 }

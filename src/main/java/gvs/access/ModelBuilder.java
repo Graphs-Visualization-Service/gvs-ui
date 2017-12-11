@@ -78,6 +78,13 @@ public class ModelBuilder {
 
   /**
    * ModelBuilder.
+   * 
+   * @param appController
+   *          application controller
+   * @param treeSessionTypeProvider
+   *          type provider for tree type
+   * @param graphSessionTypeProvider
+   *          type provider for graph type
    */
   @Inject
   public ModelBuilder(ApplicationController appController,

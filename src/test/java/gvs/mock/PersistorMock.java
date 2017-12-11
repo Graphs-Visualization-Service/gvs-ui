@@ -1,7 +1,6 @@
 package gvs.mock;
 import java.io.File;
 
-
 import gvs.access.Persistor;
 import gvs.business.logic.Session;
 import gvs.business.logic.SessionFactory;

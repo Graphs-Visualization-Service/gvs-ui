@@ -55,7 +55,7 @@ public class TreeLayouter implements ILayouter {
       throw new IllegalArgumentException(
           "No Root found. Check ModelBuilder and Persistor!");
     }
-    // TODO: support multiple roots
+
     roots.forEach(r -> {
       this.bounds = new Bounds();
       this.values = new TreeLayouterValues();
@@ -190,8 +190,11 @@ public class TreeLayouter implements ILayouter {
   private TreeVertex ancestor(TreeVertex insideLeftVertex, TreeVertex parent,
       TreeVertex defaultAncestor) {
     TreeVertex ancestorVertex = values.getAncestor(insideLeftVertex);
-    return isChildOfParent(ancestorVertex, parent) ? ancestorVertex
-        : defaultAncestor;
+    if (isChildOfParent(ancestorVertex, parent)) {
+      return ancestorVertex;
+    } else {
+      return defaultAncestor;
+    }
   }
 
   private boolean isChildOfParent(TreeVertex child, TreeVertex parent) {

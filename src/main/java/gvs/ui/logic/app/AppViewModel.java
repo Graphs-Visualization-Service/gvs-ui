@@ -37,7 +37,7 @@ import javafx.collections.ObservableList;
 public class AppViewModel implements Observer {
 
   private final BooleanProperty sessionControlVisibilityProperty;
-  private final ObjectProperty<Session> currentSession;
+  private final ObjectProperty<Session> selectedSession;
   private final ObservableList<Session> sessions;
   private final SessionHolder sessionHolder;
   private final ApplicationController appController;
@@ -58,14 +58,14 @@ public class AppViewModel implements Observer {
     this.appController = appController;
 
     this.sessionControlVisibilityProperty = new SimpleBooleanProperty();
-    this.currentSession = new SimpleObjectProperty<>();
+    this.selectedSession = new SimpleObjectProperty<>();
     this.sessions = FXCollections.observableArrayList();
 
     this.sessionHolder.addObserver(this);
     sessionPlaceHolder = sessionFactory.createSession(
         graphSessionTypeProvider.get(), PLACEHOLDER_SESSION_ID,
         PLACEHOLDER_SESSION_NAME);
-    this.currentSession.set(sessionPlaceHolder);
+    this.selectedSession.set(sessionPlaceHolder);
 
     sessions.addListener(this::changeSessionVisibility);
   }
@@ -99,9 +99,9 @@ public class AppViewModel implements Observer {
     Platform.runLater(() -> {
       Session currentSession = ((SessionHolder) o).getCurrentSession();
       if (currentSession == null) {
-        this.currentSession.set(sessionPlaceHolder);
+        this.selectedSession.set(sessionPlaceHolder);
       } else {
-        this.currentSession.set(currentSession);
+        this.selectedSession.set(currentSession);
         if (!sessions.contains(currentSession)) {
           sessions.add(currentSession);
         }
@@ -115,7 +115,7 @@ public class AppViewModel implements Observer {
     sessions.remove(currentSession);
 
     if (sessions.isEmpty()) {
-      this.currentSession.set(sessionPlaceHolder);
+      selectedSession.set(sessionPlaceHolder);
     }
     appController.deleteSession(currentSession);
   }
@@ -155,6 +155,6 @@ public class AppViewModel implements Observer {
   }
 
   public ObjectProperty<Session> getCurrentSession() {
-    return currentSession;
+    return selectedSession;
   }
 }

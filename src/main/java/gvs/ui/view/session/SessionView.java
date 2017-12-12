@@ -82,7 +82,7 @@ public class SessionView {
   private static final double SLIDER_DEFAULT = 1.0;
   private static final double SLIDER_MAX = 2.0;
 
-  private static final String DEFAULT_RANDOM_SWITCH_TOOLTIP = "Use Random coordinates";
+  private static final String DEFAULT_RANDOM_SWITCH_TOOLTIP = "Force layout";
   private static final String DEFAULT_CANCEL_BTN_TOOLTIP = "Cancel replay";
   private static final String DEFAULT_REPLAY_BTN_TOOLTIP = "Replay session";
   private static final String DEFAULT_LAST_BTN_TOOLTIP = "Show last snapshot";
@@ -301,8 +301,8 @@ public class SessionView {
 
   @FXML
   private void autoLayout() {
-    boolean useRandomLayout = randomLayoutSwitch.isSelected();
-    sessionViewModel.autoLayout(useRandomLayout);
+    boolean forceLayout = randomLayoutSwitch.isSelected();
+    sessionViewModel.autoLayout(forceLayout);
   }
 
   public BooleanProperty isReplayingProperty() {

@@ -40,13 +40,12 @@ public class TreeLayouter implements ILayouter {
   private Bounds prevBounds;
 
   @Override
-  public void layout(Session session, boolean useRandomLayout,
-      Action callback) {
-    session.getGraphs().forEach(g -> layout(g, useRandomLayout, callback));
+  public void layout(Session session, Action callback) {
+    session.getGraphs().forEach(g -> layout(g, callback));
   }
 
   @Override
-  public void layout(Graph graph, boolean useRandomLayout, Action callback) {
+  public void layout(Graph graph, Action callback) {
     List<TreeVertex> roots = graph.getVertices().stream()
         .map(v -> (TreeVertex) v).filter(v -> v.isRoot())
         .collect(Collectors.toList());

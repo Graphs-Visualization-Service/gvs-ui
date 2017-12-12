@@ -1,3 +1,4 @@
+
 .root {
 	-black: #000000;
 	-white: #ffffff;
@@ -10,7 +11,8 @@
 	-orange: #ff8e05;
 	-yellow: #ffff00;
 	-green: #51bd84;
-	
+
+    /* Linethickness for Edges and Vertex Borders*/
 	-slight: 2.0;
 	-standard: 4.0;
 	-bold: 8.0;

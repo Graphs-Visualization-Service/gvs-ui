@@ -110,16 +110,16 @@
     
     <xs:complexType name="DefaultNode">
         <xs:sequence minOccurs="0" maxOccurs="1">
-            <xs:element name="Linestyle" type="xs:string"></xs:element>
             <xs:element name="Label" type="xs:string"></xs:element>
             <xs:element name="Linecolor" type="xs:string"></xs:element>
+            <xs:element name="Linestyle" type="xs:string"></xs:element>
             <xs:element name="Linethickness" type="xs:string"></xs:element>
             <xs:element name="Fillcolor" type="xs:string"></xs:element>
             <xs:sequence minOccurs="0" maxOccurs="unbounded">
-                    <xs:element name="Childid" type="xs:long"></xs:element>
+                    <xs:element name="Child" type="xs:long"></xs:element>
             </xs:sequence>
          </xs:sequence>
-        <xs:attribute name="id" type="xs:long"></xs:attribute>
+        <xs:attribute name="Id" type="xs:long"></xs:attribute>
     </xs:complexType>
     
     <xs:complexType name="BinaryNode">

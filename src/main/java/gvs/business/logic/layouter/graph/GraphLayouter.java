@@ -70,7 +70,17 @@ public class GraphLayouter implements Tickable, ILayouter {
 
     Graph firstGraph = session.getGraphs().get(0);
     if (firstGraph != null) {
+
       layout(firstGraph, callback);
+
+      while (currentTicker != null) {
+        try {
+          wait();
+        } catch (InterruptedException e) {
+          logger.error("Unable to passivate thread", e);
+        }
+      }
+
       firstGraph.setLayouted(true);
 
       session.getGraphs().stream().filter(g -> g.isLayoutable()).forEach(g -> {

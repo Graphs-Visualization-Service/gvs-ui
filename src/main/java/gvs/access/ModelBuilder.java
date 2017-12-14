@@ -69,8 +69,11 @@ public class ModelBuilder {
   // Tree XML Fields
   private static final String TREE = "Tree";
   private static final String NODES = "Nodes";
+  private static final String DEFAULTNODE = "DefaultNode";
+  private static final String BINARYNODE = "BinaryNode";
   private static final String RIGTHCHILD = "Rigthchild";
   private static final String LEFTCHILD = "Leftchild";
+  private static final String CHILD = "Child";
 
   // Logger
   private static final Logger logger = LoggerFactory
@@ -199,7 +202,14 @@ public class ModelBuilder {
   private Map<Long, IVertex> buildTreeVertices(Element eVertices) {
     Map<Long, IVertex> vertexMap = new HashMap<>();
     eVertices.elements().forEach(e -> {
-      TreeVertex newVertex = buildTreeVertex(e);
+      TreeVertex newVertex = null;
+      if (e.getName().equals(DEFAULTNODE)) {
+        logger.info("Building default tree vertex...");
+        newVertex = buildDefaultTreeVertex(e);
+      } else if (e.getName().equals(BINARYNODE)) {
+        logger.info("Building binary tree vertex...");
+        newVertex = buildBinaryTreeVertex(e);
+      }
       vertexMap.put(newVertex.getId(), newVertex);
     });
     return vertexMap;
@@ -259,8 +269,34 @@ public class ModelBuilder {
     return edges;
   }
 
-  private TreeVertex buildTreeVertex(Element pVertex) {
-    logger.info("Building TreeVertex from XML...");
+  private TreeVertex buildDefaultTreeVertex(Element pVertex) {
+    long vertexId = Long.parseLong(pVertex.attributeValue(ATTRIBUTEID));
+    Element eLabel = pVertex.element(LABEL);
+    String label = eLabel.getText();
+
+    GVSStyle style = buildStyle(pVertex, true);
+
+    TreeVertex newVertex = new TreeVertex(vertexId, label, style, false, null);
+
+    List<Long> childIds = new ArrayList<>();
+    List<Element> eChildren = pVertex.elements(CHILD);
+    if (!eChildren.isEmpty()) {
+      eChildren.forEach(child -> {
+        childIds.add(Long.parseLong(child.getText()));
+      });
+    } else {
+      // add -1 if vertex has no children -> leads to creation of LeafVertex
+      childIds.add(-1L);
+    }
+    childIds.forEach(id -> {
+      newVertex.addChildId(id);
+    });
+
+    logger.info("Finish building TreeVertex from XML.");
+    return newVertex;
+  }
+
+  private TreeVertex buildBinaryTreeVertex(Element pVertex) {
     long vertexId = Long.parseLong(pVertex.attributeValue(ATTRIBUTEID));
     Element eLabel = pVertex.element(LABEL);
     String label = eLabel.getText();

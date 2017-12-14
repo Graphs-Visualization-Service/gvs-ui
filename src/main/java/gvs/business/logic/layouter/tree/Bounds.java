@@ -4,7 +4,7 @@ import gvs.Configuration;
 import gvs.business.model.tree.TreeVertex;
 
 public class Bounds {
-  private static final int VERTEX_LABEL_MARGIN = 30;
+  private static final int VERTEX_LABEL_MARGIN = 12;
   private static final int VERTEX_HEIGHT = 60;
   private double boundsTop = Double.MAX_VALUE;
   private double boundsRight = Double.MIN_VALUE;
@@ -65,7 +65,7 @@ public class Bounds {
   }
 
   private int getVertexWidth(TreeVertex v) {
-    int labelWidth = v.getLabel().length() + VERTEX_LABEL_MARGIN;
+    int labelWidth = v.getLabel().length() + 2*VERTEX_LABEL_MARGIN;
     int maxWidth = Configuration.getMaxLabelLengthForTree();
     return Math.min(labelWidth, maxWidth);
   }

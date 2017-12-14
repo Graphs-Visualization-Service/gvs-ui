@@ -66,7 +66,7 @@ public class ApplicationController {
 
       logger.info("Layouting loaded session...");
       ILayouter layouter = loadedSession.getSessionType().getLayouter();
-      layouter.layout(loadedSession, true, null);
+      layouter.layout(loadedSession, null);
     }
 
   }
@@ -74,8 +74,10 @@ public class ApplicationController {
   /**
    * Save a session to a specific file.
    * 
+   * @param session
+   *          session to safe
    * @param file
-   *          file
+   *          xml file
    */
   public void saveSession(Session session, File file) {
     persistor.saveToDisk(session, file);
@@ -148,7 +150,7 @@ public class ApplicationController {
     session.addGraph(graph);
 
     ILayouter layouter = session.getSessionType().getLayouter();
-    layouter.layout(session, true, null);
+    layouter.layout(session, null);
 
     sessionHolder.setCurrentSession(session);
     session.getGraphHolder().setCurrentGraph(graph);

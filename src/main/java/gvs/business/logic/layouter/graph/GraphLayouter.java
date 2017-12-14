@@ -2,7 +2,6 @@ package gvs.business.logic.layouter.graph;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Random;
 import java.util.Timer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -46,13 +45,10 @@ public class GraphLayouter implements Tickable, ILayouter {
   private static final int TRACTION_IMPACT = 50;
   private static final int TRACTION_DISTANCE = 150;
 
-  private static final int SEEDED_MULTIPLIER = 100;
-
   private static final int TICK_RATE_PER_SEC = 26;
   private static final int MAX_LAYOUT_DURATION_MS = 10_000;
 
   private static final int LAYOUT_AREA_FACTOR = 3;
-  private static final int SEED = 4000;
 
   private static final Logger logger = LoggerFactory
       .getLogger(GraphLayouter.class);
@@ -70,12 +66,21 @@ public class GraphLayouter implements Tickable, ILayouter {
   }
 
   @Override
-  public synchronized void layout(Session session, boolean useRandomLayout,
-      Action callback) {
+  public synchronized void layout(Session session, Action callback) {
 
     Graph firstGraph = session.getGraphs().get(0);
     if (firstGraph != null) {
-      layout(firstGraph, useRandomLayout, callback);
+
+      layout(firstGraph, callback);
+
+      while (currentTicker != null) {
+        try {
+          wait();
+        } catch (InterruptedException e) {
+          logger.error("Unable to passivate thread", e);
+        }
+      }
+
       firstGraph.setLayouted(true);
 
       session.getGraphs().stream().filter(g -> g.isLayoutable()).forEach(g -> {
@@ -89,14 +94,11 @@ public class GraphLayouter implements Tickable, ILayouter {
    * 
    * @param graph
    *          graph with vertices and edges
-   * @param useRandomLayout
-   *          use random points
    * @param callback
    *          callback function
    */
   @Override
-  public synchronized void layout(Graph graph, boolean useRandomLayout,
-      Action callback) {
+  public synchronized void layout(Graph graph, Action callback) {
 
     if (graph.isLayoutable()) {
 
@@ -120,7 +122,7 @@ public class GraphLayouter implements Tickable, ILayouter {
         }
       });
 
-      calculateLayout(graph, useRandomLayout);
+      calculateLayout(graph);
 
       initializeLayoutGuard();
 
@@ -164,15 +166,13 @@ public class GraphLayouter implements Tickable, ILayouter {
    * 
    * @param graph
    *          graph to layout
-   * @param useRandomLayout
-   *          use random points
    */
-  private void calculateLayout(Graph graph, boolean useRandomLayout) {
+  private void calculateLayout(Graph graph) {
     // reset
     area.setIsStable(false);
     area.resetArea();
 
-    createVertexParticles(graph.getVertices(), useRandomLayout);
+    createVertexParticles(graph.getVertices());
     createEdgeTractions(graph.getEdges());
   }
 
@@ -232,25 +232,16 @@ public class GraphLayouter implements Tickable, ILayouter {
    *
    * @param vertices
    *          related vertices
-   * @param useRandomLayout
-   *          use random points
    */
-  private void createVertexParticles(Collection<IVertex> vertices,
-      boolean useRandomLayout) {
-
-    // initialize seeded random every layout iteration
-    Random seededRandom = new Random(SEED);
+  private void createVertexParticles(Collection<IVertex> vertices) {
 
     vertices.forEach(vertex -> {
-      GraphVertex graphVertex = (GraphVertex) vertex;
-      if (!graphVertex.isUserPositioned() && !graphVertex.isStable()) {
-        AreaPoint position = null;
-        if (useRandomLayout) {
-          position = generateRandomPoints();
-        } else {
-          position = generateSeededRandomPoints(seededRandom);
-        }
 
+      GraphVertex graphVertex = (GraphVertex) vertex;
+
+      if (!graphVertex.isUserPositioned() && !graphVertex.isStable()) {
+
+        AreaPoint position = generateRandomPoints();
         Particle newParticle = new Particle(position, graphVertex,
             PARTICLE_WEIGHT);
         area.addParticles(newParticle);
@@ -295,21 +286,4 @@ public class GraphLayouter implements Tickable, ILayouter {
 
     return new AreaPoint(randomX, randomY);
   }
-
-  /**
-   * Use always the same random coordinates as input for engine.
-   * 
-   * The seeded Random class generates always the same sequence of randoms.
-   * 
-   * @param seededRandom
-   *          pseudo random object, that returns always the same randoms
-   * @return seeded random point
-   */
-  private AreaPoint generateSeededRandomPoints(Random seededRandom) {
-    double randomX = seededRandom.nextDouble() * SEEDED_MULTIPLIER;
-    double randomY = seededRandom.nextDouble() * SEEDED_MULTIPLIER;
-
-    return new AreaPoint(randomX, randomY);
-  }
-
 }

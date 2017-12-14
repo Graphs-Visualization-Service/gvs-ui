@@ -34,7 +34,7 @@ class TreeLayouterTest {
   void testLayoutGraph() {
     TreeVertex root = buildTree();
     root.setRoot(true);
-    layouter.layout(tree, false, null);
+    layouter.layout(tree, null);
     Map<Long, TreeVertex> layoutedVertices = new HashMap<>();
     tree.getVertices()
         .forEach(v -> layoutedVertices.put(v.getId(), (TreeVertex) v));
@@ -50,7 +50,7 @@ class TreeLayouterTest {
   @Test
   void testLayoutWithNoRoots() {
     buildTree();
-    Executable layoutTreeWithoutRoot = () -> layouter.layout(tree, false, null);
+    Executable layoutTreeWithoutRoot = () -> layouter.layout(tree, null);
     assertThrows(IllegalArgumentException.class, layoutTreeWithoutRoot);
     assertTrue(tree.getVertices().stream()
         .allMatch(v -> v.getXPosition() == 0 && v.getYPosition() == 0));

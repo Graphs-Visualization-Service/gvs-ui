@@ -6,9 +6,9 @@ import gvs.util.Action;
 
 public interface ILayouter {
 
-  void layout(Session session, boolean useRandomLayout, Action callback);
+  void layout(Session session, Action callback);
 
-  void layout(Graph graph, boolean useRandomLayout, Action callback);
+  void layout(Graph graph, Action callback);
 
   void takeOverVertexPositions(Graph source, Graph target);
 

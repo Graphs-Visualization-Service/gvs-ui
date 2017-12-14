@@ -180,10 +180,10 @@ public class SessionViewModel {
   /**
    * Request auto layout of the layout engine.
    * 
-   * @param useRandomLayout
-   *          use random positions
+   * @param forceLayout
+   *          force layout
    */
-  public void autoLayout(boolean useRandomLayout) {
+  public void autoLayout(boolean forceLayout) {
     disableAllButtons(true);
     Session currentSession = sessionHolder.getCurrentSession();
     Graph currentGraph = currentSession.getGraphHolder().getCurrentGraph();
@@ -191,12 +191,16 @@ public class SessionViewModel {
     // reset
     currentGraph.setLayouted(false);
 
+    if (forceLayout) {
+      currentGraph.getVertices().forEach(v -> v.setUserPositioned(false));
+    }
+
     if (currentSession.getSessionType() instanceof GraphSessionType
-        && currentGraph.getVertices().stream()
-            .anyMatch(v -> !v.isUserPositioned())) {
+        && (currentGraph.getVertices().stream()
+            .anyMatch(v -> !v.isUserPositioned()))) {
 
       ILayouter layouter = currentSession.getSessionType().getLayouter();
-      layouter.layout(currentGraph, useRandomLayout, this::updateButtonStates);
+      layouter.layout(currentGraph, this::updateButtonStates);
     } else {
       layoutTooltip.set(LAYOUT_INFO_TOOLTIP);
       autoLayoutBtnDisableProperty.set(true);

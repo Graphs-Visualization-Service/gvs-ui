@@ -32,8 +32,9 @@ public class TreeLayouter implements ILayouter {
   private static final double GAP_BETWEEN_FORESTS = 80;
   private static final double GAP_BETWEEN_LEVEL = 40;
   private static final double VERTEX_HEIGHT = 60;
-  private static final int VERTEX_LABEL_MARGIN = 10;
+  private static final int VERTEX_LABEL_MARGIN = 12;
   private static final double UPPER_MARGIN = 20;
+  private static final int MIN_VERTEX_WIDTH = Configuration.getAvgPixelPerLetter();
 
   private TreeLayouterValues values;
   private Bounds bounds;
@@ -211,7 +212,7 @@ public class TreeLayouter implements ILayouter {
     values.setPreliminary(w, values.getPreliminary(w) + currentShift);
     values.setMod(w, values.getMod(w) + currentShift);
   }
-
+  
   /**
    * This method satisfies the 6th aesthetic property required to display trees:
    * 6) The children of a node should be equally spaced.
@@ -333,9 +334,10 @@ public class TreeLayouter implements ILayouter {
 
   private int getVertexWidth(TreeVertex v) {
     int acctualWidth = v.getLabel().length()
-        * Configuration.getAvgPixelPerLetter() + VERTEX_LABEL_MARGIN;
+        * Configuration.getAvgPixelPerLetter() + 2 * VERTEX_LABEL_MARGIN;
     int maxWidth = Configuration.getMaxLabelLengthForTree();
-    return Math.min(acctualWidth, maxWidth);
+    int width = Math.min(acctualWidth, maxWidth);
+    return Math.max(width, MIN_VERTEX_WIDTH);
   }
 
   private List<TreeVertex> getChildrenReverse(TreeVertex v) {

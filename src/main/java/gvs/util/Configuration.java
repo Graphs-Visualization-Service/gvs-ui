@@ -1,5 +1,5 @@
 
-package gvs;
+package gvs.util;
 
 import java.io.InputStream;
 

@@ -1,6 +1,6 @@
-package gvs.business.model;
+package gvs.model;
 
-import gvs.business.model.styles.GVSStyle;
+import gvs.model.styles.GVSStyle;
 
 /**
  * Model of an edge

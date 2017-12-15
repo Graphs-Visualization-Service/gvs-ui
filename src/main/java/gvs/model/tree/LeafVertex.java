@@ -1,4 +1,4 @@
-package gvs.business.model.tree;
+package gvs.model.tree;
 
 /**
  * This class is only needed for layouting trees. For every non-existent child

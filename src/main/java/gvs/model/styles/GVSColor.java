@@ -1,4 +1,4 @@
-package gvs.business.model.styles;
+package gvs.model.styles;
 
 public enum GVSColor {
   STANDARD("standard"), BLACK("black"), WHITE("white"), DARKGREY(

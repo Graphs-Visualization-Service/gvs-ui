@@ -1,6 +1,8 @@
 package gvs.business.logic;
 
 import java.io.File;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,10 +10,15 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import gvs.access.ModelBuilder;
 import gvs.access.Persistor;
 import gvs.business.logic.layouter.ILayouter;
-import gvs.business.model.Graph;
-import gvs.business.model.SessionHolder;
+import gvs.model.ClientData;
+import gvs.model.Graph;
+import gvs.model.ISessionType;
+import gvs.model.Session;
+import gvs.model.SessionFactory;
+import gvs.model.SessionHolder;
 
 /**
  * The Application Controller reacts on events from the user or newly received
@@ -21,7 +28,7 @@ import gvs.business.model.SessionHolder;
  *
  */
 @Singleton
-public class ApplicationController {
+public class ApplicationController implements Observer {
 
   private final SessionFactory sessionFactory;
   private final Persistor persistor;
@@ -37,16 +44,20 @@ public class ApplicationController {
    *          wrapper for the current session
    * @param persistor
    *          persistor
+   * @param modelBuilder
+   *          modelBuilder for observer relation
    * @param sessionFactory
    *          factory for new sessions
    */
   @Inject
   public ApplicationController(SessionHolder sessionHolder, Persistor persistor,
-      SessionFactory sessionFactory) {
+      ModelBuilder modelBuilder, SessionFactory sessionFactory) {
 
     this.sessionHolder = sessionHolder;
     this.persistor = persistor;
     this.sessionFactory = sessionFactory;
+
+    modelBuilder.addObserver(this);
   }
 
   /**
@@ -113,6 +124,18 @@ public class ApplicationController {
    */
   public synchronized void changeCurrentSession(Session session) {
     sessionHolder.setCurrentSession(session);
+  }
+
+  @Override
+  public void update(Observable o, Object arg) {
+    ClientData data = (ClientData) arg;
+
+    long sessionId = data.getSessionId();
+    String sessionName = data.getSessionName();
+    ISessionType sessionType = data.getSessionType();
+    Graph graph = data.getGraph();
+
+    addGraphToSession(graph, sessionId, sessionName, sessionType);
   }
 
   /**

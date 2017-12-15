@@ -6,12 +6,12 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 
-import gvs.Configuration;
-import gvs.business.logic.Session;
 import gvs.business.logic.layouter.ILayouter;
-import gvs.business.model.Graph;
-import gvs.business.model.tree.TreeVertex;
+import gvs.model.Graph;
+import gvs.model.Session;
+import gvs.model.tree.TreeVertex;
 import gvs.util.Action;
+import gvs.util.Configuration;
 
 /**
  * Layouts a tree according to the Reingold-Tilford Algorithm which was improved

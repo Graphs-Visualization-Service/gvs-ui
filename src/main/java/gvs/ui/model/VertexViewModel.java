@@ -6,11 +6,11 @@ import java.util.Observer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gvs.Configuration;
-import gvs.business.model.IVertex;
-import gvs.business.model.graph.GraphVertex;
-import gvs.business.model.styles.GVSStyle;
+import gvs.model.IVertex;
+import gvs.model.graph.GraphVertex;
+import gvs.model.styles.GVSStyle;
 import gvs.ui.view.ScalableScrollPane;
+import gvs.util.Configuration;
 import gvs.util.ContrastColor;
 import gvs.util.FontAwesome;
 import javafx.application.Platform;

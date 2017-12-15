@@ -5,10 +5,10 @@ import java.io.File;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.Configuration;
-import gvs.business.logic.Session;
+import gvs.model.Session;
 import gvs.ui.logic.app.AppViewModel;
 import gvs.ui.view.session.SessionView;
+import gvs.util.Configuration;
 import gvs.util.FontAwesome;
 import gvs.util.FontAwesome.Glyph;
 import javafx.fxml.FXML;

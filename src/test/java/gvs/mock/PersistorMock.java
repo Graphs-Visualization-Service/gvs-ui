@@ -1,9 +1,10 @@
 package gvs.mock;
+
 import java.io.File;
 
 import gvs.access.Persistor;
-import gvs.business.logic.Session;
-import gvs.business.logic.SessionFactory;
+import gvs.model.Session;
+import gvs.model.SessionFactory;
 
 public class PersistorMock extends Persistor {
   private Session testSession;

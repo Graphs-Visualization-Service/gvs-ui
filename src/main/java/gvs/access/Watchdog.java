@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.Configuration;
+import gvs.util.Configuration;
 
 /**
  * The Watchdog is responsible for severing stale client connections. Whenever a

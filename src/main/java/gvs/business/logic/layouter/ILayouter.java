@@ -1,7 +1,7 @@
 package gvs.business.logic.layouter;
 
-import gvs.business.logic.Session;
-import gvs.business.model.Graph;
+import gvs.model.Graph;
+import gvs.model.Session;
 import gvs.util.Action;
 
 public interface ILayouter {

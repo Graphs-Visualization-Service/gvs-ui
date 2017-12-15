@@ -1,4 +1,4 @@
-package gvs.business.logic;
+package gvs.model;
 
 import com.google.inject.Inject;
 

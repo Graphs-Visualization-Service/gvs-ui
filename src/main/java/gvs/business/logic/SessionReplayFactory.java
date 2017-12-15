@@ -1,5 +1,6 @@
 package gvs.business.logic;
 
+import gvs.model.Session;
 import gvs.util.Action;
 
 /**

@@ -1,8 +1,8 @@
 package gvs.mock;
 
-import gvs.business.logic.Session;
 import gvs.business.logic.layouter.ILayouter;
-import gvs.business.model.Graph;
+import gvs.model.Graph;
+import gvs.model.Session;
 import gvs.util.Action;
 
 public class LayouterMock implements ILayouter {

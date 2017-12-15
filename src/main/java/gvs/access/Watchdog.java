@@ -55,6 +55,7 @@ public class Watchdog implements Runnable {
       logger.info("Watchdog forcefully releases service");
       monitor.releaseService(Configuration.getWatchdog());
     }
+    isWatching = false;
     logger.info("Watchdog goes to sleep");
   }
 

@@ -43,6 +43,14 @@ public class GraphVertex extends Observable implements IVertex {
     return xPosition;
   }
 
+  /**
+   * Update x and y coordinate of vertex
+   * 
+   * @param xPos
+   *          X coordinate
+   * @param yPos
+   *          Y coordinate
+   */
   public void updateCoordinates(double xPos, double yPos) {
     xPosition = xPos;
     yPosition = yPos;

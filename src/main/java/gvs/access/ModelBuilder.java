@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 import java.util.stream.Collectors;
 
 import org.dom4j.Document;
@@ -17,9 +18,9 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import gvs.business.logic.ApplicationController;
 import gvs.business.model.tree.LeafVertex;
 import gvs.business.model.tree.TreeVertex;
+import gvs.model.ClientData;
 import gvs.model.Edge;
 import gvs.model.Graph;
 import gvs.model.GraphSessionType;
@@ -39,9 +40,8 @@ import gvs.util.FontAwesome.Glyph;
  * @author mkoller
  */
 @Singleton
-public class ModelBuilder {
+public class ModelBuilder extends Observable {
 
-  private final ApplicationController applicationController;
   private final Provider<GraphSessionType> graphSessionTypeProvider;
   private final Provider<TreeSessionType> treeSessionTypeProvider;
 
@@ -82,18 +82,14 @@ public class ModelBuilder {
   /**
    * ModelBuilder.
    * 
-   * @param appController
-   *          application controller
    * @param treeSessionTypeProvider
    *          type provider for tree type
    * @param graphSessionTypeProvider
    *          type provider for graph type
    */
   @Inject
-  public ModelBuilder(ApplicationController appController,
-      Provider<TreeSessionType> treeSessionTypeProvider,
+  public ModelBuilder(Provider<TreeSessionType> treeSessionTypeProvider,
       Provider<GraphSessionType> graphSessionTypeProvider) {
-    this.applicationController = appController;
     this.treeSessionTypeProvider = treeSessionTypeProvider;
     this.graphSessionTypeProvider = graphSessionTypeProvider;
   }
@@ -165,8 +161,12 @@ public class ModelBuilder {
     String sessionName = graphElement.element(LABEL).getText();
 
     ISessionType type = graphSessionTypeProvider.get();
-    applicationController.addGraphToSession(newGraph, sessionId, sessionName,
-        type);
+
+    ClientData incommingData = new ClientData(sessionId, sessionName, type,
+        newGraph);
+
+    setChanged();
+    notifyObservers(incommingData);
   }
 
   /**
@@ -196,7 +196,12 @@ public class ModelBuilder {
     logger.info("Finished build tree from XML.");
 
     ISessionType type = treeSessionTypeProvider.get();
-    applicationController.addGraphToSession(tree, sessionId, sessionName, type);
+
+    ClientData incommingData = new ClientData(sessionId, sessionName, type,
+        tree);
+
+    setChanged();
+    notifyObservers(incommingData);
   }
 
   private Map<Long, IVertex> buildTreeVertices(Element eVertices) {

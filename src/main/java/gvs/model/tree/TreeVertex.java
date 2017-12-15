@@ -1,4 +1,4 @@
-package gvs.business.model.tree;
+package gvs.model.tree;
 
 import java.util.ArrayList;
 import java.util.List;

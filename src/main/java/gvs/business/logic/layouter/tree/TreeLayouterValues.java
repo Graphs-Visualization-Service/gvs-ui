@@ -3,7 +3,7 @@ package gvs.business.logic.layouter.tree;
 import java.util.HashMap;
 import java.util.Map;
 
-import gvs.business.model.tree.TreeVertex;
+import gvs.model.tree.TreeVertex;
 
 public class TreeLayouterValues {
   private Map<TreeVertex, Double> mod;

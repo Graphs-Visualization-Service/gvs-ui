@@ -26,8 +26,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import gvs.business.model.tree.LeafVertex;
-import gvs.business.model.tree.TreeVertex;
 import gvs.model.Edge;
 import gvs.model.Graph;
 import gvs.model.GraphSessionType;
@@ -39,6 +37,8 @@ import gvs.model.SessionFactory;
 import gvs.model.TreeSessionType;
 import gvs.model.graph.GraphVertex;
 import gvs.model.styles.GVSStyle;
+import gvs.model.tree.LeafVertex;
+import gvs.model.tree.TreeVertex;
 import gvs.util.FontAwesome.Glyph;
 
 /**

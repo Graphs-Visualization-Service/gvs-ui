@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import gvs.Configuration;
 import gvs.business.model.IVertex;
+import gvs.business.model.graph.GraphVertex;
 import gvs.business.model.styles.GVSStyle;
 import gvs.ui.view.ScalableScrollPane;
 import gvs.util.ContrastColor;
@@ -34,6 +35,9 @@ public class VertexViewModel implements Observer {
   private final IVertex vertex;
   private final Label label;
   private final Ellipse ellipse;
+
+  private static final double MIN_X_RADIUS = 30;
+  private static final double MIN_Y_RADIUS = 35;
 
   private static final Logger logger = LoggerFactory
       .getLogger(VertexViewModel.class);
@@ -183,6 +187,9 @@ public class VertexViewModel implements Observer {
     label.applyCss();
     double xRadius = Math.min(label.prefWidth(-1), label.getMaxWidth()) / 2;
     double yRadius = label.prefHeight(-1) / 2;
+
+    xRadius = Math.max(xRadius, MIN_X_RADIUS);
+    yRadius = Math.max(yRadius, MIN_Y_RADIUS);
 
     ellipse.setRadiusX(xRadius);
     ellipse.setRadiusY(yRadius);

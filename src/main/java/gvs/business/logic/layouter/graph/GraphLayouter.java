@@ -41,6 +41,9 @@ public class GraphLayouter implements Tickable, ILayouter {
   private final AreaTickerFactory tickerFactory;
   private final Area area;
 
+  private volatile Session currentSession;
+  private volatile Graph referenceGraph;
+
   private static final int PARTICLE_WEIGHT = 50;
   private static final int TRACTION_IMPACT = 50;
   private static final int TRACTION_DISTANCE = 150;
@@ -66,27 +69,23 @@ public class GraphLayouter implements Tickable, ILayouter {
   }
 
   @Override
-  public synchronized void layout(Session session, Action callback) {
+  public synchronized void layout(Session session) {
 
-    Graph firstGraph = session.getGraphs().get(0);
-    if (firstGraph != null) {
+    this.currentSession = session;
+    this.referenceGraph = session.getGraphs().get(0);
 
-      layout(firstGraph, callback);
-
-      while (currentTicker != null) {
-        try {
-          wait();
-        } catch (InterruptedException e) {
-          logger.error("Unable to passivate thread", e);
-        }
-      }
-
-      firstGraph.setLayouted(true);
-
-      session.getGraphs().stream().filter(g -> g.isLayoutable()).forEach(g -> {
-        takeOverVertexPositions(firstGraph, g);
-      });
+    if (referenceGraph != null) {
+      layout(referenceGraph, this::sessionLayoutCallback);
     }
+  }
+
+  private void sessionLayoutCallback() {
+    referenceGraph.setLayouted(true);
+
+    currentSession.getGraphs().stream().filter(g -> g.isLayoutable())
+        .forEach(g -> {
+          takeOverVertexPositions(referenceGraph, g);
+        });
   }
 
   /**

@@ -34,15 +34,16 @@ public class TreeLayouter implements ILayouter {
   private static final double VERTEX_HEIGHT = 60;
   private static final int VERTEX_LABEL_MARGIN = 12;
   private static final double UPPER_MARGIN = 20;
-  private static final int MIN_VERTEX_WIDTH = Configuration.getAvgPixelPerLetter();
+  private static final int MIN_VERTEX_WIDTH = Configuration
+      .getAvgPixelPerLetter();
 
   private TreeLayouterValues values;
   private Bounds bounds;
   private Bounds prevBounds;
 
   @Override
-  public void layout(Session session, Action callback) {
-    session.getGraphs().forEach(g -> layout(g, callback));
+  public void layout(Session session) {
+    session.getGraphs().forEach(g -> layout(g, null));
   }
 
   @Override
@@ -211,7 +212,7 @@ public class TreeLayouter implements ILayouter {
     values.setPreliminary(w, values.getPreliminary(w) + currentShift);
     values.setMod(w, values.getMod(w) + currentShift);
   }
-  
+
   /**
    * This method satisfies the 6th aesthetic property required to display trees:
    * 6) The children of a node should be equally spaced.

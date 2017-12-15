@@ -6,7 +6,7 @@ import gvs.util.Action;
 
 public interface ILayouter {
 
-  void layout(Session session, Action callback);
+  void layout(Session session);
 
   void layout(Graph graph, Action callback);
 

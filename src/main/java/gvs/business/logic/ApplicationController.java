@@ -66,7 +66,7 @@ public class ApplicationController {
 
       logger.info("Layouting loaded session...");
       ILayouter layouter = loadedSession.getSessionType().getLayouter();
-      layouter.layout(loadedSession, null);
+      layouter.layout(loadedSession);
     }
 
   }
@@ -150,7 +150,7 @@ public class ApplicationController {
     session.addGraph(graph);
 
     ILayouter layouter = session.getSessionType().getLayouter();
-    layouter.layout(session, null);
+    layouter.layout(session);
 
     sessionHolder.setCurrentSession(session);
     session.getGraphHolder().setCurrentGraph(graph);

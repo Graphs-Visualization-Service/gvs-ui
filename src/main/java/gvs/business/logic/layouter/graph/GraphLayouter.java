@@ -12,14 +12,14 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.Configuration;
-import gvs.business.logic.Session;
 import gvs.business.logic.layouter.ILayouter;
-import gvs.business.model.Graph;
-import gvs.business.model.IEdge;
-import gvs.business.model.IVertex;
-import gvs.business.model.graph.GraphVertex;
+import gvs.model.Graph;
+import gvs.model.IEdge;
+import gvs.model.IVertex;
+import gvs.model.Session;
+import gvs.model.graph.GraphVertex;
 import gvs.util.Action;
+import gvs.util.Configuration;
 
 /**
  * Creates and prepares the elements which need to be layouted.

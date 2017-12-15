@@ -1,3 +1,5 @@
+package gvs.business.logic;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,13 +20,12 @@ import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 import gvs.access.Persistor;
-import gvs.business.logic.ApplicationController;
-import gvs.business.logic.Session;
-import gvs.business.logic.SessionFactory;
-import gvs.business.model.SessionHolder;
 import gvs.mock.PersistorMock;
 import gvs.mock.SessionHolderMock;
 import gvs.mock.SessionMock;
+import gvs.model.Session;
+import gvs.model.SessionFactory;
+import gvs.model.SessionHolder;
 
 @RunWith(JukitoRunner.class)
 public class ApplicationControllerTest {

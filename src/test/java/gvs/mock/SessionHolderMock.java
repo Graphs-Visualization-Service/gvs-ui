@@ -1,9 +1,10 @@
 package gvs.mock;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import gvs.business.logic.Session;
-import gvs.business.model.SessionHolder;
+import gvs.model.Session;
+import gvs.model.SessionHolder;
 
 public class SessionHolderMock extends SessionHolder {
   private final List<Session> sessions = new ArrayList<>();
@@ -17,7 +18,6 @@ public class SessionHolderMock extends SessionHolder {
       return session;
     }
   }
-  
 
   /**
    * Remove a session.
@@ -37,7 +37,7 @@ public class SessionHolderMock extends SessionHolder {
   public List<Session> getSessions() {
     return sessions;
   }
-  
+
   @Override
   public String toString() {
     return "GVS Mock of SessionHolder";

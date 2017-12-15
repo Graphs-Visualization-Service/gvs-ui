@@ -12,10 +12,10 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import gvs.business.logic.ApplicationController;
-import gvs.business.logic.GraphSessionType;
-import gvs.business.logic.Session;
-import gvs.business.logic.SessionFactory;
-import gvs.business.model.SessionHolder;
+import gvs.model.GraphSessionType;
+import gvs.model.Session;
+import gvs.model.SessionFactory;
+import gvs.model.SessionHolder;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;

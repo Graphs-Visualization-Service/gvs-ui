@@ -14,10 +14,10 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import gvs.business.model.Graph;
-import gvs.business.model.GraphHolder;
-import gvs.business.model.IEdge;
-import gvs.business.model.IVertex;
+import gvs.model.Graph;
+import gvs.model.GraphHolder;
+import gvs.model.IEdge;
+import gvs.model.IVertex;
 import gvs.ui.logic.session.SessionViewModel;
 import gvs.ui.view.ScalableScrollPane;
 import javafx.application.Platform;

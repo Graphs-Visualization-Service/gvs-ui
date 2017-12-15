@@ -1,4 +1,4 @@
-package gvs.business.model;
+package gvs.model;
 
 import java.util.Observable;
 

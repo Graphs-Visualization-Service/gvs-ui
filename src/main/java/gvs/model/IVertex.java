@@ -1,8 +1,8 @@
-package gvs.business.model;
+package gvs.model;
 
 import java.util.Observer;
 
-import gvs.business.model.styles.GVSStyle;
+import gvs.model.styles.GVSStyle;
 import gvs.util.FontAwesome.Glyph;
 
 public interface IVertex {

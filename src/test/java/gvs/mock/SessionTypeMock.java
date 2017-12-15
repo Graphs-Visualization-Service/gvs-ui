@@ -1,7 +1,7 @@
 package gvs.mock;
 
-import gvs.business.logic.ISessionType;
 import gvs.business.logic.layouter.ILayouter;
+import gvs.model.ISessionType;
 
 public class SessionTypeMock implements ISessionType {
 

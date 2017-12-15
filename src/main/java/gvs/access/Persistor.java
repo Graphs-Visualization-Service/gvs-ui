@@ -26,19 +26,19 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import gvs.business.logic.GraphSessionType;
-import gvs.business.logic.ISessionType;
-import gvs.business.logic.Session;
-import gvs.business.logic.SessionFactory;
-import gvs.business.logic.TreeSessionType;
-import gvs.business.model.Edge;
-import gvs.business.model.Graph;
-import gvs.business.model.IEdge;
-import gvs.business.model.IVertex;
-import gvs.business.model.graph.GraphVertex;
-import gvs.business.model.styles.GVSStyle;
 import gvs.business.model.tree.LeafVertex;
 import gvs.business.model.tree.TreeVertex;
+import gvs.model.Edge;
+import gvs.model.Graph;
+import gvs.model.GraphSessionType;
+import gvs.model.IEdge;
+import gvs.model.ISessionType;
+import gvs.model.IVertex;
+import gvs.model.Session;
+import gvs.model.SessionFactory;
+import gvs.model.TreeSessionType;
+import gvs.model.graph.GraphVertex;
+import gvs.model.styles.GVSStyle;
 import gvs.util.FontAwesome.Glyph;
 
 /**

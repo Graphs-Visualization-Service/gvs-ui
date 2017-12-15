@@ -1,4 +1,4 @@
-package gvs.business.model.styles;
+package gvs.model.styles;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

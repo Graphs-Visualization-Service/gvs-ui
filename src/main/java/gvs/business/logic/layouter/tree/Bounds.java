@@ -1,7 +1,7 @@
 package gvs.business.logic.layouter.tree;
 
-import gvs.Configuration;
 import gvs.business.model.tree.TreeVertex;
+import gvs.util.Configuration;
 
 public class Bounds {
   private static final int VERTEX_LABEL_MARGIN = 12;
@@ -65,7 +65,7 @@ public class Bounds {
   }
 
   private int getVertexWidth(TreeVertex v) {
-    int labelWidth = v.getLabel().length() + 2*VERTEX_LABEL_MARGIN;
+    int labelWidth = v.getLabel().length() + 2 * VERTEX_LABEL_MARGIN;
     int maxWidth = Configuration.getMaxLabelLengthForTree();
     return Math.min(labelWidth, maxWidth);
   }

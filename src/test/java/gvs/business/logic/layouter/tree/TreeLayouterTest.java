@@ -12,11 +12,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
-import gvs.business.model.Graph;
-import gvs.business.model.IEdge;
-import gvs.business.model.IVertex;
 import gvs.business.model.tree.LeafVertex;
 import gvs.business.model.tree.TreeVertex;
+import gvs.model.Graph;
+import gvs.model.IEdge;
+import gvs.model.IVertex;
 
 class TreeLayouterTest {
   private Graph tree;

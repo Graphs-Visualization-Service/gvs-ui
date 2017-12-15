@@ -1,10 +1,10 @@
-package gvs.business.model.graph;
+package gvs.model.graph;
 
 import java.util.Observable;
 
-import gvs.Configuration;
-import gvs.business.model.IVertex;
-import gvs.business.model.styles.GVSStyle;
+import gvs.model.IVertex;
+import gvs.model.styles.GVSStyle;
+import gvs.util.Configuration;
 import gvs.util.FontAwesome.Glyph;
 
 /**

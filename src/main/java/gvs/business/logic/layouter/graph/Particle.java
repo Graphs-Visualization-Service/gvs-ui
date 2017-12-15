@@ -1,6 +1,6 @@
 package gvs.business.logic.layouter.graph;
 
-import gvs.business.model.graph.GraphVertex;
+import gvs.model.graph.GraphVertex;
 
 /**
  * Represents an element in the layouting area

@@ -5,37 +5,38 @@ apply plugin: 'findbugs'
 apply plugin: 'net.saliman.cobertura'
 apply plugin: 'org.junit.platform.gradle.plugin'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.9
+targetCompatibility = 1.9
 mainClassName = 'gvs.GVSApplication'
 
 sourceSets {
-	main {
-		resources {
-			srcDirs = ["src/main/java", "src/main/resources"]
-		}
-	}
+    main {
+        resources {
+            srcDirs = ["src/main/java", "src/main/resources"]
+        }
+    }
 }
 
 repositories {
     mavenCentral()
     jcenter()
-     maven {
+    maven {
         url "https://mvnrepository.com/artifact/org.dom4j/dom4j"
     }
 }
 
 dependencies {
-	compile group: 'org.controlsfx', name: 'controlsfx', version: '8.40.14'
-	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-	compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
-	compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-	compile group: 'org.dom4j', name: 'dom4j', version: '2.1.0'
-	compile group: 'com.gluonhq', name: 'ignite-guice', version: '1.0.2'
-	compile group: 'com.google.inject.extensions', name: 'guice-assistedinject', version: '4.1.0'	
-	
-	testCompile('org.junit.jupiter:junit-jupiter-api:5.0.1',
-				'org.jukito:jukito:1.5',
-				'org.mockito:mockito-all:1.10.19')
+    compile group: 'org.controlsfx', name: 'controlsfx', version: '9.0.0'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    compile group: 'org.dom4j', name: 'dom4j', version: '2.1.0'
+    compile group: 'com.gluonhq', name: 'ignite-guice', version: '1.0.2'
+    compile group: 'com.google.inject.extensions', name: 'guice-assistedinject', version: '4.1.0'
+
+    testCompile('org.junit.jupiter:junit-jupiter-api:5.0.1',
+            'org.jukito:jukito:1.5',
+            'org.mockito:mockito-all:1.10.19')
     testRuntime(
             'org.junit.jupiter:junit-jupiter-engine:5.0.1',
             'org.junit.vintage:junit-vintage-engine:4.12.1',
@@ -45,15 +46,15 @@ dependencies {
 }
 
 buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
-  }
-  dependencies {
-    classpath 'net.saliman:gradle-cobertura-plugin:2.5.2'
-    	classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.1'
-  }
+    dependencies {
+        classpath 'net.saliman:gradle-cobertura-plugin:2.5.2'
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.1'
+    }
 }
 
 junitPlatform {
@@ -61,22 +62,22 @@ junitPlatform {
 }
 
 jar {
-   	from {configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest {
         attributes 'Main-Class': 'gvs.GVSApplication'
     }
 }
 
 checkstyle {
-  ignoreFailures = false
-  showViolations = true
-  configFile = file("${project.rootDir}/checkstyle.xml")
+    ignoreFailures = false
+    showViolations = true
+    configFile = file("${project.rootDir}/checkstyle.xml")
 }
 
 findbugs {
-  ignoreFailures = true
-  reportsDir = file("$project.buildDir/reports/findbugs")
-  effort = "max"
+    ignoreFailures = true
+    reportsDir = file("$project.buildDir/reports/findbugs")
+    effort = "max"
 }
 
 tasks.withType(FindBugs) {
@@ -89,5 +90,5 @@ tasks.withType(FindBugs) {
 
 
 cobertura {
-  coverageFormats = ['xml']
+    coverageFormats = ['xml']
 }

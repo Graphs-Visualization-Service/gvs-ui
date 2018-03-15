@@ -1,3 +1,7 @@
+dist: trusty
+language: java
+jdk:
+  - oraclejdk9
 language: java
 
 # Cache gradle
